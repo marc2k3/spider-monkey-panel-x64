@@ -1,0 +1,3 @@
+[submodule "mozjs"]
+	path = mozjs
+	url = https://github.com/marc2k3/mozjs
