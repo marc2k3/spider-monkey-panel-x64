@@ -16,7 +16,11 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.8
+- Release 64bit build.
+
 ## 1.6.2.25.11.15
+- Last 32bit release. See [here](https://github.com/marc2k3/spider-monkey-panel-x86/releases).
 - Tooltips are now dark mode aware.
 - Update `utils.InputBox` to support dark mode.
 - Update samples to use `window.ShowConfigureV2()`.
