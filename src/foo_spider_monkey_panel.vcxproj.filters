@@ -963,6 +963,9 @@
     <ClInclude Include="js_engine\prototype_ids.h">
       <Filter>js_engine</Filter>
     </ClInclude>
+    <ClInclude Include="2K3\Helpers.hpp">
+      <Filter>2K3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="js_engine">

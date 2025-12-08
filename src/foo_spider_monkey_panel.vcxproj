@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Release|Win32">
+    <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -30,7 +30,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Label="Vcpkg">
     <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -53,7 +52,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <StringPooling>true</StringPooling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -67,7 +66,6 @@
     <Link>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Midl>
       <TypeLibraryName>$(ProjectDir)resources\$(ProjectName).tlb</TypeLibraryName>
@@ -253,6 +251,7 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\FileHelper.hpp" />
     <ClInclude Include="2K3\FileInfoFilter.hpp" />
     <ClInclude Include="2K3\GetAlbumArtAsync.hpp" />
+    <ClInclude Include="2K3\Helpers.hpp" />
     <ClInclude Include="2K3\HTTPRequestAsync.hpp" />
     <ClInclude Include="2K3\LoadImageAsync.hpp" />
     <ClInclude Include="2K3\MainMenuCommand.hpp" />
@@ -419,7 +418,7 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\foo_spider_monkey_panel.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
