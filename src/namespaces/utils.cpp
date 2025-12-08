@@ -150,7 +150,7 @@ std::unique_ptr<Utils> Utils::CreateNative(JSContext* ctx)
 	return std::unique_ptr<Utils>(new Utils(ctx));
 }
 
-size_t Utils::GetInternalSize()
+uint32_t Utils::GetInternalSize()
 {
 	return 0;
 }
@@ -566,7 +566,7 @@ std::string Utils::InputBox(uint32_t, const std::string& prompt, const std::stri
 		modal_dialog_scope scope(wnd);
 
 		smp::ui::CInputBox dlg(prompt.c_str(), caption.c_str(), def.c_str());
-		int status = dlg.DoModal(wnd);
+		auto status = dlg.DoModal(wnd);
 		if (status == IDCANCEL && error_on_cancel)
 		{
 			throw QwrException("Dialog window was closed");
@@ -618,7 +618,7 @@ std::wstring Utils::MapString(const std::wstring& str, uint32_t lcid, uint32_t f
 	qwr::CheckWinApi(iRet, "LCIDToLocaleName(nullptr)");
 
 	std::wstring localeName(iRet, '\0');
-	iRet = LCIDToLocaleName(lcid, localeName.data(), localeName.size(), LOCALE_ALLOW_NEUTRAL_NAMES);
+	iRet = LCIDToLocaleName(lcid, localeName.data(), sizeu(localeName), LOCALE_ALLOW_NEUTRAL_NAMES);
 	qwr::CheckWinApi(iRet, "LCIDToLocaleName(data)");
 
 	std::optional<NLSVERSIONINFOEX> versionInfo;
@@ -639,27 +639,27 @@ std::wstring Utils::MapString(const std::wstring& str, uint32_t lcid, uint32_t f
 
 	auto* pVersionInfo = reinterpret_cast<NLSVERSIONINFO*>(versionInfo ? &(*versionInfo) : nullptr);
 
-	iRet = LCMapStringEx(localeName.c_str(), flags, str.c_str(), str.length() + 1, nullptr, 0, pVersionInfo, nullptr, 0);
+	iRet = LCMapStringEx(localeName.c_str(), flags, str.c_str(), lengthu(str) + 1, nullptr, 0, pVersionInfo, nullptr, 0);
 	qwr::CheckWinApi(iRet, "LCMapStringEx(nullptr)");
 
 	std::wstring dst(iRet, '\0');
-	iRet = LCMapStringEx(localeName.c_str(), flags, str.c_str(), str.length() + 1, dst.data(), dst.size(), pVersionInfo, nullptr, 0);
+	iRet = LCMapStringEx(localeName.c_str(), flags, str.c_str(), lengthu(str) + 1, dst.data(), lengthu(dst), pVersionInfo, nullptr, 0);
 	qwr::CheckWinApi(iRet, "LCMapStringEx(data)");
 
-	dst.resize(wcslen(dst.c_str()));
+	dst.resize(lengthu(dst));
 	return dst;
 }
 
 bool Utils::PathWildcardMatch(const std::wstring& pattern, const std::wstring& str)
 {
-	return PathMatchSpec(str.c_str(), pattern.c_str());
+	return PathMatchSpecW(str.c_str(), pattern.c_str());
 }
 
 std::wstring Utils::ReadINI(const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval)
 {
 	// WinAPI is weird: 0 - error (with LastError), > 0 - characters required
 	std::wstring dst(MAX_PATH, '\0');
-	int iRet = GetPrivateProfileString(section.c_str(), key.c_str(), defaultval.c_str(), dst.data(), dst.size(), filename.c_str());
+	int iRet = GetPrivateProfileStringW(section.c_str(), key.c_str(), defaultval.c_str(), dst.data(), lengthu(dst), filename.c_str());
 	// TODO v2: Uncomment error checking
 	// qwr::CheckWinApi((iRet || (NO_ERROR == GetLastError())), "GetPrivateProfileString(nullptr)");
 
@@ -723,7 +723,7 @@ JS::Value Utils::ShowHtmlDialog(uint32_t, const std::wstring& htmlCode, JS::Hand
 		modal_dialog_scope scope(wnd);
 
 		smp::ui::CDialogHtml dlg(m_ctx, htmlCode, options);
-		int iRet = dlg.DoModal(wnd);
+		auto iRet = dlg.DoModal(wnd);
 		if (-1 == iRet || IDABORT == iRet)
 		{
 			if (JS_IsExceptionPending(m_ctx))

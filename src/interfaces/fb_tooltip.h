@@ -21,7 +21,7 @@ namespace mozjs
 		~JsFbTooltip() override = default;
 
 		static std::unique_ptr<JsFbTooltip> CreateNative(JSContext* ctx, HWND parent_wnd);
-		static size_t GetInternalSize(HWND parent_wnd);
+		static uint32_t GetInternalSize(HWND parent_wnd);
 
 		void PrepareForGc();
 		void Update();

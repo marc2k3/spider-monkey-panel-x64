@@ -114,7 +114,7 @@ JsGdiGraphics::CreateNative(JSContext* cx)
 	return std::unique_ptr<JsGdiGraphics>(new JsGdiGraphics(cx));
 }
 
-size_t JsGdiGraphics::GetInternalSize()
+uint32_t JsGdiGraphics::GetInternalSize()
 {
 	return 0;
 }
@@ -262,7 +262,7 @@ void JsGdiGraphics::DrawPolygon(uint32_t colour, float line_width, JS::HandleVal
 	ParsePoints(points, gdiPoints);
 
 	Gdiplus::Pen pen(colour, line_width);
-	const auto status = pGdi_->DrawPolygon(&pen, gdiPoints.data(), gdiPoints.size());
+	const auto status = pGdi_->DrawPolygon(&pen, gdiPoints.data(), to_int(gdiPoints.size()));
 	qwr::CheckGdi(status, "DrawPolygon");
 }
 
@@ -358,7 +358,8 @@ JSObject* JsGdiGraphics::EstimateLineWrap(const std::wstring& str, JsGdiFont* fo
 	JsException::ExpectTrue(jsArray);
 
 	JS::RootedValue jsValue(pJsCtx_);
-	size_t i = 0;
+	uint32_t i{};
+
 	for (const auto& [text, width]: result)
 	{
 		convert::to_js::ToValue(pJsCtx_, text, &jsValue);
@@ -421,7 +422,7 @@ void JsGdiGraphics::FillPolygon(uint32_t colour, uint32_t fillmode, JS::HandleVa
 	ParsePoints(points, gdiPoints);
 
 	Gdiplus::SolidBrush br(colour);
-	const auto status = pGdi_->FillPolygon(&br, gdiPoints.data(), gdiPoints.size(), static_cast<Gdiplus::FillMode>(fillmode));
+	const auto status = pGdi_->FillPolygon(&br, gdiPoints.data(), to_int(gdiPoints.size()), static_cast<Gdiplus::FillMode>(fillmode));
 	qwr::CheckGdi(status, "FillPolygon");
 }
 

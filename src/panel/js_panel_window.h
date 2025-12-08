@@ -70,7 +70,7 @@ namespace smp::panel
 		// TODO: move to a better place
 		[[nodiscard]] TimeoutManager& GetTimeoutManager();
 
-		[[nodiscard]] t_size& DlgCode();
+		[[nodiscard]] uint32_t& DlgCode();
 		[[nodiscard]] PanelType GetPanelType() const;
 		virtual DWORD GetColour(const GUID& guid, uint32_t type = 0U) = 0;
 		virtual HFONT GetFont(const GUID& guid, uint32_t type = 0U) = 0;
@@ -160,7 +160,7 @@ namespace smp::panel
 
 		uint32_t eventNestedCounter_ = 0;
 
-		int32_t hRepaintTimer_ = NULL;   // used only internally
+		uintptr_t hRepaintTimer_{};   // used only internally
 		bool isPaintInProgress_ = false; // used only internally
 
 		bool isMouseTracked_ = false;              // used only internally
@@ -175,7 +175,7 @@ namespace smp::panel
 		bool isPanelIdOverridenByScript_ = false; // used only internally
 		bool isDark_ = false;
 
-		size_t dlgCode_ = 0;                   // modified only from external
+		uint32_t dlgCode_{};                   // modified only from external
 		POINT maxSize_ = { INT_MAX, INT_MAX }; // modified only from external
 		POINT minSize_ = { 0, 0 };             // modified only from external
 	};

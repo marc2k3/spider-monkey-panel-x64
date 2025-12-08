@@ -70,7 +70,7 @@ JsMainMenuManager::CreateNative(JSContext* cx)
 	return std::unique_ptr<JsMainMenuManager>(new JsMainMenuManager(cx));
 }
 
-size_t JsMainMenuManager::GetInternalSize()
+uint32_t JsMainMenuManager::GetInternalSize()
 {
 	return sizeof(mainmenu_manager);
 }

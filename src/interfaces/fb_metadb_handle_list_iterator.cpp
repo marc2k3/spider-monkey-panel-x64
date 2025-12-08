@@ -72,7 +72,7 @@ JsFbMetadbHandleList_Iterator::CreateNative(JSContext* cx, JsFbMetadbHandleList&
 	return std::unique_ptr<JsFbMetadbHandleList_Iterator>(new JsFbMetadbHandleList_Iterator(cx, handleList));
 }
 
-size_t JsFbMetadbHandleList_Iterator::GetInternalSize(JsFbMetadbHandleList& /*handleList*/)
+uint32_t JsFbMetadbHandleList_Iterator::GetInternalSize(JsFbMetadbHandleList& /*handleList*/)
 {
 	return 0;
 }

@@ -232,7 +232,7 @@ std::unique_ptr<Fb> Fb::CreateNative(JSContext* ctx)
 	return std::unique_ptr<Fb>(new Fb(ctx));
 }
 
-size_t Fb::GetInternalSize()
+uint32_t Fb::GetInternalSize()
 {
 	return 0;
 }

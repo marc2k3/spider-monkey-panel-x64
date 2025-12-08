@@ -5,7 +5,6 @@ import "docobj.idl";
 library foo_spider_monkey_panel
 {
 	importlib("stdole2.tlb");
-	importlib("olepro32.dll");
 
 	[
 		object,

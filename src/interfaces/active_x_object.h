@@ -32,7 +32,7 @@ namespace mozjs
 		JsActiveXObject& operator=(const JsActiveXObject&) = delete;
 
 		static std::unique_ptr<JsActiveXObject> CreateNative(JSContext* cx, const std::wstring& name);
-		static size_t GetInternalSize(const std::wstring& name);
+		static uint32_t GetInternalSize(const std::wstring& name);
 		static void PostCreate(JSContext* cx, JS::HandleObject self);
 
 	public:

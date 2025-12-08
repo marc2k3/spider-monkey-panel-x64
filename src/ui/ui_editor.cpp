@@ -50,6 +50,7 @@ LRESULT CEditor::OnInitDialog(HWND, LPARAM)
 
 	// Edit Control
 	sciEditor_.SubclassWindow(GetDlgItem(IDC_EDIT));
+	sciEditor_.Init();
 	ReloadProperties();
 	sciEditor_.SetContent(text_.c_str(), true);
 	sciEditor_.SetSavePoint();
@@ -179,7 +180,7 @@ LRESULT CEditor::OnFileExport(WORD, WORD, HWND)
 			std::string text;
 			text.resize(sciEditor_.GetTextLength() + 1);
 
-			sciEditor_.GetText(text.data(), text.size());
+			sciEditor_.GetText(text.size(), text.data());
 			text.resize(strlen(text.data()));
 
 			const auto native = filesystem::g_get_native_path(path->c_str());
@@ -255,7 +256,7 @@ void CEditor::Apply()
 	sciEditor_.SetSavePoint();
 
 	std::vector<char> textBuffer(sciEditor_.GetTextLength() + 1);
-	sciEditor_.GetText(textBuffer.data(), textBuffer.size());
+	sciEditor_.GetText(textBuffer.size(), textBuffer.data());
 	text_ = textBuffer.data();
 
 	if (callback_)

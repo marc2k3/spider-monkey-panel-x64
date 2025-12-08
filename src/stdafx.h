@@ -112,6 +112,7 @@ using JSON = nlohmann::json;
 #include <qwr/winapi_error_helpers.h>
 #include <qwr/qwr_exception.h>
 
+#include <2K3/Helpers.hpp>
 #include <2K3/String.hpp>
 #include <component_defines.h>
 #include <component_guids.h>

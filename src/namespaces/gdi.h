@@ -17,7 +17,7 @@ namespace mozjs
 		~Gdi() override = default;
 
 		static std::unique_ptr<Gdi> CreateNative(JSContext* ctx);
-		static size_t GetInternalSize();
+		static uint32_t GetInternalSize();
 
 	public:
 		JSObject* CreateImage(uint32_t w, uint32_t h);

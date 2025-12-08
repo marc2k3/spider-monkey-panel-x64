@@ -17,7 +17,7 @@ namespace mozjs
 		~JsFbPlaylistRecycler() override = default;
 
 		static std::unique_ptr<JsFbPlaylistRecycler> CreateNative(JSContext* cx);
-		static size_t GetInternalSize();
+		static uint32_t GetInternalSize();
 
 	public:
 		JSObject* GetContent(uint32_t index);

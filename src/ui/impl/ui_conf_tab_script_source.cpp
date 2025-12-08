@@ -447,7 +447,7 @@ void CConfigTabScriptSource::InitializeLocalOptions()
 		}
 
 		assert(it != sampleData_.cend());
-		return ranges::distance(sampleData_.cbegin(), it);
+		return static_cast<int>(ranges::distance(sampleData_.cbegin(), it));
 	}();
 
 	// Source is checked last, because it can be changed in the code above

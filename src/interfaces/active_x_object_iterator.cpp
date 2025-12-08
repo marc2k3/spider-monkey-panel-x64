@@ -89,7 +89,7 @@ JsActiveXObject_Iterator::CreateNative(JSContext* cx, JsActiveXObject& activeXOb
 	return std::unique_ptr<JsActiveXObject_Iterator>(new JsActiveXObject_Iterator(cx, pEnum));
 }
 
-size_t JsActiveXObject_Iterator::GetInternalSize(JsActiveXObject& /*activeXObject*/)
+uint32_t JsActiveXObject_Iterator::GetInternalSize(JsActiveXObject& /*activeXObject*/)
 {
 	return 0;
 }

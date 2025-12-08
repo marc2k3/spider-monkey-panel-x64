@@ -60,7 +60,7 @@ MainMenuCommands_Predefined::MainMenuCommands_Predefined()
 
 uint32_t MainMenuCommands_Predefined::get_command_count()
 {
-	return menuObjects_.size();
+	return sizeu(menuObjects_);
 }
 
 GUID MainMenuCommands_Predefined::get_command(uint32_t p_index)

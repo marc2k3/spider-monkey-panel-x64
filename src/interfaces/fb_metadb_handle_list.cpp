@@ -225,9 +225,9 @@ JsFbMetadbHandleList::CreateNative(JSContext* cx, const metadb_handle_list& hand
 	return std::unique_ptr<JsFbMetadbHandleList>(new JsFbMetadbHandleList(cx, handles));
 }
 
-size_t JsFbMetadbHandleList::GetInternalSize(const metadb_handle_list& handles)
+uint32_t JsFbMetadbHandleList::GetInternalSize(const metadb_handle_list& handles)
 {
-	return sizeof(metadb_handle) * handles.get_size();
+	return sizeof(metadb_handle) * to_uint(handles.get_size());
 }
 
 const metadb_handle_list& JsFbMetadbHandleList::GetHandleList() const
@@ -600,7 +600,7 @@ JSObject* JsFbMetadbHandleList::CreateIterator()
 
 uint32_t JsFbMetadbHandleList::get_Count()
 {
-	return metadbHandleList_.get_count();
+	return to_uint(metadbHandleList_.get_count());
 }
 
 JSObject* JsFbMetadbHandleList::get_Item(uint32_t index)

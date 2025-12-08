@@ -459,7 +459,7 @@ std::unique_ptr<JsActiveXObject> JsActiveXObject::CreateNative(JSContext* cx, co
 	return nativeObject;
 }
 
-size_t JsActiveXObject::GetInternalSize(const std::wstring& /*name*/)
+uint32_t JsActiveXObject::GetInternalSize(const std::wstring& /*name*/)
 {
 	return 0;
 }
@@ -578,7 +578,7 @@ void JsActiveXObject::GetImpl(int dispId, std::span<_variant_t> args, JS::Mutabl
 	if (!args.empty())
 	{
 		dispparams.rgvarg = args.data();
-		dispparams.cArgs = args.size();
+		dispparams.cArgs = sizeu(args);
 	}
 
 	_variant_t varResult;
@@ -685,9 +685,11 @@ void JsActiveXObject::Get(JS::CallArgs& callArgs)
 
 	const uint32_t argc = callArgs.length() - 1;
 	std::vector<_variant_t> args(argc);
+
 	for (auto&& [i, arg]: ranges::views::enumerate(args))
 	{
-		JsToVariantSafe(pJsCtx_, callArgs[argc - i], arg);
+		const auto idx = to_uint(argc - i);
+		JsToVariantSafe(pJsCtx_, callArgs[idx], arg);
 	}
 
 	const auto refreshValues = [&] {
@@ -753,9 +755,11 @@ void JsActiveXObject::Set(const JS::CallArgs& callArgs)
 
 	const uint32_t argc = callArgs.length() - 1;
 	std::vector<_variant_t> args(argc);
+
 	for (auto&& [i, arg]: ranges::views::enumerate(args))
 	{
-		JsToVariantSafe(pJsCtx_, callArgs[argc - i], arg);
+		const auto idx = to_uint(argc - i);
+		JsToVariantSafe(pJsCtx_, callArgs[idx], arg);
 	}
 
 	DISPID dispput = DISPID_PROPERTYPUT;
@@ -763,7 +767,7 @@ void JsActiveXObject::Set(const JS::CallArgs& callArgs)
 	if (!args.empty())
 	{
 		dispparams.rgvarg = args.data();
-		dispparams.cArgs = args.size();
+		dispparams.cArgs = sizeu(args);
 	}
 
 	EXCEPINFO exception{};
@@ -807,16 +811,18 @@ void JsActiveXObject::Invoke(const std::wstring& funcName, const JS::CallArgs& c
 
 	const uint32_t argc = callArgs.length();
 	std::vector<_variant_t> args(argc);
+
 	for (auto&& [i, arg]: ranges::views::enumerate(args))
 	{
-		JsToVariantSafe(pJsCtx_, callArgs[(argc - 1) - i], arg);
+		const auto idx = to_uint(argc - 1u - i);
+		JsToVariantSafe(pJsCtx_, callArgs[idx], arg);
 	}
 
 	DISPPARAMS dispparams = { nullptr, nullptr, 0, 0 };
 	if (!args.empty())
 	{
 		dispparams.rgvarg = args.data();
-		dispparams.cArgs = args.size();
+		dispparams.cArgs = sizeu(args);
 	}
 
 	_variant_t varResult;
@@ -929,7 +935,8 @@ void JsActiveXObject::ParseTypeInfoRecursive(JSContext* cx, ITypeInfo* pTypeInfo
 void JsActiveXObject::ParseTypeInfo(ITypeInfo* pTypeInfo, MemberMap& members)
 {
 	VARDESC* vardesc;
-	for (size_t i = 0; pTypeInfo->GetVarDesc(i, &vardesc) == S_OK; ++i)
+
+	for (uint32_t i = 0u; pTypeInfo->GetVarDesc(i, &vardesc) == S_OK; ++i)
 	{
 		_bstr_t name;
 		//_bstr_t desc;
@@ -947,7 +954,8 @@ void JsActiveXObject::ParseTypeInfo(ITypeInfo* pTypeInfo, MemberMap& members)
 	}
 
 	FUNCDESC* funcdesc;
-	for (size_t i = 0; pTypeInfo->GetFuncDesc(i, &funcdesc) == S_OK; ++i)
+
+	for (uint32_t i = 0u; pTypeInfo->GetFuncDesc(i, &funcdesc) == S_OK; ++i)
 	{
 		_bstr_t name;
 		//_bstr_t desc;

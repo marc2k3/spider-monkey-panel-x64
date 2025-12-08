@@ -194,7 +194,7 @@ std::unique_ptr<Plman> Plman::CreateNative(JSContext* ctx)
 	return std::unique_ptr<Plman>(new Plman(ctx));
 }
 
-size_t Plman::GetInternalSize()
+uint32_t Plman::GetInternalSize()
 {
 	return 0;
 }
@@ -303,11 +303,11 @@ uint32_t Plman::CreatePlaylist(uint32_t playlistIndex, const std::string& name)
 {
 	if (name.empty())
 	{
-		return m_api->create_playlist_autoname(playlistIndex);
+		return to_uint(m_api->create_playlist_autoname(playlistIndex));
 	}
 	else
 	{
-		return m_api->create_playlist(name.c_str(), name.length(), playlistIndex);
+		return to_uint(m_api->create_playlist(name.c_str(), name.length(), playlistIndex));
 	}
 }
 
@@ -327,7 +327,7 @@ uint32_t Plman::DuplicatePlaylist(uint32_t from, const std::string& name)
 
 	const auto pos = m_api->create_playlist(new_name, new_name.get_length(), ++from);
 	m_api->playlist_insert_items(pos, size_t{}, items, pfc::bit_array_false());
-	return pos;
+	return to_uint(pos);
 }
 
 uint32_t Plman::DuplicatePlaylistWithOpt(size_t optArgCount, uint32_t from, const std::string& name)
@@ -356,18 +356,18 @@ bool Plman::ExecutePlaylistDefaultAction(uint32_t playlistIndex, uint32_t playli
 int32_t Plman::FindByGUID(const std::string& str)
 {
 	const auto guid = pfc::GUID_from_text(str.c_str());
-	return static_cast<int32_t>(m_api->find_playlist_by_guid(guid));
+	return to_int(m_api->find_playlist_by_guid(guid));
 }
 
 uint32_t Plman::FindOrCreatePlaylist(const std::string& name, bool unlocked)
 {
 	if (unlocked)
 	{
-		return m_api->find_or_create_playlist_unlocked(name.c_str(), name.length());
+		return to_uint(m_api->find_or_create_playlist_unlocked(name.c_str(), name.length()));
 	}
 	else
 	{
-		return m_api->find_or_create_playlist(name.c_str(), name.length());
+		return to_uint(m_api->find_or_create_playlist(name.c_str(), name.length()));
 	}
 }
 
@@ -381,13 +381,13 @@ int32_t Plman::FindPlaybackQueueItemIndex(JsFbMetadbHandle* handle, uint32_t pla
 	item.m_item = playlistItemIndex;
 
 	const auto upos = m_api->queue_find_index(item);
-	return static_cast<int32_t>(upos);
+	return to_int(upos);
 }
 
 int32_t Plman::FindPlaylist(const std::string& name)
 {
 	const auto upos = m_api->find_playlist(name.c_str(), name.length());
-	return static_cast<int32_t>(upos);
+	return to_int(upos);
 }
 
 void Plman::FlushPlaybackQueue()
@@ -429,8 +429,8 @@ JSObject* Plman::GetPlaybackQueueHandles()
 
 JSObject* Plman::GetPlayingItemLocation()
 {
-	auto playlistIndex = t_size(pfc_infinite);
-	auto playlistItemIndex = t_size(pfc_infinite);
+	size_t playlistIndex{};
+	size_t playlistItemIndex{};
 	bool isValid = m_api->get_playing_item_location(&playlistIndex, &playlistItemIndex);
 
 	return JsFbPlayingItemLocation::CreateJs(m_ctx, isValid, playlistIndex, playlistItemIndex);
@@ -439,7 +439,7 @@ JSObject* Plman::GetPlayingItemLocation()
 int32_t Plman::GetPlaylistFocusItemIndex(uint32_t playlistIndex)
 {
 	const auto upos = m_api->playlist_get_focus_item(playlistIndex);
-	return static_cast<int32_t>(upos);
+	return to_int(upos);
 }
 
 JSObject* Plman::GetPlaylistItems(uint32_t playlistIndex)
@@ -578,7 +578,7 @@ bool Plman::MovePlaylist(uint32_t from, uint32_t to)
 	if (from < count && to < count && from != to)
 	{
 		auto sort_order = CustomSort::order(count);
-		pfc::create_move_items_permutation(sort_order.get_ptr(), count, pfc::bit_array_one(from), static_cast<int>(to - from));
+		pfc::create_move_items_permutation(sort_order.get_ptr(), count, pfc::bit_array_one(from), to_int(to - from));
 		return m_api->reorder(sort_order.get_ptr(), count);
 	}
 
@@ -592,7 +592,7 @@ bool Plman::MovePlaylistSelection(uint32_t playlistIndex, int32_t delta)
 
 uint32_t Plman::PlaylistItemCount(uint32_t playlistIndex)
 {
-	return m_api->playlist_get_item_count(playlistIndex);
+	return to_uint(m_api->playlist_get_item_count(playlistIndex));
 }
 
 void Plman::Redo(uint32_t playlistIndex)
@@ -840,23 +840,23 @@ void Plman::UndoBackup(uint32_t playlistIndex)
 int32_t Plman::get_ActivePlaylist()
 {
 	const auto upos = m_api->get_active_playlist();
-	return static_cast<int32_t>(upos);
+	return to_int(upos);
 }
 
 uint32_t Plman::get_PlaybackOrder()
 {
-	return m_api->playback_order_get_active();
+	return to_uint(m_api->playback_order_get_active());
 }
 
 int32_t Plman::get_PlayingPlaylist()
 {
 	const auto upos = m_api->get_playing_playlist();
-	return static_cast<int32_t>(upos);
+	return to_int(upos);
 }
 
 uint32_t Plman::get_PlaylistCount()
 {
-	return playlist_manager::get()->get_playlist_count();
+	return to_uint(playlist_manager::get()->get_playlist_count());
 }
 
 JSObject* Plman::get_PlaylistRecycler()

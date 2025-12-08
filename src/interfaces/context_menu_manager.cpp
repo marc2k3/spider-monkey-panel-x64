@@ -75,7 +75,7 @@ JsContextMenuManager::CreateNative(JSContext* cx)
 	return std::unique_ptr<JsContextMenuManager>(new JsContextMenuManager(cx));
 }
 
-size_t JsContextMenuManager::GetInternalSize()
+uint32_t JsContextMenuManager::GetInternalSize()
 {
 	return 0;
 }

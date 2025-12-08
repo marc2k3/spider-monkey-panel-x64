@@ -74,7 +74,7 @@ JsFbPlaylistRecycler::CreateNative(JSContext* cx)
 	return std::unique_ptr<JsFbPlaylistRecycler>(new JsFbPlaylistRecycler(cx));
 }
 
-size_t JsFbPlaylistRecycler::GetInternalSize()
+uint32_t JsFbPlaylistRecycler::GetInternalSize()
 {
 	return 0;
 }
@@ -126,7 +126,7 @@ void JsFbPlaylistRecycler::Restore(uint32_t index)
 
 uint32_t JsFbPlaylistRecycler::get_Count()
 {
-	return playlist_manager_v3::get()->recycler_get_count();
+	return to_uint(playlist_manager_v3::get()->recycler_get_count());
 }
 
 } // namespace mozjs

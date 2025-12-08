@@ -76,7 +76,7 @@ std::unique_ptr<Gdi> Gdi::CreateNative(JSContext* ctx)
 	return std::unique_ptr<Gdi>(new Gdi(ctx));
 }
 
-size_t Gdi::GetInternalSize()
+uint32_t Gdi::GetInternalSize()
 {
 	return 0;
 }

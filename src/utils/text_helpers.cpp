@@ -29,21 +29,21 @@ namespace
 		return !currentAlphaNum || !std::iswalnum(next);
 	}
 
-	void WrapTextRecur(HDC hdc, const std::wstring& text, size_t width, std::vector<WrappedTextLine>& out)
+	void WrapTextRecur(HDC hdc, const std::wstring& text, uint32_t width, std::vector<WrappedTextLine>& out)
 	{
 		const auto textWidth = GetTextWidth(hdc, text);
 
-		if (textWidth <= width || text.size() <= 1)
+		if (textWidth <= width || text.size() <= 1uz)
 		{
 			out.emplace_back(text, textWidth);
 		}
 		else
 		{
-			size_t textLength = (text.size() * width) / textWidth;
+			uint32_t textLength = lengthu(text) * width / textWidth;
 
 			if (GetTextWidth(hdc, text.substr(0, textLength)) < width)
 			{
-				while (GetTextWidth(hdc, text.substr(0, std::min(text.size(), textLength + 1))) <= width)
+				while (GetTextWidth(hdc, text.substr(0, std::min(lengthu(text), textLength + 1u))) <= width)
 				{
 					++textLength;
 				}
@@ -57,7 +57,7 @@ namespace
 			}
 
 			{
-				size_t fallbackTextLength = std::max<size_t>(textLength, 1);
+				uint32_t fallbackTextLength = std::max(textLength, 1u);
 
 				while (textLength > 0 && !is_wrap_char(text[textLength - 1], text[textLength]))
 				{
@@ -82,15 +82,14 @@ namespace
 
 namespace smp::utils
 {
-	size_t GetTextHeight(HDC hdc, std::wstring_view text)
+	uint32_t GetTextHeight(HDC hdc, std::wstring_view text)
 	{
 		SIZE size;
-		// TODO: add error checks
-		GetTextExtentPoint32W(hdc, text.data(), static_cast<int>(text.size()), &size);
-		return static_cast<size_t>(size.cy);
+		GetTextExtentPoint32W(hdc, text.data(), to_int(text.size()), &size);
+		return size.cy;
 	}
 
-	size_t GetTextWidth(HDC hdc, std::wstring_view text, bool accurate)
+	uint32_t GetTextWidth(HDC hdc, std::wstring_view text, bool accurate)
 	{
 		// If font has kerning pairs then GetTextExtentPoint32 will return an inaccurate width if those pairs exist in text.
 		// DrawText returns a completely accurate value, but is slower and should not be called from inside estimate_line_wrap
@@ -104,10 +103,10 @@ namespace smp::utils
 		SIZE size;
 		// TODO: add error checks
 		GetTextExtentPoint32W(hdc, text.data(), static_cast<int>(text.size()), &size);
-		return static_cast<size_t>(size.cx);
+		return size.cx;
 	}
 
-	std::vector<WrappedTextLine> WrapText(HDC hdc, const std::wstring& text, size_t maxWidth)
+	std::vector<WrappedTextLine> WrapText(HDC hdc, const std::wstring& text, uint32_t maxWidth)
 	{
 		std::vector<WrappedTextLine> lines;
 		const wchar_t* curTextPos = text.c_str();

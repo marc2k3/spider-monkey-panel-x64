@@ -19,7 +19,7 @@ namespace mozjs
 		~JsMenuObject() override;
 
 		static std::unique_ptr<JsMenuObject> CreateNative(JSContext* cx, HWND hParentWnd);
-		static size_t GetInternalSize(HWND hParentWnd);
+		static uint32_t GetInternalSize(HWND hParentWnd);
 
 	public:
 		[[nodiscard]] HMENU HMenu() const;

@@ -53,25 +53,25 @@ namespace mozjs
 	const JSPropertySpec* JsFbPlayingItemLocation::JsProperties = jsProperties.data();
 	const JsPrototypeId JsFbPlayingItemLocation::PrototypeId = JsPrototypeId::FbPlayingItemLocation;
 
-	JsFbPlayingItemLocation::JsFbPlayingItemLocation(JSContext* cx, bool is_valid, uint32_t playlistIndex, uint32_t playlistItemIndex)
+	JsFbPlayingItemLocation::JsFbPlayingItemLocation(JSContext* cx, bool is_valid, size_t playlistIndex, size_t playlistItemIndex)
 		: m_ctx(cx)
 		, m_is_valid(is_valid)
 	{
 		if (m_is_valid)
 		{
-			m_playlistIndex = static_cast<int32_t>(playlistIndex);
-			m_playlistItemIndex = static_cast<int32_t>(playlistItemIndex);
+			m_playlistIndex = to_int(playlistIndex);
+			m_playlistItemIndex = to_int(playlistItemIndex);
 		}
 	}
 
-	std::unique_ptr<JsFbPlayingItemLocation> JsFbPlayingItemLocation::CreateNative(JSContext* cx, bool is_valid, uint32_t playlistIndex, uint32_t playlistItemIndex)
+	std::unique_ptr<JsFbPlayingItemLocation> JsFbPlayingItemLocation::CreateNative(JSContext* cx, bool is_valid, size_t playlistIndex, size_t playlistItemIndex)
 	{
 		return std::unique_ptr<JsFbPlayingItemLocation>(new JsFbPlayingItemLocation(cx, is_valid, playlistIndex, playlistItemIndex));
 	}
 
-	size_t JsFbPlayingItemLocation::GetInternalSize(bool /*is_valid*/, uint32_t /*playlistIndex*/, uint32_t /*playlistItemIndex*/)
+	uint32_t JsFbPlayingItemLocation::GetInternalSize(bool /*is_valid*/, size_t /*playlistIndex*/, size_t /*playlistItemIndex*/)
 	{
-		return 0uz;
+		return 0;
 	}
 
 	bool JsFbPlayingItemLocation::get_IsValid()

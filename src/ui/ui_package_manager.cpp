@@ -257,7 +257,7 @@ void CDialogPackageManager::OnOpenFolder(UINT /*uNotifyCode*/, int /*nID*/, CWin
 
 	try
 	{
-		const auto hInstance = ShellExecuteW(
+		ShellExecuteW(
 			nullptr,
 			L"explore",
 			config::GetPackagePath(*packages_[focusedPackageIdx_].parsedSettings).c_str(),
@@ -265,11 +265,6 @@ void CDialogPackageManager::OnOpenFolder(UINT /*uNotifyCode*/, int /*nID*/, CWin
 			nullptr,
 			SW_SHOWNORMAL
 		);
-
-		if ((int)hInstance < 32)
-		{ // As per WinAPI
-			qwr::CheckWin32((int)hInstance, "ShellExecute");
-		}
 	}
 	catch (const fs::filesystem_error& e)
 	{
@@ -454,7 +449,7 @@ void CDialogPackageManager::UpdateListBoxFromData()
 	}
 	else
 	{
-		focusedPackageIdx_ = ranges::distance(packages_.cbegin(), it);
+		focusedPackageIdx_ = static_cast<int>(ranges::distance(packages_.cbegin(), it));
 	}
 
 	packagesListBox_.ResetContent();

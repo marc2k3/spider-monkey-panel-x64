@@ -93,7 +93,7 @@ JsEnumerator::CreateNative(JSContext* cx, IUnknown* pUnknown)
 	return pNative;
 }
 
-size_t JsEnumerator::GetInternalSize(IUnknown* /*pUnknown*/)
+uint32_t JsEnumerator::GetInternalSize(IUnknown* /*pUnknown*/)
 {
 	return 0;
 }

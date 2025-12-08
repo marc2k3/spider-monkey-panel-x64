@@ -67,7 +67,7 @@ std::unique_ptr<JsFbAudioChunk> JsFbAudioChunk::CreateNative(JSContext* cx, cons
 	return std::unique_ptr<JsFbAudioChunk>(new JsFbAudioChunk(cx, chunk));
 }
 
-size_t JsFbAudioChunk::GetInternalSize(const audio_chunk_impl&)
+uint32_t JsFbAudioChunk::GetInternalSize(const audio_chunk_impl&)
 {
 	return sizeof(audio_chunk_impl);
 }

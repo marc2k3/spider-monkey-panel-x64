@@ -6,7 +6,7 @@ private:
 	using Task = std::function<void()>;
 
 public:
-	QwrThreadPool(size_t maxThreadCount = std::max<size_t>(std::thread::hardware_concurrency(), 1));
+	QwrThreadPool(uint32_t maxThreadCount = std::max<uint32_t>(std::thread::hardware_concurrency(), 1u));
 	QwrThreadPool(const QwrThreadPool&) = delete;
 	QwrThreadPool& operator=(const QwrThreadPool&) = delete;
 

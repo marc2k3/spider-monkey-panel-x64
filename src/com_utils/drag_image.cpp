@@ -67,12 +67,12 @@ namespace uih
 
 		if (useTheming)
 		{
-			GetThemeTextExtent(theme, dc, DD_TEXTBG, theme_state, wtext.c_str(), wtext.length(), text_flags, &rc, &rc_text);
+			GetThemeTextExtent(theme, dc, DD_TEXTBG, theme_state, wtext.c_str(), to_int(wtext.length()), text_flags, &rc, &rc_text);
 		}
 		else
 		{
 			rc_text = rc;
-			DrawTextW(dc, wtext.c_str(), wtext.length(), &rc_text, text_flags | DT_CALCRECT);
+			DrawTextW(dc, wtext.c_str(), to_int(wtext.length()), &rc_text, text_flags | DT_CALCRECT);
 		}
 
 		auto x_offset = (wil::rect_width(rc) - wil::rect_width(rc_text)) / 2;
@@ -98,7 +98,7 @@ namespace uih
 				DrawThemeParentBackground(wnd, dc, &background_rect);
 			}
 			DrawThemeBackground(theme, dc, DD_TEXTBG, theme_state, &background_rect, nullptr);
-			DrawThemeText(theme, dc, DD_TEXTBG, theme_state, wtext.c_str(), wtext.length(), text_flags, 0, &rc_text);
+			DrawThemeText(theme, dc, DD_TEXTBG, theme_state, wtext.c_str(), to_int(wtext.length()), text_flags, 0, &rc_text);
 		}
 		else
 		{
@@ -106,7 +106,7 @@ namespace uih
 			auto previousBackgroundMode = GetBkMode(dc);
 			SetTextColor(dc, selectionTextColour);
 			SetBkMode(dc, TRANSPARENT);
-			DrawTextW(dc, wtext.c_str(), wtext.length(), &rc_text, text_flags);
+			DrawTextW(dc, wtext.c_str(), to_int(wtext.length()), &rc_text, text_flags);
 			SetTextColor(dc, previousColour);
 			SetBkMode(dc, previousBackgroundMode);
 		}

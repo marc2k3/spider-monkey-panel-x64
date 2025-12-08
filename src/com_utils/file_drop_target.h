@@ -45,7 +45,7 @@ namespace smp::com
 				std::wstring path;
 				path.resize(pathLength + 1);
 
-				DragQueryFile(hDrop, i, path.data(), path.size());
+				DragQueryFileW(hDrop, i, path.data(), lengthu(path));
 				path.resize(path.size() - 1);
 
 				processor(path);

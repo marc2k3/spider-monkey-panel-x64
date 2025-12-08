@@ -69,7 +69,7 @@ JsFbPlaybackQueueItem::CreateNative(JSContext* cx, const t_playback_queue_item& 
 	return std::unique_ptr<JsFbPlaybackQueueItem>(new JsFbPlaybackQueueItem(cx, playbackQueueItem));
 }
 
-size_t JsFbPlaybackQueueItem::GetInternalSize(const t_playback_queue_item& /*playbackQueueItem*/)
+uint32_t JsFbPlaybackQueueItem::GetInternalSize(const t_playback_queue_item& /*playbackQueueItem*/)
 {
 	return 0;
 }
@@ -81,12 +81,12 @@ JSObject* JsFbPlaybackQueueItem::get_Handle()
 
 uint32_t JsFbPlaybackQueueItem::get_PlaylistIndex()
 {
-	return playbackQueueItem_.m_playlist;
+	return to_uint(playbackQueueItem_.m_playlist);
 }
 
 uint32_t JsFbPlaybackQueueItem::get_PlaylistItemIndex()
 {
-	return playbackQueueItem_.m_item;
+	return to_uint(playbackQueueItem_.m_item);
 }
 
 } // namespace mozjs

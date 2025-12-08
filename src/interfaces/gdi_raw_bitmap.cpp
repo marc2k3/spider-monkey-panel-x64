@@ -101,7 +101,7 @@ std::unique_ptr<JsGdiRawBitmap> JsGdiRawBitmap::CreateNative(JSContext* cx, Gdip
 	return std::unique_ptr<JsGdiRawBitmap>(new JsGdiRawBitmap(cx, std::move(hBitmap), pBmp->GetWidth(), pBmp->GetHeight()));
 }
 
-size_t JsGdiRawBitmap::GetInternalSize(Gdiplus::Bitmap* pBmp)
+uint32_t JsGdiRawBitmap::GetInternalSize(Gdiplus::Bitmap* pBmp)
 {
 	if (!pBmp)
 	{ // we don't care about return value, since it will fail in CreateNative later

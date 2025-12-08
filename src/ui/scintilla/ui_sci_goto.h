@@ -21,7 +21,7 @@ public:
 		IDD = IDD_DIALOG_GOTO
 	};
 
-	CDialogGoto(HWND hParent, int curLineNumber);
+	CDialogGoto(HWND hParent, intptr_t curLineNumber);
 
 	LRESULT OnInitDialog(HWND hwndFocus, LPARAM lParam);
 	void OnDestroy();
@@ -35,7 +35,7 @@ public:
 
 private:
 	HWND hParent_;
-	const int curLineNumber_;
+	const intptr_t curLineNumber_;
 
 	uint32_t hookId_ = 0;
 };

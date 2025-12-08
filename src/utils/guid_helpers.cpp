@@ -15,7 +15,7 @@ namespace smp::utils
 		std::wstring guidStr;
 
 		guidStr.resize(64);
-		const auto strSizeWithTerminator = StringFromGUID2(guid, guidStr.data(), guidStr.size());
+		const auto strSizeWithTerminator = StringFromGUID2(guid, guidStr.data(), to_int(guidStr.size()));
 		guidStr.resize(strSizeWithTerminator - 1);
 
 		return guidStr;

@@ -126,7 +126,7 @@ namespace smp
 
 			auto autoZip = wil::scope_exit([&] { mz_zip_reader_end(&mzZip); });
 
-			const size_t fileCount = (size_t)mz_zip_reader_get_num_files(&mzZip);
+			const auto fileCount = mz_zip_reader_get_num_files(&mzZip);
 			if (!fileCount)
 			{
 				return;

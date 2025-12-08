@@ -56,7 +56,7 @@ namespace
 
 		const auto qPath = L"\"" + file.wstring() + L"\"";
 
-		const auto hInstance = ShellExecuteW(
+		ShellExecuteW(
 			nullptr,
 			L"open",
 			pathToEditor.c_str(),
@@ -64,11 +64,6 @@ namespace
 			nullptr,
 			SW_SHOW
 		);
-
-		if ((int)hInstance < 32)
-		{
-			qwr::CheckWin32((int)hInstance, "ShellExecute");
-		}
 
 		return true;
 	}
@@ -94,8 +89,9 @@ namespace
 				std::wstring tmpFilePath;
 				tmpFilePath.resize(MAX_PATH - 14); // max allowed size of path in GetTempFileName
 
-				DWORD dwRet = GetTempPathW(tmpFilePath.size(), tmpFilePath.data());
-				qwr::CheckWinApi(dwRet && dwRet <= tmpFilePath.size(), "GetTempPath");
+				const auto size = lengthu(tmpFilePath);
+				DWORD dwRet = GetTempPathW(size, tmpFilePath.data());
+				qwr::CheckWinApi(dwRet && dwRet <= size, "GetTempPath");
 
 				std::wstring filename;
 				filename.resize(MAX_PATH);

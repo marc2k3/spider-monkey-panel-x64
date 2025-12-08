@@ -18,7 +18,7 @@ enum class GotoMsg : uint32_t
 namespace smp::ui::sci
 {
 
-CDialogGoto::CDialogGoto(HWND hParent, int curLineNumber)
+CDialogGoto::CDialogGoto(HWND hParent, intptr_t curLineNumber)
 	: hParent_(hParent)
 	, curLineNumber_(curLineNumber)
 {

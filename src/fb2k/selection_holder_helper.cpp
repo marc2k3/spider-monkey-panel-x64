@@ -38,7 +38,7 @@ std::optional<uint8_t> GetSelectionHolderTypeFromGuid(const GUID& typeGuid)
 		return std::nullopt;
 	}
 
-	return ranges::distance(ranges::begin(guids), it);
+	return static_cast<uint8_t>(ranges::distance(ranges::begin(guids), it));
 }
 
 } // namespace smp

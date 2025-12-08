@@ -1,7 +1,7 @@
 #pragma once
 
 __pragma(warning(push))
-__pragma(warning(disable : 4251))
+__pragma(warning(disable : 4244 4251))
 #include <jsapi.h>
 #include <jsfriendapi.h>
 

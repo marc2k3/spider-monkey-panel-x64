@@ -20,7 +20,7 @@ namespace mozjs
 		~Window() override;
 
 		static std::unique_ptr<Window> CreateNative(JSContext* ctx, smp::panel::js_panel_window& parentPanel);
-		static size_t GetInternalSize(const smp::panel::js_panel_window& parentPanel);
+		static uint32_t GetInternalSize(const smp::panel::js_panel_window& parentPanel);
 
 	public:
 		static void Trace(JSTracer* trc, JSObject* obj);
@@ -72,7 +72,7 @@ namespace mozjs
 		uint32_t get_DlgCode();
 		uint32_t get_DPI();
 		uint32_t get_Height();
-		uint32_t get_ID() const;
+		uint64_t get_ID() const;
 		uint32_t get_InstanceType();
 		bool get_IsDark();
 		bool get_IsTransparent();

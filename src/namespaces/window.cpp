@@ -235,7 +235,7 @@ namespace mozjs
 		return std::unique_ptr<Window>(new Window(ctx, parentPanel, std::move(fbProperties)));
 	}
 
-	size_t Window::GetInternalSize(const smp::panel::js_panel_window&)
+	uint32_t Window::GetInternalSize(const smp::panel::js_panel_window&)
 	{
 		return sizeof(FbProperties);
 	}
@@ -801,10 +801,9 @@ namespace mozjs
 		return m_parent.GetHeight();
 	}
 
-	uint32_t Window::get_ID() const
+	uint64_t Window::get_ID() const
 	{
-		// Such cast works properly only on x86
-		return reinterpret_cast<uint32_t>(GetHwnd());
+		return reinterpret_cast<uintptr_t>(GetHwnd());
 	}
 
 	uint32_t Window::get_InstanceType()

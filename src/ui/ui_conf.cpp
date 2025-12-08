@@ -486,7 +486,7 @@ void CDialogConf::DestroyChildTab()
 	}
 }
 
-size_t CDialogConf::GetTabIdx(CDialogConf::Tab tabId) const
+int CDialogConf::GetTabIdx(CDialogConf::Tab tabId) const
 {
 	switch (tabId)
 	{
@@ -495,9 +495,8 @@ size_t CDialogConf::GetTabIdx(CDialogConf::Tab tabId) const
 	case Tab::package:
 		return 1;
 	case Tab::properties:
-		return tabs_.size() - 1;
+		return static_cast<int>(tabs_.size()) - 1;
 	default:
-		assert(false);
 		return 0;
 	}
 }

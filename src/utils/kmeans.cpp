@@ -10,12 +10,12 @@ namespace
 		explicit Point(const PointData* pData) : pData(pData) {}
 
 		const PointData* pData;
-		uint32_t id_cluster = uint32_t(-1);
+		size_t id_cluster = SIZE_MAX;
 	};
 
 	struct Cluster
 	{
-		Cluster(uint32_t id_cluster, const Point* pPoint) : id_cluster(id_cluster)
+		Cluster(size_t id_cluster, const Point* pPoint) : id_cluster(id_cluster)
 		{
 			central_values =
 				ranges::views::transform(pPoint->pData->values, [](const auto& elem) { return static_cast<double>(elem); })
@@ -23,14 +23,14 @@ namespace
 			points.push_back(pPoint);
 		}
 
-		uint32_t id_cluster;
+		size_t id_cluster;
 		std::vector<double> central_values;
 		std::vector<const Point*> points;
 	};
 
 	// return ID of nearest center
 	// uses distance calculations from: https://en.wikipedia.org/wiki/Color_difference
-	uint32_t getIDNearestCenter(const std::vector<Cluster>& clusters, const Point& point)
+	size_t getIDNearestCenter(const std::vector<Cluster>& clusters, const Point& point)
 	{
 		const auto& pointValues = point.pData->values;
 
@@ -45,7 +45,7 @@ namespace
 			return sum;
 		};
 
-		uint32_t id_cluster_center = 0;
+		size_t id_cluster_center{};
 		double min_dist = calculateDistance(clusters[0]);
 
 		for (auto i: ranges::views::indices(clusters.size()))
@@ -61,9 +61,9 @@ namespace
 		return id_cluster_center;
 	}
 
-	uint32_t getTotalPixelCount(const Cluster& cluster)
+	size_t getTotalPixelCount(const Cluster& cluster)
 	{
-		return ranges::accumulate(cluster.points, 0, [](auto sum, const auto pPoint)
+		return ranges::accumulate(cluster.points, 0uz, [](size_t sum, const auto pPoint)
 			{
 				return sum + pPoint->pData->pixel_count;
 			});
@@ -72,11 +72,11 @@ namespace
 
 namespace smp::utils::kmeans
 {
-	PointData::PointData(const std::vector<uint8_t>& values, uint32_t pixel_count) : values(values), pixel_count(pixel_count) {}
+	PointData::PointData(const std::vector<uint8_t>& values, size_t pixel_count) : values(values), pixel_count(pixel_count) {}
 
-	std::vector<ClusterData> run(const std::vector<PointData>& pointsData, uint32_t K, uint32_t max_iterations)
+	std::vector<ClusterData> run(const std::vector<PointData>& pointsData, size_t K, size_t max_iterations)
 	{
-		const size_t clusterCount = std::min(std::max(K, static_cast<uint32_t>(14)), pointsData.size());
+		const size_t clusterCount = std::min(std::max(K, 14uz), pointsData.size());
 
 		auto points =
 			ranges::views::transform(pointsData, [](const auto& data) { return Point{ &data }; })
@@ -100,12 +100,12 @@ namespace smp::utils::kmeans
 			// associate each point to its nearest center
 			for (auto& point: points)
 			{
-				const uint32_t id_old_cluster = point.id_cluster;
-				const uint32_t id_nearest_center = getIDNearestCenter(clusters, point);
+				const auto id_old_cluster = point.id_cluster;
+				const auto id_nearest_center = getIDNearestCenter(clusters, point);
 
 				if (id_old_cluster != id_nearest_center)
 				{
-					if (id_old_cluster != uint32_t(-1))
+					if (id_old_cluster != SIZE_MAX)
 					{
 						auto& clusterPoints = clusters[id_old_cluster].points;
 						const auto it = ranges::find(clusterPoints, &point);
@@ -120,9 +120,9 @@ namespace smp::utils::kmeans
 			}
 
 			// recalculating the center of each cluster
-			for (auto& cluster: clusters)
+			for (auto& cluster : clusters)
 			{
-				const uint32_t pixelsInCluster = getTotalPixelCount(cluster);
+				const auto pixelsInCluster = getTotalPixelCount(cluster);
 				if (!pixelsInCluster)
 				{
 					continue;
@@ -130,7 +130,7 @@ namespace smp::utils::kmeans
 
 				for (auto&& [j, centralValue]: ranges::views::enumerate(cluster.central_values))
 				{
-					const uint32_t sum = ranges::accumulate(cluster.points, 0, [j = j](uint32_t curSum, const auto pPoint) {
+					const auto sum = ranges::accumulate(cluster.points, 0uz, [j = j](size_t curSum, const auto pPoint) {
 						return curSum + pPoint->pData->values[j] * pPoint->pData->pixel_count;
 					});
 					centralValue = static_cast<double>(sum) / pixelsInCluster;

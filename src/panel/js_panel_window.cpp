@@ -1185,7 +1185,7 @@ namespace smp::panel
 			if (id - id_base > 100)
 			{
 				const auto scriptFiles = config::GetPackageScriptFiles(settings_);
-				const auto fileIdx = std::min(id - id_base - 100, scriptFiles.size()) - 1;
+				const auto fileIdx = std::min<size_t>(id - id_base - 100, scriptFiles.size()) - 1;
 
 				panel::EditPackageScript(wnd_, scriptFiles[fileIdx], settings_);
 				ReloadScript();
@@ -1260,7 +1260,7 @@ namespace smp::panel
 		return width_;
 	}
 
-	t_size& js_panel_window::DlgCode()
+	uint32_t& js_panel_window::DlgCode()
 	{
 		return dlgCode_;
 	}
@@ -1347,14 +1347,14 @@ namespace smp::panel
 		DynamicMainMenuManager::Get().RegisterPanel(wnd_, settings_.panelId);
 
 		const auto extstyle = [&]() {
-			DWORD extstyle = wnd_.GetWindowLongPtr(GWL_EXSTYLE);
+			auto extstyle = wnd_.GetWindowLongPtrW(GWL_EXSTYLE);
 			extstyle &= ~WS_EX_CLIENTEDGE & ~WS_EX_STATICEDGE;
 			extstyle |= ConvertEdgeStyleToNativeFlags(settings_.edgeStyle);
 
 			return extstyle;
 		}();
 
-		wnd_.SetWindowLongPtr(GWL_EXSTYLE, extstyle);
+		wnd_.SetWindowLongPtrW(GWL_EXSTYLE, extstyle);
 		wnd_.SetWindowPos(nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
 		maxSize_ = { INT_MAX, INT_MAX };

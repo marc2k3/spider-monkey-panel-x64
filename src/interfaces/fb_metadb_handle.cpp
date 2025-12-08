@@ -89,15 +89,14 @@ JsFbMetadbHandle::JsFbMetadbHandle(JSContext* cx, const metadb_handle_ptr& handl
 {
 }
 
-std::unique_ptr<mozjs::JsFbMetadbHandle>
-JsFbMetadbHandle::CreateNative(JSContext* cx, const metadb_handle_ptr& handle)
+std::unique_ptr<mozjs::JsFbMetadbHandle> JsFbMetadbHandle::CreateNative(JSContext* cx, const metadb_handle_ptr& handle)
 {
 	QwrException::ExpectTrue(handle.is_valid(), "Internal error: metadb_handle_ptr is null");
 
 	return std::unique_ptr<JsFbMetadbHandle>(new JsFbMetadbHandle(cx, handle));
 }
 
-size_t JsFbMetadbHandle::GetInternalSize(const metadb_handle_ptr& /*handle*/)
+uint32_t JsFbMetadbHandle::GetInternalSize(const metadb_handle_ptr& /*handle*/)
 {
 	return sizeof(metadb_handle);
 }

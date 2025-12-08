@@ -24,7 +24,7 @@ namespace mozjs
 		~JsFbTitleFormat() override = default;
 
 		static std::unique_ptr<JsFbTitleFormat> CreateNative(JSContext* cx, const std::string& expr);
-		static size_t GetInternalSize(const std::string& expr);
+		static uint32_t GetInternalSize(const std::string& expr);
 
 	public:
 		titleformat_object::ptr GetTitleFormat();

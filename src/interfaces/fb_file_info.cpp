@@ -78,22 +78,22 @@ JsFbFileInfo::JsFbFileInfo(JSContext* cx, metadb_info_container::ptr containerIn
 {
 }
 
-std::unique_ptr<mozjs::JsFbFileInfo>
-JsFbFileInfo::CreateNative(JSContext* cx, metadb_info_container::ptr containerInfo)
+std::unique_ptr<mozjs::JsFbFileInfo> JsFbFileInfo::CreateNative(JSContext* cx, metadb_info_container::ptr containerInfo)
 {
 	QwrException::ExpectTrue(containerInfo.is_valid(), "Internal error: metadb_info_container object is null");
 
 	return std::unique_ptr<JsFbFileInfo>(new JsFbFileInfo(cx, containerInfo));
 }
 
-size_t JsFbFileInfo::GetInternalSize(const metadb_info_container::ptr& /*containerInfo*/)
+uint32_t JsFbFileInfo::GetInternalSize(const metadb_info_container::ptr& /*containerInfo*/)
 {
 	return sizeof(file_info_impl);
 }
 
 int32_t JsFbFileInfo::InfoFind(const std::string& name)
 {
-	return fileInfo_.info_find_ex(name.c_str(), name.length());
+	const auto idx = fileInfo_.info_find_ex(name.c_str(), name.length());
+	return to_int(idx);
 }
 
 std::string JsFbFileInfo::InfoName(uint32_t index)
@@ -112,8 +112,8 @@ std::string JsFbFileInfo::InfoValue(uint32_t index)
 
 int32_t JsFbFileInfo::MetaFind(const std::string& name)
 {
-	const t_size idx = fileInfo_.meta_find_ex(name.c_str(), name.length());
-	return ((idx == pfc_infinite) ? -1 : static_cast<int32_t>(idx));
+	const auto idx = fileInfo_.meta_find_ex(name.c_str(), name.length());
+	return to_int(idx);
 }
 
 std::string JsFbFileInfo::MetaName(uint32_t index)
@@ -135,17 +135,17 @@ uint32_t JsFbFileInfo::MetaValueCount(uint32_t index)
 {
 	QwrException::ExpectTrue(index < fileInfo_.meta_get_count(), "Index is out of bounds");
 
-	return fileInfo_.meta_enum_value_count(index);
+	return to_uint(fileInfo_.meta_enum_value_count(index));
 }
 
 uint32_t JsFbFileInfo::get_InfoCount()
 {
-	return fileInfo_.info_get_count();
+	return to_uint(fileInfo_.info_get_count());
 }
 
 uint32_t JsFbFileInfo::get_MetaCount()
 {
-	return fileInfo_.meta_get_count();
+	return to_uint(fileInfo_.meta_get_count());
 }
 
 } // namespace mozjs

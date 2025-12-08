@@ -186,7 +186,7 @@ namespace
 		JS::RootedObjectVector curObjects(ctx);
 		uint32_t logDepth{};
 
-		for (size_t i = 0; i < args.length(); ++i)
+		for (auto i = 0u; i < args.length(); ++i)
 		{
 			const auto part = ParseJsValue(ctx, args[i], &curObjects, logDepth, false);
 			parts.emplace_back(part);

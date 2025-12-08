@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "thread_pool.h"
 
-QwrThreadPool::QwrThreadPool(size_t maxThreadCount) : maxThreadCount_(std::max<size_t>(std::min(std::thread::hardware_concurrency(), maxThreadCount), 1))
+QwrThreadPool::QwrThreadPool(uint32_t maxThreadCount) : maxThreadCount_(std::max<size_t>(std::min(std::thread::hardware_concurrency(), maxThreadCount), 1u))
 {
 	threads_.reserve(maxThreadCount_);
 }

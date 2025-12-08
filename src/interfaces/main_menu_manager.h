@@ -21,7 +21,7 @@ namespace mozjs
 		~JsMainMenuManager() override = default;
 
 		static std::unique_ptr<JsMainMenuManager> CreateNative(JSContext* cx);
-		static size_t GetInternalSize();
+		static uint32_t GetInternalSize();
 
 	public:
 		void BuildMenu(JsMenuObject* menu, int32_t base_id, int32_t count);

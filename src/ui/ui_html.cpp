@@ -394,7 +394,7 @@ STDMETHODIMP CDialogHtml::TranslateAccelerator(LPMSG lpMsg, const GUID* pguidCmd
 		return (isCtrlPressed && !isShiftPressed && !isAltPressed && std::cend(allowedCtrlKeys) != ranges::find(allowedCtrlKeys, vk));
 	};
 
-	if (isSupportedHotKey(lpMsg->message, lpMsg->wParam))
+	if (isSupportedHotKey(lpMsg->message, to_uint(lpMsg->wParam)))
 	{
 		return pDefaultUiHandler_->TranslateAccelerator(lpMsg, pguidCmdGroup, nCmdID);
 	}

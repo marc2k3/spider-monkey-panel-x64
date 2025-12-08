@@ -103,7 +103,7 @@ private:
 	void ReinitializeTabControls();
 	void CreateChildTab();
 	void DestroyChildTab();
-	size_t GetTabIdx(CDialogConf::Tab tabId) const;
+	int GetTabIdx(CDialogConf::Tab tabId) const;
 	void SetActiveTabIdx(CDialogConf::Tab tabId);
 
 private:
@@ -125,7 +125,7 @@ private:
 	CTabCtrl cTabs_;
 	CDialogImplBase* pcCurTab_ = nullptr;
 
-	size_t activeTabIdx_ = 0;
+	int activeTabIdx_{};
 	std::vector<std::unique_ptr<ITab>> tabs_;
 };
 

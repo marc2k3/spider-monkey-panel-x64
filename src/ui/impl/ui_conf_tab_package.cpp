@@ -272,30 +272,14 @@ void CConfigTabPackage::OnOpenContainingFolder(UINT uNotifyCode, int nID, CWindo
 			}
 		}();
 
-	try
-	{
-		const auto hInstance = ShellExecuteW(
-			nullptr,
-			L"explore",
-			packagePath_.wstring().c_str(),
-			(arg.empty() ? nullptr : arg.c_str()),
-			nullptr,
-			SW_SHOWNORMAL
-		);
-
-		if ((int)hInstance < 32)
-		{ // As per WinAPI
-			qwr::CheckWin32((int)hInstance, "ShellExecute");
-		}
-	}
-	catch (const fs::filesystem_error& e)
-	{
-		qwr::ReportFSErrorWithPopup(e);
-	}
-	catch (const QwrException& e)
-	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
-	}
+	ShellExecuteW(
+		nullptr,
+		L"explore",
+		packagePath_.wstring().c_str(),
+		(arg.empty() ? nullptr : arg.c_str()),
+		nullptr,
+		SW_SHOWNORMAL
+	);
 }
 
 void CConfigTabPackage::OnEditScript(UINT uNotifyCode, int nID, CWindow wndCtl)
@@ -517,7 +501,7 @@ void CConfigTabPackage::UpdateListBoxFromData()
 		const auto it = ranges::find(files_, focusedFile_.native());
 		assert(it != files_.cend());
 
-		focusedFileIdx_ = ranges::distance(files_.cbegin(), it);
+		focusedFileIdx_ = static_cast<int>(ranges::distance(files_.cbegin(), it));
 
 		filesListBox_.ResetContent();
 		for (const auto& file: files_)

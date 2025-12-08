@@ -142,7 +142,7 @@ JsGdiBitmap::CreateNative(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> gdiBit
 	return std::unique_ptr<JsGdiBitmap>(new JsGdiBitmap(cx, std::move(gdiBitmap)));
 }
 
-size_t JsGdiBitmap::GetInternalSize(const std::unique_ptr<Gdiplus::Bitmap>& gdiBitmap)
+uint32_t JsGdiBitmap::GetInternalSize(const std::unique_ptr<Gdiplus::Bitmap>& gdiBitmap)
 {
 	if (!gdiBitmap)
 	{ // we don't care about return value, since it will fail in CreateNative later
@@ -316,7 +316,7 @@ JS::Value JsGdiBitmap::GetColourScheme(uint32_t count)
 			return a.second > b.second;
 		});
 
-	sort_vec.resize(std::min(count, color_counters.size()));
+	sort_vec.resize(std::min<size_t>(count, color_counters.size()));
 
 	JS::RootedValue jsValue(pJsCtx_);
 	convert::to_js::ToArrayValue(
@@ -381,11 +381,12 @@ std::string JsGdiBitmap::GetColourSchemeJSON(uint32_t count)
 	constexpr uint32_t kKmeansIterationCount = 12;
 	std::vector<kmeans::ClusterData> clusters = kmeans::run(points, count, kKmeansIterationCount);
 
-	const auto getTotalPixelCount = [](const kmeans::ClusterData& cluster) -> uint32_t {
-		return ranges::accumulate(cluster.points, 0, [](auto sum, const auto pData) {
-			return sum + pData->pixel_count;
-		});
-	};
+	const auto getTotalPixelCount = [](const kmeans::ClusterData& cluster) -> size_t
+		{
+			return ranges::accumulate(cluster.points, 0uz, [](auto sum, const auto pData) {
+				return sum + pData->pixel_count;
+			});
+		};
 
 	// sort by largest clusters
 	ranges::sort(clusters, [&getTotalPixelCount](const auto& a, const auto& b) {

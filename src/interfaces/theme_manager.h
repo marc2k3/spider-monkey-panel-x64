@@ -22,7 +22,7 @@ namespace mozjs
 
 		static bool HasThemeData(HWND hwnd, const std::wstring& classId);
 		static std::unique_ptr<JsThemeManager> CreateNative(JSContext* cx, HWND hwnd, const std::wstring& classId);
-		static size_t GetInternalSize(HWND hwnd, const std::wstring& classId);
+		static uint32_t GetInternalSize(HWND hwnd, const std::wstring& classId);
 
 	public:
 		void DrawThemeBackground(JsGdiGraphics* gr,

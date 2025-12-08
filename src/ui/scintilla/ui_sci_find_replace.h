@@ -87,7 +87,7 @@ class CScintillaFindReplaceImpl
 protected:
 	using TFindReplaceDlg = CCustomFindReplaceDlg;
 	using BaseClass = CEditFindReplaceImplBase<T>;
-	using Range = std::pair<int, int>;
+	using Range = std::pair<intptr_t, intptr_t>;
 
 	BEGIN_MSG_MAP(CScintillaFindReplaceImpl)
 		ALT_MSG_MAP(1)
@@ -219,7 +219,7 @@ public:
 		pBase->OnReplaceAllCoreBegin();
 		sciEditor_.BeginUndoAction();
 
-		int curStartPos = 0;
+		intptr_t curStartPos = 0;
 		size_t replaceCount = 0;
 		do
 		{
@@ -234,14 +234,15 @@ public:
 			sciEditor_.SetTargetEnd(pos + targetLen);
 			const auto replaceLen =
 				lastState_.useRegExp
-					? sciEditor_.ReplaceTargetRE(lastState_.replaceText.c_str(), lastState_.replaceText.length())
-					: sciEditor_.ReplaceTarget(lastState_.replaceText.c_str(), lastState_.replaceText.length());
+					? sciEditor_.ReplaceTargetRE(lastState_.replaceText.length(), lastState_.replaceText.c_str())
+					: sciEditor_.ReplaceTarget(lastState_.replaceText.length(), lastState_.replaceText.c_str());
 			++replaceCount;
 			curStartPos = pos + replaceLen;
 		} while (true);
 
 		sciEditor_.EndUndoAction();
-		pBase->OnReplaceAllCoreEnd(replaceCount);
+
+		pBase->OnReplaceAllCoreEnd(static_cast<int>(replaceCount));
 	}
 
 	/// @brief Find method called via dialog
@@ -296,8 +297,8 @@ public:
 		sciEditor_.SetTargetEnd(prevSelectionRange.second);
 		const auto replaceLen =
 			lastState_.useRegExp
-				? sciEditor_.ReplaceTargetRE(lastState_.replaceText.c_str(), lastState_.replaceText.length())
-				: sciEditor_.ReplaceTarget(lastState_.replaceText.c_str(), lastState_.replaceText.length());
+				? sciEditor_.ReplaceTargetRE(lastState_.replaceText.length(), lastState_.replaceText.c_str())
+				: sciEditor_.ReplaceTarget(lastState_.replaceText.length(), lastState_.replaceText.c_str());
 
 		sciEditor_.SetSelectionStart(prevSelectionRange.first);
 		sciEditor_.SetSelectionEnd(prevSelectionRange.first + replaceLen);
@@ -314,12 +315,12 @@ public:
 
 		std::string text;
 		text.resize(textSize + 1);
-		int iRet = sciEditor_.GetSelectedText(text.data());
+		intptr_t iRet = sciEditor_.GetSelectedText(text.data());
 		text.resize(strlen(text.c_str()));
 
 		strText = qwr::ToWide(text).c_str();
 
-		return iRet;
+		return static_cast<LONG>(iRet);
 	}
 
 	void HideSelection(BOOL bHide, BOOL bChangeStyle)
@@ -348,10 +349,10 @@ private:
 			ResetWrapAround();
 		}
 
-		const int docLength = sciEditor_.GetLength();
+		const intptr_t docLength = sciEditor_.GetLength();
 
 		sciEditor_.SetSearchFlags(lastState_.ToScintillaFlags());
-		int pos = FindInRange(
+		intptr_t pos = FindInRange(
 			direction == FindReplaceState::Direction::down
 				? Range{ selectionRange.second, docLength }
 				: Range{ selectionRange.first, 0 }
@@ -396,11 +397,11 @@ private:
 		return ProcessFindResult(pos, lastState_.findText);
 	}
 
-	int FindInRange(const Range& searchRange, bool updateSelection)
+	intptr_t FindInRange(const Range& searchRange, bool updateSelection)
 	{
 		sciEditor_.SetTargetStart(searchRange.first);
 		sciEditor_.SetTargetEnd(searchRange.second);
-		const int pos = sciEditor_.SearchInTarget(lastState_.findText.c_str(), lastState_.findText.length());
+		const intptr_t pos = sciEditor_.SearchInTarget(lastState_.findText.length(), lastState_.findText.c_str());
 		if (updateSelection && pos >= 0)
 		{
 			// length calculated via target, because might be a regexp
@@ -409,7 +410,7 @@ private:
 		return pos;
 	}
 
-	bool ProcessFindResult(int pos, const std::string& which)
+	bool ProcessFindResult(intptr_t pos, const std::string& which)
 	{
 		if (pos != -1)
 		{
@@ -488,8 +489,8 @@ private:
 
 	bool isFindOnlyDialog_ = true;
 	bool hasWrappedAround_ = false;
-	int findStartPosition_ = -1;
-	int lastSearchPosition_ = -1;
+	intptr_t findStartPosition_ = -1;
+	intptr_t lastSearchPosition_ = -1;
 	static FindReplaceState lastState_;
 };
 

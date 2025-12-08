@@ -3,10 +3,10 @@
 // The License.txt file describes the conditions under which this software may be distributed.
 #pragma once
 
+#include <2K3/ScintillaImpl.hpp>
 #include <panel/user_message.h>
 #include <ui/scintilla/ui_sci_find_replace.h>
 #include <ui/scintilla/ui_sci_goto.h>
-#include <ui/scintilla/wtlscintilla.h>
 
 namespace smp::config::sci
 {
@@ -17,7 +17,7 @@ namespace smp::ui::sci
 {
 
 class CScriptEditorCtrl
-	: public CScintillaCtrl
+	: public CScintillaImpl<CScriptEditorCtrl>
 	, public CScintillaFindReplaceImpl<CScriptEditorCtrl>
 	, public CScintillaGotoImpl
 {
@@ -42,14 +42,19 @@ public:
 
 	bool ProcessKey(uint32_t vk);
 
+	void Init();
 	void ReadAPI();
 	void SetJScript();
 	void SetContent(const char* text, bool clear_undo_buffer = false);
 	void ReloadScintillaSettings();
-	BOOL SubclassWindow(HWND hWnd);
 
 private:
-	enum class IndentationStatus
+	struct Range
+	{
+		intptr_t cpMin{}, cpMax{};
+	};
+
+	enum class IndentationStatus : intptr_t
 	{
 		isNone,        // no effect on indentation
 		isBlockStart,  // indentation block begin such as "{" or VB "function"
@@ -64,8 +69,8 @@ private:
 
 	struct BracePosition
 	{
-		std::optional<int> current;
-		std::optional<int> matching;
+		std::optional<intptr_t> current;
+		std::optional<intptr_t> matching;
 	};
 
 	struct StyledPart
@@ -81,36 +86,35 @@ private:
 
 private:
 	// Operations and Implementation
-	Sci_CharacterRange GetSelection();
-	int GetCaretInLine();
+	Range GetSelection();
+	intptr_t GetCaretInLine();
 	std::string GetCurrentLine();
-	IndentationStatus GetIndentState(int line);
-	std::vector<StyledPart> GetStyledParts(int line, std::span<const int> styles, size_t maxParts);
-	bool RangeIsAllWhitespace(int start, int end);
+	IndentationStatus GetIndentState(intptr_t line);
+	std::vector<StyledPart> GetStyledParts(intptr_t line, std::span<const int> styles, size_t maxParts);
+	bool RangeIsAllWhitespace(intptr_t start, intptr_t end);
 	std::optional<DWORD> GetPropertyColor(const char* key);
-	void Init();
 	void RestoreDefaultStyle();
 	void TrackWidth();
 	void LoadStyleFromProperties();
 	void AutoMarginWidth();
 	bool StartCallTip();
 	void ContinueCallTip();
-	void FillFunctionDefinition(int pos = -1);
+	void FillFunctionDefinition(intptr_t pos = -1);
 	bool StartAutoComplete();
-	int IndentOfBlock(int line);
+	int IndentOfBlock(intptr_t line);
 	void AutomaticIndentation(char ch);
 	BracePosition FindBraceMatchPos();
 	std::optional<std::vector<std::string_view>> GetNearestWords(std::string_view wordPart, std::optional<char> separator = std::nullopt);
 	std::optional<std::string_view> GetFullDefinitionForWord(std::string_view word);
-	void SetIndentation(int line, int indent);
+	void SetIndentation(intptr_t line, int indent);
 	std::optional<std::string> GetPropertyExpanded_Opt(const char* key);
 
 private:
-	int m_nBraceCount = 0;
-	int m_nCurrentCallTip = 0;
-	int m_nStartCalltipWord = 0;
-	int m_nLastPosCallTip = 0;
-	const int m_nStatementLookback = 10;
+	intptr_t m_nBraceCount = 0;
+	intptr_t m_nCurrentCallTip = 0;
+	intptr_t m_nStartCalltipWord = 0;
+	intptr_t m_nLastPosCallTip = 0;
+	static constexpr intptr_t m_nStatementLookback = 10;
 
 	std::string m_szCurrentCallTipWord;
 	std::string m_szFunctionDefinition;
