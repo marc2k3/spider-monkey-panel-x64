@@ -2,12 +2,12 @@
 
 include(path)
 
-console.log(message)
-
 clearInterval(timer_id)
 clearTimeout(timer_id)
 setInterval(func, delay[, param1, param2, ...])
 setTimeout(func, delay[, param1, param2, ...])
+
+console.log(message)
 
 fb.AlwaysOnTop
 fb.ComponentPath
@@ -156,6 +156,7 @@ utils.ColourPicker(window_id, default_colour)
 utils.DetectCharset(path)
 utils.DownloadFileAsync(url, path)
 utils.EditTextFile(window_id, path)
+utils.FileExists(path)
 utils.FileTest(path, mode)
 utils.FormatDuration(seconds)
 utils.FormatFileSize(bytes)
@@ -164,6 +165,7 @@ utils.GetAlbumArtAsyncV2(window_id, handle[, art_id, need_stub, only_embed, no_l
 utils.GetAlbumArtEmbedded(rawpath[, art_id])
 utils.GetAlbumArtV2(handle[, art_id, need_stub])
 utils.GetClipboardText()
+utils.GetFileSize();
 utils.GetPackageInfo(package_id)
 utils.GetPackagePath(package_id)
 utils.GetSysColour(index)
@@ -171,6 +173,8 @@ utils.GetSystemMetrics(index)
 utils.Glob(pattern[, exc_mask, inc_mask])
 utils.HTTPRequestAsync(type, url[, user_agent_or_headers, body])
 utils.InputBox(window_id, prompt, caption[, defaultval, error_on_cancel]])
+utils.IsDirectory(path)
+utils.IsFile(path)
 utils.IsKeyPressed(vkey)
 utils.MapString(text, lcid, flags)
 utils.PathWildcardMatch(pattern, str)
