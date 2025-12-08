@@ -550,9 +550,6 @@
     <ClInclude Include="ui\scintilla\ui_sci_find_replace.h">
       <Filter>ui\scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="ui\scintilla\wtlscintilla.h">
-      <Filter>ui\scintilla</Filter>
-    </ClInclude>
     <ClInclude Include="ui\scintilla\sci_prop_sets.h">
       <Filter>ui\scintilla</Filter>
     </ClInclude>
@@ -964,6 +961,9 @@
       <Filter>js_engine</Filter>
     </ClInclude>
     <ClInclude Include="2K3\Helpers.hpp">
+      <Filter>2K3</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\ScintillaImpl.hpp">
       <Filter>2K3</Filter>
     </ClInclude>
   </ItemGroup>
