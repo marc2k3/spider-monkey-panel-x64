@@ -16,6 +16,10 @@ git clone https://github.com/microsoft/vcpkg
 cd vcpkg
 ./bootstrap-vcpkg
 ./vcpkg integrate install
+```
+
+Run this command to install the required packages:
+```
 ./vcpkg install cpr fmt miniz nlohmann-json range-v3 wil wtl --triplet x64-windows-static
 ```
 
