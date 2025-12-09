@@ -54,9 +54,6 @@ LRESULT CEditor::OnInitDialog(HWND, LPARAM)
 	ReloadProperties();
 	sciEditor_.SetContent(text_.c_str(), true);
 	sciEditor_.SetSavePoint();
-
-	UpdateUiElements();
-
 	return TRUE; // set focus to default control
 }
 
@@ -129,15 +126,13 @@ LRESULT CEditor::OnNotify(int, LPNMHDR pnmh)
 	switch (pnmh->code)
 	{
 	case SCN_SAVEPOINTLEFT:
-	{ // dirty
-		isDirty_ = true;
-		UpdateUiElements();
+	{ 
+		uSetWindowText(m_hWnd, (caption_ + " *").c_str());
 		break;
 	}
 	case SCN_SAVEPOINTREACHED:
-	{ // not dirty
-		isDirty_ = false;
-		UpdateUiElements();
+	{
+		uSetWindowText(m_hWnd, caption_.c_str());
 		break;
 	}
 	}
@@ -219,20 +214,6 @@ void CEditor::ReloadProperties()
 	sciEditor_.ReloadScintillaSettings();
 	sciEditor_.SetJScript();
 	sciEditor_.ReadAPI();
-}
-
-void CEditor::UpdateUiElements()
-{
-	if (isDirty_)
-	{
-		CButton(GetDlgItem(IDAPPLY)).EnableWindow(TRUE);
-		uSetWindowText(m_hWnd, (caption_ + " *").c_str());
-	}
-	else
-	{
-		CButton(GetDlgItem(IDAPPLY)).EnableWindow(FALSE);
-		uSetWindowText(m_hWnd, caption_.c_str());
-	}
 }
 
 bool CEditor::ProcessKey(uint32_t vk)

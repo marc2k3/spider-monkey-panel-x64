@@ -67,7 +67,6 @@ public:
 	LRESULT OnAbout(WORD wNotifyCode, WORD wID, HWND hWndCtl);
 
 	void ReloadProperties();
-	void UpdateUiElements();
 
 	bool ProcessKey(uint32_t vk);
 	void Apply();
@@ -80,8 +79,6 @@ private:
 
 	std::string& text_;
 	std::string caption_;
-
-	bool isDirty_ = false;
 };
 
 } // namespace smp::ui
