@@ -9,15 +9,19 @@ namespace smp
 		const auto msvc = fmt::to_string(_MSC_FULL_VER);
 
 		return fmt::format(
-			SMP_NAME_WITH_VERSION " by TheQwertiest\n"
+			"{} by TheQwertiest and marc2003\n"
 			"Based on JScript Panel by marc2003\n"
 			"Based on WSH Panel Mod by T.P. Wang\n\n"
 			"Build: {}, {}\n\n"
+			"Spider Monkey: {}.{}\n"
 			"foobar2000 SDK: {}\n"
 			"Columns UI SDK: {}\n"
 			"MSVC: {}.{}.{}",
+			SMP_NAME_WITH_VERSION,
 			__TIME__,
 			date.get_ptr(),
+			MOZJS_MAJOR_VERSION,
+			MOZJS_MINOR_VERSION,
 			FOOBAR2000_SDK_VERSION,
 			UI_EXTENSION_VERSION,
 			msvc.substr(0, 2),
