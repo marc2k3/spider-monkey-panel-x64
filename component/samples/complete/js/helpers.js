@@ -8,7 +8,6 @@ return a.length-b.length;});for(var z=0;z<this.length;z++)
 this[z]=this[z].join('');}
 
 function on_script_unload() {
-	if (allMusicReq) {allMusicReq.abortRequest();}
 	_tt('');
 	if (_bmp) {
 		_bmp.ReleaseGraphics(_gr);
@@ -328,17 +327,18 @@ function _img(value) {
 }
 
 function _isFile(file) {
-	return _.isString(file) ? fso.FileExists(file) : false;
+	return utils.IsFile(file);
 }
 
 function _isFolder(folder) {
-	return _.isString(folder) ? fso.FolderExists(folder) : false;
+	return utils.IsDirectory(folder);
 }
 
 function _isUUID(value) {
 	const re = /^[0-9a-f]{8}-[0-9a-f]{4}-[345][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 	return re.test(value);
 }
+
 function _jsonParse(value) {
 	try {
 		let data = JSON.parse(value);
@@ -685,4 +685,3 @@ let ha_links = [
 
 let _bmp = gdi.CreateImage(1, 1);
 let _gr = _bmp.GetGraphics();
-let allMusicReq;
