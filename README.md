@@ -9,8 +9,7 @@ License: https://github.com/marc2k3/spider-monkey-panel-x64/blob/main/LICENSE.md
 Third party licenses: https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/component/licenses
 
 # Requirements
-Because new methods from the `foobar2000` `SDK` are being used, this component
-requires at least `foobar2000` `2.0`.
+As per the repository name, only 64bit foobar2000 is supported.
 
 Many included samples require the installation of [FontAwesome](https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/4.x/fonts/fontawesome-webfont.ttf)
 
@@ -23,7 +22,7 @@ have not been made.
 - Build should now be compatible with Windows 7 but I'm unable to test that myself.
 
 ## 1.7.25.12.8
-- Release 64bit build.
+- First 64bit build.
 
 ## 1.6.2.25.11.15
 - Last 32bit release. See [here](https://github.com/marc2k3/spider-monkey-panel-x86/releases).
