@@ -1474,7 +1474,6 @@ let utils = {
 
     /**
      * Check if the font is installed.<br>
-     * Note: it cannot detect fonts loaded by `foo_ui_hacks`. However, {@link gdi.Font} can use those fonts.
      *
      * @param {string} name Can be either in English or the localised name in your OS.
      * @return {boolean}
