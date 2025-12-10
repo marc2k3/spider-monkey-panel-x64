@@ -16,6 +16,12 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.10
+- Show Spider Monkey version in about dialog (91.10).
+- Fix editor window `Apply` button so it can be pressed repeatedly even when text changes
+have not been made.
+- Build should now be compatible with Windows 7 but I'm unable to test that myself.
+
 ## 1.7.25.12.8
 - Release 64bit build.
 
