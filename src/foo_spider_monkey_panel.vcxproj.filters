@@ -102,9 +102,6 @@
     <ClCompile Include="config\panel_config.cpp">
       <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="config\panel_config_binary.cpp">
-      <Filter>config</Filter>
-    </ClCompile>
     <ClCompile Include="config\panel_config_json.cpp">
       <Filter>config</Filter>
     </ClCompile>
@@ -577,9 +574,6 @@
     <ClInclude Include="config\panel_config_json.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="config\panel_config_binary.h">
-      <Filter>config</Filter>
-    </ClInclude>
     <ClInclude Include="config\panel_config.h">
       <Filter>config</Filter>
     </ClInclude>
@@ -771,9 +765,6 @@
       <Filter>qwr</Filter>
     </ClInclude>
     <ClInclude Include="qwr\qwr_exception.h">
-      <Filter>qwr</Filter>
-    </ClInclude>
-    <ClInclude Include="qwr\string_helpers.h">
       <Filter>qwr</Filter>
     </ClInclude>
     <ClInclude Include="qwr\thread_pool.h">

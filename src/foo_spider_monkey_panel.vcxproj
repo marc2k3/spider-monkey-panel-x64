@@ -123,7 +123,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="config\delayed_package_utils.cpp" />
     <ClCompile Include="config\package_utils.cpp" />
     <ClCompile Include="config\panel_config.cpp" />
-    <ClCompile Include="config\panel_config_binary.cpp" />
     <ClCompile Include="config\panel_config_json.cpp" />
     <ClCompile Include="config\parsed_panel_config.cpp" />
     <ClCompile Include="fb2k\metadb_display_field_provider_impl.cpp" />
@@ -286,7 +285,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="config\delayed_package_utils.h" />
     <ClInclude Include="config\package_utils.h" />
     <ClInclude Include="config\panel_config.h" />
-    <ClInclude Include="config\panel_config_binary.h" />
     <ClInclude Include="config\panel_config_json.h" />
     <ClInclude Include="config\parsed_panel_config.h" />
     <ClInclude Include="convert\com.h" />
@@ -373,7 +371,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="qwr\error_popup.h" />
     <ClInclude Include="qwr\hook_handler.h" />
     <ClInclude Include="qwr\qwr_exception.h" />
-    <ClInclude Include="qwr\string_helpers.h" />
     <ClInclude Include="qwr\thread_pool.h" />
     <ClInclude Include="qwr\type_traits.h" />
     <ClInclude Include="qwr\ui_ddx.h" />

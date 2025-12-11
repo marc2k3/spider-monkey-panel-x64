@@ -112,7 +112,6 @@ using JSON = nlohmann::json;
 
 #include <resources/resource.h>
 #include <qwr/error_popup.h>
-#include <qwr/string_helpers.h>
 #include <qwr/unicode.h>
 #include <qwr/type_traits.h>
 #include <qwr/winapi_error_helpers.h>

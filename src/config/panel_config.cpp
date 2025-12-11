@@ -2,18 +2,11 @@
 #include "panel_config.h"
 
 #include <2K3/String.hpp>
-#include <config/panel_config_binary.h>
 #include <config/panel_config_json.h>
 #include <utils/guid_helpers.h>
 
 namespace smp::config
 {
-	enum class SettingsType : uint32_t
-	{
-		Binary = 1,
-		Json = 2
-	};
-
 	PanelProperties PanelProperties::FromJson(const std::string& jsonString)
 	{
 		return smp::config::json::DeserializeProperties(jsonString);
@@ -52,24 +45,15 @@ namespace smp::config
 
 	PanelSettings PanelSettings::Load(stream_reader* reader, size_t size, abort_callback& abort)
 	{
-		if (size < sizeof(SettingsType))
+		if (size < sizeof(uint32_t))
 		{
 			return {};
 		}
 
 		try
 		{
-			const auto ver = reader->read_object_t<uint32_t>(abort);
-
-			switch (static_cast<SettingsType>(ver))
-			{
-			case SettingsType::Binary:
-				return smp::config::binary::LoadSettings(reader, abort);
-			case SettingsType::Json:
-				return smp::config::json::LoadSettings(reader, abort);
-			default:
-				throw QwrException("Unexpected panel settings format: {}", ver);
-			}
+			reader->skip_object(sizeof(uint32_t), abort); // was "SettingsType"
+			return smp::config::json::LoadSettings(reader, abort);
 		}
 		catch (const pfc::exception& e)
 		{
@@ -79,7 +63,7 @@ namespace smp::config
 
 	void PanelSettings::Save(stream_writer* writer, abort_callback& abort) const
 	{
-		writer->write_object_t(static_cast<uint32_t>(SettingsType::Json), abort);
+		writer->write_object_t(2u, abort); // was "SettingsType"
 		smp::config::json::SaveSettings(writer, abort, *this);
 	}
 }
