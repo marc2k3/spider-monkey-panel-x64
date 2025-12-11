@@ -15,6 +15,12 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.11
+- The Scintilla library used for code highlighting has been updated to the latest version. This means:
+  * any previous custom colour scheme will be lost and previously generated .cfg files are no longer compatible.
+  * custom colour schemes are still supported but the default is to update itself automatically whenever dark mode is toggled.
+- The main editor, find/replace and goto dialogs have been updated to support dark mode.
+
 ## 1.7.25.12.10
 - Show Spider Monkey version in about dialog (91.10).
 - Fix editor window `Apply` button so it can be pressed repeatedly even when text changes
@@ -33,7 +39,7 @@ have not been made.
 ## 1.6.2.25.11.09
 - Fix various main menu and context menu execution bugs.
 - Fix `fb.DoDragDrop` regression where album art was not automatically displayed.
-- THe `Thumbs` sample now reports last.fm server errors in the console.
+- The `Thumbs` sample now reports last.fm server errors in the console.
 - Various other bug fixes.
 
 ## 1.6.2.25.10.29
