@@ -1,9 +1,9 @@
 #include <stdafx.h>
 #include "edit_text.h"
 
+#include <2K3/Scintilla/DialogEditor.hpp>
 #include <2K3/FileHelper.hpp>
 #include <2K3/TextFile.hpp>
-#include <2K3/DialogConfigure.hpp>
 #include <panel/modal_blocking_scope.h>
 #include <panel/user_message.h>
 #include <ui/ui_edit_in_progress.h>
@@ -34,7 +34,7 @@ namespace
 		auto text = TextFile(file.native()).read();
 		auto scope = modal::ConditionalModalScope(hParent, isPanelScript);
 
-		auto dlg = CDialogConfigure(file.native(), text, [&]
+		auto dlg = CDialogEditor(file.native(), text, [&]
 			{
 				TextFile(file.native()).write(text);
 
@@ -74,7 +74,7 @@ namespace
 	{
 		modal::ConditionalModalScope scope(hParent, isPanelScript);
 
-		auto dlg = CDialogConfigure(L"Temporary file", text, [&]
+		auto dlg = CDialogEditor(L"Temporary file", text, [&]
 			{
 				if (isPanelScript)
 					NotifyParentPanel(hParent);

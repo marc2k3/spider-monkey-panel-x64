@@ -449,8 +449,8 @@
     <ClCompile Include="2K3\Scintilla\ScintillaConfig.cpp">
       <Filter>2K3\Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="2K3\DialogConfigure.cpp">
-      <Filter>2K3</Filter>
+    <ClCompile Include="2K3\Scintilla\DialogEditor.cpp">
+      <Filter>2K3\Scintilla</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -969,8 +969,8 @@
     <ClInclude Include="2K3\Scintilla\ScintillaImpl.hpp">
       <Filter>2K3\Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="2K3\DialogConfigure.hpp">
-      <Filter>2K3</Filter>
+    <ClInclude Include="2K3\Scintilla\DialogEditor.hpp">
+      <Filter>2K3\Scintilla</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

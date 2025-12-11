@@ -1,5 +1,5 @@
 #include <stdafx.h>
-#include "DialogConfigure.hpp"
+#include "DialogEditor.hpp"
 
 namespace
 {
@@ -19,13 +19,13 @@ namespace
 	cfgDialogPosition dialog_position(smp::guid::dialog_position);
 }
 
-CDialogConfigure::CDialogConfigure(std::wstring title, std::string& text, SaveCallback callback)
+CDialogEditor::CDialogEditor(std::wstring title, std::string& text, SaveCallback callback)
 	: m_title(title)
 	, m_text(text)
 	, m_callback(callback)
 	, m_resizer(resize_data, resize_min_max) {}
 
-BOOL CDialogConfigure::OnInitDialog(CWindow, LPARAM)
+BOOL CDialogEditor::OnInitDialog(CWindow, LPARAM)
 {
 	InitTitle();
 	InitScintilla();
@@ -35,7 +35,7 @@ BOOL CDialogConfigure::OnInitDialog(CWindow, LPARAM)
 	return TRUE;
 }
 
-LRESULT CDialogConfigure::OnNotify(int32_t, LPNMHDR pnmh)
+LRESULT CDialogEditor::OnNotify(int32_t, LPNMHDR pnmh)
 {
 	const auto code = static_cast<Notification>(pnmh->code);
 
@@ -53,7 +53,7 @@ LRESULT CDialogConfigure::OnNotify(int32_t, LPNMHDR pnmh)
 	return 0;
 }
 
-void CDialogConfigure::InitScintilla()
+void CDialogEditor::InitScintilla()
 {
 	const auto mode = scintilla_config.get_mode();
 
@@ -61,13 +61,13 @@ void CDialogConfigure::InitScintilla()
 	m_scintilla.Init(mode, m_text);
 }
 
-void CDialogConfigure::InitTitle()
+void CDialogEditor::InitTitle()
 {
 	SetIcon(ui_control::get()->get_main_icon());
 	SetWindowTextW(m_title.c_str());
 }
 
-void CDialogConfigure::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
+void CDialogEditor::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
 {
 	dialog_position.read_from_window(m_hWnd);
 
@@ -84,7 +84,7 @@ void CDialogConfigure::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
 	}
 }
 
-void CDialogConfigure::OnCancel(uint32_t, int32_t nID, CWindow)
+void CDialogEditor::OnCancel(uint32_t, int32_t nID, CWindow)
 {
 	if (m_scintilla.GetModify())
 	{
@@ -102,7 +102,7 @@ void CDialogConfigure::OnCancel(uint32_t, int32_t nID, CWindow)
 	EndDialog(nID);
 }
 
-void CDialogConfigure::OnCode(uint32_t, int32_t, CWindow)
+void CDialogEditor::OnCode(uint32_t, int32_t, CWindow)
 {
 	CRect rect;
 	auto menu = CreatePopupMenu();
@@ -130,7 +130,7 @@ void CDialogConfigure::OnCode(uint32_t, int32_t, CWindow)
 	}
 }
 
-void CDialogConfigure::OnStyle(uint32_t, int32_t, CWindow)
+void CDialogEditor::OnStyle(uint32_t, int32_t, CWindow)
 {
 	using enum ScintillaConfig::Mode;
 

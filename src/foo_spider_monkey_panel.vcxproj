@@ -84,12 +84,12 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="2K3\AlbumArtStatic.cpp" />
     <ClCompile Include="2K3\Attach.cpp" />
     <ClCompile Include="2K3\ContextMenuCommand.cpp" />
-    <ClCompile Include="2K3\DialogConfigure.cpp" />
     <ClCompile Include="2K3\DownloadFileAsync.cpp" />
     <ClCompile Include="2K3\FileHelper.cpp" />
     <ClCompile Include="2K3\HTTPRequestAsync.cpp" />
     <ClCompile Include="2K3\MainMenuCommand.cpp" />
     <ClCompile Include="2K3\PlaylistLock.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogEditor.cpp" />
     <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp" />
     <ClCompile Include="2K3\Scintilla\DialogGoto.cpp" />
     <ClCompile Include="2K3\Scintilla\DialogStyle.cpp" />
@@ -245,7 +245,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\Attach.hpp" />
     <ClInclude Include="2K3\ContextMenuCommand.hpp" />
     <ClInclude Include="2K3\CustomSort.hpp" />
-    <ClInclude Include="2K3\DialogConfigure.hpp" />
     <ClInclude Include="2K3\DirectoryIterator.hpp" />
     <ClInclude Include="2K3\DownloadFileAsync.hpp" />
     <ClInclude Include="2K3\FileDialog.hpp" />
@@ -258,6 +257,7 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\MainMenuCommand.hpp" />
     <ClInclude Include="2K3\PlaylistLock.hpp" />
     <ClInclude Include="2K3\ScintillaImpl.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogEditor.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogGoto.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogStyle.hpp" />

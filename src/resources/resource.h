@@ -9,7 +9,6 @@
 #define IDD_DIALOG_EDITOR_CONFIG           107
 #define IDD_DIALOG_CONF_TAB_PROPERTIES     109
 #define IDD_DIALOG_HTML                    111
-#define IDD_DIALOG_EDITOR                  112
 #define IDR_MENU_CONF                      115
 #define IDD_DIALOG_SLOWSCRIPT              116
 #define IDD_FINDDLGORD_WITH_REGEXP         117
@@ -115,7 +114,7 @@
 #define IDR_PANEL_JS                     2107
 #define IDR_COUNTRIES_JSON               2108
 
-#define IDD_DIALOG_CONFIGURE             2110
+#define IDD_DIALOG_EDITOR                2110
 #define IDD_DIALOG_FIND_REPLACE          2111
 #define IDD_DIALOG_GOTO                  2112
 #define IDD_DIALOG_PROPERTIES            2113

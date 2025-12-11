@@ -1,14 +1,14 @@
 #pragma once
-#include "Scintilla/Scintilla.hpp"
+#include "Scintilla.hpp"
 
-class CDialogConfigure : public CDialogImpl<CDialogConfigure>
+class CDialogEditor : public CDialogImpl<CDialogEditor>
 {
 public:
 	using SaveCallback = std::function<void()>;
 
-	CDialogConfigure(std::wstring title, std::string& text, SaveCallback callback);
+	CDialogEditor(std::wstring title, std::string& text, SaveCallback callback);
 
-	BEGIN_MSG_MAP_EX(CDialogConfigure)
+	BEGIN_MSG_MAP_EX(CDialogEditor)
 		CHAIN_MSG_MAP_MEMBER(m_resizer)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_NOTIFY(OnNotify)
@@ -20,7 +20,7 @@ public:
 		REFLECT_NOTIFICATIONS()
 	END_MSG_MAP()
 
-	enum { IDD = IDD_DIALOG_CONFIGURE };
+	enum { IDD = IDD_DIALOG_EDITOR };
 
 private:
 	BOOL OnInitDialog(CWindow, LPARAM);
