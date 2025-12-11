@@ -2,8 +2,6 @@
 
 namespace mozjs
 {
-	class JsGdiGraphics;
-
 	class JsGdiBitmap : public JsObjectBase<JsGdiBitmap>
 	{
 	public:

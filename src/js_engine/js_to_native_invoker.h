@@ -355,7 +355,7 @@ void InvokeNativeCallback(JSContext* cx,
 #define MJS_DEFINE_JS_FN_FULL(functionName, logName, functionImpl)                \
 	bool functionName(JSContext* cx, unsigned argc, JS::Value* vp)                \
 	{                                                                               \
-		return mozjs::error::Execute_JsSafe(cx, logName, functionImpl, argc, vp); \
+		return mozjs::Execute_JsSafe(cx, logName, functionImpl, argc, vp); \
 	}
 
 /// @brief Same as MJS_DEFINE_JS_FN_FULL, but uses `functionName` for logging.
@@ -373,7 +373,7 @@ void InvokeNativeCallback(JSContext* cx,
 		const auto wrappedFunc = [](JSContext* cx, unsigned argc, JS::Value* vp) {                                        \
 			InvokeNativeCallback<optArgCount>(cx, &functionImpl, &functionImplWithOpt, argc, vp);                         \
 		};                                                                                                                  \
-		return mozjs::error::Execute_JsSafe(cx, logName, wrappedFunc, argc, vp);                                          \
+		return mozjs::Execute_JsSafe(cx, logName, wrappedFunc, argc, vp);                                          \
 	}
 
 /// @brief Same as MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT_FULL, but uses `functionName` for logging.

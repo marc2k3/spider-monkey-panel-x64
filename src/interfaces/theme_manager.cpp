@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "theme_manager.h"
 
-#include <interfaces/gdi_graphics.h>
 #include <js_utils/js_error_helper.h>
 #include <js_utils/js_object_helper.h>
 

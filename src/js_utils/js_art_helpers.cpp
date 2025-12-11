@@ -143,7 +143,7 @@ bool JsAlbumArtTask::InvokeJsImpl(JSContext* cx, JS::HandleObject, JS::HandleVal
 	}
 	catch (...)
 	{
-		mozjs::error::ExceptionToJsError(cx);
+		mozjs::ExceptionToJsError(cx);
 
 		JS::RootedValue jsError(cx);
 		(void)JS_GetPendingException(cx, &jsError);

@@ -111,7 +111,7 @@ LRESULT CDialogHtml::OnInitDialog(HWND, LPARAM)
 	}
 	catch (...)
 	{
-		mozjs::error::ExceptionToJsError(pJsCtx_);
+		mozjs::ExceptionToJsError(pJsCtx_);
 		return -1;
 	}
 

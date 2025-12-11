@@ -4,12 +4,6 @@
 
 // TODO: add nesting clamp (<https://searchfox.org/mozilla-central/source/dom/base/TimeoutManager.cpp>)
 
-namespace mozjs
-{
-	class JsGlobalObject;
-	class JsAsyncTask;
-}
-
 namespace smp
 {
 	class Timeout;

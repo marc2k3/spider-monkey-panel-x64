@@ -111,11 +111,11 @@ namespace
 				const auto hWnd = pNativeGlobal_->GetPanelHwnd();
 				if (!hWnd)
 				{
-					mozjs::error::SuppressException(pJsCtx_);
+					mozjs::SuppressException(pJsCtx_);
 				}
 				else
 				{
-					const auto errorMsg = mozjs::error::ExceptionToText(pJsCtx_);
+					const auto errorMsg = mozjs::ExceptionToText(pJsCtx_);
 					SendMessage(hWnd, static_cast<UINT>(InternalSyncMessage::script_fail), 0, reinterpret_cast<LPARAM>(&errorMsg));
 				}
 

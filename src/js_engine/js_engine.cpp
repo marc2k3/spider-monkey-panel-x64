@@ -137,7 +137,7 @@ void JsEngine::MaybeRunJobs() noexcept
 			}
 
 			JSAutoRealm ac(pJsCtx_, rejectedPromise);
-			mozjs::error::AutoJsReport are(pJsCtx_);
+			mozjs::AutoJsReport are(pJsCtx_);
 
 			JS::RootedValue jsValue(pJsCtx_, JS::GetPromiseResult(rejectedPromise));
 			if (!jsValue.isNullOrUndefined())
@@ -247,7 +247,7 @@ bool JsEngine::Initialize() noexcept
 	}
 	catch (const JsException&)
 	{
-		ReportException(mozjs::error::JsErrorToText(autoJsCtx.get()));
+		ReportException(mozjs::JsErrorToText(autoJsCtx.get()));
 		return false;
 	}
 	catch (const QwrException& e)

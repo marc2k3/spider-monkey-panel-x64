@@ -11,7 +11,7 @@ ScintillaConfig::Data ScintillaConfig::cfg_string_to_data(std::string_view str)
 	Data data;
 	Map map;
 
-	for (auto&& line : split_string(str, "\r\n"))
+	for (auto&& line : split_string(str, CRLF))
 	{
 		const auto tmp = split_string(line, "=");
 
@@ -75,7 +75,7 @@ std::string ScintillaConfig::data_to_string(const Data& data)
 
 	for (const auto& [name, value] : data)
 	{
-		fmt::format_to(std::back_inserter(buffer), "{}={}{}", name, value, "\r\n");
+		fmt::format_to(std::back_inserter(buffer), "{}={}{}", name, value, CRLF);
 	}
 
 	return fmt::to_string(buffer);

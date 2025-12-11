@@ -113,7 +113,7 @@ bool JsImageTask::InvokeJsImpl(JSContext* cx, JS::HandleObject, JS::HandleValue 
 	}
 	catch (...)
 	{
-		mozjs::error::ExceptionToJsError(cx);
+		mozjs::ExceptionToJsError(cx);
 
 		JS::RootedValue jsError(cx);
 		(void)JS_GetPendingException(cx, &jsError);

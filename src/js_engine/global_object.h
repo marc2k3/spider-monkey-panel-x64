@@ -4,7 +4,6 @@
 
 namespace mozjs
 {
-	class JsContainer;
 	class Window;
 
 	class JsGlobalObject

@@ -78,7 +78,7 @@ namespace mozjs
 		}
 		catch (...)
 		{
-			mozjs::error::ExceptionToJsError(cx);
+			mozjs::ExceptionToJsError(cx);
 			return std::nullopt;
 		}
 	}

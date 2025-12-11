@@ -152,7 +152,7 @@ bool FbMetadbHandleListProxyHandler::get(JSContext* cx, JS::HandleObject proxy, 
 		}
 		catch (...)
 		{
-			mozjs::error::ExceptionToJsError(cx);
+			mozjs::ExceptionToJsError(cx);
 			return false;
 		}
 
@@ -190,7 +190,7 @@ bool FbMetadbHandleListProxyHandler::set(JSContext* cx, JS::HandleObject proxy, 
 		}
 		catch (...)
 		{
-			mozjs::error::ExceptionToJsError(cx);
+			mozjs::ExceptionToJsError(cx);
 			return false;
 		}
 

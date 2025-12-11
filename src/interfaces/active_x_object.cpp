@@ -153,7 +153,7 @@ bool ActiveXObjectProxyHandler::get(JSContext* cx, JS::HandleObject proxy, JS::H
 	}
 	catch (...)
 	{
-		mozjs::error::ExceptionToJsError(cx);
+		mozjs::ExceptionToJsError(cx);
 		return false;
 	}
 
@@ -187,7 +187,7 @@ bool ActiveXObjectProxyHandler::set(JSContext* cx, JS::HandleObject proxy, JS::H
 	}
 	catch (...)
 	{
-		mozjs::error::ExceptionToJsError(cx);
+		mozjs::ExceptionToJsError(cx);
 		return false;
 	}
 
@@ -226,7 +226,7 @@ void JsToVariantSafe(JSContext* cx, JS::HandleValue rval, VARIANTARG& arg)
 	}
 	catch (...)
 	{
-		mozjs::error::SuppressException(cx); ///< reset, since we can't report
+		mozjs::SuppressException(cx); ///< reset, since we can't report
 		arg.vt = VT_ERROR;
 		arg.scode = 0;
 	}

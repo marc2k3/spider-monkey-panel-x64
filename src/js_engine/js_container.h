@@ -1,4 +1,6 @@
 #pragma once
+#include <interfaces/drop_source_action.h>
+#include <interfaces/gdi_graphics.h>
 #include "js_realm_inner.h"
 #include "native_to_js_invoker.h"
 
@@ -10,11 +12,6 @@ namespace smp::panel
 
 namespace mozjs
 {
-	class JsAsyncTask;
-	class JsDropSourceAction;
-	class JsGdiGraphics;
-	class JsGlobalObject;
-
 	// Must not leak exceptions!
 	class JsContainer final : public std::enable_shared_from_this<JsContainer>
 	{

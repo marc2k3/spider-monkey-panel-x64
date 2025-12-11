@@ -3,6 +3,8 @@
 using Strings = std::vector<std::string>;
 using WStrings = std::vector<std::wstring>;
 
+static constexpr std::string_view CRLF = "\r\n";
+
 struct CmpW
 {
 	bool operator()(const std::wstring& lhs, const std::wstring& rhs) const

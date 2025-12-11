@@ -42,7 +42,7 @@ namespace
 		}
 		catch (...)
 		{
-			mozjs::error::SuppressException(cx);
+			mozjs::SuppressException(cx);
 			return "";
 		}
 	}
@@ -143,7 +143,7 @@ namespace
 		}
 		catch (...)
 		{
-			mozjs::error::SuppressException(cx);
+			mozjs::SuppressException(cx);
 			return false;
 		}
 
@@ -167,7 +167,7 @@ namespace
 	}
 }
 
-namespace mozjs::error
+namespace mozjs
 {
 	AutoJsReport::AutoJsReport(JSContext* cx) : cx(cx) {}
 
@@ -237,7 +237,7 @@ namespace mozjs::error
 			}
 			catch (...)
 			{
-				mozjs::error::SuppressException(cx);
+				mozjs::SuppressException(cx);
 			}
 		}
 		else if (excn.isObject())

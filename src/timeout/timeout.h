@@ -1,11 +1,6 @@
 #pragma once
 #include <timeout/time_types.h>
 
-namespace mozjs
-{
-	class JsAsyncTask;
-}
-
 namespace smp
 {
 	class Timeout

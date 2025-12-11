@@ -17,12 +17,6 @@ namespace smp
 	}
 }
 
-namespace mozjs
-{
-	class JsContainer;
-	class JsAsyncTask;
-}
-
 namespace smp::panel
 {
 	enum class PanelType : uint8_t

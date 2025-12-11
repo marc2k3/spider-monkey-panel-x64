@@ -648,7 +648,7 @@ void CScintilla::ReadAPIs()
 	auto api_text = get_resource_text(IDR_SCINTILLA_JS_API);
 	api_text += get_resource_text(IDR_SCINTILLA_INTERFACE_API);
 
-	for (auto&& line : split_string(api_text, "\r\n"))
+	for (auto&& line : split_string(api_text, CRLF))
 	{
 		if (line.empty())
 			continue;

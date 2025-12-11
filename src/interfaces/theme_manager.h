@@ -2,8 +2,6 @@
 
 namespace mozjs
 {
-	class JsGdiGraphics;
-
 	class JsThemeManager : public JsObjectBase<JsThemeManager>
 	{
 	public:

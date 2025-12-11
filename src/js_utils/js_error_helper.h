@@ -1,7 +1,7 @@
 #pragma once
 #include <fb2k/advanced_config.h>
 
-namespace mozjs::error
+namespace mozjs
 {
 	[[nodiscard]] std::string JsErrorToText(JSContext* cx);
 	void ExceptionToJsError(JSContext* cx);
@@ -18,12 +18,12 @@ namespace mozjs::error
 		}
 		catch (...)
 		{
-			mozjs::error::ExceptionToJsError(cx);
+			ExceptionToJsError(cx);
 		}
 
 		if (JS_IsExceptionPending(cx))
 		{
-			mozjs::error::PrependTextToJsError(cx, fmt::format("{} failed", functionName));
+			PrependTextToJsError(cx, fmt::format("{} failed", functionName));
 			return false;
 		}
 

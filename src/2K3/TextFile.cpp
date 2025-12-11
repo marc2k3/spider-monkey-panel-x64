@@ -66,7 +66,7 @@ std::string TextFile::read() noexcept
 		strings.emplace_back(line);
 	}
 
-	const auto str = fmt::format("{}", fmt::join(strings, "\r\n"));
+	const auto str = fmt::format("{}", fmt::join(strings, CRLF));
 
 	if (str.starts_with(UTF_8_BOM))
 		return str.substr(3);

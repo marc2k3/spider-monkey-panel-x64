@@ -1,8 +1,6 @@
 #include <stdafx.h>
 #include "js_container.h"
 
-#include <interfaces/drop_source_action.h>
-#include <interfaces/gdi_graphics.h>
 #include <js_utils/js_async_task.h>
 #include <js_utils/js_error_helper.h>
 #include <js_utils/scope_helper.h>
@@ -68,7 +66,7 @@ namespace mozjs
 		}
 		catch (...)
 		{
-			Fail(mozjs::error::ExceptionToText(pJsCtx_));
+			Fail(mozjs::ExceptionToText(pJsCtx_));
 			return false;
 		}
 
@@ -183,8 +181,8 @@ namespace mozjs
 		}
 		catch (...)
 		{
-			mozjs::error::ExceptionToJsError(pJsCtx_);
-			Fail(mozjs::error::JsErrorToText(pJsCtx_));
+			mozjs::ExceptionToJsError(pJsCtx_);
+			Fail(mozjs::JsErrorToText(pJsCtx_));
 			return false;
 		}
 	}
@@ -211,8 +209,8 @@ namespace mozjs
 		}
 		catch (...)
 		{
-			mozjs::error::ExceptionToJsError(pJsCtx_);
-			Fail(mozjs::error::JsErrorToText(pJsCtx_));
+			mozjs::ExceptionToJsError(pJsCtx_);
+			Fail(mozjs::JsErrorToText(pJsCtx_));
 			return false;
 		}
 	}
@@ -350,7 +348,7 @@ namespace mozjs
 		}
 		catch (...)
 		{
-			mozjs::error::ExceptionToJsError(pJsCtx_);
+			mozjs::ExceptionToJsError(pJsCtx_);
 			return false;
 		}
 

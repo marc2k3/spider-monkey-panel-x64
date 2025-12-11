@@ -17,6 +17,14 @@ __pragma(warning(disable : 4244 4251))
 #include <js/Wrapper.h>
 __pragma(warning(pop))
 
+// fwd
+namespace mozjs
+{
+	class JsAsyncTask;
+	class JsContainer;
+	class JsGlobalObject;
+}
+
 #include <js_engine/global_object.h>
 #include <js_engine/js_container.h>
 #include <js_engine/js_engine.h>
