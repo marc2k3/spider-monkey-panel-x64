@@ -1,7 +1,6 @@
 #pragma once
 #include <config/parsed_panel_config.h>
 #include <qwr/ui_ddx.h>
-#include <resources/resource.h>
 #include <ui/impl/ui_itab.h>
 
 namespace smp::ui

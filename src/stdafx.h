@@ -20,6 +20,7 @@
 #include <numeric>
 #include <optional>
 #include <queue>
+#include <ranges>
 #include <set>
 #include <span>
 #include <stdexcept>
@@ -45,6 +46,7 @@
 #include <activdbg.h>
 #include <comutil.h>
 #include <MsHTML.h>
+#include <ExDispid.h>
 #include <MsHtmHst.h>
 #include <ShlDisp.h>
 #include <ShlObj.h>
@@ -93,10 +95,13 @@ using JSON = nlohmann::json;
 #include <SDK/file_info_filter_impl.h>
 #include <helpers/atl-misc.h>
 #include <helpers/file_list_helper.h>
+#include <helpers/WindowPositionUtils.h>
+#include <libPPUI/CDialogResizeHelper.h>
 #include <libPPUI/CListControlOwnerData.h>
 #include <libPPUI/gdiplus_helpers.h>
 #include <libPPUI/pp-COM-macros.h>
 #include <libPPUI/win32_utility.h>
+#include <libPPUI/windowLifetime.h>
 #include <pfc/string-conv-lite.h>
 #pragma warning(pop)
 
@@ -105,6 +110,7 @@ using JSON = nlohmann::json;
 #include <columns_ui-sdk/ui_extension.h>
 #pragma warning(pop)
 
+#include <resources/resource.h>
 #include <qwr/error_popup.h>
 #include <qwr/string_helpers.h>
 #include <qwr/unicode.h>

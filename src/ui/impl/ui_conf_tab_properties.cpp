@@ -175,8 +175,7 @@ LRESULT CConfigTabProperties::OnImportBnClicked(WORD, WORD, HWND)
 {
 	auto path_func = [this](fb2k::stringRef path)
 		{
-			const auto native = filesystem::g_get_native_path(path->c_str());
-			const auto wpath = qwr::ToWide(native);
+			const auto wpath = nativeW(path);
 			const auto str = TextFile(wpath).read();
 
 			try
@@ -204,8 +203,7 @@ LRESULT CConfigTabProperties::OnExportBnClicked(WORD, WORD, HWND)
 {
 	auto path_func = [this](fb2k::stringRef path)
 		{
-			const auto native = filesystem::g_get_native_path(path->c_str());
-			const auto wpath = qwr::ToWide(native);
+			const auto wpath = nativeW(path);
 			TextFile(wpath).write(properties_.ToJson());
 		};
 

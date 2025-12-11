@@ -1,9 +1,6 @@
 #pragma once
 #include <com_utils/com_tools.h>
 #include <com_utils/host_external.h>
-#include <resources/resource.h>
-
-#include <ExDispid.h>
 
 namespace smp::ui
 {

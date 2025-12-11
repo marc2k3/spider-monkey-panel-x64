@@ -70,18 +70,6 @@
     <ClCompile Include="ui\ui_slow_script.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="ui\scintilla\ui_sci_find_replace.cpp">
-      <Filter>ui\scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\scintilla\sci_prop_sets.cpp">
-      <Filter>ui\scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\scintilla\ui_sci_editor.cpp">
-      <Filter>ui\scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\scintilla\ui_sci_goto.cpp">
-      <Filter>ui\scintilla</Filter>
-    </ClCompile>
     <ClCompile Include="js_engine\js_realm_inner.cpp">
       <Filter>js_engine</Filter>
     </ClCompile>
@@ -123,9 +111,6 @@
     <ClCompile Include="config\parsed_panel_config.cpp">
       <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="ui\ui_editor.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
     <ClCompile Include="ui\ui_edit_in_progress.cpp">
       <Filter>ui</Filter>
     </ClCompile>
@@ -145,9 +130,6 @@
       <Filter>config</Filter>
     </ClCompile>
     <ClCompile Include="ui\ui_package_manager.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_editor_config.cpp">
       <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="js_utils\js_hwnd_helpers.cpp">
@@ -452,6 +434,24 @@
     <ClCompile Include="js_engine\global_object.cpp">
       <Filter>js_engine</Filter>
     </ClCompile>
+    <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="2K3\Scintilla\DialogGoto.cpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="2K3\Scintilla\DialogStyle.cpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="2K3\Scintilla\Scintilla.cpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="2K3\Scintilla\ScintillaConfig.cpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="2K3\DialogConfigure.cpp">
+      <Filter>2K3</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="js_engine\js_engine.h">
@@ -544,18 +544,6 @@
     <ClInclude Include="ui\ui_slow_script.h">
       <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="ui\scintilla\ui_sci_editor.h">
-      <Filter>ui\scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\scintilla\ui_sci_find_replace.h">
-      <Filter>ui\scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\scintilla\sci_prop_sets.h">
-      <Filter>ui\scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\scintilla\ui_sci_goto.h">
-      <Filter>ui\scintilla</Filter>
-    </ClInclude>
     <ClInclude Include="js_engine\js_realm_inner.h">
       <Filter>js_engine</Filter>
     </ClInclude>
@@ -598,9 +586,6 @@
     <ClInclude Include="config\parsed_panel_config.h">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_editor.h">
-      <Filter>ui</Filter>
-    </ClInclude>
     <ClInclude Include="ui\ui_edit_in_progress.h">
       <Filter>ui</Filter>
     </ClInclude>
@@ -620,9 +605,6 @@
       <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="ui\ui_package_manager.h">
-      <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\ui_editor_config.h">
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="js_utils\js_hwnd_helpers.h">
@@ -966,6 +948,30 @@
     <ClInclude Include="2K3\ScintillaImpl.hpp">
       <Filter>2K3</Filter>
     </ClInclude>
+    <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\Scintilla\DialogGoto.hpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\Scintilla\DialogStyle.hpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\Scintilla\KeyHook.hpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\Scintilla\Scintilla.hpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\Scintilla\ScintillaConfig.hpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\Scintilla\ScintillaImpl.hpp">
+      <Filter>2K3\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\DialogConfigure.hpp">
+      <Filter>2K3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="js_engine">
@@ -982,9 +988,6 @@
     </Filter>
     <Filter Include="ui">
       <UniqueIdentifier>{6cdd963f-4f38-4310-b440-f96d5e5d2df5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\scintilla">
-      <UniqueIdentifier>{026a4588-b180-4f15-bc70-daedd985c371}</UniqueIdentifier>
     </Filter>
     <Filter Include="panel">
       <UniqueIdentifier>{2f9c6262-875a-41df-aa19-160e57b518a8}</UniqueIdentifier>
@@ -1025,6 +1028,9 @@
     <Filter Include="interfaces">
       <UniqueIdentifier>{c4000729-60ea-4d25-9bb1-b9b5de5c612e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2K3\Scintilla">
+      <UniqueIdentifier>{b2137be5-4621-42de-95c3-179b04fc340e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\foo_spider_monkey_panel.rc">
@@ -1033,6 +1039,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\scintilla_interface.api">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\cfgBright.cfg">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\cfgDarkGray.cfg">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\cfgDefault.cfg">
+      <Filter>resources</Filter>
+    </None>
+    <None Include="resources\cfgRubyBlue.cfg">
       <Filter>resources</Filter>
     </None>
   </ItemGroup>

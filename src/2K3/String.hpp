@@ -17,6 +17,11 @@ inline pfc::string_base& operator<<(pfc::string_base& fmt, const std::string& so
 	return fmt;
 }
 
+static Strings split_string(std::string_view text, std::string_view delims) noexcept
+{
+	return text | std::views::split(delims) | std::ranges::to<Strings>();
+}
+
 static std::string get_resource_text(int32_t id) noexcept
 {
 	const auto res = uLoadResource(core_api::get_my_instance(), uMAKEINTRESOURCE(id), "TEXT");
@@ -48,6 +53,6 @@ static Strings json_to_strings(JSON& j) noexcept
 	}
 
 	auto transform = [](auto&& j2) { return json_to_string(j2); };
-	auto filter = [](auto&& str) { return str.length() > 0; };
-	return j | ranges::views::transform(transform) | ranges::views::filter(filter) | ranges::to<Strings>();
+	auto filter = [](auto&& str) { return !str.empty(); };
+	return { std::from_range, j | std::views::transform(transform) | std::views::filter(filter) };
 }

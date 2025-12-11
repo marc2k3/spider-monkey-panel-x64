@@ -3,9 +3,10 @@
 
 #include <2K3/FileHelper.hpp>
 #include <2K3/TextFile.hpp>
+#include <2K3/DialogConfigure.hpp>
 #include <panel/modal_blocking_scope.h>
+#include <panel/user_message.h>
 #include <ui/ui_edit_in_progress.h>
-#include <ui/ui_editor.h>
 
 namespace
 {
@@ -32,7 +33,8 @@ namespace
 	{
 		auto text = TextFile(file.native()).read();
 		auto scope = modal::ConditionalModalScope(hParent, isPanelScript);
-		auto dlg = smp::ui::CEditor(file.filename().u8string(), text, [&]
+
+		auto dlg = CDialogConfigure(file.native(), text, [&]
 			{
 				TextFile(file.native()).write(text);
 
@@ -72,7 +74,7 @@ namespace
 	{
 		modal::ConditionalModalScope scope(hParent, isPanelScript);
 
-		auto dlg = smp::ui::CEditor("Temporary file", text, [&]
+		auto dlg = CDialogConfigure(L"Temporary file", text, [&]
 			{
 				if (isPanelScript)
 					NotifyParentPanel(hParent);

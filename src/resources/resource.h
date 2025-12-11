@@ -6,7 +6,6 @@
 #define IDR_DEFAULT_SCRIPT                 101
 #define IDR_SCINTILLA_INTERFACE_API        102
 #define IDR_SCINTILLA_JS_API               103
-#define IDD_DIALOG_GOTO                    104
 #define IDD_DIALOG_EDITOR_CONFIG           107
 #define IDD_DIALOG_CONF_TAB_PROPERTIES     109
 #define IDD_DIALOG_HTML                    111
@@ -28,7 +27,6 @@
 #define IDC_CLEARALL                       1011
 #define IDC_IMPORT                         1012
 #define IDC_EXPORT                         1013
-#define IDC_LIST_PROPERTIES                1014
 #define IDC_EDIT_LINENUMBER                1040
 #define IDC_LIST_EDITOR_PROP               1050
 #define IDC_BUTTON_IMPORT                  1051
@@ -104,13 +102,75 @@
 #define ID_EDIT_WITH_EXTERNAL              40029
 #define ID_OPTIONS_PROPERTIES              40030
 
-// Next default values for new objects
-//
-#ifdef APSTUDIO_INVOKED
-#    ifndef APSTUDIO_READONLY_SYMBOLS
-#        define _APS_NEXT_RESOURCE_VALUE 131
-#        define _APS_NEXT_COMMAND_VALUE  40031
-#        define _APS_NEXT_CONTROL_VALUE  1129
-#        define _APS_NEXT_SYMED_VALUE    101
-#    endif
-#endif
+// 2K3
+#define IDR_TYPELIB                      1
+
+#define IDR_FB2K_API                     2100
+#define IDR_JS_API                       2101
+#define IDR_CFG_BRIGHT                   2102
+#define IDR_CFG_DEFAULT                  2103
+#define IDR_CFG_DARK_GRAY                2104
+#define IDR_CFG_RUBY_BLUE                2105
+#define IDR_LODASH_JS                    2106
+#define IDR_PANEL_JS                     2107
+#define IDR_COUNTRIES_JSON               2108
+
+#define IDD_DIALOG_CONFIGURE             2110
+#define IDD_DIALOG_FIND_REPLACE          2111
+#define IDD_DIALOG_GOTO                  2112
+#define IDD_DIALOG_PROPERTIES            2113
+#define IDD_DIALOG_PLAYLIST_LOCK         2114
+#define IDD_DIALOG_INPUTBOX              2115
+#define IDD_DIALOG_STYLE                 2116
+#define IDD_DIALOG_TEXTBOX               2117
+
+#define IDC_LIST_PROPERTIES              2120
+#define IDC_LIST_STYLE                   2121
+#define IDC_SCINTILLA                    2122
+
+#define IDC_BTN_APPLY                    2130
+#define IDC_BTN_CLEAR                    2131
+#define IDC_BTN_CODE                     2132
+#define IDC_BTN_EXPORT                   2133
+#define IDC_BTN_IMPORT                   2134
+#define IDC_BTN_NEXT                     2135
+#define IDC_BTN_PRESETS                  2136
+#define IDC_BTN_PREVIOUS                 2137
+#define IDC_BTN_REPLACE                  2138
+#define IDC_BTN_REPLACE_ALL              2139
+#define IDC_BTN_SAMPLES                  2140
+#define IDC_BTN_STYLE                    2141
+#define IDC_BTN_HELP                     2142
+
+#define IDC_CHECK_MATCHCASE              2150
+#define IDC_CHECK_WHOLEWORD              2151
+#define IDC_CHECK_REGEXP                 2152
+#define IDC_CHECK_FILTER_ADD             2153
+#define IDC_CHECK_FILTER_REMOVE          2154
+#define IDC_CHECK_FILTER_REORDER         2155
+#define IDC_CHECK_FILTER_REPLACE         2156
+#define IDC_CHECK_FILTER_RENAME          2157
+#define IDC_CHECK_FILTER_REMOVE_PLAYLIST 2158
+
+#define IDC_EDIT_FIND                    2170
+#define IDC_EDIT_LINE_NUMBER             2171
+#define IDC_EDIT_REPLACE                 2172
+#define IDC_EDIT_VALUE                   2173
+
+#define IDC_LABEL_PROMPT                 2180
+#define IDC_LABEL_REPLACE                2181
+
+#define ID_MENU_EXPORT                   2200
+#define ID_MENU_IMPORT                   2201
+#define ID_MENU_INVERTSEL                2202
+#define ID_MENU_REMOVE                   2203
+#define ID_MENU_RESET                    2204
+#define ID_MENU_SELECTALL                2205
+#define ID_MENU_SELECTNONE               2206
+#define ID_MENU_STYLE_AUTO               2207
+#define ID_MENU_STYLE_CUSTOM             2208
+#define ID_MENU_STYLE_EDIT               2209
+
+#define ID_MENU_SAMPLES_BEGIN            2300
+#define ID_MENU_SAMPLES_END              2399
+

@@ -34,7 +34,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(IncludePath);..\foobar2000-sdk;..\foobar2000-sdk\foobar2000;..\scintilla\include;..\scintilla\lexilla\src;..\mozjs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(IncludePath);..\foobar2000-sdk;..\foobar2000-sdk\foobar2000;..\scintilla\lexilla\include;..\scintilla\scintilla\include;..\mozjs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp23</LanguageStandard>
       <AdditionalOptions>/Zm200 /Zc:char8_t- /utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -84,11 +84,17 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="2K3\AlbumArtStatic.cpp" />
     <ClCompile Include="2K3\Attach.cpp" />
     <ClCompile Include="2K3\ContextMenuCommand.cpp" />
+    <ClCompile Include="2K3\DialogConfigure.cpp" />
     <ClCompile Include="2K3\DownloadFileAsync.cpp" />
     <ClCompile Include="2K3\FileHelper.cpp" />
     <ClCompile Include="2K3\HTTPRequestAsync.cpp" />
     <ClCompile Include="2K3\MainMenuCommand.cpp" />
     <ClCompile Include="2K3\PlaylistLock.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogGoto.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogStyle.cpp" />
+    <ClCompile Include="2K3\Scintilla\Scintilla.cpp" />
+    <ClCompile Include="2K3\Scintilla\ScintillaConfig.cpp" />
     <ClCompile Include="2K3\StackBlur.cpp" />
     <ClCompile Include="2K3\TagWriter.cpp" />
     <ClCompile Include="2K3\TextFile.cpp" />
@@ -215,19 +221,13 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="ui\impl\ui_conf_tab_package.cpp" />
     <ClCompile Include="ui\impl\ui_conf_tab_properties.cpp" />
     <ClCompile Include="ui\impl\ui_conf_tab_script_source.cpp" />
-    <ClCompile Include="ui\scintilla\sci_prop_sets.cpp" />
-    <ClCompile Include="ui\scintilla\ui_sci_editor.cpp" />
-    <ClCompile Include="ui\scintilla\ui_sci_find_replace.cpp" />
-    <ClCompile Include="ui\scintilla\ui_sci_goto.cpp" />
     <ClCompile Include="ui\ui_conf.cpp" />
-    <ClCompile Include="ui\ui_editor.cpp" />
     <ClCompile Include="ui\ui_edit_in_progress.cpp" />
     <ClCompile Include="ui\ui_html.cpp">
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="ui\ui_input_box.cpp" />
     <ClCompile Include="ui\ui_package_manager.cpp" />
-    <ClCompile Include="ui\ui_editor_config.cpp" />
     <ClCompile Include="ui\ui_slow_script.cpp" />
     <ClCompile Include="utils\edit_text.cpp" />
     <ClCompile Include="utils\gdi_error_helpers.cpp" />
@@ -245,6 +245,7 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\Attach.hpp" />
     <ClInclude Include="2K3\ContextMenuCommand.hpp" />
     <ClInclude Include="2K3\CustomSort.hpp" />
+    <ClInclude Include="2K3\DialogConfigure.hpp" />
     <ClInclude Include="2K3\DirectoryIterator.hpp" />
     <ClInclude Include="2K3\DownloadFileAsync.hpp" />
     <ClInclude Include="2K3\FileDialog.hpp" />
@@ -257,6 +258,13 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\MainMenuCommand.hpp" />
     <ClInclude Include="2K3\PlaylistLock.hpp" />
     <ClInclude Include="2K3\ScintillaImpl.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogGoto.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogStyle.hpp" />
+    <ClInclude Include="2K3\Scintilla\KeyHook.hpp" />
+    <ClInclude Include="2K3\Scintilla\Scintilla.hpp" />
+    <ClInclude Include="2K3\Scintilla\ScintillaConfig.hpp" />
+    <ClInclude Include="2K3\Scintilla\ScintillaImpl.hpp" />
     <ClInclude Include="2K3\StackBlur.hpp" />
     <ClInclude Include="2K3\String.hpp" />
     <ClInclude Include="2K3\TagWriter.hpp" />
@@ -390,17 +398,11 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="ui\impl\ui_conf_tab_properties.h" />
     <ClInclude Include="ui\impl\ui_conf_tab_script_source.h" />
     <ClInclude Include="ui\impl\ui_itab.h" />
-    <ClInclude Include="ui\scintilla\sci_prop_sets.h" />
-    <ClInclude Include="ui\scintilla\ui_sci_editor.h" />
-    <ClInclude Include="ui\scintilla\ui_sci_find_replace.h" />
-    <ClInclude Include="ui\scintilla\ui_sci_goto.h" />
     <ClInclude Include="ui\ui_conf.h" />
-    <ClInclude Include="ui\ui_editor.h" />
     <ClInclude Include="ui\ui_edit_in_progress.h" />
     <ClInclude Include="ui\ui_html.h" />
     <ClInclude Include="ui\ui_input_box.h" />
     <ClInclude Include="ui\ui_package_manager.h" />
-    <ClInclude Include="ui\ui_editor_config.h" />
     <ClInclude Include="ui\ui_slow_script.h" />
     <ClInclude Include="utils\colour_helpers.h" />
     <ClInclude Include="utils\edit_text.h" />
@@ -440,11 +442,18 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ProjectReference Include="..\foobar2000-sdk\pfc\pfc.vcxproj">
       <Project>{ebfffb4e-261d-44d3-b89c-957b31a0bf9c}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\scintilla\win32\Scintilla.vcxproj">
-      <Project>{10b2a7ef-9089-4352-ba26-7e9aef50987d}</Project>
+    <ProjectReference Include="..\scintilla\lexilla\src\Lexilla.vcxproj">
+      <Project>{e541c9be-13bc-4ce6-a0a4-31145f51a2c1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\scintilla\scintilla\win32\Scintilla.vcxproj">
+      <Project>{19cca8b8-46b9-4609-b7ce-198da19f07bd}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\cfgBright.cfg" />
+    <None Include="resources\cfgDarkGray.cfg" />
+    <None Include="resources\cfgDefault.cfg" />
+    <None Include="resources\cfgRubyBlue.cfg" />
     <None Include="resources\scintilla_interface.api" />
   </ItemGroup>
   <ItemGroup>

@@ -207,8 +207,7 @@ void CDialogPackageManager::OnImportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 {
 	auto path_func = [this](fb2k::stringRef path)
 		{
-			const auto native = filesystem::g_get_native_path(path->c_str());
-			const auto wpath = qwr::ToWide(native);
+			const auto wpath = nativeW(path);
 			const auto isRestartNeeded = ImportPackage(wpath);
 
 			if (isRestartNeeded && ConfirmRebootOnPackageInUse())
@@ -227,8 +226,7 @@ void CDialogPackageManager::OnExportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 
 	auto path_func = [this](fb2k::stringRef path)
 		{
-			const auto native = filesystem::g_get_native_path(path->c_str());
-			const auto wpath = qwr::ToWide(native);
+			const auto wpath = nativeW(path);
 			const auto& currentPackageData = packages_[focusedPackageIdx_];
 
 			try

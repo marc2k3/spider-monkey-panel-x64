@@ -11,6 +11,7 @@
   <Project Path="../foobar2000-sdk/pfc/pfc.vcxproj" Id="ebfffb4e-261d-44d3-b89c-957b31a0bf9c">
     <BuildType Project="Release FB2K" />
   </Project>
-  <Project Path="../scintilla/win32/Scintilla.vcxproj" Id="10b2a7ef-9089-4352-ba26-7e9aef50987d" />
+  <Project Path="../scintilla/lexilla/src/Lexilla.vcxproj" Id="e541c9be-13bc-4ce6-a0a4-31145f51a2c1" />
+  <Project Path="../scintilla/scintilla/win32/Scintilla.vcxproj" Id="19cca8b8-46b9-4609-b7ce-198da19f07bd" />
   <Project Path="../src/foo_spider_monkey_panel.vcxproj" Id="43df6037-dbe4-4468-9a50-4311495f3c86" DefaultStartup="true" />
 </Solution>

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <resources/resource.h>
-
 namespace smp::ui
 {
 

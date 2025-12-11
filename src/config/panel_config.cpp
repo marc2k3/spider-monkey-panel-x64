@@ -4,7 +4,6 @@
 #include <2K3/String.hpp>
 #include <config/panel_config_binary.h>
 #include <config/panel_config_json.h>
-#include <resources/resource.h>
 #include <utils/guid_helpers.h>
 
 namespace smp::config

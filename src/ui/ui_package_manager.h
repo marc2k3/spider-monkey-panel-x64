@@ -5,7 +5,6 @@
 #include <config/panel_config.h>
 #include <config/parsed_panel_config.h>
 #include <qwr/ui_ddx.h>
-#include <resources/resource.h>
 
 namespace smp::ui
 {

@@ -198,8 +198,7 @@ void CConfigTabPackage::OnAddFile(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	auto path_func = [this](fb2k::stringRef path)
 		{
-			const auto native = filesystem::g_get_native_path(path->c_str());
-			const auto wpath = qwr::ToWide(native);
+			const auto wpath = nativeW(path);
 			AddFile(wpath);
 		};
 
@@ -326,12 +325,11 @@ void CConfigTabPackage::OnEditScriptWith(UINT uNotifyCode, int nID, CWindow wndC
 	{
 		auto path_func = [this](fb2k::stringRef path)
 			{
-				const auto native = filesystem::g_get_native_path(path->c_str());
-				const auto wpath = qwr::ToWide(native);
+				const auto wpath = nativeW(path);
 
 				std::error_code ec;
 				QwrException::ExpectTrue(fs::is_regular_file(wpath, ec), "Invalid path");
-				fb2k::configStore::get()->setConfigString("smp.editor.path", native);
+				fb2k::configStore::get()->setConfigString("smp.editor.path", path->c_str());
 			};
 
 		FileDialog::open(m_hWnd, "Choose text editor", "Executable files|*.exe", path_func);

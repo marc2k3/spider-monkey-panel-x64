@@ -4,7 +4,6 @@
 #include <2K3/String.hpp>
 #include <2K3/TextFile.hpp>
 #include <config/package_utils.h>
-#include <resources/resource.h>
 
 namespace fs = std::filesystem;
 

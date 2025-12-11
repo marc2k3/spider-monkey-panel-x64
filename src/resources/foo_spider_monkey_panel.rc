@@ -1,28 +1,15 @@
 // Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
-
-#define APSTUDIO_READONLY_SYMBOLS
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 2 resource.
-//
-#define APSTUDIO_HIDDEN_SYMBOLS
-#include "windows.h"
-#undef APSTUDIO_HIDDEN_SYMBOLS
-
 #include <atlres.h>
-#include <component_defines.h>
 
 /////////////////////////////////////////////////////////////////////////////
-#undef APSTUDIO_READONLY_SYMBOLS
-
-/////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// English (United Kingdom) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
-#pragma code_page(1252)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -54,83 +41,6 @@ BEGIN
     PUSHBUTTON      "Apply",IDAPPLY,338,290,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,392,290,50,14
     PUSHBUTTON      "Help",ID_HELP,7,290,50,14
-END
-
-IDD_DIALOG_EDITOR DIALOGEX 0, 0, 620, 381
-STYLE DS_SETFONT | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-CAPTION "Editor"
-MENU IDR_MENU_EDITOR
-FONT 8, "MS Shell Dlg", 0, 0, 0x1
-BEGIN
-    CONTROL         "",IDC_STATIC_LINE,"Static",SS_GRAYFRAME | SS_SUNKEN | WS_GROUP,0,0,620,1,WS_EX_STATICEDGE
-    CONTROL         "",IDC_EDIT,"SMP_Scintilla",WS_CLIPCHILDREN,1,2,618,349,WS_EX_CLIENTEDGE
-    DEFPUSHBUTTON   "&OK",IDOK,455,360,50,14
-    PUSHBUTTON      "&Apply",IDAPPLY,509,360,50,14
-    PUSHBUTTON      "&Cancel",IDCANCEL,563,360,50,14
-END
-
-IDD_FINDDLGORD_WITH_REGEXP DIALOG 30, 73, 236, 90
-STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Find"
-FONT 8, "MS Shell Dlg"
-BEGIN
-    LTEXT           "Fi&nd what:",-1,4,8,42,8
-    EDITTEXT        1152,47,7,128,12,ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "Match &whole word only",1040,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,4,26,100,12
-    CONTROL         "Match &case",1041,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,42,64,12
-    CONTROL         "W&rap around",1042,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,58,64,12
-    CONTROL         "Regular &expression",IDC_CHECK_USE_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,74,100,12
-    GROUPBOX        "Direction",1072,107,26,68,28,WS_GROUP
-    CONTROL         "&Up",1056,"Button",BS_AUTORADIOBUTTON | WS_GROUP,111,38,25,12
-    CONTROL         "&Down",1057,"Button",BS_AUTORADIOBUTTON,138,38,35,12
-    DEFPUSHBUTTON   "&Find Next",IDOK,182,5,50,14,WS_GROUP
-    PUSHBUTTON      "Cancel",IDCANCEL,182,23,50,14
-    PUSHBUTTON      "&Help",1038,182,45,50,14
-    LTEXT           "",1088,4,56,1,1,NOT WS_VISIBLE
-END
-
-IDD_REPLACEDLGORD_WITH_REGEXP DIALOG 36, 44, 230, 110
-STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Replace"
-FONT 8, "MS Shell Dlg"
-BEGIN
-    LTEXT           "Fi&nd what:",-1,4,9,48,8
-    EDITTEXT        1152,54,7,114,12,ES_AUTOHSCROLL | WS_GROUP
-    LTEXT           "Re&place with:",-1,4,26,48,8
-    EDITTEXT        1153,54,24,114,12,ES_AUTOHSCROLL | WS_GROUP
-    CONTROL         "Match &whole word only",1040,"Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,4,46,104,12
-    CONTROL         "Match &case",1041,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,62,59,12
-    CONTROL         "W&rap around",1042,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,78,64,12
-    CONTROL         "Regular &expression",IDC_CHECK_USE_REGEXP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,4,94,104,12
-    DEFPUSHBUTTON   "&Find Next",IDOK,174,4,50,14,WS_GROUP
-    PUSHBUTTON      "&Replace",1024,174,21,50,14
-    PUSHBUTTON      "Replace &All",1025,174,38,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,174,55,50,14
-    PUSHBUTTON      "&Help",1038,174,75,50,14
-    LTEXT           "",1088,4,76,1,1,NOT WS_VISIBLE
-END
-
-IDD_DIALOG_GOTO DIALOGEX 0, 0, 206, 59
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Go To Line"
-FONT 8, "Tahoma", 400, 0, 0x1
-BEGIN
-    LTEXT           "Line number:",IDC_STATIC,7,7,42,8
-    EDITTEXT        IDC_EDIT_LINENUMBER,7,17,192,14,ES_AUTOHSCROLL
-    DEFPUSHBUTTON   "OK",IDOK,95,38,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,149,38,50,14
-END
-
-IDD_DIALOG_EDITOR_CONFIG DIALOGEX 0, 0, 335, 319
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Editor properties"
-FONT 8, "Tahoma", 400, 0, 0x0
-BEGIN
-    CONTROL         "",IDC_LIST_EDITOR_PROP,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,321,281
-    PUSHBUTTON      "&Import",IDC_BUTTON_IMPORT,12,299,50,14
-    PUSHBUTTON      "E&xport",IDC_BUTTON_EXPORT,66,299,50,14
-    PUSHBUTTON      "OK",IDOK,272,299,50,14
-    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,119,299,50,14
 END
 
 IDD_DIALOG_INPUT DIALOGEX 0, 0, 239, 68
@@ -249,247 +159,60 @@ BEGIN
     PUSHBUTTON      "Open folder",IDC_BUTTON_OPEN_FOLDER,127,196,50,14
 END
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
+IDD_DIALOG_CONFIGURE DIALOGEX 0, 0, 620, 400
+STYLE DS_SETFONT | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Configuration"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    IDD_DIALOG_EDIT_IN_PROGRESS, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 118
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 51
-    END
-
-    IDD_DIALOG_CONF, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        VERTGUIDE, 7
-        VERTGUIDE, 441
-        BOTTOMMARGIN, 304
-        HORZGUIDE, 35
-        HORZGUIDE, 282
-    END
-
-    IDD_DIALOG_EDITOR, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 354
-        VERTGUIDE, 272
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 333
-    END
-
-    IDD_DIALOG_GOTO, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 199
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 52
-    END
-
-    IDD_DIALOG_EDITOR_CONFIG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 328
-        VERTGUIDE, 12
-        VERTGUIDE, 322
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 314
-        HORZGUIDE, 18
-        HORZGUIDE, 225
-        HORZGUIDE, 226
-        HORZGUIDE, 299
-    END
-
-    IDD_DIALOG_NAME_VALUE, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 235
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 55
-    END
-
-    IDD_DIALOG_INPUT, DIALOG
-    BEGIN
-    END
-
-    IDD_DIALOG_HTML, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 302
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 169
-    END
-
-    IDD_DIALOG_SLOWSCRIPT, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 284
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 97
-    END
-
-    IDD_DIALOG_CONF_TAB_SCRIPT_SRC, DIALOG
-    BEGIN
-        RIGHTMARGIN, 426
-        VERTGUIDE, 7
-        VERTGUIDE, 18
-        VERTGUIDE, 25
-        VERTGUIDE, 27
-        VERTGUIDE, 182
-        VERTGUIDE, 201
-        VERTGUIDE, 209
-        VERTGUIDE, 245
-        VERTGUIDE, 249
-        VERTGUIDE, 396
-        VERTGUIDE, 410
-        VERTGUIDE, 420
-        HORZGUIDE, 7
-        HORZGUIDE, 23
-        HORZGUIDE, 106
-        HORZGUIDE, 159
-        HORZGUIDE, 170
-        HORZGUIDE, 175
-        HORZGUIDE, 194
-        HORZGUIDE, 240
-    END
-
-    IDD_DIALOG_CONF_TAB_APPEARANCE, DIALOG
-    BEGIN
-        RIGHTMARGIN, 426
-        VERTGUIDE, 7
-        VERTGUIDE, 18
-        VERTGUIDE, 27
-        VERTGUIDE, 182
-        VERTGUIDE, 201
-        VERTGUIDE, 209
-        VERTGUIDE, 245
-        VERTGUIDE, 249
-        VERTGUIDE, 410
-        VERTGUIDE, 420
-        HORZGUIDE, 7
-        HORZGUIDE, 23
-        HORZGUIDE, 170
-        HORZGUIDE, 175
-        HORZGUIDE, 194
-        HORZGUIDE, 240
-    END
-
-    IDD_DIALOG_CONF_TAB_PROPERTIES, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 252
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 206
-        HORZGUIDE, 20
-        HORZGUIDE, 24
-        HORZGUIDE, 185
-        HORZGUIDE, 192
-    END
-
-    IDD_DIALOG_CONF_TAB_PACKAGE, DIALOG
-    BEGIN
-        RIGHTMARGIN, 426
-        VERTGUIDE, 7
-        VERTGUIDE, 18
-        VERTGUIDE, 184
-        VERTGUIDE, 201
-        VERTGUIDE, 209
-        VERTGUIDE, 245
-        VERTGUIDE, 249
-        VERTGUIDE, 410
-        VERTGUIDE, 420
-        HORZGUIDE, 7
-        HORZGUIDE, 23
-        HORZGUIDE, 170
-        HORZGUIDE, 175
-        HORZGUIDE, 194
-        HORZGUIDE, 240
-    END
-
-    IDD_DIALOG_PACKAGE_MANAGER, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 356
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 255
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_DIALOG_EDIT_IN_PROGRESS AFX_DIALOG_LAYOUT
-BEGIN
-    0
+    CONTROL       "",         IDC_SCINTILLA,   "Scintilla.smp", WS_CLIPCHILDREN, 0, 0, 620, 374
+    PUSHBUTTON    "Code",     IDC_BTN_CODE,    7, 380, 50, 14
+    PUSHBUTTON    "Style",    IDC_BTN_STYLE,   64, 380, 50, 14
+    DEFPUSHBUTTON "&OK",      IDOK,            455, 380, 50, 14
+    PUSHBUTTON    "&Apply",   IDC_BTN_APPLY,   509, 380, 50, 14
+    PUSHBUTTON    "&Cancel",  IDCANCEL,        563, 380, 50, 14
 END
 
-IDD_DIALOG_EDITOR AFX_DIALOG_LAYOUT
+IDD_DIALOG_STYLE DIALOGEX 0, 0, 330, 200
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Editor Properties"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    0
+    CONTROL    "",         IDC_LIST_STYLE,  "SysListView32", LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP, 0, 0, 330, 176
+    PUSHBUTTON "&Import",  IDC_BTN_IMPORT,  7, 180, 50, 14
+    PUSHBUTTON "&Export",  IDC_BTN_EXPORT,  64, 180, 50, 14
+    PUSHBUTTON "&Presets", IDC_BTN_PRESETS, 121, 180, 50, 14
+    PUSHBUTTON "&Close",   IDCANCEL,        273, 180, 50, 14
 END
 
-IDD_DIALOG_HTML AFX_DIALOG_LAYOUT
+IDD_DIALOG_FIND_REPLACE DIALOGEX 0, 0, 239, 122
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Replace"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    0,
-    100, 100, 100, 100
+    LTEXT         "Find:",              IDC_STATIC,          7, 7, 35, 8
+    LTEXT         "Replace with:",      IDC_LABEL_REPLACE,   7, 35, 44, 8
+    EDITTEXT                            IDC_EDIT_FIND,       7, 17, 168, 14, ES_AUTOHSCROLL
+    EDITTEXT                            IDC_EDIT_REPLACE,    7, 45, 168, 14, ES_AUTOHSCROLL
+    AUTOCHECKBOX  "Match case",         IDC_CHECK_MATCHCASE, 7, 64, 80, 10
+    AUTOCHECKBOX  "Whole word",         IDC_CHECK_WHOLEWORD, 7, 78, 80, 10
+    AUTOCHECKBOX  "Regular Expression", IDC_CHECK_REGEXP,    7, 92, 80, 10
+    DEFPUSHBUTTON "Find Down",          IDC_BTN_NEXT,        182, 7, 50, 14,  WS_DISABLED
+    PUSHBUTTON    "Find Up",            IDC_BTN_PREVIOUS,    182, 25, 50, 14, WS_DISABLED
+    PUSHBUTTON    "Replace",            IDC_BTN_REPLACE,     182, 43, 50, 14, WS_DISABLED
+    PUSHBUTTON    "Replace All",        IDC_BTN_REPLACE_ALL, 182, 61, 50, 14, WS_DISABLED
+    PUSHBUTTON    "Close",              IDCANCEL,            182, 97, 50, 14
 END
 
-IDD_DIALOG_SLOWSCRIPT AFX_DIALOG_LAYOUT
+IDD_DIALOG_GOTO DIALOGEX 0, 0, 206, 59
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Go To Line"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    0
+    LTEXT         "Line number:", IDC_STATIC,           7, 7, 42, 8
+    EDITTEXT                      IDC_EDIT_LINE_NUMBER, 7, 17, 192, 14, ES_NUMBER | ES_AUTOHSCROLL
+    DEFPUSHBUTTON "&OK",          IDOK,                 95, 38, 50, 14
+    PUSHBUTTON    "&Cancel",      IDCANCEL,             149, 38, 50, 14
 END
-
-IDD_DIALOG_CONF_TAB_APPEARANCE AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG_CONF_TAB_SCRIPT_SRC AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG_CONF_TAB_PROPERTIES AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG_CONF_TAB_PACKAGE AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG_CONF AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG_PACKAGE_MANAGER AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG_EDITOR_CONFIG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG_INPUT AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -527,59 +250,6 @@ BEGIN
     END
 END
 
-IDR_MENU_EDITOR MENU
-BEGIN
-    POPUP "File"
-    BEGIN
-        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM SEPARATOR
-        MENUITEM "Import...",                   ID_FILE_IMPORT
-        MENUITEM "Export...",                   ID_FILE_EXPORT
-        MENUITEM SEPARATOR
-        MENUITEM "Exit",                        ID_APP_EXIT
-    END
-    POPUP "Options"
-    BEGIN
-        MENUITEM "Editor Properties",           ID_OPTIONS_PROPERTIES
-    END
-    POPUP "Help"
-    BEGIN
-        MENUITEM "View Help", ID_HELP
-        MENUITEM SEPARATOR
-        MENUITEM "About Spider Monkey Panel", ID_APP_ABOUT
-    END
-END
-
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE
-BEGIN
-    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#include ""windows.h""\r\n"
-    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "\r\n"
-    "#include <atlres.h>\r\n"
-    "#include <component_defines.h>\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE
-BEGIN
-    "#include ""foo_spider_monkey_panel.rc2""\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // SCRIPT
@@ -590,27 +260,11 @@ IDR_SCINTILLA_INTERFACE_API TEXT "scintilla_interface.api"
 IDR_SCINTILLA_JS_API        TEXT "scintilla_jscript.api"
 IDR_RECOVERY_PACKAGE_SCRIPT TEXT "recovery_package_script.js"
 IDR_RECOVERY_PACKAGE_JSON   TEXT "recovery_package_json.json"
+IDR_CFG_BRIGHT     TEXT "cfgBright.cfg"
+IDR_CFG_DARK_GRAY  TEXT "cfgDarkGray.cfg"
+IDR_CFG_DEFAULT    TEXT "cfgDefault.cfg"
+IDR_CFG_RUBY_BLUE  TEXT "cfgRubyBlue.cfg"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog Info
-//
-
-IDD_DIALOG_HTML DLGINIT
-BEGIN
-    IDC_IE, 0x376, 160, 0
-0x0000, 0x0000, 0x004c, 0x0000, 0x2ff5, 0x0000, 0x1d5a, 0x0000, 0x0000,
-0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-0x0000, 0x0000, 0x004c, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001,
-0x0000, 0xd0e0, 0x0057, 0x3573, 0x11cf, 0x69ae, 0x0008, 0x2e2b, 0x6212,
-0x0008, 0x0000, 0x0000, 0x0000, 0x004c, 0x0000, 0x1401, 0x0002, 0x0000,
-0x0000, 0x00c0, 0x0000, 0x0000, 0x4600, 0x0080, 0x0000, 0x0000, 0x0000,
-0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000,
-0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0
-END
-
-1 TYPELIB "foo_spider_monkey_panel.tlb"
+IDR_TYPELIB TYPELIB "foo_spider_monkey_panel.tlb"
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
