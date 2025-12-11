@@ -30,11 +30,6 @@ namespace smp
 		).c_str();
 	}
 
-	void about_popup(HWND parent)
-	{
-		popup_message_v3::get()->messageBox(parent, about_text(), "About " SMP_NAME, MB_SETFOREGROUND);
-	}
-
 	DECLARE_COMPONENT_VERSION(SMP_NAME, SMP_VERSION, about_text());
 	VALIDATE_COMPONENT_FILENAME(SMP_DLL_NAME);
 }

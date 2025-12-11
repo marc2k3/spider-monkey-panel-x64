@@ -8,8 +8,3 @@
 #define SMP_VERSION "1.7.25.12.11"
 #define SMP_NAME_WITH_VERSION SMP_NAME " v" SMP_VERSION
 #define SMP_USER_AGENT SMP_DLL_NAME "/" SMP_VERSION
-
-namespace smp
-{
-	void about_popup(HWND parent);
-}
