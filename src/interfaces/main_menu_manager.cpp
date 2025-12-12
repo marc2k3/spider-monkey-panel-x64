@@ -99,22 +99,7 @@ bool JsMainMenuManager::ExecuteByID(uint32_t id)
 
 void JsMainMenuManager::Init(const std::string& root_name)
 {
-	const auto preparedRootName = [&root_name]() {
-		// Don't care about UTF8 here: we need exact match
-		return std::string_view{ root_name }
-			| ranges::views::transform([](auto i) { return static_cast<char>(::tolower(i)); })
-			| ranges::to<std::string>;
-	}();
-
-	struct RootElement
-	{
-		const char* name;
-		const GUID* guid;
-	};
-
-	// In mainmenu_groups:
-	// static const GUID file,view,edit,playback,library,help;
-	const auto validRoots = std::to_array<RootElement>(
+	const auto validRoots = std::map<pfc::string8, const GUID*>(
 		{
 			{ "file", &mainmenu_groups::file },
 			{ "view", &mainmenu_groups::view },
@@ -124,13 +109,12 @@ void JsMainMenuManager::Init(const std::string& root_name)
 			{ "help", &mainmenu_groups::help },
 		});
 
-	auto result = ranges::find_if(validRoots, [&preparedRootName](auto& root) {
-		return preparedRootName == root.name;
-	});
-	QwrException::ExpectTrue(result != std::cend(validRoots), "Invalid menu root name: {}", root_name);
+	const auto preparedRootName = pfc::string8(root_name.c_str()).toLower();
+	const auto it = validRoots.find(preparedRootName);
+	QwrException::ExpectTrue(it != validRoots.end(), "Invalid menu root name: {}", root_name);
 
-	menuManager_ = standard_api_create_t<mainmenu_manager>();
-	menuManager_->instantiate(*(result->guid));
+	menuManager_ = mainmenu_manager::get();
+	menuManager_->instantiate(*it->second);
 }
 
 } // namespace mozjs
