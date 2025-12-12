@@ -95,7 +95,7 @@ namespace
 		Window::Trace
 	};
 
-	JSClass jsClass = {
+	constexpr JSClass jsClass = {
 		"Window",
 		kDefaultClassFlags,
 		&jsOps
@@ -235,7 +235,7 @@ namespace mozjs
 		return std::unique_ptr<Window>(new Window(ctx, parentPanel, std::move(fbProperties)));
 	}
 
-	uint32_t Window::GetInternalSize(const smp::panel::js_panel_window&)
+	uint32_t Window::GetInternalSize()
 	{
 		return sizeof(FbProperties);
 	}

@@ -27,7 +27,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"GdiRawBitMap",
 	kDefaultClassFlags,
 	&jsOps
@@ -101,15 +101,10 @@ std::unique_ptr<JsGdiRawBitmap> JsGdiRawBitmap::CreateNative(JSContext* cx, Gdip
 	return std::unique_ptr<JsGdiRawBitmap>(new JsGdiRawBitmap(cx, std::move(hBitmap), pBmp->GetWidth(), pBmp->GetHeight()));
 }
 
-uint32_t JsGdiRawBitmap::GetInternalSize(Gdiplus::Bitmap* pBmp)
+uint32_t JsGdiRawBitmap::GetInternalSize()
 {
-	if (!pBmp)
-	{ // we don't care about return value, since it will fail in CreateNative later
-		return 0;
-	}
-
 	// We generate only PixelFormat32bppPARGB images
-	return pBmp->GetWidth() * pBmp->GetHeight() * Gdiplus::GetPixelFormatSize(PixelFormat32bppPARGB) / 8;
+	return width_ * height_ * Gdiplus::GetPixelFormatSize(PixelFormat32bppPARGB) / 8;
 }
 
 HDC JsGdiRawBitmap::GetHDC() const

@@ -24,7 +24,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"FbPlaybackQueueItem",
 	kDefaultClassFlags,
 	&jsOps
@@ -69,7 +69,7 @@ JsFbPlaybackQueueItem::CreateNative(JSContext* cx, const t_playback_queue_item& 
 	return std::unique_ptr<JsFbPlaybackQueueItem>(new JsFbPlaybackQueueItem(cx, playbackQueueItem));
 }
 
-uint32_t JsFbPlaybackQueueItem::GetInternalSize(const t_playback_queue_item& /*playbackQueueItem*/)
+uint32_t JsFbPlaybackQueueItem::GetInternalSize()
 {
 	return 0;
 }

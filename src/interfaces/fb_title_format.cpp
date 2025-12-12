@@ -27,7 +27,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"FbTitleFormat",
 	kDefaultClassFlags,
 	&jsOps
@@ -75,7 +75,7 @@ JsFbTitleFormat::CreateNative(JSContext* cx, const std::string& expr)
 	return std::unique_ptr<JsFbTitleFormat>(new JsFbTitleFormat(cx, expr));
 }
 
-uint32_t JsFbTitleFormat::GetInternalSize(const std::string& /*expr*/)
+uint32_t JsFbTitleFormat::GetInternalSize()
 {
 	return sizeof(titleformat_object);
 }

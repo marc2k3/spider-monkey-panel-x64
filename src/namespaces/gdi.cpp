@@ -19,7 +19,7 @@ namespace
 
 using namespace mozjs;
 
-JSClassOps jsOps = {
+constexpr JSClassOps jsOps = {
 	nullptr,
 	nullptr,
 	nullptr,
@@ -33,7 +33,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"GdiUtils",
 	kDefaultClassFlags,
 	&jsOps

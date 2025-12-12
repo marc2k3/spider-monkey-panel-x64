@@ -23,7 +23,7 @@ namespace mozjs
 		~JsEnumerator() override = default;
 
 		static std::unique_ptr<JsEnumerator> CreateNative(JSContext* cx, IUnknown* pUnknown);
-		static uint32_t GetInternalSize(IUnknown* pUnknown);
+		uint32_t GetInternalSize();
 
 	public:
 		static JSObject* Constructor(JSContext* cx, JsActiveXObject* pActiveXObject);

@@ -75,7 +75,7 @@ namespace mozjs
 		// E.g. if T has property `std::unique_ptr<BigStruct> bigStruct_`, then
 		// `GetInternalSize` must return sizeof(bigStruct_).
 		// Note: `args` is the same as in `CreateNative`.
-		static uint32_t GetInternalSize(Args... args);
+		uint32_t GetInternalSize(Args... args);
 	*/
 
 	/*
@@ -157,9 +157,8 @@ namespace mozjs
 			}
 
 			JS::RootedObject jsObject(cx, CreateJsObject_Base(cx, jsProto));
-			const uint32_t nativeObjectSize = sizeof(T) + T::GetInternalSize(args...); ///< don't forward: don't want to lose those smart ptrs
 			std::unique_ptr<T> nativeObject = T::CreateNative(cx, std::forward<ArgTypes>(args)...);
-			nativeObject->nativeObjectSize_ = nativeObjectSize;
+			nativeObject->nativeObjectSize_ = sizeof(T) + nativeObject->GetInternalSize();
 			return CreateJsObject_Final(cx, jsProto, jsObject, std::move(nativeObject));
 		}
 

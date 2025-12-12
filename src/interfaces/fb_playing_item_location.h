@@ -19,7 +19,7 @@ namespace mozjs
 		~JsFbPlayingItemLocation() override = default;
 
 		static std::unique_ptr<JsFbPlayingItemLocation> CreateNative(JSContext* cx, bool is_valid, size_t playlistIndex, size_t playlistItemIndex);
-		static uint32_t GetInternalSize(bool is_valid, size_t playlistIndex, size_t playlistItemIndex);
+		uint32_t GetInternalSize();
 
 	public:
 		bool get_IsValid();

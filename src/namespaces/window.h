@@ -20,7 +20,7 @@ namespace mozjs
 		~Window() override;
 
 		static std::unique_ptr<Window> CreateNative(JSContext* ctx, smp::panel::js_panel_window& parentPanel);
-		static uint32_t GetInternalSize(const smp::panel::js_panel_window& parentPanel);
+		uint32_t GetInternalSize();
 
 	public:
 		static void Trace(JSTracer* trc, JSObject* obj);

@@ -25,7 +25,7 @@ namespace mozjs
 		~JsFbMetadbHandleList() override = default;
 
 		static std::unique_ptr<JsFbMetadbHandleList> CreateNative(JSContext* cx, const metadb_handle_list& handles);
-		static uint32_t GetInternalSize(const metadb_handle_list& handles);
+		uint32_t GetInternalSize();
 
 	public:
 		[[nodiscard]] const metadb_handle_list& GetHandleList() const;

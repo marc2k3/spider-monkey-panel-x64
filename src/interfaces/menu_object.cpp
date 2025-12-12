@@ -26,7 +26,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"MenuObject",
 	kDefaultClassFlags,
 	&jsOps
@@ -89,7 +89,7 @@ JsMenuObject::CreateNative(JSContext* cx, HWND hParentWnd)
 	return std::unique_ptr<JsMenuObject>(new JsMenuObject(cx, hParentWnd, hMenu));
 }
 
-uint32_t JsMenuObject::GetInternalSize(HWND /* hParentWnd */)
+uint32_t JsMenuObject::GetInternalSize()
 {
 	return 0;
 }

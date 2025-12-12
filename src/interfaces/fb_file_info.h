@@ -19,7 +19,7 @@ namespace mozjs
 		~JsFbFileInfo() override = default;
 
 		static std::unique_ptr<JsFbFileInfo> CreateNative(JSContext* cx, metadb_info_container::ptr containerInfo);
-		static uint32_t GetInternalSize(const metadb_info_container::ptr& containerInfo);
+		uint32_t GetInternalSize();
 
 	public:
 		int32_t InfoFind(const std::string& name);

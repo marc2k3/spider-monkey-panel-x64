@@ -25,7 +25,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"FbProfiler",
 	kDefaultClassFlags,
 	&jsOps
@@ -75,9 +75,9 @@ JsFbProfiler::CreateNative(JSContext* cx, const std::string& name)
 	return std::unique_ptr<JsFbProfiler>(new JsFbProfiler(cx, name));
 }
 
-uint32_t JsFbProfiler::GetInternalSize(const std::string& name)
+uint32_t JsFbProfiler::GetInternalSize()
 {
-	return lengthu(name);
+	return lengthu(name_);
 }
 
 JSObject* JsFbProfiler::Constructor(JSContext* cx, const std::string& name)

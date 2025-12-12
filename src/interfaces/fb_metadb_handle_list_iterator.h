@@ -22,7 +22,7 @@ namespace mozjs
 		~JsFbMetadbHandleList_Iterator() override;
 
 		static std::unique_ptr<JsFbMetadbHandleList_Iterator> CreateNative(JSContext* cx, JsFbMetadbHandleList& handleList);
-		static uint32_t GetInternalSize(JsFbMetadbHandleList& handleList);
+		uint32_t GetInternalSize();
 
 	public:
 		JSObject* Next();

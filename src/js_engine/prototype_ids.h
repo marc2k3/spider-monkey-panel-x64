@@ -29,6 +29,6 @@ namespace mozjs
 		MeasureStringInfo,
 		MenuObject,
 		ThemeManager,
-		ProrototypeCount
+		PrototypeCount
 	};
 }

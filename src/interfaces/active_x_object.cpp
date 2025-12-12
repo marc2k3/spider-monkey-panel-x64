@@ -58,36 +58,6 @@ public:
 
 const ActiveXObjectProxyHandler ActiveXObjectProxyHandler::singleton;
 
-/*
-bool ActiveXObjectProxyHandler::has(JSContext* cx, JS::HandleObject proxy, JS::HandleId id, bool* bp) const
-{
-	if (!JSID_IS_STRING(id))
-	{
-		return js::ForwardingProxyHandler::has(cx, proxy, id, bp);
-	}
-
-	JS::RootedObject target(cx, js::GetProxyTargetObject(proxy));
-	auto pNativeTarget = static_cast<JsActiveXObject*>(JS::GetPrivate(target));
-	assert(pNativeTarget);
-
-	JS::RootedString jsString(cx, JSID_TO_STRING(id));
-	assert(jsString);
-
-	auto retVal = convert::to_native::ToValue(cx, jsString);
-	if (!retVal)
-	{
-		if (!JS_IsExceptionPending(cx))
-		{
-			JS_ReportErrorUTF8(cx, "Failed to parse property name");
-		}
-		return false;
-	}
-
-	*bp = pNativeTarget->Has(*retVal);
-	return true;
-}
-*/
-
 bool ActiveXObjectProxyHandler::get(JSContext* cx, JS::HandleObject proxy, JS::HandleValue receiver, JS::HandleId id, JS::MutableHandleValue vp) const
 {
 	try
@@ -125,14 +95,14 @@ bool ActiveXObjectProxyHandler::get(JSContext* cx, JS::HandleObject proxy, JS::H
 			std::wstring propName;
 			if (isString)
 			{
-				JS::RootedString jsString(cx, JSID_TO_STRING(id));
+				JS::RootedString jsString(cx, id.toString());
 				assert(jsString);
 
 				propName = convert::to_native::ToValue<std::wstring>(cx, jsString);
 			}
 			else if (isInt)
 			{
-				propName = std::to_wstring(JSID_TO_INT(id));
+				propName = std::to_wstring(id.toInt());
 			}
 
 			if (pNativeTarget->IsGet(propName))
@@ -145,7 +115,7 @@ bool ActiveXObjectProxyHandler::get(JSContext* cx, JS::HandleObject proxy, JS::H
 				const auto fetchedAsProperty = pNativeTarget->TryGetProperty(propName, vp);
 				if (!fetchedAsProperty)
 				{
-					pNativeTarget->GetItem(JSID_TO_INT(id), vp);
+					pNativeTarget->GetItem(id.toInt(), vp);
 				}
 				return true;
 			}
@@ -164,7 +134,7 @@ bool ActiveXObjectProxyHandler::set(JSContext* cx, JS::HandleObject proxy, JS::H
 {
 	try
 	{
-		if (!JSID_IS_STRING(id))
+		if (!id.isString())
 		{
 			return js::ForwardingProxyHandler::set(cx, proxy, id, v, receiver, result);
 		}
@@ -173,7 +143,7 @@ bool ActiveXObjectProxyHandler::set(JSContext* cx, JS::HandleObject proxy, JS::H
 		auto pNativeTarget = static_cast<JsActiveXObject*>(JS::GetPrivate(target));
 		assert(pNativeTarget);
 
-		JS::RootedString jsString(cx, JSID_TO_STRING(id));
+		JS::RootedString jsString(cx, id.toString());
 		assert(jsString);
 
 		const std::wstring propName = convert::to_native::ToValue<std::wstring>(cx, jsString);
@@ -253,7 +223,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"ActiveXObject",
 	JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE, // COM objects must be finalized in foreground
 	&jsOps
@@ -459,7 +429,7 @@ std::unique_ptr<JsActiveXObject> JsActiveXObject::CreateNative(JSContext* cx, co
 	return nativeObject;
 }
 
-uint32_t JsActiveXObject::GetInternalSize(const std::wstring& /*name*/)
+uint32_t JsActiveXObject::GetInternalSize()
 {
 	return 0;
 }

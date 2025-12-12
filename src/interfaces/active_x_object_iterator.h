@@ -22,7 +22,7 @@ namespace mozjs
 		~JsActiveXObject_Iterator() override;
 
 		static std::unique_ptr<JsActiveXObject_Iterator> CreateNative(JSContext* cx, JsActiveXObject& activeXObject);
-		static uint32_t GetInternalSize(JsActiveXObject& activeXObject);
+		uint32_t GetInternalSize();
 
 	public:
 		JSObject* Next();

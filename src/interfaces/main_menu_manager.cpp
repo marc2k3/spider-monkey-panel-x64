@@ -26,7 +26,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"MainMenuManager",
 	kDefaultClassFlags,
 	&jsOps

@@ -26,7 +26,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"Enumerator",
 	JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE, // COM objects must be finalized in foreground
 	&jsOps
@@ -93,7 +93,7 @@ JsEnumerator::CreateNative(JSContext* cx, IUnknown* pUnknown)
 	return pNative;
 }
 
-uint32_t JsEnumerator::GetInternalSize(IUnknown* /*pUnknown*/)
+uint32_t JsEnumerator::GetInternalSize()
 {
 	return 0;
 }

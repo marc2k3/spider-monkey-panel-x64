@@ -22,7 +22,7 @@ namespace mozjs
 		~Plman() override;
 
 		static std::unique_ptr<Plman> CreateNative(JSContext* ctx);
-		static uint32_t GetInternalSize();
+		uint32_t GetInternalSize();
 
 		void PrepareForGc();
 

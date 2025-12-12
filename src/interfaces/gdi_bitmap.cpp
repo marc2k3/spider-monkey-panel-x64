@@ -30,7 +30,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"GdiBitmap",
 	kDefaultClassFlags,
 	&jsOps
@@ -141,13 +141,9 @@ JsGdiBitmap::CreateNative(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> gdiBit
 	return std::unique_ptr<JsGdiBitmap>(new JsGdiBitmap(cx, std::move(gdiBitmap)));
 }
 
-uint32_t JsGdiBitmap::GetInternalSize(const std::unique_ptr<Gdiplus::Bitmap>& gdiBitmap)
+uint32_t JsGdiBitmap::GetInternalSize()
 {
-	if (!gdiBitmap)
-	{ // we don't care about return value, since it will fail in CreateNative later
-		return 0;
-	}
-	return sizeof(Gdiplus::Bitmap) + gdiBitmap->GetWidth() * gdiBitmap->GetHeight() * Gdiplus::GetPixelFormatSize(gdiBitmap->GetPixelFormat()) / 8;
+	return pGdi_->GetWidth() * pGdi_->GetHeight() * Gdiplus::GetPixelFormatSize(pGdi_->GetPixelFormat()) / 8;
 }
 
 Gdiplus::Bitmap* JsGdiBitmap::GdiBitmap() const

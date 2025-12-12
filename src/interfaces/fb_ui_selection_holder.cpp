@@ -26,7 +26,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"FbUiSelectionHolder",
 	JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE, // selection_holder must be finalized in foreground
 	&jsOps
@@ -71,7 +71,7 @@ JsFbUiSelectionHolder::CreateNative(JSContext* cx, const ui_selection_holder::pt
 	return std::unique_ptr<JsFbUiSelectionHolder>(new JsFbUiSelectionHolder(cx, holder));
 }
 
-uint32_t JsFbUiSelectionHolder::GetInternalSize(const ui_selection_holder::ptr& /*holder*/)
+uint32_t JsFbUiSelectionHolder::GetInternalSize()
 {
 	return 0;
 }

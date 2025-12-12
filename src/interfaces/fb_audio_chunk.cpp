@@ -23,7 +23,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"FbAudioChunk",
 	kDefaultClassFlags,
 	&jsOps
@@ -67,7 +67,7 @@ std::unique_ptr<JsFbAudioChunk> JsFbAudioChunk::CreateNative(JSContext* cx, cons
 	return std::unique_ptr<JsFbAudioChunk>(new JsFbAudioChunk(cx, chunk));
 }
 
-uint32_t JsFbAudioChunk::GetInternalSize(const audio_chunk_impl&)
+uint32_t JsFbAudioChunk::GetInternalSize()
 {
 	return sizeof(audio_chunk_impl);
 }

@@ -19,7 +19,7 @@ namespace mozjs
 		~JsFbPlaybackQueueItem() override = default;
 
 		static std::unique_ptr<JsFbPlaybackQueueItem> CreateNative(JSContext* cx, const t_playback_queue_item& playbackQueueItem);
-		static uint32_t GetInternalSize(const t_playback_queue_item& playbackQueueItem);
+		uint32_t GetInternalSize();
 
 	public:
 		JSObject* get_Handle();

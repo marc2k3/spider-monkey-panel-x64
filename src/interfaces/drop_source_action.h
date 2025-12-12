@@ -20,7 +20,7 @@ namespace mozjs
 		~JsDropSourceAction() override = default;
 
 		static std::unique_ptr<JsDropSourceAction> CreateNative(JSContext* cx);
-		static uint32_t GetInternalSize();
+		uint32_t GetInternalSize();
 
 	public:
 		smp::panel::DragActionParams& AccessDropActionParams();

@@ -20,7 +20,7 @@ namespace mozjs
 		~JsGdiRawBitmap() override = default;
 
 		static std::unique_ptr<JsGdiRawBitmap> CreateNative(JSContext* cx, Gdiplus::Bitmap* pBmp);
-		static uint32_t GetInternalSize(Gdiplus::Bitmap* pBmp);
+		uint32_t GetInternalSize();
 
 	public:
 		[[nodiscard]] __notnull

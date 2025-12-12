@@ -19,7 +19,7 @@ namespace mozjs
 		~JsFbAudioChunk() override = default;
 
 		static std::unique_ptr<JsFbAudioChunk> CreateNative(JSContext* cx, const audio_chunk_impl& chunk);
-		static uint32_t GetInternalSize(const audio_chunk_impl& chunk);
+		uint32_t GetInternalSize();
 
 	public:
 		JS::Value get_Data();

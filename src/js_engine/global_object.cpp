@@ -142,7 +142,7 @@ namespace
 
 	constexpr JSClass jsClass = {
 		"Global",
-		JSCLASS_GLOBAL_FLAGS_WITH_SLOTS(static_cast<uint32_t>(JsPrototypeId::ProrototypeCount)) | JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE,
+		JSCLASS_GLOBAL_FLAGS_WITH_SLOTS(static_cast<uint32_t>(JsPrototypeId::PrototypeCount)) | JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE,
 		&jsOps
 	};
 

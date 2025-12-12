@@ -32,7 +32,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"GdiGraphics",
 	kDefaultClassFlags,
 	&jsOps

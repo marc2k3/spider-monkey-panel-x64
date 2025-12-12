@@ -24,7 +24,7 @@ namespace
 		nullptr
 	};
 
-	JSClass jsClass = {
+	constexpr JSClass jsClass = {
 		"FbTooltip",
 		kDefaultClassFlags,
 		&jsOps
@@ -95,7 +95,7 @@ namespace mozjs
 		return std::unique_ptr<JsFbTooltip>(new JsFbTooltip(cx, hParentWnd));
 	}
 
-	uint32_t JsFbTooltip::GetInternalSize(HWND /*hParentWnd*/)
+	uint32_t JsFbTooltip::GetInternalSize()
 	{
 		return sizeof(LOGFONT) + sizeof(TOOLINFO);
 	}

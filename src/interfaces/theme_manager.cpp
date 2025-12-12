@@ -25,7 +25,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"ThemeManager",
 	kDefaultClassFlags,
 	&jsOps
@@ -93,7 +93,7 @@ JsThemeManager::CreateNative(JSContext* cx, HWND hwnd, const std::wstring& class
 	return std::unique_ptr<JsThemeManager>(new JsThemeManager(cx, hTheme));
 }
 
-uint32_t JsThemeManager::GetInternalSize(HWND /* hwnd */, const std::wstring& /* classId */)
+uint32_t JsThemeManager::GetInternalSize()
 {
 	return 0;
 }

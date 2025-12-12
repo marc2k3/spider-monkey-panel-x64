@@ -21,7 +21,7 @@ namespace mozjs
 		~Fb() override = default;
 
 		static std::unique_ptr<Fb> CreateNative(JSContext* ctx);
-		static uint32_t GetInternalSize();
+		uint32_t GetInternalSize();
 
 	public:
 		JSObject* AcquireUiSelectionHolder();

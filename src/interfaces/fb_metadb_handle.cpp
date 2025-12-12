@@ -27,7 +27,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"FbMetadbHandle",
 	kDefaultClassFlags,
 	&jsOps
@@ -96,7 +96,7 @@ std::unique_ptr<mozjs::JsFbMetadbHandle> JsFbMetadbHandle::CreateNative(JSContex
 	return std::unique_ptr<JsFbMetadbHandle>(new JsFbMetadbHandle(cx, handle));
 }
 
-uint32_t JsFbMetadbHandle::GetInternalSize(const metadb_handle_ptr& /*handle*/)
+uint32_t JsFbMetadbHandle::GetInternalSize()
 {
 	return sizeof(metadb_handle);
 }

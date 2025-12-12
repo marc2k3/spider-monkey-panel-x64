@@ -17,7 +17,7 @@ namespace mozjs
 
 	public:
 		static std::unique_ptr<Utils> CreateNative(JSContext* ctx);
-		static uint32_t GetInternalSize();
+		uint32_t GetInternalSize();
 
 	public:
 		bool CheckComponent(const std::string& name, bool is_dll = true) const;

@@ -21,7 +21,7 @@ namespace mozjs
 		~JsGdiFont() override;
 
 		static std::unique_ptr<JsGdiFont> CreateNative(JSContext* cx, std::unique_ptr<Gdiplus::Font> gdiFont, HFONT hFont, bool isManaged);
-		static uint32_t GetInternalSize(const std::unique_ptr<Gdiplus::Font>& gdiFont, HFONT hFont, bool isManaged);
+		uint32_t GetInternalSize();
 
 	public:
 		[[nodiscard]] Gdiplus::Font* GdiFont() const;

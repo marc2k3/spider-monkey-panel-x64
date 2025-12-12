@@ -21,7 +21,7 @@ namespace mozjs
 		~JsFbProfiler() override = default;
 
 		static std::unique_ptr<JsFbProfiler> CreateNative(JSContext* cx, const std::string& name);
-		static uint32_t GetInternalSize(const std::string& name);
+		uint32_t GetInternalSize();
 
 	public: // ctor
 		static JSObject* Constructor(JSContext* cx, const std::string& name = "");

@@ -32,7 +32,7 @@ namespace
 		nullptr // set in runtime to JS_GlobalObjectTraceHook
 	};
 
-	JSClass jsClass = {
+	constexpr JSClass jsClass = {
 		"InternalGlobal",
 		JSCLASS_GLOBAL_FLAGS | JSCLASS_FOREGROUND_FINALIZE,
 		&jsOps

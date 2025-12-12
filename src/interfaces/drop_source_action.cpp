@@ -23,7 +23,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"DropSourceAction",
 	kDefaultClassFlags,
 	&jsOps

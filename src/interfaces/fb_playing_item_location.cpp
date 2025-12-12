@@ -22,7 +22,7 @@ namespace
 		nullptr
 	};
 
-	JSClass jsClass = {
+	constexpr JSClass jsClass = {
 		"PlayingItemLocation",
 		kDefaultClassFlags,
 		&jsOps
@@ -69,7 +69,7 @@ namespace mozjs
 		return std::unique_ptr<JsFbPlayingItemLocation>(new JsFbPlayingItemLocation(cx, is_valid, playlistIndex, playlistItemIndex));
 	}
 
-	uint32_t JsFbPlayingItemLocation::GetInternalSize(bool /*is_valid*/, size_t /*playlistIndex*/, size_t /*playlistItemIndex*/)
+	uint32_t JsFbPlayingItemLocation::GetInternalSize()
 	{
 		return 0;
 	}

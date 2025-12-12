@@ -27,7 +27,7 @@ JSClassOps jsOps = {
 	nullptr
 };
 
-JSClass jsClass = {
+constexpr JSClass jsClass = {
 	"ActiveXObject_Iterator",
 	JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE, // COM objects must be finalized in foreground
 	&jsOps
@@ -89,7 +89,7 @@ JsActiveXObject_Iterator::CreateNative(JSContext* cx, JsActiveXObject& activeXOb
 	return std::unique_ptr<JsActiveXObject_Iterator>(new JsActiveXObject_Iterator(cx, pEnum));
 }
 
-uint32_t JsActiveXObject_Iterator::GetInternalSize(JsActiveXObject& /*activeXObject*/)
+uint32_t JsActiveXObject_Iterator::GetInternalSize()
 {
 	return 0;
 }
