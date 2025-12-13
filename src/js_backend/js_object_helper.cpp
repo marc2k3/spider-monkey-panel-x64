@@ -69,7 +69,7 @@ namespace mozjs
 				}
 				else
 				{
-					static_assert(qwr::always_false_v<T>, "non-exhaustive visitor!");
+					static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
 				}
 			};
 

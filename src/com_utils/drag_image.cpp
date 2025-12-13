@@ -60,7 +60,7 @@ namespace uih
 	{
 		constexpr int theme_state = 0;
 		const bool useTheming = UsesTheming(theme, DD_TEXTBG, theme_state);
-		const auto wtext = qwr::ToWide(text);
+		const auto wtext = smp::ToWide(text);
 
 		DWORD text_flags = DT_CENTER | DT_WORDBREAK;
 		RECT rc_text{};

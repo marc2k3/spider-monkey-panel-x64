@@ -65,8 +65,8 @@ CConfigTabAppearance::CConfigTabAppearance(CDialogConf& parent, config::ParsedPa
 	, edgeStyle_(settings.edgeStyle)
 	, isPseudoTransparent_(settings.isPseudoTransparent)
 	, ddx_({
-		qwr::CreateUiDdx<qwr::UiDdx_CheckBox>(isPseudoTransparent_, IDC_CHECK_PSEUDOTRANSPARENT),
-		qwr::CreateUiDdx<qwr::UiDdx_RadioRange>(
+		smp::CreateUiDdx<smp::UiDdx_CheckBox>(isPseudoTransparent_, IDC_CHECK_PSEUDOTRANSPARENT),
+		smp::CreateUiDdx<smp::UiDdx_RadioRange>(
 		edgeStyleId_,
 		std::initializer_list<int>{
 			IDC_RADIO_EDGE_NO,

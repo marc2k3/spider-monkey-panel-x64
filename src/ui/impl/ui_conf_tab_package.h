@@ -2,8 +2,8 @@
 #include <com_utils/file_drop_target.h>
 #include <config/parsed_panel_config.h>
 #include <panel/user_message.h>
-#include <qwr/ui_ddx.h>
 #include <ui/impl/ui_itab.h>
+#include <utils/ui_ddx.h>
 
 namespace smp::ui
 {
@@ -127,7 +127,7 @@ namespace smp::ui
 		std::filesystem::path focusedFile_;
 		int focusedFileIdx_ = 0;
 
-		std::array<std::unique_ptr<qwr::IUiDdx>, 7> ddx_;
+		std::array<std::unique_ptr<smp::IUiDdx>, 7> ddx_;
 
 		WStrings files_;
 		CListBox filesListBox_;

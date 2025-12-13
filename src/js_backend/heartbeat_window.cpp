@@ -21,10 +21,10 @@ namespace smp
 		wx.lpszClassName = class_name;
 
 		ATOM atom = RegisterClassEx(&wx);
-		qwr::CheckWinApi(!!atom, "RegisterClassEx");
+		smp::CheckWinApi(!!atom, "RegisterClassEx");
 
 		HWND hWnd = CreateWindowEx(0, MAKEINTATOM(atom), nullptr, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, nullptr, nullptr);
-		qwr::CheckWinApi(hWnd, "CreateWindowEx");
+		smp::CheckWinApi(hWnd, "CreateWindowEx");
 
 		return std::unique_ptr<HeartbeatWindow>(new HeartbeatWindow(hWnd));
 	}

@@ -328,9 +328,9 @@ namespace mozjs
 		{
 			JS_ClearPendingException(cx);
 
-			const auto errorMsg8 = qwr::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
-			const auto errorSource8 = qwr::ToU8(std::wstring_view{ e.Source().length() ? static_cast<const wchar_t*>(e.Source()) : L"<none>" });
-			const auto errorDesc8 = qwr::ToU8(std::wstring_view{ e.Description().length() ? static_cast<const wchar_t*>(e.Description()) : L"<none>" });
+			const auto errorMsg8 = smp::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
+			const auto errorSource8 = smp::ToU8(std::wstring_view{ e.Source().length() ? static_cast<const wchar_t*>(e.Source()) : L"<none>" });
+			const auto errorDesc8 = smp::ToU8(std::wstring_view{ e.Description().length() ? static_cast<const wchar_t*>(e.Description()) : L"<none>" });
 			JS_ReportErrorUTF8(
 				cx,
 				fmt::format(
@@ -374,9 +374,9 @@ namespace mozjs
 		{
 			JS_ClearPendingException(cx);
 
-			const auto errorMsg8 = qwr::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
-			const auto errorSource8 = qwr::ToU8(std::wstring_view{ e.Source().length() ? static_cast<const wchar_t*>(e.Source()) : L"<none>" });
-			const auto errorDesc8 = qwr::ToU8(std::wstring_view{ e.Description().length() ? static_cast<const wchar_t*>(e.Description()) : L"<none>" });
+			const auto errorMsg8 = smp::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
+			const auto errorSource8 = smp::ToU8(std::wstring_view{ e.Source().length() ? static_cast<const wchar_t*>(e.Source()) : L"<none>" });
+			const auto errorDesc8 = smp::ToU8(std::wstring_view{ e.Description().length() ? static_cast<const wchar_t*>(e.Description()) : L"<none>" });
 			return fmt::format("COM error:\n"
 				"  hresult: {:#x}\n"
 				"  message: {}\n"

@@ -38,13 +38,13 @@ CConfigTabPackage::CConfigTabPackage(CDialogConf& parent, config::ParsedPanelSet
 	, shouldGrabFocus_(settings.shouldGrabFocus)
 	, enableDragDrop_(settings.enableDragDrop)
 	, ddx_({
-		qwr::CreateUiDdx<qwr::UiDdx_TextEdit>(scriptName_, IDC_EDIT_PACKAGE_NAME),
-		qwr::CreateUiDdx<qwr::UiDdx_TextEdit>(scriptVersion_, IDC_EDIT_PACKAGE_VERSION),
-		qwr::CreateUiDdx<qwr::UiDdx_TextEdit>(scriptAuthor_, IDC_EDIT_PACKAGE_AUTHOR),
-		qwr::CreateUiDdx<qwr::UiDdx_TextEdit>(scriptDescription_, IDC_EDIT_PACKAGE_DESCRIPTION),
-		qwr::CreateUiDdx<qwr::UiDdx_CheckBox>(shouldGrabFocus_, IDC_CHECK_SHOULD_GRAB_FOCUS),
-		qwr::CreateUiDdx<qwr::UiDdx_CheckBox>(enableDragDrop_, IDC_CHECK_ENABLE_DRAG_N_DROP),
-		qwr::CreateUiDdx<qwr::UiDdx_ListBox>(focusedFileIdx_, IDC_LIST_PACKAGE_FILES)
+		smp::CreateUiDdx<smp::UiDdx_TextEdit>(scriptName_, IDC_EDIT_PACKAGE_NAME),
+		smp::CreateUiDdx<smp::UiDdx_TextEdit>(scriptVersion_, IDC_EDIT_PACKAGE_VERSION),
+		smp::CreateUiDdx<smp::UiDdx_TextEdit>(scriptAuthor_, IDC_EDIT_PACKAGE_AUTHOR),
+		smp::CreateUiDdx<smp::UiDdx_TextEdit>(scriptDescription_, IDC_EDIT_PACKAGE_DESCRIPTION),
+		smp::CreateUiDdx<smp::UiDdx_CheckBox>(shouldGrabFocus_, IDC_CHECK_SHOULD_GRAB_FOCUS),
+		smp::CreateUiDdx<smp::UiDdx_CheckBox>(enableDragDrop_, IDC_CHECK_ENABLE_DRAG_N_DROP),
+		smp::CreateUiDdx<smp::UiDdx_ListBox>(focusedFileIdx_, IDC_LIST_PACKAGE_FILES)
 	})
 {
 	InitializeLocalData();
@@ -190,7 +190,7 @@ void CConfigTabPackage::OnNewScript(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 }
 
@@ -218,7 +218,7 @@ void CConfigTabPackage::OnRemoveFile(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 
 	files_.erase(files_.cbegin() + focusedFileIdx_);
@@ -241,7 +241,7 @@ void CConfigTabPackage::OnRenameFile(UINT uNotifyCode, int nID, CWindow wndCtl)
 
 	try
 	{
-		const auto wValue = qwr::ToWide(dlg.GetValue());
+		const auto wValue = smp::ToWide(dlg.GetValue());
 		const auto newFilePath = filepath.parent_path() / fs::path(wValue);
 		fs::rename(filepath, newFilePath);
 		filepath = newFilePath;
@@ -253,7 +253,7 @@ void CConfigTabPackage::OnRenameFile(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 }
 
@@ -309,11 +309,11 @@ void CConfigTabPackage::OnEditScript(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 	catch (const QwrException& e)
 	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 	}
 }
 
@@ -440,11 +440,11 @@ void CConfigTabPackage::InitializeFilesListBox()
 		try
 		{
 			HRESULT hr = pFilesListBoxDrop_->RegisterDragDrop();
-			qwr::CheckHR(hr, "RegisterDragDrop");
+			smp::CheckHR(hr, "RegisterDragDrop");
 		}
 		catch (QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 
 		files_ = config::GetPackageFiles(settings_);
@@ -457,7 +457,7 @@ void CConfigTabPackage::InitializeFilesListBox()
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 }
 
@@ -509,7 +509,7 @@ void CConfigTabPackage::UpdateListBoxFromData()
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 }
 
@@ -562,11 +562,11 @@ void CConfigTabPackage::AddFile(const std::filesystem::path& path)
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 	catch (const QwrException& e)
 	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 	}
 }
 

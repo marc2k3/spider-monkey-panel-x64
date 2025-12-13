@@ -89,13 +89,13 @@ namespace mozjs::convert::to_js
 	template <>
 	void ToValue(JSContext* cx, const pfc::string8& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		ToValue<std::wstring>(cx, qwr::ToWide(inValue), wrappedValue);
+		ToValue<std::wstring>(cx, smp::ToWide(inValue), wrappedValue);
 	}
 
 	template <>
 	void ToValue(JSContext* cx, const std::string& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		ToValue<std::wstring>(cx, qwr::ToWide(inValue), wrappedValue);
+		ToValue<std::wstring>(cx, smp::ToWide(inValue), wrappedValue);
 	}
 
 	template <>

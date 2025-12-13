@@ -176,7 +176,7 @@ namespace mozjs
 
 		int recv{};
 		const auto status = font_collection.GetFamilies(count, font_families.data(), &recv);
-		qwr::CheckGdi(status, "GetFamilies");
+		smp::CheckGdi(status, "GetFamilies");
 		QwrException::ExpectTrue(recv == count, "Internal error: GetFamilies numSought != numFound");
 
 		std::array<wchar_t, LF_FACESIZE> family_name_eng{};
@@ -184,10 +184,10 @@ namespace mozjs
 
 		const auto it = ranges::find_if(font_families, [&family_name_eng, &family_name_loc, &name](const auto& fontFamily) {
 			auto status = fontFamily.GetFamilyName(family_name_eng.data(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
-			qwr::CheckGdi(status, "GetFamilyName");
+			smp::CheckGdi(status, "GetFamilyName");
 
 			status = fontFamily.GetFamilyName(family_name_loc.data());
-			qwr::CheckGdi(status, "GetFamilyName");
+			smp::CheckGdi(status, "GetFamilyName");
 
 			return (!_wcsicmp(name.c_str(), family_name_loc.data()) || !_wcsicmp(name.c_str(), family_name_eng.data()));
 			});
@@ -273,7 +273,7 @@ namespace mozjs
 		}
 		else
 		{
-			throw QwrException("Invalid value of mode argument: '{}'", qwr::ToU8(mode));
+			throw QwrException("Invalid value of mode argument: '{}'", smp::ToU8(mode));
 		}
 	}
 
@@ -591,11 +591,11 @@ namespace mozjs
 	{
 		// WinAPI is weird: 0 - error (with LastError), > 0 - characters required
 		int iRet = LCIDToLocaleName(lcid, nullptr, 0, LOCALE_ALLOW_NEUTRAL_NAMES);
-		qwr::CheckWinApi(iRet, "LCIDToLocaleName(nullptr)");
+		smp::CheckWinApi(iRet, "LCIDToLocaleName(nullptr)");
 
 		std::wstring localeName(iRet, '\0');
 		iRet = LCIDToLocaleName(lcid, localeName.data(), sizeu(localeName), LOCALE_ALLOW_NEUTRAL_NAMES);
-		qwr::CheckWinApi(iRet, "LCIDToLocaleName(data)");
+		smp::CheckWinApi(iRet, "LCIDToLocaleName(data)");
 
 		std::optional<NLSVERSIONINFOEX> versionInfo;
 		try
@@ -604,7 +604,7 @@ namespace mozjs
 			{
 				NLSVERSIONINFOEX tmpVersionInfo{};
 				BOOL bRet = GetNLSVersionEx(COMPARE_STRING, localeName.c_str(), &tmpVersionInfo);
-				qwr::CheckWinApi(bRet, "GetNLSVersionEx");
+				smp::CheckWinApi(bRet, "GetNLSVersionEx");
 
 				versionInfo = tmpVersionInfo;
 			}
@@ -616,11 +616,11 @@ namespace mozjs
 		auto* pVersionInfo = reinterpret_cast<NLSVERSIONINFO*>(versionInfo ? &(*versionInfo) : nullptr);
 
 		iRet = LCMapStringEx(localeName.c_str(), flags, str.c_str(), lengthu(str) + 1, nullptr, 0, pVersionInfo, nullptr, 0);
-		qwr::CheckWinApi(iRet, "LCMapStringEx(nullptr)");
+		smp::CheckWinApi(iRet, "LCMapStringEx(nullptr)");
 
 		std::wstring dst(iRet, '\0');
 		iRet = LCMapStringEx(localeName.c_str(), flags, str.c_str(), lengthu(str) + 1, dst.data(), lengthu(dst), pVersionInfo, nullptr, 0);
-		qwr::CheckWinApi(iRet, "LCMapStringEx(data)");
+		smp::CheckWinApi(iRet, "LCMapStringEx(data)");
 
 		dst.resize(lengthu(dst));
 		return dst;
@@ -637,7 +637,7 @@ namespace mozjs
 		std::wstring dst(MAX_PATH, '\0');
 		int iRet = GetPrivateProfileStringW(section.c_str(), key.c_str(), defaultval.c_str(), dst.data(), lengthu(dst), filename.c_str());
 		// TODO v2: Uncomment error checking
-		// qwr::CheckWinApi((iRet || (NO_ERROR == GetLastError())), "GetPrivateProfileString(nullptr)");
+		// smp::CheckWinApi((iRet || (NO_ERROR == GetLastError())), "GetPrivateProfileString(nullptr)");
 
 		if (!iRet && (NO_ERROR != GetLastError()))
 		{

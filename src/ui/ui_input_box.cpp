@@ -60,7 +60,7 @@ namespace smp::ui
 		HDC hDc = dc.m_hDC;
 
 		auto _ = wil::SelectObject(hDc, promptCtrl.GetFont());
-		const auto promptW = qwr::ToWide(prompt_);
+		const auto promptW = smp::ToWide(prompt_);
 		DrawTextW(hDc, const_cast<wchar_t*>(promptW.c_str()), -1, &newPromptRc, DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK);
 
 		if (newPromptRc.bottom > promptRc.bottom || newPromptRc.right > promptRc.right)

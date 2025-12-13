@@ -198,11 +198,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="panel\js_panel_window_cui.cpp" />
     <ClCompile Include="panel\js_panel_window_dui.cpp" />
     <ClCompile Include="panel\modal_blocking_scope.cpp" />
-    <ClCompile Include="qwr\error_popup.cpp" />
-    <ClCompile Include="qwr\hook_handler.cpp" />
-    <ClCompile Include="qwr\thread_pool.cpp" />
-    <ClCompile Include="qwr\unicode.cpp" />
-    <ClCompile Include="qwr\winapi_error_helpers.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -227,14 +222,19 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="ui\ui_package_manager.cpp" />
     <ClCompile Include="ui\ui_slow_script.cpp" />
     <ClCompile Include="utils\edit_text.cpp" />
+    <ClCompile Include="utils\error_popup.cpp" />
     <ClCompile Include="utils\gdi_error_helpers.cpp" />
     <ClCompile Include="utils\guid_helpers.cpp" />
+    <ClCompile Include="utils\hook_handler.cpp" />
     <ClCompile Include="utils\image_helpers.cpp" />
     <ClCompile Include="utils\kmeans.cpp" />
     <ClCompile Include="utils\location_processor.cpp" />
     <ClCompile Include="utils\logging.cpp" />
     <ClCompile Include="utils\menu_helpers.cpp" />
     <ClCompile Include="utils\text_helpers.cpp" />
+    <ClCompile Include="utils\thread_pool.cpp" />
+    <ClCompile Include="utils\unicode.cpp" />
+    <ClCompile Include="utils\winapi_error_helpers.cpp" />
     <ClCompile Include="utils\zip_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -364,16 +364,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="panel\js_panel_window.h" />
     <ClInclude Include="panel\modal_blocking_scope.h" />
     <ClInclude Include="panel\user_message.h" />
-    <ClInclude Include="qwr\error_popup.h" />
-    <ClInclude Include="qwr\hook_handler.h" />
-    <ClInclude Include="qwr\qwr_exception.h" />
-    <ClInclude Include="qwr\thread_pool.h" />
-    <ClInclude Include="qwr\type_traits.h" />
-    <ClInclude Include="qwr\ui_ddx.h" />
-    <ClInclude Include="qwr\ui_ddx_option.h" />
-    <ClInclude Include="qwr\ui_option.h" />
-    <ClInclude Include="qwr\unicode.h" />
-    <ClInclude Include="qwr\winapi_error_helpers.h" />
     <ClInclude Include="resources\resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="timeout\timeout.h" />
@@ -399,16 +389,25 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="ui\ui_slow_script.h" />
     <ClInclude Include="utils\colour_helpers.h" />
     <ClInclude Include="utils\edit_text.h" />
+    <ClInclude Include="utils\error_popup.h" />
     <ClInclude Include="utils\gdi_error_helpers.h" />
     <ClInclude Include="utils\gdi_helpers.h" />
     <ClInclude Include="utils\guid_helpers.h" />
+    <ClInclude Include="utils\hook_handler.h" />
     <ClInclude Include="utils\image_helpers.h" />
     <ClInclude Include="utils\js_exception.h" />
     <ClInclude Include="utils\kmeans.h" />
     <ClInclude Include="utils\location_processor.h" />
     <ClInclude Include="utils\logging.h" />
     <ClInclude Include="utils\menu_helpers.h" />
+    <ClInclude Include="utils\qwr_exception.h" />
     <ClInclude Include="utils\text_helpers.h" />
+    <ClInclude Include="utils\thread_pool.h" />
+    <ClInclude Include="utils\type_traits.h" />
+    <ClInclude Include="utils\ui_ddx.h" />
+    <ClInclude Include="utils\ui_option.h" />
+    <ClInclude Include="utils\unicode.h" />
+    <ClInclude Include="utils\winapi_error_helpers.h" />
     <ClInclude Include="utils\zip_utils.h" />
   </ItemGroup>
   <ItemGroup>

@@ -135,7 +135,7 @@ namespace mozjs
 		}
 		else
 		{
-			qwr::CheckHR(hr, "Next");
+			smp::CheckHR(hr, "Next");
 			isAtEnd_ = false;
 		}
 	}

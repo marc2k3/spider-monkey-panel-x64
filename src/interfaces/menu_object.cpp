@@ -58,7 +58,7 @@ namespace mozjs
 	std::unique_ptr<JsMenuObject> JsMenuObject::CreateNative(JSContext* cx, HWND hParentWnd)
 	{
 		HMENU hMenu = ::CreatePopupMenu();
-		qwr::CheckWinApi(!!hMenu, "CreatePopupMenu");
+		smp::CheckWinApi(!!hMenu, "CreatePopupMenu");
 
 		return std::unique_ptr<JsMenuObject>(new JsMenuObject(cx, hParentWnd, hMenu));
 	}
@@ -81,13 +81,13 @@ namespace mozjs
 		}
 
 		BOOL bRet = ::AppendMenu(hMenu_, flags, item_id, text.c_str());
-		qwr::CheckWinApi(bRet, "AppendMenu");
+		smp::CheckWinApi(bRet, "AppendMenu");
 	}
 
 	void JsMenuObject::AppendMenuSeparator()
 	{
 		BOOL bRet = ::AppendMenu(hMenu_, MF_SEPARATOR, 0, nullptr);
-		qwr::CheckWinApi(bRet, "AppendMenu");
+		smp::CheckWinApi(bRet, "AppendMenu");
 	}
 
 	void JsMenuObject::AppendTo(JsMenuObject* parent, uint32_t flags, const std::wstring& text)
@@ -95,7 +95,7 @@ namespace mozjs
 		QwrException::ExpectTrue(parent, "parent argument is null");
 
 		BOOL bRet = ::AppendMenu(parent->HMenu(), flags | MF_STRING | MF_POPUP, (UINT_PTR)hMenu_, text.c_str());
-		qwr::CheckWinApi(bRet, "AppendMenu");
+		smp::CheckWinApi(bRet, "AppendMenu");
 
 		isDetached_ = true;
 	}
@@ -114,7 +114,7 @@ namespace mozjs
 		QwrException::ExpectTrue(selected >= first && selected <= last, "Index is out of bounds");
 
 		BOOL bRet = ::CheckMenuRadioItem(hMenu_, first, last, selected, MF_BYCOMMAND);
-		qwr::CheckWinApi(bRet, "CheckMenuRadioItem");
+		smp::CheckWinApi(bRet, "CheckMenuRadioItem");
 	}
 
 	uint32_t JsMenuObject::TrackPopupMenu(int32_t x, int32_t y, uint32_t flags)
@@ -126,7 +126,7 @@ namespace mozjs
 		flags &= ~TPM_RECURSE;
 
 		BOOL bRet = ClientToScreen(hParentWnd_, &pt);
-		qwr::CheckWinApi(bRet, "ClientToScreen");
+		smp::CheckWinApi(bRet, "ClientToScreen");
 
 		if (smp::modal::IsModalBlocked())
 		{

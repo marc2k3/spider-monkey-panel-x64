@@ -13,7 +13,7 @@ namespace smp::ui
 
 CDialogPackageManager::CDialogPackageManager(const std::string& currentPackageId)
 	: focusedPackageId_(currentPackageId)
-	, ddx_({ qwr::CreateUiDdx<qwr::UiDdx_ListBox>(focusedPackageIdx_, IDC_LIST_PACKAGES) })
+	, ddx_({ smp::CreateUiDdx<smp::UiDdx_ListBox>(focusedPackageIdx_, IDC_LIST_PACKAGES) })
 {
 }
 
@@ -43,11 +43,11 @@ LRESULT CDialogPackageManager::OnInitDialog(HWND, LPARAM)
 	try
 	{
 		HRESULT hr = pPackagesListBoxDrop_->RegisterDragDrop();
-		qwr::CheckHR(hr, "RegisterDragDrop");
+		smp::CheckHR(hr, "RegisterDragDrop");
 	}
 	catch (QwrException& e)
 	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 	}
 
 	// TODO: add context menu
@@ -132,7 +132,7 @@ void CDialogPackageManager::OnNewPackage(UINT /*uNotifyCode*/, int /*nID*/, CWin
 	}
 	catch (const QwrException& e)
 	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 	}
 }
 
@@ -188,11 +188,11 @@ void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, C
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 	catch (const QwrException& e)
 	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 	}
 
 	packages_.erase(packages_.cbegin() + focusedPackageIdx_);
@@ -237,11 +237,11 @@ void CDialogPackageManager::OnExportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 			}
 			catch (const fs::filesystem_error& e)
 			{
-				qwr::ReportFSErrorWithPopup(e);
+				smp::ReportFSErrorWithPopup(e);
 			}
 			catch (const QwrException& e)
 			{
-				qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 			}
 		};
 
@@ -266,11 +266,11 @@ void CDialogPackageManager::OnOpenFolder(UINT /*uNotifyCode*/, int /*nID*/, CWin
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 	catch (const QwrException& e)
 	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 	}
 }
 
@@ -399,10 +399,10 @@ void CDialogPackageManager::LoadPackages()
 			catch (const QwrException& e)
 			{
 				PackageData packageData{
-					qwr::ToWide(fmt::format("{} (ERROR)", packageId)),
+					smp::ToWide(fmt::format("{} (ERROR)", packageId)),
 					packageId,
 					std::nullopt,
-					qwr::ToWide(fmt::format("Package parsing failed:\r\n{}", e.what()))
+					smp::ToWide(fmt::format("Package parsing failed:\r\n{}", e.what()))
 				};
 
 				parsedPackages.emplace_back(packageData);
@@ -415,7 +415,7 @@ void CDialogPackageManager::LoadPackages()
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 }
 
@@ -501,7 +501,7 @@ void CDialogPackageManager::UpdatedUiPackageInfo()
 	else
 	{
 		const auto valueOrEmpty = [](const std::string& str) -> std::wstring {
-			return (str.empty() ? L"<empty>" : qwr::ToWide(str));
+			return (str.empty() ? L"<empty>" : smp::ToWide(str));
 		};
 
 		const auto& parsedSettings = *packageData.parsedSettings;
@@ -543,7 +543,7 @@ CDialogPackageManager::PackageData CDialogPackageManager::GeneratePackageData(co
 	}();
 
 	return PackageData{
-		qwr::ToWide(displayedName),
+		smp::ToWide(displayedName),
 		*parsedSettings.packageId,
 		parsedSettings,
 		L"",
@@ -631,11 +631,11 @@ bool CDialogPackageManager::ImportPackage(const std::filesystem::path& path)
 	}
 	catch (const fs::filesystem_error& e)
 	{
-		qwr::ReportFSErrorWithPopup(e);
+		smp::ReportFSErrorWithPopup(e);
 	}
 	catch (const QwrException& e)
 	{
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 	}
 
 	return false;

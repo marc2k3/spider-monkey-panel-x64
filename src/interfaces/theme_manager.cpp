@@ -87,7 +87,7 @@ namespace mozjs
 		LPCRECT pclip_rc = (!clip_x && !clip_y && !clip_w && !clip_h) ? nullptr : &clip_rc;
 
 		HRESULT hr = ::DrawThemeBackground(hTheme_, dc, partId_, stateId_, &rc, pclip_rc);
-		qwr::CheckHR(hr, "DrawThemeBackground");
+		smp::CheckHR(hr, "DrawThemeBackground");
 	}
 
 	void JsThemeManager::DrawThemeBackgroundWithOpt(size_t optArgCount, JsGdiGraphics* gr,

@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "error_popup.h"
 
-namespace qwr
+namespace smp
 {
 	void ReportErrorWithPopup(const std::string& title, const std::string& errorText)
 	{
@@ -15,7 +15,7 @@ namespace qwr
 
 	void ReportFSErrorWithPopup(const std::filesystem::filesystem_error& e)
 	{
-		const auto errorText = qwr::FS_Error_ToU8(e);
+		const auto errorText = smp::FS_Error_ToU8(e);
 		ReportErrorWithPopup(SMP_UNDERSCORE_NAME, errorText);
 	}
 }

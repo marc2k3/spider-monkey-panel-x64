@@ -32,7 +32,7 @@ namespace smp::ui
 CDialogConf::CDialogConf(smp::js_panel_window* pParent, Tab tabId)
 	: pParent_(pParent)
 	, isCleanSlate_(::IsCleanSlate(pParent->GetSettings()))
-	, panelNameDdx_(qwr::CreateUiDdx<qwr::UiDdx_TextEdit>(localSettings_.panelId, IDC_EDIT_PANEL_NAME))
+	, panelNameDdx_(smp::CreateUiDdx<smp::UiDdx_TextEdit>(localSettings_.panelId, IDC_EDIT_PANEL_NAME))
 	, startingTabId_(tabId)
 {
 	InitializeLocalData();
@@ -100,7 +100,7 @@ void CDialogConf::Apply(bool savePackageData)
 		}
 		catch (const QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 	}
 
@@ -311,7 +311,7 @@ void CDialogConf::OnCommitPanelName(UINT /*uNotifyCode*/, int /*nID*/, CWindow /
 	DisablePanelNameControls();
 	if (localSettings_.panelId.empty())
 	{
-		localSettings_.panelId = qwr::ToU8(utils::GuidToStr(utils::GenerateGuid()));
+		localSettings_.panelId = smp::ToU8(utils::GuidToStr(utils::GenerateGuid()));
 
 		suppressDdxFromUi_ = true;
 		auto ddxSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });

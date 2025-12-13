@@ -1,7 +1,7 @@
 #pragma once
 #include <utils/gdi_helpers.h>
 
-namespace qwr
+namespace smp
 {
 	[[nodiscard]] std::string GdiErrorCodeToText(Gdiplus::Status errorCode);
 

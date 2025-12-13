@@ -112,18 +112,18 @@ using JSON = nlohmann::json;
 #pragma warning(pop)
 
 #include <resources/resource.h>
-#include <qwr/error_popup.h>
-#include <qwr/unicode.h>
-#include <qwr/type_traits.h>
-#include <qwr/winapi_error_helpers.h>
-#include <qwr/qwr_exception.h>
+#include <utils/error_popup.h>
+#include <utils/unicode.h>
+#include <utils/js_exception.h>
+#include <utils/type_traits.h>
+#include <utils/winapi_error_helpers.h>
+#include <utils/qwr_exception.h>
 
 #include <2K3/Helpers.hpp>
 #include <2K3/String.hpp>
 #include <component_defines.h>
 #include <component_guids.h>
 #include <component_paths.h>
-#include <utils/js_exception.h>
 
 // Mozilla SpiderMonkey
 #include "mozjs.hpp"

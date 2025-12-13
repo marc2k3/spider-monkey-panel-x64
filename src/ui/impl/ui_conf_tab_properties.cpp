@@ -117,11 +117,11 @@ LRESULT CConfigTabProperties::OnPinItemChanged(LPNMHDR pnmh)
 			else if constexpr (std::is_same_v<T, std::string>)
 			{
 				var.ChangeType(VT_BSTR);
-				arg = qwr::ToU8(std::wstring_view{ var.bstrVal ? var.bstrVal : L"" });
+				arg = smp::ToU8(std::wstring_view{ var.bstrVal ? var.bstrVal : L"" });
 			}
 			else
 			{
-				static_assert(qwr::always_false_v<T>, "non-exhaustive visitor!");
+				static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
 			}
 
 			return (prevArgValue != arg);
@@ -185,11 +185,11 @@ LRESULT CConfigTabProperties::OnImportBnClicked(WORD, WORD, HWND)
 			}
 			catch (const QwrException& e)
 			{
-				qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 			}
 			catch (const pfc::exception& e)
 			{
-				qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 			}
 
 			parent_.OnDataChanged();
@@ -246,11 +246,11 @@ void CConfigTabProperties::UpdateUiFromData()
 			}
 			else if constexpr (std::is_same_v<T, std::string>)
 			{
-				return PropCreateSimple(name.c_str(), qwr::ToWide(arg).c_str());
+				return PropCreateSimple(name.c_str(), smp::ToWide(arg).c_str());
 			}
 			else
 			{
-				static_assert(qwr::always_false_v<T>, "non-exhaustive visitor!");
+				static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
 			}
 		}, *pSerializedValue);
 

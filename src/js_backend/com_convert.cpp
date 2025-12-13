@@ -143,12 +143,12 @@ namespace
 		// Get the upper bound;
 		long ubound; // NOLINT (google-runtime-int)
 		HRESULT hr = SafeArrayGetUBound(src.parray, 1, &ubound);
-		qwr::CheckHR(hr, "SafeArrayGetUBound");
+		smp::CheckHR(hr, "SafeArrayGetUBound");
 
 		// Get the lower bound
 		long lbound; // NOLINT (google-runtime-int)
 		hr = SafeArrayGetLBound(src.parray, 1, &lbound);
-		qwr::CheckHR(hr, "SafeArrayGetLBound");
+		smp::CheckHR(hr, "SafeArrayGetLBound");
 
 		// Create the JS Array
 		JS::RootedObject jsArray(cx, JS::NewArrayObject(cx, ubound - lbound + 1));
@@ -163,7 +163,7 @@ namespace
 		else // This was maybe a VT_SAFEARRAY
 		{
 			hr = SafeArrayGetVartype(src.parray, &vartype);
-			qwr::CheckHR(hr, "SafeArrayGetVartype");
+			smp::CheckHR(hr, "SafeArrayGetVartype");
 		}
 
 		JS::RootedValue jsVal(cx);
@@ -180,7 +180,7 @@ namespace
 				var.vt = vartype;
 				hr = SafeArrayGetElement(src.parray, &i, &var.byref);
 			}
-			qwr::CheckHR(hr, "SafeArrayGetElement");
+			smp::CheckHR(hr, "SafeArrayGetElement");
 
 			VariantToJs(cx, var, &jsVal);
 
@@ -386,7 +386,7 @@ namespace mozjs::convert::com
 				{
 					//1.7.2.3
 					HRESULT hr = VariantCopyInd(&arg, &x->pStorage_->variant);
-					qwr::CheckHR(hr, "VariantCopyInd");
+					smp::CheckHR(hr, "VariantCopyInd");
 					//VariantCopy(&arg,&x->variant_);
 					//1.7.2.2 could address invalid memory if x is freed before arg
 					// arg.vt = VT_VARIANT | VT_BYREF;
@@ -496,7 +496,7 @@ namespace mozjs::convert::com
 			{
 				VARIANT* varArray = nullptr;
 				HRESULT hr = SafeArrayAccessData(safeArray, reinterpret_cast<void**>(&varArray));
-				qwr::CheckHR(hr, "SafeArrayAccessData");
+				smp::CheckHR(hr, "SafeArrayAccessData");
 
 				auto autoSaData = wil::scope_exit([safeArray]() {
 					SafeArrayUnaccessData(safeArray);
@@ -517,7 +517,7 @@ namespace mozjs::convert::com
 			{
 				void* dataArray = nullptr;
 				HRESULT hr = SafeArrayAccessData(safeArray, reinterpret_cast<void**>(&dataArray));
-				qwr::CheckHR(hr, "SafeArrayAccessData");
+				smp::CheckHR(hr, "SafeArrayAccessData");
 
 				auto autoSaData = wil::scope_exit([safeArray]() {
 					SafeArrayUnaccessData(safeArray);

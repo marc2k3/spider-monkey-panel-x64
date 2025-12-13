@@ -434,7 +434,7 @@ namespace mozjs
 		if (!guidstr.empty())
 		{
 			HRESULT hr = CLSIDFromString(guidstr.c_str(), &guid);
-			qwr::CheckHR(hr, "CLSIDFromString");
+			smp::CheckHR(hr, "CLSIDFromString");
 		}
 
 		return m_parent.GetColour(guid, type);
@@ -489,7 +489,7 @@ namespace mozjs
 		if (!guidstr.empty())
 		{
 			HRESULT hr = CLSIDFromString(guidstr.c_str(), &guid);
-			qwr::CheckHR(hr, "CLSIDFromString");
+			smp::CheckHR(hr, "CLSIDFromString");
 		}
 
 		auto hFont = wil::unique_hfont(m_parent.GetFont(guid, type));

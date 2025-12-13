@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "gdi_error_helpers.h"
 
-namespace qwr
+namespace smp
 {
 	std::string GdiErrorCodeToText(Gdiplus::Status errorCode)
 	{

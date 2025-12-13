@@ -39,7 +39,7 @@ namespace
 				return text;
 			}();
 
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, errorTextPadded);
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, errorTextPadded);
 	}
 }
 

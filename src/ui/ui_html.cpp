@@ -4,15 +4,13 @@
 #include <com_utils/dispatch_ptr.h>
 #include <js_backend/com_convert.h>
 #include <js_backend/js_to_native.h>
-#include <qwr/hook_handler.h>
+#include <utils/hook_handler.h>
 
 namespace smp::ui
 {
 	using namespace mozjs;
 
-	CDialogHtml::CDialogHtml(JSContext* cx, const std::wstring& htmlCodeOrPath, JS::HandleValue options)
-		: pJsCtx_(cx)
-		, htmlCodeOrPath_(htmlCodeOrPath)
+	CDialogHtml::CDialogHtml(JSContext* cx, const std::wstring& htmlCodeOrPath, JS::HandleValue options) : pJsCtx_(cx), htmlCodeOrPath_(htmlCodeOrPath)
 	{
 		ParseOptions(options);
 	}
@@ -27,28 +25,29 @@ namespace smp::ui
 		SetOptions();
 
 		HWND hIE = static_cast<HWND>(GetDlgItem(IDC_IE));
+
 		try
 		{
 			CAxWindow wndIE = hIE;
 
 			IObjectWithSitePtr pOWS = nullptr;
 			HRESULT hr = wndIE.QueryHost(IID_IObjectWithSite, reinterpret_cast<void**>(&pOWS));
-			qwr::CheckHR(hr, "QueryHost");
+			smp::CheckHR(hr, "QueryHost");
 
 			hr = pOWS->SetSite(static_cast<IServiceProvider*>(this));
-			qwr::CheckHR(hr, "SetSite");
+			smp::CheckHR(hr, "SetSite");
 
 			IWebBrowserPtr pBrowser;
 			hr = wndIE.QueryControl(&pBrowser);
-			qwr::CheckHR(hr, "QueryControl");
+			smp::CheckHR(hr, "QueryControl");
 
 			_variant_t v;
 			hr = pBrowser->Navigate(_bstr_t(L"about:blank"), &v, &v, &v, &v); ///< Document object is only available after Navigate
-			qwr::CheckHR(hr, "Navigate");
+			smp::CheckHR(hr, "Navigate");
 
 			IDispatchPtr pDocDispatch;
 			hr = pBrowser->get_Document(&pDocDispatch);
-			qwr::CheckHR(hr, "get_Document");
+			smp::CheckHR(hr, "get_Document");
 
 			IHTMLDocument2Ptr pDocument = pDocDispatch;
 
@@ -57,14 +56,14 @@ namespace smp::ui
 				IOleObjectPtr pOleObject(pDocument);
 				IOleClientSitePtr pClientSite;
 				hr = pOleObject->GetClientSite(&pClientSite);
-				qwr::CheckHR(hr, "GetClientSite");
+				smp::CheckHR(hr, "GetClientSite");
 
 				pDefaultUiHandler_ = pClientSite;
 
 				// Set the new custom IDocHostUIHandler
 				ICustomDocPtr pCustomDoc(pDocument);
 				hr = pCustomDoc->SetUIHandler(this);
-				qwr::CheckHR(hr, "SetUIHandler");
+				smp::CheckHR(hr, "SetUIHandler");
 			}
 
 			{
@@ -74,12 +73,12 @@ namespace smp::ui
 			if (static_cast<std::wstring_view>(htmlCodeOrPath_).starts_with(L"file://"))
 			{
 				hr = pBrowser->Navigate(_bstr_t(htmlCodeOrPath_.c_str()), &v, &v, &v, &v);
-				qwr::CheckHR(hr, "Navigate");
+				smp::CheckHR(hr, "Navigate");
 			}
 			else
 			{
 				hr = pDocument->put_designMode(_bstr_t(L"on"));
-				qwr::CheckHR(hr, "put_designMode");
+				smp::CheckHR(hr, "put_designMode");
 
 				SAFEARRAY* pSaStrings = SafeArrayCreateVector(VT_VARIANT, 0, 1);
 				auto autoPsa = wil::scope_exit([pSaStrings]() {
@@ -88,22 +87,22 @@ namespace smp::ui
 
 				VARIANT* pSaVar = nullptr;
 				hr = SafeArrayAccessData(pSaStrings, reinterpret_cast<void**>(&pSaVar));
-				qwr::CheckHR(hr, "SafeArrayAccessData");
+				smp::CheckHR(hr, "SafeArrayAccessData");
 
 				_bstr_t bstr(htmlCodeOrPath_.c_str());
 				pSaVar->vt = VT_BSTR;
 				pSaVar->bstrVal = bstr.Detach();
 				hr = SafeArrayUnaccessData(pSaStrings);
-				qwr::CheckHR(hr, "SafeArrayUnaccessData");
+				smp::CheckHR(hr, "SafeArrayUnaccessData");
 
 				hr = pDocument->write(pSaStrings);
-				qwr::CheckHR(hr, "write");
+				smp::CheckHR(hr, "write");
 
 				hr = pDocument->put_designMode(_bstr_t(L"off"));
-				qwr::CheckHR(hr, "put_designMode");
+				smp::CheckHR(hr, "put_designMode");
 
 				hr = pDocument->close();
-				qwr::CheckHR(hr, "close");
+				smp::CheckHR(hr, "close");
 			}
 
 			wndIE.SetFocus();

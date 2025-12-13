@@ -468,7 +468,7 @@ namespace mozjs
 			{
 				if (reportError)
 				{
-					throw QwrException("Failed to get DISPID for `{}`", qwr::ToU8(name));
+					throw QwrException("Failed to get DISPID for `{}`", smp::ToU8(name));
 				}
 				return std::nullopt;
 			}
@@ -790,17 +790,17 @@ namespace mozjs
 		if (!pStorage_->pDispatch)
 		{
 			HRESULT hr = pStorage_->pUnknown->QueryInterface(IID_IDispatch, reinterpret_cast<void**>(&pStorage_->pDispatch));
-			qwr::CheckHR(hr, "QueryInterface");
+			smp::CheckHR(hr, "QueryInterface");
 		}
 
 		if (!pStorage_->pTypeInfo)
 		{
 			unsigned ctinfo;
 			HRESULT hr = pStorage_->pDispatch->GetTypeInfoCount(&ctinfo);
-			qwr::CheckHR(hr, "GetTypeInfoCount");
+			smp::CheckHR(hr, "GetTypeInfoCount");
 
 			hr = pStorage_->pDispatch->GetTypeInfo(0, 0, &pStorage_->pTypeInfo);
-			qwr::CheckHR(hr, "GetTypeInfo");
+			smp::CheckHR(hr, "GetTypeInfo");
 		}
 
 		ParseTypeInfoRecursive(pJsCtx_, pStorage_->pTypeInfo, members_);
@@ -815,7 +815,7 @@ namespace mozjs
 
 		TYPEATTR* pAttr = nullptr;
 		HRESULT hr = pTypeInfo->GetTypeAttr(&pAttr);
-		qwr::CheckHR(hr, "GetTypeAttr");
+		smp::CheckHR(hr, "GetTypeAttr");
 
 		auto autoTypeAttr = wil::scope_exit([pTypeInfo, pAttr] {
 			pTypeInfo->ReleaseTypeAttr(pAttr);
@@ -827,7 +827,7 @@ namespace mozjs
 			{
 				HREFTYPE hRef = 0;
 				hr = pTypeInfo->GetRefTypeOfImplType(i, &hRef);
-				qwr::CheckHR(hr, "GetTypeAttr");
+				smp::CheckHR(hr, "GetTypeAttr");
 
 				ITypeInfo* pTypeInfoCur = nullptr;
 				hr = pTypeInfo->GetRefTypeInfo(hRef, &pTypeInfoCur);

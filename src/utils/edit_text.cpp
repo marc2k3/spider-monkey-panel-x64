@@ -16,7 +16,7 @@ namespace
 	fs::path GetFixedEditorPath()
 	{
 		const std::string tmp = fb2k::configStore::get()->getConfigString("smp.editor.path")->c_str();
-		const auto editorPath = qwr::ToWide(tmp);
+		const auto editorPath = smp::ToWide(tmp);
 
 		if (FileHelper(editorPath).is_file())
 			return editorPath;
@@ -93,7 +93,7 @@ namespace
 
 				const auto size = lengthu(tmpFilePath);
 				DWORD dwRet = GetTempPathW(size, tmpFilePath.data());
-				qwr::CheckWinApi(dwRet && dwRet <= size, "GetTempPath");
+				smp::CheckWinApi(dwRet && dwRet <= size, "GetTempPath");
 
 				std::wstring filename;
 				filename.resize(MAX_PATH);
@@ -105,7 +105,7 @@ namespace
 					filename.data()
 				);
 
-				qwr::CheckWinApi(uRet, "GetTempFileName");
+				smp::CheckWinApi(uRet, "GetTempFileName");
 				filename.resize(wcslen(filename.c_str()));
 				return fs::path(tmpFilePath) / filename;
 			}();

@@ -28,8 +28,8 @@ namespace smp::com
 
 			if (exception.bstrDescription)
 			{
-				const auto errorDesc8 = qwr::ToU8(std::wstring_view{ exception.bstrDescription ? exception.bstrDescription : L"<none>" });
-				const auto errorSource8 = qwr::ToU8(std::wstring_view{ exception.bstrSource ? exception.bstrSource : L"<none>" });
+				const auto errorDesc8 = smp::ToU8(std::wstring_view{ exception.bstrDescription ? exception.bstrDescription : L"<none>" });
+				const auto errorSource8 = smp::ToU8(std::wstring_view{ exception.bstrSource ? exception.bstrSource : L"<none>" });
 				throw QwrException("ActiveXObject:\n"
 					"  code: {:#x}\n"
 					"  description: {}\n"
@@ -40,7 +40,7 @@ namespace smp::com
 			}
 			else
 			{
-				qwr::CheckHR(hr, "ActiveXObject call");
+				smp::CheckHR(hr, "ActiveXObject call");
 				throw QwrException("ActiveXObject: <no info> (malformed DISP_E_EXCEPTION)", argerr);
 			}
 		}
@@ -62,7 +62,7 @@ namespace smp::com
 		}
 		default:
 		{
-			qwr::CheckHR(hresult, "ActiveXObject");
+			smp::CheckHR(hresult, "ActiveXObject");
 		}
 		}
 	}

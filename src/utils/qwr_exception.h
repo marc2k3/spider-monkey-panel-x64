@@ -9,9 +9,9 @@ public:
 
 	template <typename... Args>
 	explicit QwrException(std::wstring_view errorMessage, Args&&... errorMessageFmtArgs)
-		: std::runtime_error(qwr::ToU8(fmt::format(fmt::runtime(errorMessage), std::forward<Args>(errorMessageFmtArgs)...))) {}
+		: std::runtime_error(smp::ToU8(fmt::format(fmt::runtime(errorMessage), std::forward<Args>(errorMessageFmtArgs)...))) {}
 
-	explicit QwrException(const std::filesystem::filesystem_error& e) : std::runtime_error(qwr::FS_Error_ToU8(e)) {}
+	explicit QwrException(const std::filesystem::filesystem_error& e) : std::runtime_error(smp::FS_Error_ToU8(e)) {}
 
 	~QwrException() override = default;
 

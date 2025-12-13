@@ -1,6 +1,6 @@
 #pragma once
 
-namespace qwr
+namespace smp
 {
 	std::wstring ToWide(const char*) = delete;
 	std::string ToU8(const wchar_t*) = delete;

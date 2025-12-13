@@ -20,7 +20,7 @@ namespace mozjs::hack
 			return std::nullopt;
 		}
 
-		return qwr::ToWide(it->second);
+		return smp::ToWide(it->second);
 	}
 
 	const Map& GetAllCachedUtf8Paths()

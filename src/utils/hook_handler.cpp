@@ -25,7 +25,7 @@ void QwrHookHandler::MaybeRegisterGlobalHook()
 	if (!m_hook)
 	{
 		m_hook = ::SetWindowsHookExW(WH_GETMESSAGE, GetMsgProc, nullptr, ::GetCurrentThreadId());
-		qwr::CheckWinApi(m_hook, "SetWindowsHookEx");
+		smp::CheckWinApi(m_hook, "SetWindowsHookEx");
 	}
 }
 

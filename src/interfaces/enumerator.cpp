@@ -101,7 +101,7 @@ namespace mozjs
 	void JsEnumerator::MoveFirst()
 	{
 		HRESULT hr = pEnum_->Reset();
-		qwr::CheckHR(hr, "Reset");
+		smp::CheckHR(hr, "Reset");
 
 		LoadCurrentElement();
 	}
@@ -121,7 +121,7 @@ namespace mozjs
 		}
 		else
 		{
-			qwr::CheckHR(hr, "Next");
+			smp::CheckHR(hr, "Next");
 			isAtEnd_ = false;
 		}
 	}

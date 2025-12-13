@@ -118,7 +118,7 @@ namespace mozjs
 		MEMORYSTATUSEX statex = { 0 };
 		statex.dwLength = sizeof(statex);
 		BOOL bRet = GlobalMemoryStatusEx(&statex);
-		qwr::CheckWinApi(!!bRet, "GlobalMemoryStatusEx");
+		smp::CheckWinApi(!!bRet, "GlobalMemoryStatusEx");
 
 		if (!smp_advconf::gc_max_heap.get())
 		{ // detect settings automatically

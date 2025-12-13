@@ -22,7 +22,7 @@ namespace mozjs::convert::to_native
 		template <typename T>
 		T ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
 		{
-			static_assert(qwr::always_false_v<T>, "Unsupported type");
+			static_assert(smp::always_false_v<T>, "Unsupported type");
 		}
 
 		template <>
@@ -129,7 +129,7 @@ namespace mozjs::convert::to_native
 		{
 			return internal::ToSimpleValue<T>(cx, jsValue);
 		}
-		else if constexpr (qwr::is_specialization_of_v<T, std::optional>)
+		else if constexpr (smp::is_specialization_of_v<T, std::optional>)
 		{
 			return internal::ToOptional<typename T::value_type>(cx, jsValue);
 		}
@@ -149,13 +149,13 @@ namespace mozjs::convert::to_native
 			JS::RootedObject jsObject(cx, &jsValue.toObject());
 			return internal::ToSimpleValue<T>(cx, jsObject);
 		}
-		else if constexpr (qwr::is_specialization_of_v<T, std::vector>)
+		else if constexpr (smp::is_specialization_of_v<T, std::vector>)
 		{
 			return internal::ToVector<typename T::value_type>(cx, jsValue);
 		}
 		else
 		{
-			static_assert(qwr::always_false_v<T>, "Unsupported type");
+			static_assert(smp::always_false_v<T>, "Unsupported type");
 		}
 	}
 

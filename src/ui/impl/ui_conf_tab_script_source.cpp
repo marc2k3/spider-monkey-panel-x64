@@ -61,10 +61,10 @@ CConfigTabScriptSource::CConfigTabScriptSource(CDialogConf& parent, config::Pars
 	: parent_(parent)
 	, settings_(settings)
 	, ddx_({
-		qwr::CreateUiDdx<qwr::UiDdx_TextEdit>(path_, IDC_TEXTEDIT_SRC_PATH),
-		qwr::CreateUiDdx<qwr::UiDdx_TextEdit>(packageName_, IDC_TEXTEDIT_SRC_PACKAGE),
-		qwr::CreateUiDdx<qwr::UiDdx_ComboBox>(sampleIdx_, IDC_COMBO_SRC_SAMPLE),
-		qwr::CreateUiDdx<qwr::UiDdx_RadioRange>(
+		smp::CreateUiDdx<smp::UiDdx_TextEdit>(path_, IDC_TEXTEDIT_SRC_PATH),
+		smp::CreateUiDdx<smp::UiDdx_TextEdit>(packageName_, IDC_TEXTEDIT_SRC_PACKAGE),
+		smp::CreateUiDdx<smp::UiDdx_ComboBox>(sampleIdx_, IDC_COMBO_SRC_SAMPLE),
+		smp::CreateUiDdx<smp::UiDdx_RadioRange>(
 			sourceTypeId_,
 			std::initializer_list<int>{
 				IDC_RADIO_SRC_SAMPLE,
@@ -83,7 +83,7 @@ CConfigTabScriptSource::CConfigTabScriptSource(CDialogConf& parent, config::Pars
 		}
 		catch (const QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 	}
 
@@ -165,7 +165,7 @@ void CConfigTabScriptSource::OnScriptSrcChange(UINT /*uNotifyCode*/, int nID, CW
 		{
 			return sampleData_.empty()
 				? config::PanelSettings_Sample{}
-				: config::PanelSettings_Sample{ qwr::ToU8(sampleData_[sampleIdx_].displayedName) };
+				: config::PanelSettings_Sample{ smp::ToU8(sampleData_[sampleIdx_].displayedName) };
 		}
 		case IDC_RADIO_SRC_MEMORY:
 		{
@@ -221,7 +221,7 @@ void CConfigTabScriptSource::OnScriptSrcChange(UINT /*uNotifyCode*/, int nID, CW
 		}
 		catch (const QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 	}
 
@@ -285,7 +285,7 @@ std::optional<std::filesystem::path> CConfigTabScriptSource::OnBrowseFileImpl()
 	if (!b)
 		return std::nullopt;
 
-	return qwr::ToWide(path);
+	return smp::ToWide(path);
 }
 
 void CConfigTabScriptSource::OnOpenPackageManager(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
@@ -340,7 +340,7 @@ void CConfigTabScriptSource::OnEditScript(UINT /*uNotifyCode*/, int /*nID*/, CWi
 		}
 		catch (const QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 	}
 }
@@ -440,7 +440,7 @@ void CConfigTabScriptSource::InitializeLocalOptions()
 
 		if (it == sampleData_.cend())
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't find sample `{}`. Your settings will be reset.", qwr::ToU8(sampleName)));
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't find sample `{}`. Your settings will be reset.", smp::ToU8(sampleName)));
 			UpdateOnSrcChange(settings_, smp::config::ParsedPanelSettings::GetDefault());
 			return 0;
 		}

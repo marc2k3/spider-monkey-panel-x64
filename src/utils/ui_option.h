@@ -1,6 +1,6 @@
 #pragma once
 
-namespace qwr
+namespace smp
 {
 	class IUiOption
 	{

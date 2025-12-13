@@ -15,7 +15,7 @@ namespace
 			{
 				IDropTargetHelperPtr dth;
 				HRESULT hr = dth.CreateInstance(CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER);
-				qwr::CheckHR(hr, "CreateInstance");
+				smp::CheckHR(hr, "CreateInstance");
 
 				assert(dth);
 				return dth;

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <config/parsed_panel_config.h>
-#include <qwr/ui_ddx.h>
-#include <qwr/ui_option.h>
 #include <ui/impl/ui_itab.h>
+#include <utils/ui_ddx.h>
+#include <utils/ui_option.h>
 
 namespace smp
 {
@@ -115,7 +115,7 @@ namespace smp::ui
 		bool hasChanged_ = false;
 		bool isCleanSlate_ = false;
 
-		std::unique_ptr<qwr::IUiDdx> panelNameDdx_;
+		std::unique_ptr<smp::IUiDdx> panelNameDdx_;
 
 		const CDialogConf::Tab startingTabId_;
 		CTabCtrl cTabs_;

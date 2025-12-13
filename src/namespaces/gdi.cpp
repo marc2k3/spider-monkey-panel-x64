@@ -60,7 +60,7 @@ namespace mozjs
 	JSObject* Gdi::CreateImage(uint32_t w, uint32_t h)
 	{
 		std::unique_ptr<Gdiplus::Bitmap> img(new Gdiplus::Bitmap(w, h, PixelFormat32bppPARGB));
-		qwr::CheckGdiPlusObject(img);
+		smp::CheckGdiPlusObject(img);
 
 		return JsGdiBitmap::CreateJs(m_ctx, std::move(img));
 	}

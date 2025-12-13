@@ -39,7 +39,7 @@ namespace smp::config
 		edgeStyle = EdgeStyle::NoEdge;
 		id = [] {
 			const auto guidStr = utils::GuidToStr(utils::GenerateGuid());
-			return qwr::ToU8(guidStr);
+			return smp::ToU8(guidStr);
 		}();
 	}
 

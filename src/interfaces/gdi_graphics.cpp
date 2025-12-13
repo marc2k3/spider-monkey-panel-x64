@@ -145,7 +145,7 @@ namespace mozjs
 
 		Gdiplus::Pen pen(colour, line_width);
 		const auto status = pGdi_->DrawEllipse(&pen, x, y, w, h);
-		qwr::CheckGdi(status, "DrawEllipse");
+		smp::CheckGdi(status, "DrawEllipse");
 	}
 
 	void JsGdiGraphics::DrawImage(JsGdiBitmap* image,
@@ -164,13 +164,13 @@ namespace mozjs
 		{
 			Gdiplus::Matrix m;
 			status = m.RotateAt(angle, Gdiplus::PointF{ dstX + dstW / 2, dstY + dstH / 2 });
-			qwr::CheckGdi(status, "RotateAt");
+			smp::CheckGdi(status, "RotateAt");
 
 			status = pGdi_->GetTransform(&oldMatrix);
-			qwr::CheckGdi(status, "GetTransform");
+			smp::CheckGdi(status, "GetTransform");
 
 			status = pGdi_->SetTransform(&m);
-			qwr::CheckGdi(status, "SetTransform");
+			smp::CheckGdi(status, "SetTransform");
 		}
 
 		if (alpha < 255)
@@ -182,21 +182,21 @@ namespace mozjs
 			cm.m[3][3] = static_cast<float>(alpha) / 255;
 
 			status = ia.SetColorMatrix(&cm);
-			qwr::CheckGdi(status, "SetColorMatrix");
+			smp::CheckGdi(status, "SetColorMatrix");
 
 			status = pGdi_->DrawImage(img, Gdiplus::RectF(dstX, dstY, dstW, dstH), srcX, srcY, srcW, srcH, Gdiplus::UnitPixel, &ia);
-			qwr::CheckGdi(status, "DrawImage");
+			smp::CheckGdi(status, "DrawImage");
 		}
 		else
 		{
 			status = pGdi_->DrawImage(img, Gdiplus::RectF(dstX, dstY, dstW, dstH), srcX, srcY, srcW, srcH, Gdiplus::UnitPixel);
-			qwr::CheckGdi(status, "DrawImage");
+			smp::CheckGdi(status, "DrawImage");
 		}
 
 		if (angle != 0.0)
 		{
 			status = pGdi_->SetTransform(&oldMatrix);
-			qwr::CheckGdi(status, "SetTransform");
+			smp::CheckGdi(status, "SetTransform");
 		}
 	}
 
@@ -224,7 +224,7 @@ namespace mozjs
 
 		Gdiplus::Pen pen(colour, line_width);
 		const auto status = pGdi_->DrawLine(&pen, x1, y1, x2, y2);
-		qwr::CheckGdi(status, "DrawLine");
+		smp::CheckGdi(status, "DrawLine");
 	}
 
 	void JsGdiGraphics::DrawPolygon(uint32_t colour, float line_width, JS::HandleValue points)
@@ -236,7 +236,7 @@ namespace mozjs
 
 		Gdiplus::Pen pen(colour, line_width);
 		const auto status = pGdi_->DrawPolygon(&pen, gdiPoints.data(), to_int(gdiPoints.size()));
-		qwr::CheckGdi(status, "DrawPolygon");
+		smp::CheckGdi(status, "DrawPolygon");
 	}
 
 	void JsGdiGraphics::DrawRect(float x, float y, float w, float h, float line_width, uint32_t colour)
@@ -245,7 +245,7 @@ namespace mozjs
 
 		Gdiplus::Pen pen(colour, line_width);
 		const auto status = pGdi_->DrawRectangle(&pen, x, y, w, h);
-		qwr::CheckGdi(status, "DrawRectangle");
+		smp::CheckGdi(status, "DrawRectangle");
 	}
 
 	void JsGdiGraphics::DrawRoundRect(float x, float y, float w, float h, float arc_width, float arc_height, float line_width, uint32_t colour)
@@ -258,13 +258,13 @@ namespace mozjs
 		GetRoundRectPath(gp, Gdiplus::RectF{ x, y, w, h }, arc_width, arc_height);
 
 		auto status = pen.SetStartCap(Gdiplus::LineCapRound);
-		qwr::CheckGdi(status, "SetStartCap");
+		smp::CheckGdi(status, "SetStartCap");
 
 		status = pen.SetEndCap(Gdiplus::LineCapRound);
-		qwr::CheckGdi(status, "SetEndCap");
+		smp::CheckGdi(status, "SetEndCap");
 
 		status = pGdi_->DrawPath(&pen, &gp);
-		qwr::CheckGdi(status, "DrawPath");
+		smp::CheckGdi(status, "DrawPath");
 	}
 
 	void JsGdiGraphics::DrawString(const std::wstring& str, JsGdiFont* font, uint32_t colour, float x, float y, float w, float h, uint32_t flags)
@@ -282,20 +282,20 @@ namespace mozjs
 		if (flags != 0)
 		{
 			status = fmt.SetAlignment(static_cast<Gdiplus::StringAlignment>((flags >> 28) & 0x3)); //0xf0000000
-			qwr::CheckGdi(status, "SetAlignment");
+			smp::CheckGdi(status, "SetAlignment");
 
 			status = fmt.SetLineAlignment(static_cast<Gdiplus::StringAlignment>((flags >> 24) & 0x3)); //0x0f000000
-			qwr::CheckGdi(status, "SetLineAlignment");
+			smp::CheckGdi(status, "SetLineAlignment");
 
 			status = fmt.SetTrimming(static_cast<Gdiplus::StringTrimming>((flags >> 20) & 0x7)); //0x00f00000
-			qwr::CheckGdi(status, "SetTrimming");
+			smp::CheckGdi(status, "SetTrimming");
 
 			status = fmt.SetFormatFlags(static_cast<Gdiplus::StringAlignment>(flags & 0x7FFF)); //0x0000ffff
-			qwr::CheckGdi(status, "SetFormatFlags");
+			smp::CheckGdi(status, "SetFormatFlags");
 		}
 
 		status = pGdi_->DrawString(str.c_str(), -1, pGdiFont, Gdiplus::RectF(x, y, w, h), &fmt, &br);
-		qwr::CheckGdi(status, "DrawString");
+		smp::CheckGdi(status, "DrawString");
 	}
 
 	void JsGdiGraphics::DrawStringWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font, uint32_t colour,
@@ -358,7 +358,7 @@ namespace mozjs
 
 		Gdiplus::SolidBrush br(colour);
 		const auto status = pGdi_->FillEllipse(&br, x, y, w, h);
-		qwr::CheckGdi(status, "FillEllipse");
+		smp::CheckGdi(status, "FillEllipse");
 	}
 
 	void JsGdiGraphics::FillGradRect(float x, float y, float w, float h, float angle, uint32_t colour1, uint32_t colour2, float focus)
@@ -368,10 +368,10 @@ namespace mozjs
 		const Gdiplus::RectF rect{ x, y, w, h };
 		Gdiplus::LinearGradientBrush brush(rect, colour1, colour2, angle, TRUE);
 		auto status = brush.SetBlendTriangularShape(focus);
-		qwr::CheckGdi(status, "SetBlendTriangularShape");
+		smp::CheckGdi(status, "SetBlendTriangularShape");
 
 		status = pGdi_->FillRectangle(&brush, rect);
-		qwr::CheckGdi(status, "FillRectangle");
+		smp::CheckGdi(status, "FillRectangle");
 	}
 
 	void JsGdiGraphics::FillGradRectWithOpt(size_t optArgCount, float x, float y, float w, float h, float angle, uint32_t colour1, uint32_t colour2, float focus)
@@ -396,7 +396,7 @@ namespace mozjs
 
 		Gdiplus::SolidBrush br(colour);
 		const auto status = pGdi_->FillPolygon(&br, gdiPoints.data(), to_int(gdiPoints.size()), static_cast<Gdiplus::FillMode>(fillmode));
-		qwr::CheckGdi(status, "FillPolygon");
+		smp::CheckGdi(status, "FillPolygon");
 	}
 
 	void JsGdiGraphics::FillRoundRect(float x, float y, float w, float h, float arc_width, float arc_height, uint32_t colour)
@@ -411,7 +411,7 @@ namespace mozjs
 		GetRoundRectPath(gp, rect, arc_width, arc_height);
 
 		const auto status = pGdi_->FillPath(&br, &gp);
-		qwr::CheckGdi(status, "FillPath");
+		smp::CheckGdi(status, "FillPath");
 	}
 
 	void JsGdiGraphics::FillSolidRect(float x, float y, float w, float h, uint32_t colour)
@@ -420,7 +420,7 @@ namespace mozjs
 
 		Gdiplus::SolidBrush brush(colour);
 		const auto status = pGdi_->FillRectangle(&brush, x, y, w, h);
-		qwr::CheckGdi(status, "FillRectangle");
+		smp::CheckGdi(status, "FillRectangle");
 	}
 
 	void JsGdiGraphics::GdiAlphaBlend(JsGdiRawBitmap* bitmap,
@@ -438,7 +438,7 @@ namespace mozjs
 		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc]() { pGdi->ReleaseHDC(hDc); });
 
 		BOOL bRet = ::GdiAlphaBlend(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, BLENDFUNCTION{ AC_SRC_OVER, 0, alpha, AC_SRC_ALPHA });
-		qwr::CheckWinApi(bRet, "GdiAlphaBlend");
+		smp::CheckWinApi(bRet, "GdiAlphaBlend");
 	}
 
 	void JsGdiGraphics::GdiAlphaBlendWithOpt(size_t optArgCount, JsGdiRawBitmap* bitmap,
@@ -474,18 +474,18 @@ namespace mozjs
 		if (dstW == srcW && dstH == srcH)
 		{
 			bRet = BitBlt(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, SRCCOPY);
-			qwr::CheckWinApi(bRet, "BitBlt");
+			smp::CheckWinApi(bRet, "BitBlt");
 		}
 		else
 		{
 			bRet = SetStretchBltMode(hDc, HALFTONE);
-			qwr::CheckWinApi(bRet, "SetStretchBltMode");
+			smp::CheckWinApi(bRet, "SetStretchBltMode");
 
 			bRet = SetBrushOrgEx(hDc, 0, 0, nullptr);
-			qwr::CheckWinApi(bRet, "SetBrushOrgEx");
+			smp::CheckWinApi(bRet, "SetBrushOrgEx");
 
 			bRet = StretchBlt(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, SRCCOPY);
-			qwr::CheckWinApi(bRet, "StretchBlt");
+			smp::CheckWinApi(bRet, "StretchBlt");
 		}
 	}
 
@@ -504,10 +504,10 @@ namespace mozjs
 		SetTextColor(hDc, smp::colour::ArgbToColorref(colour));
 
 		int iRet = SetBkMode(hDc, TRANSPARENT);
-		qwr::CheckWinApi(CLR_INVALID != iRet, "SetBkMode");
+		smp::CheckWinApi(CLR_INVALID != iRet, "SetBkMode");
 
 		UINT uRet = SetTextAlign(hDc, TA_LEFT | TA_TOP | TA_NOUPDATECP);
-		qwr::CheckWinApi(GDI_ERROR != uRet, "SetTextAlign");
+		smp::CheckWinApi(GDI_ERROR != uRet, "SetTextAlign");
 
 		if (format & DT_MODIFYSTRING)
 		{
@@ -521,7 +521,7 @@ namespace mozjs
 
 			RECT rc_calc = rc;
 			iRet = DrawText(hDc, str.c_str(), -1, &rc_calc, format);
-			qwr::CheckWinApi(iRet, "DrawText");
+			smp::CheckWinApi(iRet, "DrawText");
 
 			format &= ~DT_CALCRECT;
 
@@ -538,7 +538,7 @@ namespace mozjs
 		}
 
 		iRet = DrawTextEx(hDc, const_cast<wchar_t*>(str.c_str()), -1, &rc, format, &dpt);
-		qwr::CheckWinApi(iRet, "DrawTextEx");
+		smp::CheckWinApi(iRet, "DrawTextEx");
 	}
 
 	void JsGdiGraphics::GdiDrawTextWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font, uint32_t colour,
@@ -577,7 +577,7 @@ namespace mozjs
 		int chars;
 		int lines;
 		const auto status = pGdi_->MeasureString(str.c_str(), -1, fn, Gdiplus::RectF(x, y, w, h), &fmt, &bound, &chars, &lines);
-		qwr::CheckGdi(status, "MeasureString");
+		smp::CheckGdi(status, "MeasureString");
 
 		return JsMeasureStringInfo::CreateJs(pJsCtx_, bound.X, bound.Y, bound.Width, bound.Height, lines, chars);
 	}
@@ -602,7 +602,7 @@ namespace mozjs
 		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
 
 		const auto status = pGdi_->SetInterpolationMode(static_cast<Gdiplus::InterpolationMode>(mode));
-		qwr::CheckGdi(status, "SetInterpolationMode");
+		smp::CheckGdi(status, "SetInterpolationMode");
 	}
 
 	void JsGdiGraphics::SetInterpolationModeWithOpt(size_t optArgCount, uint32_t mode)
@@ -623,7 +623,7 @@ namespace mozjs
 		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
 
 		const auto status = pGdi_->SetSmoothingMode(static_cast<Gdiplus::SmoothingMode>(mode));
-		qwr::CheckGdi(status, "SetSmoothingMode");
+		smp::CheckGdi(status, "SetSmoothingMode");
 	}
 
 	void JsGdiGraphics::SetSmoothingModeWithOpt(size_t optArgCount, uint32_t mode)
@@ -644,7 +644,7 @@ namespace mozjs
 		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
 
 		const auto status = pGdi_->SetTextRenderingHint(static_cast<Gdiplus::TextRenderingHint>(mode));
-		qwr::CheckGdi(status, "SetTextRenderingHint");
+		smp::CheckGdi(status, "SetTextRenderingHint");
 	}
 
 	void JsGdiGraphics::SetTextRenderingHintWithOpt(size_t optArgCount, uint32_t mode)
@@ -667,29 +667,29 @@ namespace mozjs
 		Gdiplus::RectF corner{ rect.X, rect.Y, arc_dia_w, arc_dia_h };
 
 		auto status = gp.Reset();
-		qwr::CheckGdi(status, "Reset");
+		smp::CheckGdi(status, "Reset");
 
 		// top left
 		status = gp.AddArc(corner, 180, 90);
-		qwr::CheckGdi(status, "AddArc");
+		smp::CheckGdi(status, "AddArc");
 
 		// top right
 		corner.X += (rect.Width - arc_dia_w);
 		status = gp.AddArc(corner, 270, 90);
-		qwr::CheckGdi(status, "AddArc");
+		smp::CheckGdi(status, "AddArc");
 
 		// bottom right
 		corner.Y += (rect.Height - arc_dia_h);
 		status = gp.AddArc(corner, 0, 90);
-		qwr::CheckGdi(status, "AddArc");
+		smp::CheckGdi(status, "AddArc");
 
 		// bottom left
 		corner.X -= (rect.Width - arc_dia_w);
 		status = gp.AddArc(corner, 90, 90);
-		qwr::CheckGdi(status, "AddArc");
+		smp::CheckGdi(status, "AddArc");
 
 		status = gp.CloseFigure();
-		qwr::CheckGdi(status, "CloseFigure");
+		smp::CheckGdi(status, "CloseFigure");
 	}
 
 	void JsGdiGraphics::ParsePoints(JS::HandleValue jsValue, std::vector<Gdiplus::PointF>& gdiPoints)

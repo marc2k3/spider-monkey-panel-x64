@@ -54,7 +54,7 @@ namespace mozjs
 		, m_buffer(TEXT(SMP_NAME))
 	{
 		m_ctrl.Create(m_parent_wnd);
-		qwr::CheckWinApi(m_ctrl, "tooltip::Create");
+		smp::CheckWinApi(m_ctrl, "tooltip::Create");
 
 		// Original position
 		m_ctrl.SetWindowPos(HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
@@ -64,7 +64,7 @@ namespace mozjs
 		m_info = std::make_unique<CToolInfo>(TTF_IDISHWND | TTF_SUBCLASS, m_parent_wnd, (UINT_PTR)m_parent_wnd, nullptr, const_cast<wchar_t*>(m_buffer.c_str()));
 
 		auto bRet = m_ctrl.AddTool(m_info.get());
-		qwr::CheckWinApi(bRet, "tooltip::AddTool");
+		smp::CheckWinApi(bRet, "tooltip::AddTool");
 		m_ctrl.Activate(FALSE);
 	}
 
@@ -149,7 +149,7 @@ namespace mozjs
 			DEFAULT_PITCH | FF_DONTCARE,
 			name.c_str()));
 
-		qwr::CheckWinApi(!!m_font, "CreateFont");
+		smp::CheckWinApi(!!m_font, "CreateFont");
 		Update();
 	}
 

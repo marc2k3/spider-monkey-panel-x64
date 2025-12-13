@@ -28,7 +28,7 @@ namespace
 	}
 }
 
-namespace qwr
+namespace smp
 {
 #pragma warning(push)
 #pragma warning(disable : 28196) // The expression does not evaluate to true

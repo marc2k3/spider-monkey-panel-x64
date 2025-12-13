@@ -20,7 +20,7 @@ std::filesystem::path Foobar2000()
 std::filesystem::path Profile()
 {
 	const auto path = filesystem::g_get_native_path(core_api::get_profile_path());
-	return qwr::ToWide(path);
+	return smp::ToWide(path);
 }
 
 std::filesystem::path JsDocsIndex()

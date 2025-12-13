@@ -64,7 +64,7 @@ namespace smp
 	void js_panel_window::Fail(const std::string& errorText)
 	{
 		hasFailed_ = true;
-		qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, errorText);
+		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, errorText);
 
 		if (wnd_)
 		{              // can be null during startup
@@ -110,7 +110,7 @@ namespace smp
 			}
 			catch (const QwrException& e)
 			{
-				qwr::ReportErrorWithPopup(
+				smp::ReportErrorWithPopup(
 					SMP_UNDERSCORE_NAME,
 					fmt::format(
 						"Can't load panel settings. Your panel will be completely reset!\nError: {}",
@@ -124,7 +124,7 @@ namespace smp
 
 		if (!UpdateSettings(settings, reloadPanel))
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't load panel settings. Your panel will be completely reset!"));
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't load panel settings. Your panel will be completely reset!"));
 			UpdateSettings(config::PanelSettings{}, reloadPanel);
 		}
 	}
@@ -167,7 +167,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 			return false;
 		}
 	}
@@ -1054,7 +1054,7 @@ namespace smp
 			}
 			catch (const QwrException& e)
 			{
-				qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 			}
 			break;
 		}
@@ -1137,11 +1137,11 @@ namespace smp
 		}
 		catch (const fs::filesystem_error& e)
 		{
-			qwr::ReportFSErrorWithPopup(e);
+			smp::ReportFSErrorWithPopup(e);
 		}
 		catch (const QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 	}
 
@@ -1194,7 +1194,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			qwr::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 	}
 
@@ -1664,7 +1664,7 @@ namespace smp
 				dropTargetHandler_.Attach(new ComPtrImpl<com::TrackDropTarget>(*this));
 
 				HRESULT hr = dropTargetHandler_->RegisterDragDrop();
-				qwr::CheckHR(hr, "RegisterDragDrop");
+				smp::CheckHR(hr, "RegisterDragDrop");
 			}
 		}
 		else

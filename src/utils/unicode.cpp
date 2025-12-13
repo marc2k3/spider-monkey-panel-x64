@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "unicode.h"
 
-namespace qwr
+namespace smp
 {
 	std::string ToU8(std::wstring_view src)
 	{
@@ -20,7 +20,7 @@ namespace qwr
 
 	std::string FS_Error_ToU8(const std::filesystem::filesystem_error& e)
 	{
-		const std::wstring msg = qwr::ToWide(e.code().message());
+		const std::wstring msg = smp::ToWide(e.code().message());
 		std::wstring ret = fmt::format(L"{} \"{}\"", msg, e.path1().native());
 
 		if (!e.path2().empty())

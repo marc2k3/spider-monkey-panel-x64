@@ -8,7 +8,7 @@ static void set_window_theme(HWND wnd, bool is_dark) noexcept
 static std::wstring nativeW(fb2k::stringRef path) noexcept
 {
 	const auto native_path = filesystem::g_get_native_path(path->c_str());
-	return qwr::ToWide(native_path);
+	return smp::ToWide(native_path);
 }
 
 static int32_t hex_digit_to_int(char ch) noexcept

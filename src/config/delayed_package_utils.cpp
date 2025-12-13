@@ -128,12 +128,12 @@ namespace
 			}
 			catch (const fs::filesystem_error& e)
 			{
-				qwr::ReportErrorWithPopup(
+				smp::ReportErrorWithPopup(
 					SMP_UNDERSCORE_NAME,
 					fmt::format(
 						"Failed to update package `{}`:\n{}",
 						packageId,
-						qwr::FS_Error_ToU8(e)
+						smp::FS_Error_ToU8(e)
 					)
 				);
 
@@ -167,7 +167,7 @@ namespace
 				TextFile(main_file.native()).write(restorationScript);
 				TextFile(package_json.native()).write(j.dump(2));
 
-				qwr::ReportErrorWithPopup(
+				smp::ReportErrorWithPopup(
 					SMP_UNDERSCORE_NAME,
 					fmt::format(
 						"Critical error encountered when updating package `{}`!\n\n"
@@ -315,11 +315,11 @@ namespace smp::config
 		}
 		catch (const fs::filesystem_error& e)
 		{
-			qwr::ReportErrorWithPopup(
+			smp::ReportErrorWithPopup(
 				SMP_UNDERSCORE_NAME,
 				fmt::format(
 					"Failed to process delayed packages:\n{}",
-					qwr::FS_Error_ToU8(e)
+					smp::FS_Error_ToU8(e)
 				)
 			);
 		}

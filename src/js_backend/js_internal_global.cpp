@@ -69,7 +69,7 @@ namespace mozjs
 				}
 				catch (const std::filesystem::filesystem_error& e)
 				{
-					throw QwrException("Failed to open file `{}`:\n  {}", cleanPath.u8string(), qwr::FS_Error_ToU8(e));
+					throw QwrException("Failed to open file `{}`:\n  {}", cleanPath.u8string(), smp::FS_Error_ToU8(e));
 				}
 			}();
 

@@ -80,15 +80,15 @@ namespace
 			}();
 
 		auto pBitmap = std::make_unique<Gdiplus::Bitmap>(imgWidth, imgHeight, PixelFormat32bppPARGB);
-		qwr::CheckGdiPlusObject(pBitmap);
+		smp::CheckGdiPlusObject(pBitmap);
 
 		auto gr = Gdiplus::Graphics(pBitmap.get());
 
 		auto status = gr.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBilinear);
-		qwr::CheckGdi(status, "SetInterpolationMode");
+		smp::CheckGdi(status, "SetInterpolationMode");
 
 		status = gr.DrawImage(&srcImg, 0, 0, imgWidth, imgHeight); // scale image down
-		qwr::CheckGdi(status, "DrawImage");
+		smp::CheckGdi(status, "DrawImage");
 
 		return pBitmap;
 	}
@@ -128,7 +128,7 @@ namespace mozjs
 		auto pGdi = other->GdiBitmap();
 
 		std::unique_ptr<Gdiplus::Bitmap> img(pGdi->Clone(0, 0, pGdi->GetWidth(), pGdi->GetHeight(), PixelFormat32bppPARGB));
-		qwr::CheckGdiPlusObject(img, pGdi);
+		smp::CheckGdiPlusObject(img, pGdi);
 
 		return JsGdiBitmap::CreateJs(cx, std::move(img));
 	}
@@ -149,7 +149,7 @@ namespace mozjs
 		const UINT height = pGdi_->GetHeight();
 
 		std::unique_ptr<Gdiplus::Bitmap> out(new Gdiplus::Bitmap(width, height, PixelFormat32bppPARGB));
-		qwr::CheckGdiPlusObject(out);
+		smp::CheckGdiPlusObject(out);
 
 		Gdiplus::ColorMatrix cm{};
 		cm.m[0][0] = cm.m[1][1] = cm.m[2][2] = cm.m[4][4] = 1.0;
@@ -157,7 +157,7 @@ namespace mozjs
 
 		Gdiplus::ImageAttributes ia;
 		auto status = ia.SetColorMatrix(&cm);
-		qwr::CheckGdi(status, "SetColorMatrix");
+		smp::CheckGdi(status, "SetColorMatrix");
 
 		Gdiplus::Graphics g(out.get());
 		status = g.DrawImage(
@@ -171,7 +171,7 @@ namespace mozjs
 			&ia
 		);
 
-		qwr::CheckGdi(status, "DrawImage");
+		smp::CheckGdi(status, "DrawImage");
 
 		return JsGdiBitmap::CreateJs(pJsCtx_, std::move(out));
 	}
@@ -191,7 +191,7 @@ namespace mozjs
 
 		Gdiplus::BitmapData maskBmpData = { 0 };
 		auto status = pBitmapMask->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &maskBmpData);
-		qwr::CheckGdi(status, "mask::LockBits");
+		smp::CheckGdi(status, "mask::LockBits");
 
 		auto autoMaskBits = wil::scope_exit([pBitmapMask, &maskBmpData] {
 			pBitmapMask->UnlockBits(&maskBmpData);
@@ -199,7 +199,7 @@ namespace mozjs
 
 		Gdiplus::BitmapData dstBmpData = { 0 };
 		status = pGdi_->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &dstBmpData);
-		qwr::CheckGdi(status, "dst::LockBits");
+		smp::CheckGdi(status, "dst::LockBits");
 
 		auto autoDstBits = wil::scope_exit([&pGdi = pGdi_, &dstBmpData] {
 			pGdi->UnlockBits(&dstBmpData);
@@ -225,7 +225,7 @@ namespace mozjs
 	JSObject* JsGdiBitmap::Clone(float x, float y, float w, float h)
 	{
 		std::unique_ptr<Gdiplus::Bitmap> img(pGdi_->Clone(x, y, w, h, PixelFormat32bppPARGB));
-		qwr::CheckGdiPlusObject(img, pGdi_.get());
+		smp::CheckGdiPlusObject(img, pGdi_.get());
 
 		return JsGdiBitmap::CreateJs(pJsCtx_, std::move(img));
 	}
@@ -245,7 +245,7 @@ namespace mozjs
 		Gdiplus::BitmapData bmpdata{};
 
 		const auto status = pBitmap->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
-		qwr::CheckGdi(status, "LockBits");
+		smp::CheckGdi(status, "LockBits");
 
 		std::map<uint32_t, uint32_t> color_counters;
 		const auto colourRange = ranges::make_subrange(
@@ -307,7 +307,7 @@ namespace mozjs
 		Gdiplus::BitmapData bmpdata{};
 
 		const auto status = pBitmap->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
-		qwr::CheckGdi(status, "LockBits");
+		smp::CheckGdi(status, "LockBits");
 
 		std::map<uint32_t, uint32_t> colour_counters;
 		const auto colourRange = ranges::make_subrange(
@@ -385,7 +385,7 @@ namespace mozjs
 	JSObject* JsGdiBitmap::GetGraphics()
 	{
 		std::unique_ptr<Gdiplus::Graphics> g(new Gdiplus::Graphics(pGdi_.get()));
-		qwr::CheckGdiPlusObject(g);
+		smp::CheckGdiPlusObject(g);
 
 		JS::RootedObject jsObject(pJsCtx_, JsGdiGraphics::CreateJs(pJsCtx_));
 
@@ -403,7 +403,7 @@ namespace mozjs
 		const UINT height = pGdi_->GetHeight();
 
 		std::unique_ptr<Gdiplus::Bitmap> out(new Gdiplus::Bitmap(width, height, PixelFormat32bppPARGB));
-		qwr::CheckGdiPlusObject(out);
+		smp::CheckGdiPlusObject(out);
 
 		Gdiplus::ColorMatrix cm{};
 		cm.m[0][0] = cm.m[1][1] = cm.m[2][2] = -1.f;
@@ -411,7 +411,7 @@ namespace mozjs
 
 		Gdiplus::ImageAttributes ia;
 		auto status = ia.SetColorMatrix(&cm);
-		qwr::CheckGdi(status, "SetColorMatrix");
+		smp::CheckGdi(status, "SetColorMatrix");
 
 		auto g = Gdiplus::Graphics(out.get());
 
@@ -426,7 +426,7 @@ namespace mozjs
 			&ia
 		);
 
-		qwr::CheckGdi(status, "DrawImage");
+		smp::CheckGdi(status, "DrawImage");
 
 		return JsGdiBitmap::CreateJs(pJsCtx_, std::move(out));
 	}
@@ -446,14 +446,14 @@ namespace mozjs
 	JSObject* JsGdiBitmap::Resize(uint32_t w, uint32_t h, uint32_t interpolationMode)
 	{
 		std::unique_ptr<Gdiplus::Bitmap> bitmap(new Gdiplus::Bitmap(w, h, PixelFormat32bppPARGB));
-		qwr::CheckGdiPlusObject(bitmap);
+		smp::CheckGdiPlusObject(bitmap);
 
 		Gdiplus::Graphics g(bitmap.get());
 		auto status = g.SetInterpolationMode(static_cast<Gdiplus::InterpolationMode>(interpolationMode));
-		qwr::CheckGdi(status, "SetInterpolationMode");
+		smp::CheckGdi(status, "SetInterpolationMode");
 
 		status = g.DrawImage(pGdi_.get(), 0, 0, w, h);
-		qwr::CheckGdi(status, "DrawImage");
+		smp::CheckGdi(status, "DrawImage");
 
 		return JsGdiBitmap::CreateJs(pJsCtx_, std::move(bitmap));
 	}
@@ -474,7 +474,7 @@ namespace mozjs
 	void JsGdiBitmap::RotateFlip(uint32_t mode)
 	{
 		const auto status = pGdi_->RotateFlip(static_cast<Gdiplus::RotateFlipType>(mode));
-		qwr::CheckGdi(status, "RotateFlip");
+		smp::CheckGdi(status, "RotateFlip");
 	}
 
 	bool JsGdiBitmap::SaveAs(const std::wstring& path, const std::wstring& format)

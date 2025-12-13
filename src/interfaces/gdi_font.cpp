@@ -81,7 +81,7 @@ namespace mozjs
 	JSObject* JsGdiFont::Constructor(JSContext* cx, const std::wstring& fontName, uint32_t pxSize, uint32_t style)
 	{
 		auto pGdiFont = std::make_unique<Gdiplus::Font>(fontName.c_str(), static_cast<Gdiplus::REAL>(pxSize), style, Gdiplus::UnitPixel);
-		qwr::CheckGdiPlusObject(pGdiFont);
+		smp::CheckGdiPlusObject(pGdiFont);
 
 		// Generate HFONT
 		// The benefit of replacing Gdiplus::Font::GetLogFontW is that you can get it work with CCF/OpenType fonts.
@@ -101,7 +101,7 @@ namespace mozjs
 			DEFAULT_PITCH | FF_DONTCARE,
 			fontName.c_str());
 
-		qwr::CheckWinApi(!!hFont, "CreateFont");
+		smp::CheckWinApi(!!hFont, "CreateFont");
 
 		auto autoFont = wil::scope_exit([hFont]()
 			{
@@ -139,10 +139,10 @@ namespace mozjs
 		Gdiplus::FontFamily fontFamily;
 		std::array<wchar_t, LF_FACESIZE> name{};
 		auto status = pGdi_->GetFamily(&fontFamily);
-		qwr::CheckGdi(status, "GetFamily");
+		smp::CheckGdi(status, "GetFamily");
 
 		status = fontFamily.GetFamilyName(name.data(), LANG_NEUTRAL);
-		qwr::CheckGdi(status, "GetFamilyName");
+		smp::CheckGdi(status, "GetFamilyName");
 
 		return std::wstring(name.data());
 	}
