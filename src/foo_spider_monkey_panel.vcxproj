@@ -253,7 +253,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\LoadImageAsync.hpp" />
     <ClInclude Include="2K3\MainMenuCommand.hpp" />
     <ClInclude Include="2K3\PlaylistLock.hpp" />
-    <ClInclude Include="2K3\ScintillaImpl.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogEditor.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogGoto.hpp" />

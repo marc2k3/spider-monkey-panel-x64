@@ -816,9 +816,6 @@
     <ClInclude Include="2K3\Helpers.hpp">
       <Filter>2K3</Filter>
     </ClInclude>
-    <ClInclude Include="2K3\ScintillaImpl.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
     <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp">
       <Filter>2K3\Scintilla</Filter>
     </ClInclude>
