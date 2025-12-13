@@ -15,8 +15,6 @@
 #include <timeout/timeout_manager.h>
 #include <utils/gdi_helpers.h>
 
-using namespace smp;
-
 namespace
 {
 	class TimeoutJsTask : public mozjs::JsAsyncTaskImpl<JS::HandleValue, JS::HandleValue>
@@ -81,25 +79,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JSClassOps jsOps = {
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		Window::FinalizeJsObject,
-		nullptr,
-		nullptr,
-		nullptr,
-		Window::Trace
-	};
+	JS_CLASS_OPS(Window::FinalizeJsObject, Window::Trace)
 
-	constexpr JSClass jsClass = {
-		"Window",
-		kDefaultClassFlags,
-		&jsOps
-	};
+	JS_CLASS("Window")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ClearInterval, Window::ClearInterval)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ClearTimeout, Window::ClearTimeout)
@@ -209,20 +191,18 @@ namespace
 
 namespace mozjs
 {
+	using namespace smp;
+
 	const JSClass Window::JsClass = jsClass;
 	const JSFunctionSpec* Window::JsFunctions = jsFunctions.data();
 	const JSPropertySpec* Window::JsProperties = jsProperties.data();
 
-	Window::~Window()
-	{
-	}
-
 	Window::Window(JSContext* ctx, smp::panel::js_panel_window& parent, std::unique_ptr<FbProperties> properties)
 		: m_ctx(ctx)
 		, m_parent(parent)
-		, m_properties(std::move(properties))
-	{
-	}
+		, m_properties(std::move(properties)) {}
+
+	Window::~Window() {}
 
 	std::unique_ptr<Window> Window::CreateNative(JSContext* ctx, smp::panel::js_panel_window& parentPanel)
 	{
