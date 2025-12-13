@@ -2,9 +2,6 @@
 #include "fb_metadb_handle_list_iterator.h"
 
 #include <interfaces/fb_metadb_handle_list.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
-#include <js_utils/js_property_helper.h>
 
 namespace
 {

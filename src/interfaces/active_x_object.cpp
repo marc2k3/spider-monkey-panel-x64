@@ -8,8 +8,6 @@
 #include <convert/js_to_native.h>
 #include <convert/native_to_js.h>
 #include <interfaces/active_x_object_iterator.h>
-#include <js_utils/js_object_helper.h>
-#include <js_utils/js_prototype_helpers.h>
 
 namespace
 {

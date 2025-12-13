@@ -1,5 +1,5 @@
 #pragma once
-#include <js_engine/prototype_ids.h>
+#include "prototype_ids.h"
 
 namespace mozjs
 {

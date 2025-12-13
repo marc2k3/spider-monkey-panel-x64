@@ -1,5 +1,5 @@
 #pragma once
-#include "js_engine/global_heap_manager.h"
+#include "global_heap_manager.h"
 
 namespace mozjs
 {

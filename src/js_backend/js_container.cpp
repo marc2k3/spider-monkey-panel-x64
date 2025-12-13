@@ -1,9 +1,7 @@
 #include <stdafx.h>
 #include "js_container.h"
+#include "js_async_task.h"
 
-#include <js_utils/js_async_task.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/scope_helper.h>
 #include <panel/js_panel_window.h>
 
 using namespace smp;
@@ -33,9 +31,6 @@ namespace mozjs
 			return false;
 		}
 
-		assert(pJsCtx_);
-		assert(pParentPanel_);
-
 		if (JsStatus::Working == jsStatus_)
 		{
 			return true;
@@ -50,9 +45,10 @@ namespace mozjs
 		try
 		{
 			jsGlobal_.init(pJsCtx_, JsGlobalObject::CreateNative(pJsCtx_, *this));
-			assert(jsGlobal_);
-			auto autoGlobal = wil::scope_exit([&jsGlobal = jsGlobal_] {
-				jsGlobal.reset();
+
+			auto autoGlobal = wil::scope_exit([&jsGlobal = jsGlobal_]
+				{
+					jsGlobal.reset();
 				});
 
 			JSAutoRealm ac(pJsCtx_, jsGlobal_);
@@ -60,8 +56,6 @@ namespace mozjs
 			jsGraphics_.init(pJsCtx_, JsGdiGraphics::CreateJs(pJsCtx_));
 
 			pNativeRealm_ = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(pJsCtx_)));
-			assert(pNativeRealm_);
-
 			autoGlobal.release();
 		}
 		catch (...)
@@ -71,10 +65,7 @@ namespace mozjs
 		}
 
 		pNativeGlobal_ = static_cast<JsGlobalObject*>(JS::GetPrivate(jsGlobal_));
-		assert(pNativeGlobal_);
 		pNativeGraphics_ = static_cast<JsGdiGraphics*>(JS::GetPrivate(jsGraphics_));
-		assert(pNativeGraphics_);
-
 		jsStatus_ = JsStatus::Working;
 
 		return true;
@@ -106,8 +97,6 @@ namespace mozjs
 			JsGlobalObject::PrepareForGc(pJsCtx_, jsGlobal_);
 
 			auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(pJsCtx_)));
-			assert(pJsRealm);
-
 			pNativeRealm_ = nullptr;
 			pJsRealm->MarkForDeletion();
 		}
@@ -121,22 +110,23 @@ namespace mozjs
 	void JsContainer::Fail(const std::string& errorText)
 	{
 		Finalize();
+
 		if (JsStatus::EngineFailed != jsStatus_)
 		{ // Don't suppress error
 			jsStatus_ = JsStatus::Failed;
 		}
 
-		assert(pParentPanel_);
-		const std::string errorTextPadded = [pParentPanel = pParentPanel_, &errorText]() {
-			std::string text =
-				fmt::format("Error: " SMP_NAME_WITH_VERSION " ({})", pParentPanel->GetPanelDescription());
-			if (!errorText.empty())
+		const std::string errorTextPadded = [pParentPanel = pParentPanel_, &errorText]()
 			{
-				text += "\n";
-				text += errorText;
-			}
+				std::string text = fmt::format("Error: " SMP_NAME_WITH_VERSION " ({})", pParentPanel->GetPanelDescription());
 
-			return text;
+				if (!errorText.empty())
+				{
+					text += "\n";
+					text += errorText;
+				}
+
+				return text;
 			}();
 
 		pParentPanel_->Fail(errorTextPadded);
@@ -149,10 +139,6 @@ namespace mozjs
 
 	bool JsContainer::ExecuteScript(const std::string& scriptCode)
 	{
-		assert(pJsCtx_);
-		assert(jsGlobal_.initialized());
-		assert(JsStatus::Working == jsStatus_);
-
 		auto selfSaver = shared_from_this();
 		isParsingScript_ = true;
 		const auto autoParseState = wil::scope_exit([&] { isParsingScript_ = false; });
@@ -189,10 +175,6 @@ namespace mozjs
 
 	bool JsContainer::ExecuteScriptFile(const std::filesystem::path& scriptPath)
 	{
-		assert(pJsCtx_);
-		assert(jsGlobal_.initialized());
-		assert(JsStatus::Working == jsStatus_);
-
 		auto selfSaver = shared_from_this();
 		isParsingScript_ = true;
 		auto autoParseState = wil::scope_exit([&] { isParsingScript_ = false; });
@@ -202,8 +184,6 @@ namespace mozjs
 		{
 			OnJsActionStart();
 			auto autoAction = wil::scope_exit([&] { OnJsActionEnd(); });
-
-			assert(pNativeGlobal_);
 			pNativeGlobal_->IncludeScript(scriptPath);
 			return true;
 		}
@@ -222,7 +202,6 @@ namespace mozjs
 
 	smp::js_panel_window& JsContainer::GetParentPanel() const
 	{
-		assert(pParentPanel_);
 		return *pParentPanel_;
 	}
 
@@ -326,7 +305,6 @@ namespace mozjs
 
 	void JsContainer::SetJsCtx(JSContext* cx)
 	{
-		assert(cx);
 		pJsCtx_ = cx;
 	}
 

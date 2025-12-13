@@ -1,21 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="js_engine\js_engine.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
-    <ClCompile Include="js_utils\js_error_helper.cpp">
-      <Filter>js_utils</Filter>
-    </ClCompile>
-    <ClCompile Include="js_utils\js_object_helper.cpp">
-      <Filter>js_utils</Filter>
-    </ClCompile>
-    <ClCompile Include="js_engine\native_to_js_invoker.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
-    <ClCompile Include="js_engine\js_container.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
     <ClCompile Include="convert\com.cpp">
       <Filter>convert</Filter>
     </ClCompile>
@@ -31,9 +16,6 @@
     <ClCompile Include="ui\ui_input_box.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="js_engine\js_gc.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
     <ClCompile Include="ui\ui_html.cpp">
       <Filter>ui</Filter>
     </ClCompile>
@@ -42,12 +24,6 @@
     </ClCompile>
     <ClCompile Include="utils\image_helpers.cpp">
       <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="js_utils\js_art_helpers.cpp">
-      <Filter>js_utils</Filter>
-    </ClCompile>
-    <ClCompile Include="js_utils\js_image_helpers.cpp">
-      <Filter>js_utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\menu_helpers.cpp">
       <Filter>utils</Filter>
@@ -58,17 +34,8 @@
     <ClCompile Include="utils\location_processor.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="js_engine\js_internal_global.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
-    <ClCompile Include="js_engine\js_monitor.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
     <ClCompile Include="ui\ui_slow_script.cpp">
       <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="js_engine\js_realm_inner.cpp">
-      <Filter>js_engine</Filter>
     </ClCompile>
     <ClCompile Include="fb2k\stats.cpp">
       <Filter>fb2k</Filter>
@@ -87,9 +54,6 @@
     </ClCompile>
     <ClCompile Include="panel\js_panel_window_dui.cpp">
       <Filter>panel</Filter>
-    </ClCompile>
-    <ClCompile Include="js_engine\heartbeat_window.cpp">
-      <Filter>js_engine</Filter>
     </ClCompile>
     <ClCompile Include="initquit.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -147,9 +111,6 @@
     </ClCompile>
     <ClCompile Include="config\delayed_package_utils.cpp">
       <Filter>config</Filter>
-    </ClCompile>
-    <ClCompile Include="js_utils\cached_utf8_paths_hack.cpp">
-      <Filter>js_utils</Filter>
     </ClCompile>
     <ClCompile Include="fb2k\mainmenu_dynamic.cpp">
       <Filter>fb2k</Filter>
@@ -419,12 +380,6 @@
     <ClCompile Include="panel\fb_properties.cpp">
       <Filter>panel</Filter>
     </ClCompile>
-    <ClCompile Include="js_engine\global_heap_manager.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
-    <ClCompile Include="js_engine\global_object.cpp">
-      <Filter>js_engine</Filter>
-    </ClCompile>
     <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp">
       <Filter>2K3\Scintilla</Filter>
     </ClCompile>
@@ -443,32 +398,53 @@
     <ClCompile Include="2K3\Scintilla\DialogEditor.cpp">
       <Filter>2K3\Scintilla</Filter>
     </ClCompile>
+    <ClCompile Include="js_backend\cached_utf8_paths_hack.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\global_heap_manager.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\global_object.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\heartbeat_window.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_art_helpers.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_container.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_engine.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_error_helper.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_gc.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_image_helpers.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_internal_global.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_monitor.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_object_helper.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_realm_inner.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\native_to_js_invoker.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="js_engine\js_engine.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_error_helper.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_object_helper.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\js_to_native_invoker.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\native_to_js_invoker.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\js_container.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\scope_helper.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_prototype_helpers.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
     <ClInclude Include="convert\com.h">
       <Filter>convert</Filter>
     </ClInclude>
@@ -484,14 +460,8 @@
     <ClInclude Include="ui\ui_input_box.h">
       <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="js_engine\js_gc.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
     <ClInclude Include="ui\ui_html.h">
       <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_property_helper.h">
-      <Filter>js_utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\gdi_error_helpers.h">
       <Filter>utils</Filter>
@@ -501,15 +471,6 @@
     </ClInclude>
     <ClInclude Include="utils\image_helpers.h">
       <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_art_helpers.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_image_helpers.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_async_task.h">
-      <Filter>js_utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\menu_helpers.h">
       <Filter>utils</Filter>
@@ -523,17 +484,8 @@
     <ClInclude Include="utils\location_processor.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="js_engine\js_internal_global.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\js_monitor.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
     <ClInclude Include="ui\ui_slow_script.h">
       <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\js_realm_inner.h">
-      <Filter>js_engine</Filter>
     </ClInclude>
     <ClInclude Include="fb2k\stats.h">
       <Filter>fb2k</Filter>
@@ -549,9 +501,6 @@
     </ClInclude>
     <ClInclude Include="panel\js_panel_window.h">
       <Filter>panel</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\heartbeat_window.h">
-      <Filter>js_engine</Filter>
     </ClInclude>
     <ClInclude Include="utils\js_exception.h">
       <Filter>utils</Filter>
@@ -614,17 +563,11 @@
       <Filter>ui\impl</Filter>
     </ClInclude>
     <ClInclude Include="component_paths.h" />
-    <ClInclude Include="js_utils\js_heap_helper.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
     <ClInclude Include="utils\guid_helpers.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="config\delayed_package_utils.h">
       <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\cached_utf8_paths_hack.h">
-      <Filter>js_utils</Filter>
     </ClInclude>
     <ClInclude Include="fb2k\mainmenu_dynamic.h">
       <Filter>fb2k</Filter>
@@ -909,18 +852,6 @@
     <ClInclude Include="panel\fb_properties.h">
       <Filter>panel</Filter>
     </ClInclude>
-    <ClInclude Include="js_engine\global_heap_manager.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\global_object.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\object_base.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="js_engine\prototype_ids.h">
-      <Filter>js_engine</Filter>
-    </ClInclude>
     <ClInclude Include="2K3\Helpers.hpp">
       <Filter>2K3</Filter>
     </ClInclude>
@@ -951,14 +882,77 @@
     <ClInclude Include="2K3\Scintilla\DialogEditor.hpp">
       <Filter>2K3\Scintilla</Filter>
     </ClInclude>
+    <ClInclude Include="js_backend\cached_utf8_paths_hack.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\global_heap_manager.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\global_object.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\heartbeat_window.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_art_helpers.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_async_task.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_container.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_engine.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_error_helper.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_gc.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_heap_helper.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_image_helpers.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_internal_global.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_monitor.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_object_helper.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_property_helper.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_prototype_helpers.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_realm_inner.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_to_native_invoker.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\native_to_js_invoker.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\object_base.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\prototype_ids.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\scope_helper.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="js_engine">
-      <UniqueIdentifier>{82fda107-c970-4ad4-9ad2-b6aae7fddd6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="js_utils">
-      <UniqueIdentifier>{ec53acea-e62f-4dab-a310-6e7ad5b88ff9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="convert">
       <UniqueIdentifier>{9b140af0-03ed-4c1a-aaae-127af5622eb8}</UniqueIdentifier>
     </Filter>
@@ -1009,6 +1003,9 @@
     </Filter>
     <Filter Include="2K3\Scintilla">
       <UniqueIdentifier>{b2137be5-4621-42de-95c3-179b04fc340e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="js_backend">
+      <UniqueIdentifier>{82fda107-c970-4ad4-9ad2-b6aae7fddd6d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,6 @@
 #include <stdafx.h>
 #include "gdi_raw_bitmap.h"
 
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
 #include <utils/gdi_error_helpers.h>
 #include <utils/gdi_helpers.h>
 

@@ -1,9 +1,6 @@
 #include <stdafx.h>
 #include "fb_audio_chunk.h"
 
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
-
 namespace
 {
 	using namespace mozjs;

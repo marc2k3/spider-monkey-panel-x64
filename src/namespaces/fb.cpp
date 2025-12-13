@@ -19,9 +19,6 @@
 #include <interfaces/fb_ui_selection_holder.h>
 #include <interfaces/gdi_bitmap.h>
 #include <interfaces/main_menu_manager.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
-#include <js_utils/js_property_helper.h>
 #include <panel/modal_blocking_scope.h>
 #include <panel/user_message.h>
 #include <utils/menu_helpers.h>

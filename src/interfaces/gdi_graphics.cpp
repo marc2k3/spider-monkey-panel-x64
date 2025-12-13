@@ -5,8 +5,6 @@
 #include <interfaces/gdi_font.h>
 #include <interfaces/gdi_raw_bitmap.h>
 #include <interfaces/measure_string_info.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
 #include <utils/colour_helpers.h>
 #include <utils/gdi_error_helpers.h>
 #include <utils/text_helpers.h>

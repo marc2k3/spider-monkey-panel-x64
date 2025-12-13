@@ -1,5 +1,5 @@
 #pragma once
-#include <js_utils/js_error_helper.h>
+#include "js_error_helper.h"
 
 namespace mozjs
 {

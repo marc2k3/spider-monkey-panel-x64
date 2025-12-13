@@ -1,8 +1,6 @@
 #include <stdafx.h>
 #include "console.h"
 
-#include <js_utils/js_object_helper.h>
-
 using namespace smp;
 
 namespace

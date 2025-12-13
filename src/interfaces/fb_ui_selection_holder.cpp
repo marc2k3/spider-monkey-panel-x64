@@ -3,7 +3,6 @@
 
 #include <fb2k/selection_holder_helper.h>
 #include <interfaces/fb_metadb_handle_list.h>
-#include <js_utils/js_object_helper.h>
 
 namespace
 {

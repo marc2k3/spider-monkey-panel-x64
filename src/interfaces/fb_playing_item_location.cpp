@@ -1,9 +1,6 @@
 #include <stdafx.h>
 #include "fb_playing_item_location.h"
 
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
-
 namespace
 {
 	using namespace mozjs;

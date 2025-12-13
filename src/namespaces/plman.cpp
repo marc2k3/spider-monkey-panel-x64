@@ -8,9 +8,6 @@
 #include <interfaces/fb_playback_queue_item.h>
 #include <interfaces/fb_playing_item_location.h>
 #include <interfaces/fb_playlist_recycler.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
-#include <js_utils/js_property_helper.h>
 #include <utils/location_processor.h>
 
 namespace

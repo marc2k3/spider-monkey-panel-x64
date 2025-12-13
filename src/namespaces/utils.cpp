@@ -11,10 +11,7 @@
 #include <config/package_utils.h>
 #include <interfaces/fb_metadb_handle.h>
 #include <interfaces/gdi_bitmap.h>
-#include <js_utils/js_art_helpers.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
-#include <js_utils/js_property_helper.h>
+#include <js_backend/js_art_helpers.h>
 #include <ui/ui_html.h>
 #include <ui/ui_input_box.h>
 #include <utils/colour_helpers.h>

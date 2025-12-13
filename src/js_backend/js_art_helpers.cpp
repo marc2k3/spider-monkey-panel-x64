@@ -1,15 +1,13 @@
 #include <stdafx.h>
 #include "js_art_helpers.h"
 
+#include "js_async_task.h"
+
 #include <2K3/AlbumArtStatic.hpp>
 #include <convert/native_to_js.h>
 #include <events/event_dispatcher.h>
 #include <events/event_js_task.h>
 #include <interfaces/gdi_bitmap.h>
-#include <js_utils/js_async_task.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
-#include <js_utils/js_property_helper.h>
 #include <qwr/thread_pool.h>
 #include <utils/gdi_helpers.h>
 

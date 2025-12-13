@@ -2,8 +2,6 @@
 #include "fb_properties.h"
 
 #include <convert/native_to_js.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/js_object_helper.h>
 
 using namespace smp;
 

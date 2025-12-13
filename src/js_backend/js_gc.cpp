@@ -1,8 +1,8 @@
 #include <stdafx.h>
 #include "js_gc.h"
+#include "js_error_helper.h"
 
 #include <fb2k/advanced_config.h>
-#include <js_utils/js_error_helper.h>
 
 namespace
 {

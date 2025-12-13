@@ -1,8 +1,8 @@
 #include <stdafx.h>
 #include "js_internal_global.h"
+#include "cached_utf8_paths_hack.h"
 
 #include <2K3/TextFile.hpp>
-#include <js_utils/cached_utf8_paths_hack.h>
 
 namespace
 {

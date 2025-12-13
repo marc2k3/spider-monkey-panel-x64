@@ -1,8 +1,9 @@
 #pragma once
+#include "js_error_helper.h"
+#include "scope_helper.h"
+
 #include <convert/js_to_native.h>
 #include <convert/native_to_js.h>
-#include <js_utils/js_error_helper.h>
-#include <js_utils/scope_helper.h>
 
 namespace mozjs::internal
 {

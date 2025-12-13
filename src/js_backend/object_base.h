@@ -1,7 +1,6 @@
 #pragma once
 #include "js_realm_inner.h"
-
-#include <js_utils/js_prototype_helpers.h>
+#include "js_prototype_helpers.h"
 
 namespace mozjs
 {

@@ -1,9 +1,9 @@
 #include <stdafx.h>
 #include "js_engine.h"
+#include "js_error_helper.h"
 
 #include <com_utils/com_destruction_handler.h>
 #include <fb2k/advanced_config.h>
-#include <js_utils/js_error_helper.h>
 #include <panel/js_panel_window.h>
 #include <panel/modal_blocking_scope.h>
 #include <panel/user_message.h>
