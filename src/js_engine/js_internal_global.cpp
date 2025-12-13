@@ -18,19 +18,7 @@ namespace
 		}
 	}
 
-	JSClassOps jsOps = {
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		JsFinalizeOpLocal,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr // set in runtime to JS_GlobalObjectTraceHook
-	};
+	JS_CLASS_OPS(JsFinalizeOpLocal, nullptr)
 
 	constexpr JSClass jsClass = {
 		"InternalGlobal",

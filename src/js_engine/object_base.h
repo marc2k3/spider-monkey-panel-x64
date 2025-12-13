@@ -87,6 +87,28 @@ namespace mozjs
 		static void PostCreate(JSContext* cx, JS::HandleObject self);
 	*/
 
+#define JS_CLASS_OPS(finalize_object, trace) \
+	JSClassOps jsOps = { \
+		nullptr, \
+		nullptr, \
+		nullptr, \
+		nullptr, \
+		nullptr, \
+		nullptr, \
+		finalize_object, \
+		nullptr, \
+		nullptr, \
+		nullptr, \
+		trace \
+	}; \
+
+#define JS_CLASS(what) \
+	constexpr JSClass jsClass = { \
+		what, \
+		kDefaultClassFlags, \
+		&jsOps \
+	}; \
+
 	template <typename T>
 	class JsObjectBase
 	{
