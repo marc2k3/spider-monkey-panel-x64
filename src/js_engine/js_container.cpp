@@ -10,7 +10,7 @@ using namespace smp;
 
 namespace mozjs
 {
-	JsContainer::JsContainer(panel::js_panel_window& parentPanel)
+	JsContainer::JsContainer(js_panel_window& parentPanel)
 	{
 		pParentPanel_ = &parentPanel;
 
@@ -220,13 +220,13 @@ namespace mozjs
 		JsEngine::GetInstance().MaybeRunJobs();
 	}
 
-	smp::panel::js_panel_window& JsContainer::GetParentPanel() const
+	smp::js_panel_window& JsContainer::GetParentPanel() const
 	{
 		assert(pParentPanel_);
 		return *pParentPanel_;
 	}
 
-	bool JsContainer::InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, panel::DragActionParams& actionParams)
+	bool JsContainer::InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, DragActionParams& actionParams)
 	{
 		if (!IsReadyForCallback())
 		{

@@ -336,7 +336,7 @@ void CConfigTabScriptSource::OnEditScript(UINT /*uNotifyCode*/, int /*nID*/, CWi
 	{
 		try
 		{
-			panel::EditScript(*this, settings_);
+			EditScript(*this, settings_);
 		}
 		catch (const QwrException& e)
 		{

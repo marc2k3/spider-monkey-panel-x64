@@ -4,7 +4,7 @@
 #include <PropertyList/PropertyList.h>
 #include <ui/impl/ui_itab.h>
 
-namespace smp::panel
+namespace smp
 {
 class js_panel_window;
 }

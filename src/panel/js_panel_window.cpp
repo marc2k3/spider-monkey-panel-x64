@@ -37,7 +37,7 @@ namespace
 
 }
 
-namespace smp::panel
+namespace smp
 {
 	js_panel_window::js_panel_window(PanelType instanceType) : panelType_(instanceType) {}
 
@@ -129,13 +129,13 @@ namespace smp::panel
 		}
 	}
 
-	void js_panel_window::SetSettings(const smp::config::ParsedPanelSettings& settings)
+	void js_panel_window::SetSettings(const config::ParsedPanelSettings& settings)
 	{
 		settings_ = settings;
 		ReloadScript();
 	}
 
-	bool js_panel_window::UpdateSettings(const smp::config::PanelSettings& settings, bool reloadPanel)
+	bool js_panel_window::UpdateSettings(const config::PanelSettings& settings, bool reloadPanel)
 	{
 		try
 		{
@@ -444,7 +444,7 @@ namespace smp::panel
 
 				if (bRet)
 				{
-					smp::com::TrackDropTarget::ProcessDropEvent(pDragEvent->GetStoredData(), dragParams);
+					com::TrackDropTarget::ProcessDropEvent(pDragEvent->GetStoredData(), dragParams);
 				}
 			}
 
@@ -1050,7 +1050,7 @@ namespace smp::panel
 		{
 			try
 			{
-				panel::EditScript(wnd_, settings_);
+				smp::EditScript(wnd_, settings_);
 			}
 			catch (const QwrException& e)
 			{
@@ -1080,10 +1080,10 @@ namespace smp::panel
 		modal::ModalBlockingScope scope(parent, true);
 
 		ui::CDialogConf dlg(this, tab);
-		(void)dlg.DoModal(parent);
+		dlg.DoModal(parent);
 	}
 
-	void js_panel_window::GenerateContextMenu(HMENU hMenu, int x, int y, uint32_t id_base)
+	void js_panel_window::GenerateContextMenu(HMENU hMenu, int x, int y, size_t id_base)
 	{
 		namespace fs = std::filesystem;
 
@@ -1098,6 +1098,7 @@ namespace smp::panel
 			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Open component folder");
 			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Open documentation");
 			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
+
 			if (settings_.GetSourceType() == config::ScriptSourceType::Package)
 			{
 				++curIdx;
@@ -1144,7 +1145,7 @@ namespace smp::panel
 		}
 	}
 
-	void js_panel_window::ExecuteContextMenu(uint32_t id, uint32_t id_base)
+	void js_panel_window::ExecuteContextMenu(size_t id, size_t id_base)
 	{
 		try
 		{
@@ -1157,7 +1158,7 @@ namespace smp::panel
 			}
 			case 2:
 			{
-				ShellExecute(nullptr, L"open", smp::path::Component().c_str(), nullptr, nullptr, SW_SHOW);
+				ShellExecute(nullptr, L"open", path::Component().c_str(), nullptr, nullptr, SW_SHOW);
 				break;
 			}
 			case 3:
@@ -1185,9 +1186,9 @@ namespace smp::panel
 			if (id - id_base > 100)
 			{
 				const auto scriptFiles = config::GetPackageScriptFiles(settings_);
-				const auto fileIdx = std::min<size_t>(id - id_base - 100, scriptFiles.size()) - 1;
+				const auto fileIdx = std::min(id - id_base - 100uz, scriptFiles.size()) - 1uz;
 
-				panel::EditPackageScript(wnd_, scriptFiles[fileIdx], settings_);
+				EditPackageScript(wnd_, scriptFiles[fileIdx], settings_);
 				ReloadScript();
 			}
 		}
@@ -1342,7 +1343,7 @@ namespace smp::panel
 		}
 		catch (const QwrException& e)
 		{
-			smp::utils::LogWarning(e.what());
+			utils::LogWarning(e.what());
 		}
 		DynamicMainMenuManager::Get().RegisterPanel(wnd_, settings_.panelId);
 

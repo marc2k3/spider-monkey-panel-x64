@@ -5,7 +5,7 @@
 
 namespace fs = std::filesystem;
 
-namespace smp::panel
+namespace smp
 {
 	void EditScript(HWND hParent, config::ParsedPanelSettings& settings)
 	{
@@ -32,7 +32,7 @@ namespace smp::panel
 				const auto filePath = *settings.scriptPath;
 				QwrException::ExpectTrue(fs::exists(filePath), "Sample script is missing: {}", filePath.u8string());
 
-				smp::EditTextFile(hParent, filePath, true, true);
+				EditTextFile(hParent, filePath, true, true);
 				break;
 			}
 			case config::ScriptSourceType::File:
@@ -40,12 +40,12 @@ namespace smp::panel
 				const auto filePath = *settings.scriptPath;
 				QwrException::ExpectTrue(fs::exists(filePath), "Script is missing: {}", filePath.u8string());
 
-				smp::EditTextFile(hParent, filePath, true, true);
+				EditTextFile(hParent, filePath, true, true);
 				break;
 			}
 			case config::ScriptSourceType::InMemory:
 			{
-				smp::EditText(hParent, *settings.script, true);
+				EditText(hParent, *settings.script, true);
 				break;
 			}
 			case config::ScriptSourceType::Package:
@@ -83,7 +83,7 @@ namespace smp::panel
 			}
 
 			QwrException::ExpectTrue(fs::exists(script), "Script is missing: {}", script.u8string());
-			smp::EditTextFile(hParent, script, true, true);
+			EditTextFile(hParent, script, true, true);
 		}
 		catch (const fs::filesystem_error& e)
 		{

@@ -4,7 +4,7 @@
 #include "js_realm_inner.h"
 #include "native_to_js_invoker.h"
 
-namespace smp::panel
+namespace smp
 {
 	class js_panel_window;
 	struct DragActionParams;
@@ -18,7 +18,7 @@ namespace mozjs
 		friend class JsEngine;
 
 	public:
-		JsContainer(smp::panel::js_panel_window& parentPanel);
+		JsContainer(smp::js_panel_window& parentPanel);
 		JsContainer(const JsContainer&) = delete;
 		~JsContainer();
 
@@ -45,7 +45,7 @@ namespace mozjs
 		static void RunJobs();
 
 	public:
-		smp::panel::js_panel_window& GetParentPanel() const;
+		smp::js_panel_window& GetParentPanel() const;
 
 	public:
 		template <typename ReturnType = std::nullptr_t, typename... ArgTypes>
@@ -64,7 +64,7 @@ namespace mozjs
 			return mozjs::InvokeJsCallback<ReturnType>(pJsCtx_, jsGlobal_, functionName, std::forward<ArgTypes>(args)...);
 		}
 
-		[[nodiscard]] bool InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, smp::panel::DragActionParams& actionParams);
+		[[nodiscard]] bool InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, smp::DragActionParams& actionParams);
 		void InvokeOnNotify(const std::wstring& name, JS::HandleValue info);
 		void InvokeOnPaint(Gdiplus::Graphics& gr);
 		bool InvokeJsAsyncTask(JsAsyncTask& jsTask);
@@ -82,7 +82,7 @@ namespace mozjs
 
 	private:
 		JSContext* pJsCtx_ = nullptr;
-		smp::panel::js_panel_window* pParentPanel_ = nullptr;
+		smp::js_panel_window* pParentPanel_ = nullptr;
 
 		JS::PersistentRootedObject jsGlobal_;
 		JS::PersistentRootedObject jsGraphics_;

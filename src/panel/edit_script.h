@@ -1,7 +1,7 @@
 #pragma once
 #include <config/parsed_panel_config.h>
 
-namespace smp::panel
+namespace smp
 {
 	/// @throw QwrException
 	void EditScript(HWND hParent, config::ParsedPanelSettings& settings);

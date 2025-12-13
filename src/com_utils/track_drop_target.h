@@ -13,7 +13,7 @@ namespace smp::com
 		virtual void FinalRelease();
 
 	public:
-		TrackDropTarget(class panel::js_panel_window& panel);
+		TrackDropTarget(js_panel_window& panel);
 		~TrackDropTarget() override = default;
 
 		// IDropTargetImpl
@@ -22,14 +22,14 @@ namespace smp::com
 		DWORD OnDrop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
 		void OnDragLeave() override;
 
-		static void ProcessDropEvent(IDataObjectPtr pDataObject, std::optional<panel::DragActionParams> dragParamsOpt);
+		static void ProcessDropEvent(IDataObjectPtr pDataObject, std::optional<DragActionParams> dragParamsOpt);
 
 	private:
-		[[nodiscard]] std::optional<panel::DragActionParams>
+		[[nodiscard]] std::optional<DragActionParams>
 		PutDragEvent(EventId eventId, DWORD grfKeyState, POINTL pt, DWORD allowedEffects);
 
 	private:
-		panel::js_panel_window* pPanel_ = nullptr;
+		js_panel_window* pPanel_ = nullptr;
 		IDataObjectPtr pDataObject_;
 		DWORD fb2kAllowedEffect_ = DROPEFFECT_NONE;
 

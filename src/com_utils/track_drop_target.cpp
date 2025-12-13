@@ -51,7 +51,7 @@ namespace
 
 namespace smp::com
 {
-	TrackDropTarget::TrackDropTarget(panel::js_panel_window& panel) : IDropTargetImpl(panel.GetHWND()), pPanel_(&panel) {}
+	TrackDropTarget::TrackDropTarget(js_panel_window& panel) : IDropTargetImpl(panel.GetHWND()), pPanel_(&panel) {}
 
 	void TrackDropTarget::FinalRelease()
 	{
@@ -120,7 +120,7 @@ namespace smp::com
 		pDataObject_.Release();
 	}
 
-	void TrackDropTarget::ProcessDropEvent(IDataObjectPtr pDataObject, std::optional<panel::DragActionParams> dragParamsOpt)
+	void TrackDropTarget::ProcessDropEvent(IDataObjectPtr pDataObject, std::optional<DragActionParams> dragParamsOpt)
 	{
 		if (!pDataObject || !dragParamsOpt || dragParamsOpt->effect == DROPEFFECT_NONE)
 		{
@@ -141,7 +141,7 @@ namespace smp::com
 		}
 	}
 
-	std::optional<panel::DragActionParams> TrackDropTarget::PutDragEvent(EventId eventId, DWORD grfKeyState, POINTL pt, DWORD allowedEffects)
+	std::optional<DragActionParams> TrackDropTarget::PutDragEvent(EventId eventId, DWORD grfKeyState, POINTL pt, DWORD allowedEffects)
 	{
 		if (!pPanel_)
 		{
@@ -155,7 +155,7 @@ namespace smp::com
 			{ EventId::kMouseDragDrop, InternalSyncMessage::wnd_drag_drop }
 		};
 
-		panel::DragActionParams dragParams{};
+		DragActionParams dragParams{};
 		dragParams.effect = allowedEffects;
 		dragParams.isInternal = pPanel_->HasInternalDrag();
 

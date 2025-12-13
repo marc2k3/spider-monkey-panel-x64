@@ -15,10 +15,7 @@ namespace smp
 	{
 		class IDropTargetImpl;
 	}
-}
 
-namespace smp::panel
-{
 	enum class PanelType : uint8_t
 	{
 		CUI = 0,
@@ -88,8 +85,8 @@ namespace smp::panel
 		void EditScript();
 		void ShowConfigure(HWND parent, ui::CDialogConf::Tab tab = ui::CDialogConf::Tab::def);
 
-		void GenerateContextMenu(HMENU hMenu, int x, int y, uint32_t id_base);
-		void ExecuteContextMenu(uint32_t id, uint32_t id_base);
+		void GenerateContextMenu(HMENU hMenu, int x, int y, size_t id_base);
+		void ExecuteContextMenu(size_t id, size_t id_base);
 
 	private:
 		bool ReloadSettings();

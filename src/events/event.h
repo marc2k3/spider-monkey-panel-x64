@@ -1,12 +1,8 @@
 #pragma once
 
-namespace smp::panel
-{
-	class js_panel_window;
-}
-
 namespace smp
 {
+	class js_panel_window;
 	class Event_Mouse;
 	class Event_Drag;
 
@@ -207,15 +203,15 @@ namespace smp
 	class PanelTarget final
 	{
 	public:
-		PanelTarget(panel::js_panel_window& panel);
+		PanelTarget(js_panel_window& panel);
 
 		[[nodiscard]] HWND GetHwnd();
 
-		[[nodiscard]] panel::js_panel_window* GetPanel();
+		[[nodiscard]] js_panel_window* GetPanel();
 		void UnlinkPanel();
 
 	private:
-		panel::js_panel_window* pPanel_ = nullptr;
+		js_panel_window* pPanel_ = nullptr;
 		HWND hWnd_ = nullptr;
 	};
 

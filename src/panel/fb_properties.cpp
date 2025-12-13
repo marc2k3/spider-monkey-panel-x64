@@ -10,9 +10,9 @@ using namespace smp;
 
 namespace mozjs
 {
-	FbProperties::FbProperties(JSContext* cx, panel::js_panel_window& parentPanel) : pJsCtx_(cx), parentPanel_(parentPanel) {}
+	FbProperties::FbProperties(JSContext* cx, js_panel_window& parentPanel) : pJsCtx_(cx), parentPanel_(parentPanel) {}
 
-	std::unique_ptr<FbProperties> FbProperties::Create(JSContext* cx, panel::js_panel_window& parentPanel)
+	std::unique_ptr<FbProperties> FbProperties::Create(JSContext* cx, js_panel_window& parentPanel)
 	{
 		return std::unique_ptr<FbProperties>(new FbProperties(cx, parentPanel));
 	}

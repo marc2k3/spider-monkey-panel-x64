@@ -55,7 +55,7 @@ namespace mozjs
 		return 0;
 	}
 
-	smp::panel::DragActionParams& JsDropSourceAction::AccessDropActionParams()
+	smp::DragActionParams& JsDropSourceAction::AccessDropActionParams()
 	{
 		return actionParams_;
 	}

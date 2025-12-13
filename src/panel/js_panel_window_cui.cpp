@@ -2,7 +2,7 @@
 #include <panel/js_panel_window.h>
 #include <utils/colour_helpers.h>
 
-namespace smp::panel
+namespace smp
 {
 	class js_panel_window_cui : public js_panel_window, public uie::container_uie_window_v3
 	{
@@ -93,5 +93,5 @@ namespace smp::panel
 		}
 	};
 
-	uie::window_factory<smp::panel::js_panel_window_cui> g_js_panel_window_cui;
+	uie::window_factory<smp::js_panel_window_cui> g_js_panel_window_cui;
 }
