@@ -128,9 +128,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="fb2k\metadb_display_field_provider_impl.cpp" />
     <ClCompile Include="fb2k\track_property_provider_impl.cpp" />
     <ClCompile Include="initquit.cpp" />
-    <ClCompile Include="convert\com.cpp" />
-    <ClCompile Include="convert\js_to_native.cpp" />
-    <ClCompile Include="convert\native_to_js.cpp" />
     <ClCompile Include="events\event.cpp" />
     <ClCompile Include="events\event_drag.cpp" />
     <ClCompile Include="events\event_js_task.cpp" />
@@ -172,6 +169,7 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="interfaces\menu_object.cpp" />
     <ClCompile Include="interfaces\theme_manager.cpp" />
     <ClCompile Include="js_backend\cached_utf8_paths_hack.cpp" />
+    <ClCompile Include="js_backend\com_convert.cpp" />
     <ClCompile Include="js_backend\global_heap_manager.cpp" />
     <ClCompile Include="js_backend\global_object.cpp" />
     <ClCompile Include="js_backend\heartbeat_window.cpp" />
@@ -185,6 +183,8 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="js_backend\js_monitor.cpp" />
     <ClCompile Include="js_backend\js_object_helper.cpp" />
     <ClCompile Include="js_backend\js_realm_inner.cpp" />
+    <ClCompile Include="js_backend\js_to_native.cpp" />
+    <ClCompile Include="js_backend\native_to_js.cpp" />
     <ClCompile Include="js_backend\native_to_js_invoker.cpp" />
     <ClCompile Include="namespaces\console.cpp" />
     <ClCompile Include="namespaces\fb.cpp" />
@@ -285,9 +285,6 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="config\panel_config.h" />
     <ClInclude Include="config\panel_config_json.h" />
     <ClInclude Include="config\parsed_panel_config.h" />
-    <ClInclude Include="convert\com.h" />
-    <ClInclude Include="convert\js_to_native.h" />
-    <ClInclude Include="convert\native_to_js.h" />
     <ClInclude Include="events\event.h" />
     <ClInclude Include="events\event_drag.h" />
     <ClInclude Include="events\event_js_callback.h" />
@@ -329,6 +326,7 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="interfaces\menu_object.h" />
     <ClInclude Include="interfaces\theme_manager.h" />
     <ClInclude Include="js_backend\cached_utf8_paths_hack.h" />
+    <ClInclude Include="js_backend\com_convert.h" />
     <ClInclude Include="js_backend\global_heap_manager.h" />
     <ClInclude Include="js_backend\global_object.h" />
     <ClInclude Include="js_backend\heartbeat_window.h" />
@@ -346,7 +344,9 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="js_backend\js_property_helper.h" />
     <ClInclude Include="js_backend\js_prototype_helpers.h" />
     <ClInclude Include="js_backend\js_realm_inner.h" />
+    <ClInclude Include="js_backend\js_to_native.h" />
     <ClInclude Include="js_backend\js_to_native_invoker.h" />
+    <ClInclude Include="js_backend\native_to_js.h" />
     <ClInclude Include="js_backend\native_to_js_invoker.h" />
     <ClInclude Include="js_backend\object_base.h" />
     <ClInclude Include="js_backend\prototype_ids.h" />

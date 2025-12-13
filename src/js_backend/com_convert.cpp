@@ -1,10 +1,10 @@
 #include <stdafx.h>
-#include "com.h"
+#include "com_convert.h"
+#include "js_to_native.h"
 
 #include <com_utils/com_interface_h.h>
 #include <com_utils/com_tools.h>
 #include <com_utils/dispatch_ptr.h>
-#include <convert/js_to_native.h>
 #include <interfaces/active_x_object.h>
 #include <panel/user_message.h>
 

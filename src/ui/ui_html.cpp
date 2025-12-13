@@ -2,8 +2,8 @@
 #include "ui_html.h"
 
 #include <com_utils/dispatch_ptr.h>
-#include <convert/com.h>
-#include <convert/js_to_native.h>
+#include <js_backend/com_convert.h>
+#include <js_backend/js_to_native.h>
 #include <qwr/hook_handler.h>
 
 namespace smp::ui
@@ -19,8 +19,9 @@ namespace smp::ui
 
 	LRESULT CDialogHtml::OnInitDialog(HWND, LPARAM)
 	{
-		auto autoExit = wil::scope_exit([&] {
-			EndDialog(-1);
+		auto autoExit = wil::scope_exit([&]
+			{
+				EndDialog(-1);
 			});
 
 		SetOptions();
@@ -113,8 +114,8 @@ namespace smp::ui
 			return -1;
 		}
 
-		hookId_ = QwrHookHandler::GetInstance().RegisterHook(
-			[hIE, pThis = this](int code, WPARAM wParam, LPARAM lParam) {
+		hookId_ = QwrHookHandler::GetInstance().RegisterHook([hIE, pThis = this](int code, WPARAM wParam, LPARAM lParam)
+			{
 				GetMsgProc(code, wParam, lParam, hIE, pThis);
 			});
 

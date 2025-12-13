@@ -1,8 +1,6 @@
 #include <stdafx.h>
 #include "fb_properties.h"
 
-#include <convert/native_to_js.h>
-
 using namespace smp;
 
 namespace mozjs

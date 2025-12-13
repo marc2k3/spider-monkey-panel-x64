@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="convert\com.cpp">
-      <Filter>convert</Filter>
-    </ClCompile>
-    <ClCompile Include="convert\native_to_js.cpp">
-      <Filter>convert</Filter>
-    </ClCompile>
-    <ClCompile Include="convert\js_to_native.cpp">
-      <Filter>convert</Filter>
-    </ClCompile>
     <ClCompile Include="utils\kmeans.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -443,17 +434,17 @@
     <ClCompile Include="js_backend\native_to_js_invoker.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
+    <ClCompile Include="js_backend\js_to_native.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\native_to_js.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\com_convert.cpp">
+      <Filter>js_backend</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="convert\com.h">
-      <Filter>convert</Filter>
-    </ClInclude>
-    <ClInclude Include="convert\native_to_js.h">
-      <Filter>convert</Filter>
-    </ClInclude>
-    <ClInclude Include="convert\js_to_native.h">
-      <Filter>convert</Filter>
-    </ClInclude>
     <ClInclude Include="utils\kmeans.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -951,11 +942,17 @@
     <ClInclude Include="js_backend\scope_helper.h">
       <Filter>js_backend</Filter>
     </ClInclude>
+    <ClInclude Include="js_backend\js_to_native.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\native_to_js.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\com_convert.h">
+      <Filter>js_backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="convert">
-      <UniqueIdentifier>{9b140af0-03ed-4c1a-aaae-127af5622eb8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{047b1a54-ba81-4cee-910d-751ebb3953fe}</UniqueIdentifier>
     </Filter>

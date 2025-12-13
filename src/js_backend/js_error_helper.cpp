@@ -3,9 +3,6 @@
 #include "cached_utf8_paths_hack.h"
 #include "js_property_helper.h"
 
-#include <convert/js_to_native.h>
-#include <convert/native_to_js.h>
-
 namespace
 {
 	using namespace mozjs;

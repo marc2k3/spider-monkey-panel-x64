@@ -4,9 +4,7 @@
 #include <com_utils/com_interface_h.h>
 #include <com_utils/com_tools.h>
 #include <com_utils/com_error_helpers.h>
-#include <convert/com.h>
-#include <convert/js_to_native.h>
-#include <convert/native_to_js.h>
+#include <js_backend/com_convert.h>
 #include <interfaces/active_x_object_iterator.h>
 
 namespace

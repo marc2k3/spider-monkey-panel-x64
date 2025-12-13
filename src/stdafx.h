@@ -48,6 +48,7 @@
 #include <MsHTML.h>
 #include <ExDispid.h>
 #include <MsHtmHst.h>
+#include <oleauto.h>
 #include <ShlDisp.h>
 #include <ShlObj.h>
 #include <exdisp.h>
