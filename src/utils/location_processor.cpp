@@ -2,7 +2,7 @@
 
 #include "location_processor.h"
 
-namespace smp::utils
+namespace smp
 {
 	OnProcessLocationsNotify_InsertHandles::OnProcessLocationsNotify_InsertHandles(GUID g, UINT baseIdx, bool shouldSelect)
 		: g_(g)

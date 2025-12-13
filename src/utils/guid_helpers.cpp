@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "guid_helpers.h"
 
-namespace smp::utils
+namespace smp
 {
 	GUID GenerateGuid()
 	{

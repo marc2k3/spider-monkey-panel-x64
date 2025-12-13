@@ -46,7 +46,7 @@ bool ContextMenuCommand::execute_recur(contextmenu_node* parent, std::string_vie
 			if (execute_recur(child, path + "/"))
 				return true;
 		}
-		else if (type == contextmenu_item_node::type_command && smp::utils::DoesPathMatchCommand(path, m_command))
+		else if (type == contextmenu_item_node::type_command && smp::DoesPathMatchCommand(path, m_command))
 		{
 			if (WI_IsAnyFlagSet(child->get_display_flags(), contextmenu_item_node::FLAG_DISABLED_GRAYED))
 				return false;

@@ -25,7 +25,7 @@ namespace
 		{
 		case mainmenu_node::type_command:
 		{
-			if (smp::utils::DoesPathMatchCommand(curPath, name))
+			if (smp::DoesPathMatchCommand(curPath, name))
 			{
 				return node;
 			}
@@ -86,7 +86,7 @@ namespace
 					ptr->get_name(idx, command);
 					const auto path = fmt::format("{}{}", parent_path, command.get_ptr());
 
-					if (smp::utils::DoesPathMatchCommand(path, name))
+					if (smp::DoesPathMatchCommand(path, name))
 					{
 						fnOld(idx, ptr);
 						return true;
@@ -99,7 +99,7 @@ namespace
 	}
 }
 
-namespace smp::utils
+namespace smp
 {
 	bool DoesPathMatchCommand(std::string_view path, std::string_view command)
 	{

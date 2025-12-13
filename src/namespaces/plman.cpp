@@ -213,7 +213,7 @@ namespace mozjs
 			nullptr,
 			nullptr,
 			nullptr,
-			fb2k::service_new<smp::utils::OnProcessLocationsNotify_InsertHandles>(g, base, select));
+			fb2k::service_new<smp::OnProcessLocationsNotify_InsertHandles>(g, base, select));
 	}
 
 	void Plman::AddLocationsWithOpt(size_t optArgCount, uint32_t playlistIndex, JS::HandleValue locations, bool select)

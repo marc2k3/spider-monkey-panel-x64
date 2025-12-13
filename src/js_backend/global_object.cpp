@@ -49,7 +49,7 @@ namespace
 
 					if (config::advanced::debug_log_extended_include_error)
 					{
-						smp::utils::LogDebug(fmt::format(
+						smp::LogDebug(fmt::format(
 							"`include()` failed:\n "
 							"  `{}` is not a regular file\n",
 							pathToVerify.u8string()));
@@ -66,7 +66,7 @@ namespace
 
 					if (config::advanced::debug_log_extended_include_error)
 					{
-						smp::utils::LogDebug(fmt::format(
+						smp::LogDebug(fmt::format(
 							"`include()` failed:\n "
 							"  `{}` does not exist\n",
 							pathToVerify.u8string()));
@@ -95,7 +95,7 @@ namespace
 
 				if (config::advanced::debug_log_extended_include_error)
 				{
-					smp::utils::LogDebug(fmt::format(fmt::runtime(
+					smp::LogDebug(fmt::format(fmt::runtime(
 						"`include()` failed:\n"
 						"  file `{}` coud not be found using the following search paths:\n"
 						"    {}\n"),

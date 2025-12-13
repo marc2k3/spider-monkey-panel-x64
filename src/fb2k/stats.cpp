@@ -43,7 +43,7 @@ namespace
 		catch (const std::exception& e)
 		{
 			api->remove(smp::guid::metadb_index);
-			smp::utils::LogError(fmt::format("Stats initialization failed:\n {}", e.what()));
+			smp::LogError(fmt::format("Stats initialization failed:\n {}", e.what()));
 		}
 	}
 

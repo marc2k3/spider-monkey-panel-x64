@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "component_defines.h"
 
-namespace smp
+namespace
 {
 	pfc::string8 about_text()
 	{

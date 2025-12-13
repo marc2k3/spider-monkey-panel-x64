@@ -296,8 +296,6 @@ namespace mozjs
 
 	std::string JsGdiBitmap::GetColourSchemeJSON(uint32_t count)
 	{
-		namespace kmeans = smp::utils::kmeans;
-
 		// rescaled image will have max of ~48k pixels
 		constexpr uint32_t kMaxPixelCount = 220 * 220;
 		auto pBitmap = CreateDownsizedImage(*pGdi_, kMaxPixelCount);
@@ -331,38 +329,41 @@ namespace mozjs
 		}
 		pBitmap->UnlockBits(&bmpdata);
 
-		const auto points =
-			ranges::views::transform(colour_counters, [](const auto& colourCounter) {
-			const auto [colour, pixelCount] = colourCounter;
+		const auto points = ranges::views::transform(colour_counters, [](const auto& colourCounter)
+			{
+				const auto [colour, pixelCount] = colourCounter;
 
-			const uint8_t r = (colour >> 16) & 0xff;
-			const uint8_t g = (colour >> 8) & 0xff;
-			const uint8_t b = (colour & 0xff);
+				const uint8_t r = (colour >> 16) & 0xff;
+				const uint8_t g = (colour >> 8) & 0xff;
+				const uint8_t b = (colour & 0xff);
 
-			return kmeans::PointData{ std::vector<uint8_t>{ r, g, b }, pixelCount };
-				})
-			| ranges::to_vector;
+				return smp::kmeans::PointData{ std::vector<uint8_t>{ r, g, b }, pixelCount };
+			}) | ranges::to_vector;
 
 		constexpr uint32_t kKmeansIterationCount = 12;
-		std::vector<kmeans::ClusterData> clusters = kmeans::run(points, count, kKmeansIterationCount);
+		std::vector<smp::kmeans::ClusterData> clusters = smp::kmeans::run(points, count, kKmeansIterationCount);
 
-		const auto getTotalPixelCount = [](const kmeans::ClusterData& cluster) -> size_t
+		const auto getTotalPixelCount = [](const smp::kmeans::ClusterData& cluster) -> size_t
 			{
-				return ranges::accumulate(cluster.points, 0uz, [](auto sum, const auto pData) {
-					return sum + pData->pixel_count;
+				return ranges::accumulate(cluster.points, 0uz, [](auto sum, const auto pData)
+					{
+						return sum + pData->pixel_count;
 					});
 			};
 
 		// sort by largest clusters
-		ranges::sort(clusters, [&getTotalPixelCount](const auto& a, const auto& b) {
-			return getTotalPixelCount(a) > getTotalPixelCount(b);
+		ranges::sort(clusters, [&getTotalPixelCount](const auto& a, const auto& b)
+			{
+				return getTotalPixelCount(a) > getTotalPixelCount(b);
 			});
+
 		if (clusters.size() > count)
 		{
 			clusters.resize(count);
 		}
 
 		auto j = JSON::array();
+
 		for (const auto& cluster : clusters)
 		{
 			const auto& centralValues = cluster.central_values;

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::utils
+namespace smp
 {
 	void LogError(const std::string& message);
 	void LogWarning(const std::string& message);

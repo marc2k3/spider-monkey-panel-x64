@@ -54,11 +54,11 @@ namespace smp
 
 		try
 		{
-			smp::CheckWinApi(bRet, "CreateTimerQueueTimer");
+			CheckWinApi(bRet, "CreateTimerQueueTimer");
 		}
 		catch (const QwrException& e)
 		{
-			utils::LogError(e.what());
+			LogError(e.what());
 			return nullptr;
 		}
 

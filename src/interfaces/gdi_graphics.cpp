@@ -111,7 +111,7 @@ namespace mozjs
 		auto autoHdcReleaser = wil::scope_exit([hDc, pGdi = pGdi_] { pGdi->ReleaseHDC(hDc); });
 		auto _ = wil::SelectObject(hDc, font->GetHFont());
 
-		return smp::utils::GetTextHeight(hDc, str);
+		return smp::GetTextHeight(hDc, str);
 	}
 
 	uint32_t JsGdiGraphics::CalcTextWidth(const std::wstring& str, JsGdiFont* font, boolean use_exact)
@@ -123,7 +123,7 @@ namespace mozjs
 		auto autoHdcReleaser = wil::scope_exit([hDc, pGdi = pGdi_] { pGdi->ReleaseHDC(hDc); });
 		auto _ = wil::SelectObject(hDc, font->GetHFont());
 
-		return smp::utils::GetTextWidth(hDc, str, use_exact);
+		return smp::GetTextWidth(hDc, str, use_exact);
 	}
 
 	uint32_t JsGdiGraphics::CalcTextWidthWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font, boolean use_exact)
@@ -318,13 +318,13 @@ namespace mozjs
 		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
-		std::vector<smp::utils::WrappedTextLine> result;
+		std::vector<smp::WrappedTextLine> result;
 		{
 			const auto hDc = pGdi_->GetHDC();
 			auto autoHdcReleaser = wil::scope_exit([hDc, pGdi = pGdi_] { pGdi->ReleaseHDC(hDc); });
 			auto _ = wil::SelectObject(hDc, font->GetHFont());
 
-			result = smp::utils::WrapText(hDc, str, max_width);
+			result = smp::WrapText(hDc, str, max_width);
 		}
 
 		JS::RootedObject jsArray(pJsCtx_, JS::NewArrayObject(pJsCtx_, result.size() * 2));

@@ -1343,7 +1343,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			utils::LogWarning(e.what());
+			LogWarning(e.what());
 		}
 		DynamicMainMenuManager::Get().RegisterPanel(wnd_, settings_.panelId);
 

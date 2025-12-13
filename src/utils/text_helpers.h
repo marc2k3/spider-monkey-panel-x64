@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::utils
+namespace smp
 {
 	struct WrappedTextLine
 	{

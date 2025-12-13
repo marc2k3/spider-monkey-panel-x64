@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::utils
+namespace smp
 {
 	bool DoesPathMatchCommand(std::string_view path, std::string_view command);
 

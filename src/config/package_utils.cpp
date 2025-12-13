@@ -124,7 +124,7 @@ namespace smp::config
 			std::string id;
 			do
 			{
-				const auto guidStr = utils::GuidToStr(utils::GenerateGuid());
+				const auto guidStr = GuidToStr(GenerateGuid());
 				id = smp::ToU8(guidStr);
 				packagePath = path::Packages_Profile() / id;
 			} while (fs::exists(packagePath));

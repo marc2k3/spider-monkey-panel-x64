@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::utils
+namespace smp
 {
 	class OnProcessLocationsNotify_InsertHandles : public process_locations_notify
 	{

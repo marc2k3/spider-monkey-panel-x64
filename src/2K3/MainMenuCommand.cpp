@@ -78,7 +78,7 @@ bool MainMenuCommand::execute() noexcept
 				ptr->get_name(i, name);
 				const auto path = fmt::format("{}{}", parent_path, name.get_ptr());
 
-				if (smp::utils::DoesPathMatchCommand(path, m_command))
+				if (smp::DoesPathMatchCommand(path, m_command))
 				{
 					if (is_disabled(ptr, i))
 						return false;
@@ -120,13 +120,16 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, std::string_view pa
 				return true;
 		}
 	}
-	else if (type == mainmenu_node::type_command && smp::utils::DoesPathMatchCommand(path, m_command))
+	else if (type == mainmenu_node::type_command)
 	{
-		if (WI_IsFlagSet(flags, mainmenu_commands::flag_disabled))
-			return false;
+		if (smp::DoesPathMatchCommand(path, m_command))
+		{
+			if (WI_IsFlagSet(flags, mainmenu_commands::flag_disabled))
+				return false;
 
-		node->execute(nullptr);
-		return true;
+			node->execute(nullptr);
+			return true;
+		}
 	}
 
 	return false;

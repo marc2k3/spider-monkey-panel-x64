@@ -643,7 +643,7 @@ namespace
 
 		bool Fb::IsMainMenuCommandChecked(const std::string& command)
 		{
-			const auto status = utils::GetMainmenuCommandStatusByName(command);
+			const auto status = GetMainmenuCommandStatusByName(command);
 			return (mainmenu_commands::flag_checked & status || mainmenu_commands::flag_radiochecked & status);
 		}
 

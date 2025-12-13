@@ -62,7 +62,7 @@ namespace smp::com
 		}
 		catch (const QwrException& e)
 		{
-			smp::utils::LogWarning(fmt::format("DnD initialization failed:\n"
+			smp::LogWarning(fmt::format("DnD initialization failed:\n"
 												"  {}",
 												e.what()));
 			return E_FAIL;
@@ -87,7 +87,7 @@ namespace smp::com
 		}
 		catch (const QwrException& e)
 		{
-			smp::utils::LogWarning(fmt::format("DnD initialization failed:\n"
+			smp::LogWarning(fmt::format("DnD initialization failed:\n"
 												"  {}",
 												e.what()));
 			return E_FAIL;
@@ -106,7 +106,7 @@ namespace smp::com
 		}
 		catch (const QwrException& e)
 		{
-			smp::utils::LogWarning(fmt::format("DnD initialization failed:\n"
+			smp::LogWarning(fmt::format("DnD initialization failed:\n"
 												"  {}",
 												e.what()));
 			return E_FAIL;
@@ -135,9 +135,7 @@ namespace smp::com
 		}
 		catch (const QwrException& e)
 		{
-			smp::utils::LogWarning(fmt::format("DnD initialization failed:\n"
-												"  {}",
-												e.what()));
+			smp::LogWarning(fmt::format("DnD initialization failed:\n  {}", e.what()));
 			return E_FAIL;
 		}
 

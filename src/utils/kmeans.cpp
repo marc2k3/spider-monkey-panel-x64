@@ -3,7 +3,7 @@
 
 namespace
 {
-	using namespace smp::utils::kmeans;
+	using namespace smp::kmeans;
 
 	struct Point
 	{
@@ -70,7 +70,7 @@ namespace
 	}
 }
 
-namespace smp::utils::kmeans
+namespace smp::kmeans
 {
 	PointData::PointData(const std::vector<uint8_t>& values, size_t pixel_count) : values(values), pixel_count(pixel_count) {}
 

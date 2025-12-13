@@ -3,7 +3,7 @@
 
 namespace
 {
-	using namespace smp::utils;
+	using namespace smp;
 
 	bool is_wrap_char(wchar_t current, wchar_t next)
 	{
@@ -80,7 +80,7 @@ namespace
 	}
 }
 
-namespace smp::utils
+namespace smp
 {
 	uint32_t GetTextHeight(HDC hdc, std::wstring_view text)
 	{

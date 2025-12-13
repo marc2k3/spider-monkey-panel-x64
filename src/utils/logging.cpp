@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "logging.h"
 
-namespace smp::utils
+namespace smp
 {
 	void LogError(const std::string& message)
 	{

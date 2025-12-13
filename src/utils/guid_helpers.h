@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::utils
+namespace smp
 {
 	[[nodiscard]] GUID GenerateGuid();
 	[[nodiscard]] std::wstring GuidToStr(const GUID& guid);

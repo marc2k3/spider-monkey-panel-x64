@@ -38,7 +38,7 @@ namespace smp::config
 		isPseudoTransparent = false;
 		edgeStyle = EdgeStyle::NoEdge;
 		id = [] {
-			const auto guidStr = utils::GuidToStr(utils::GenerateGuid());
+			const auto guidStr = GuidToStr(GenerateGuid());
 			return smp::ToU8(guidStr);
 		}();
 	}
