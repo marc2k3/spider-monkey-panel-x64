@@ -102,7 +102,7 @@ namespace mozjs
 		if (m_font && m_ctrl.IsWindow())
 		{
 			const auto is_dark = ui_config_manager::g_is_dark_mode();
-			SetWindowTheme(m_ctrl.m_hWnd, is_dark ? L"DarkMode_Explorer" : nullptr, nullptr);
+			set_window_theme(m_ctrl.m_hWnd, is_dark);
 			m_ctrl.SetFont(m_font.get(), FALSE);
 		}
 	}

@@ -21,7 +21,7 @@ namespace mozjs::convert::to_native
 				return val;
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -34,7 +34,7 @@ namespace mozjs::convert::to_native
 				return val;
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -47,7 +47,7 @@ namespace mozjs::convert::to_native
 				return val;
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -60,7 +60,7 @@ namespace mozjs::convert::to_native
 				return val;
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -73,7 +73,7 @@ namespace mozjs::convert::to_native
 				return val;
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -86,7 +86,7 @@ namespace mozjs::convert::to_native
 				return val;
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -99,7 +99,7 @@ namespace mozjs::convert::to_native
 				return static_cast<float>(val);
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -112,7 +112,7 @@ namespace mozjs::convert::to_native
 				return val;
 			}
 
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		template <>
@@ -160,7 +160,7 @@ namespace mozjs::convert::to_native
 			return wStr;
 		}
 
-		throw smp::JsException();
+		throw JsException();
 	}
 
 	template <>

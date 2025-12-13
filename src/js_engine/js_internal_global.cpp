@@ -46,7 +46,7 @@ namespace mozjs
 
 		JS::RealmOptions options;
 		JS::RootedObject jsObj(cx, JS_NewGlobalObject(cx, &jsClass, nullptr, JS::FireOnNewGlobalHook, options));
-		smp::JsException::ExpectTrue(jsObj);
+		JsException::ExpectTrue(jsObj);
 
 		return std::unique_ptr<JsInternalGlobal>(new JsInternalGlobal(cx, jsObj));
 	}
@@ -87,7 +87,7 @@ namespace mozjs
 		JS::SourceText<char16_t> source;
 		if (!source.init(pJsCtx_, reinterpret_cast<const char16_t*>(scriptCode.c_str()), scriptCode.length(), JS::SourceOwnership::Borrowed))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		// use ids instead of filepaths to work around https://github.com/TheQwertiest/foo_spider_monkey_panel/issues/1
@@ -98,7 +98,7 @@ namespace mozjs
 		opts.setFileAndLine(pathId.c_str(), 1);
 
 		JS::RootedScript parsedScript(pJsCtx_, JS::Compile(pJsCtx_, opts, source));
-		smp::JsException::ExpectTrue(parsedScript);
+		JsException::ExpectTrue(parsedScript);
 
 		return scriptDataMap.insert_or_assign(cleanPath.u8string(), JsHashMap::ValueType{ parsedScript, lastWriteTime }).first->second.script;
 	}

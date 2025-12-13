@@ -68,7 +68,7 @@ namespace mozjs
 
 		// Creates object T.
 		// Must always return a valid object.
-		// Throw smp::JsException or QwrException on error.
+		// Throw JsException or QwrException on error.
 		static std::unique_ptr<T> CreateNative(JSContext* cx, Args... args);
 
 		// Returns the size of properties of T, that can't be calculated by sizeof(T).
@@ -83,7 +83,7 @@ namespace mozjs
 
 		// Finalizes the JS object that contains T.
 		// Called before JS object is wrapped in proxy (if `HasProxy` is true).
-		// Throw smp::JsException or QwrException on error.
+		// Throw JsException or QwrException on error.
 		static void PostCreate(JSContext* cx, JS::HandleObject self);
 	*/
 
@@ -125,12 +125,12 @@ namespace mozjs
 
 			if (!jsObject)
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 
 			if (!JS_DefineFunctions(cx, jsObject, T::JsFunctions) || !JS_DefineProperties(cx, jsObject, T::JsProperties))
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 
 			return jsObject;
@@ -164,7 +164,7 @@ namespace mozjs
 
 			if (!pJsProto)
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 			return pJsProto;
 		}
@@ -239,7 +239,7 @@ namespace mozjs
 				jsObject.set(JS_NewObjectWithGivenProto(cx, &T::JsClass, jsProto));
 				if (!jsObject)
 				{
-					throw smp::JsException();
+					throw JsException();
 				}
 			}
 			else
@@ -247,12 +247,12 @@ namespace mozjs
 				jsObject.set(JS_NewObject(cx, &T::JsClass));
 				if (!jsObject)
 				{
-					throw smp::JsException();
+					throw JsException();
 				}
 
 				if (!JS_DefineFunctions(cx, jsObject, T::JsFunctions) || !JS_DefineProperties(cx, jsObject, T::JsProperties))
 				{
-					throw smp::JsException();
+					throw JsException();
 				}
 			}
 
@@ -281,7 +281,7 @@ namespace mozjs
 				JS::RootedObject jsProxyObject(cx, js::NewProxyObject(cx, &T::JsProxy, jsBaseValue, jsProto));
 				if (!jsProxyObject)
 				{
-					throw smp::JsException();
+					throw JsException();
 				}
 				return jsProxyObject;
 			}

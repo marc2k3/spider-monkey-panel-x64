@@ -6,8 +6,6 @@
 #include <js_utils/cached_utf8_paths_hack.h>
 #include <js_utils/js_property_helper.h>
 
-using namespace smp;
-
 namespace
 {
 	using namespace mozjs;

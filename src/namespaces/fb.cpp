@@ -20,7 +20,6 @@
 #include <interfaces/gdi_bitmap.h>
 #include <interfaces/main_menu_manager.h>
 #include <js_utils/js_error_helper.h>
-#include <js_utils/js_hwnd_helpers.h>
 #include <js_utils/js_object_helper.h>
 #include <js_utils/js_property_helper.h>
 #include <panel/modal_blocking_scope.h>

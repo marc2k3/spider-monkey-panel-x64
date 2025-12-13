@@ -16,9 +16,6 @@
     <ClCompile Include="js_engine\js_container.cpp">
       <Filter>js_engine</Filter>
     </ClCompile>
-    <ClCompile Include="js_utils\serialized_value.cpp">
-      <Filter>js_utils</Filter>
-    </ClCompile>
     <ClCompile Include="convert\com.cpp">
       <Filter>convert</Filter>
     </ClCompile>
@@ -128,9 +125,6 @@
     </ClCompile>
     <ClCompile Include="ui\ui_package_manager.cpp">
       <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="js_utils\js_hwnd_helpers.cpp">
-      <Filter>js_utils</Filter>
     </ClCompile>
     <ClCompile Include="fb2k\selection_holder_helper.cpp">
       <Filter>fb2k</Filter>
@@ -472,9 +466,6 @@
     <ClInclude Include="js_utils\scope_helper.h">
       <Filter>js_utils</Filter>
     </ClInclude>
-    <ClInclude Include="js_utils\serialized_value.h">
-      <Filter>js_utils</Filter>
-    </ClInclude>
     <ClInclude Include="js_utils\js_prototype_helpers.h">
       <Filter>js_utils</Filter>
     </ClInclude>
@@ -600,9 +591,6 @@
     </ClInclude>
     <ClInclude Include="ui\ui_package_manager.h">
       <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="js_utils\js_hwnd_helpers.h">
-      <Filter>js_utils</Filter>
     </ClInclude>
     <ClInclude Include="fb2k\selection_holder_helper.h">
       <Filter>fb2k</Filter>

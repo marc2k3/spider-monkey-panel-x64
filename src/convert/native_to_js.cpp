@@ -104,7 +104,7 @@ namespace mozjs::convert::to_js
 		JS::RootedString jsString(cx, JS_NewUCStringCopyN(cx, reinterpret_cast<const char16_t*>(inValue.data()), inValue.length()));
 		if (!jsString)
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		wrappedValue.setString(jsString);

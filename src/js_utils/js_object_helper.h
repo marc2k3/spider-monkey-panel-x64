@@ -18,7 +18,7 @@ namespace mozjs
 
 		if (!JS_DefineProperty(cx, parentObject, propertyName.c_str(), objectToInstall, kDefaultPropsFlags))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 	}
 
@@ -55,4 +55,16 @@ namespace mozjs
 		JS::RootedObject jsObject(cx, &jsValue.toObject());
 		return GetInnerInstancePrivate<T>(cx, jsObject);
 	}
+
+	static HWND GetPanelHwndForCurrentGlobal(JSContext* cx)
+	{
+		JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
+		const auto pNativeGlobal = static_cast<JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &JsGlobalObject::JsClass, nullptr));
+		return pNativeGlobal->GetPanelHwnd();
+	}
+
+	using SerializedJsValue = std::variant<bool, int32_t, double, std::string>;
+
+	SerializedJsValue SerializeJsValue(JSContext* cx, JS::HandleValue jsValue);
+	void DeserializeJsValue(JSContext* cx, const SerializedJsValue& serializedValue, JS::MutableHandleValue jsValue);
 }

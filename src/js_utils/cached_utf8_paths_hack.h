@@ -9,7 +9,7 @@ namespace mozjs::hack
 
 	/// @brief This is a hack, don't use it unless it's REALLY necessary
 	/// @throw QwrException
-	/// @throw smp::JsException
+	/// @throw JsException
 	[[nodiscard]] std::string CacheUtf8Path(std::string_view path);
 
 	/// @brief This is a hack, don't use it unless it's REALLY necessary
@@ -20,6 +20,6 @@ namespace mozjs::hack
 
 	/// @brief This is a hack, don't use it unless it's REALLY necessary
 	/// @throw QwrException
-	/// @throw smp::JsException
+	/// @throw JsException
 	[[nodiscard]] std::optional<std::filesystem::path> GetCurrentScriptPath(JSContext* cx);
 }

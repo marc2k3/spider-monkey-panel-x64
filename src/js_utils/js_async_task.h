@@ -2,7 +2,6 @@
 
 namespace mozjs
 {
-
 	class JsAsyncTask : public IHeapUser
 	{
 	public:
@@ -22,18 +21,10 @@ namespace mozjs
 		/// throws JsException
 		JsAsyncTaskImpl(JSContext* cx, Args... args) : pJsCtx_(cx)
 		{
-			assert(cx);
-
 			JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-			assert(jsGlobal);
-
 			pNativeGlobal_ = static_cast<mozjs::JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &mozjs::JsGlobalObject::JsClass, nullptr));
-			assert(pNativeGlobal_);
-
 			valueHeapIds_ = { pNativeGlobal_->GetHeapManager().Store(args)... };
-
 			pNativeGlobal_->GetHeapManager().RegisterUser(this);
-
 			isJsAvailable_ = true;
 		}
 
@@ -49,6 +40,7 @@ namespace mozjs
 			{
 				pNativeGlobal_->GetHeapManager().Remove(heapId);
 			}
+
 			pNativeGlobal_->GetHeapManager().UnregisterUser(this);
 		};
 
@@ -62,8 +54,6 @@ namespace mozjs
 			}
 
 			JS::RootedObject jsGlobal(pJsCtx_, JS::CurrentGlobalOrNull(pJsCtx_));
-			assert(jsGlobal);
-
 			return InvokeJsInternal(jsGlobal, std::make_index_sequence<sizeof...(Args)>{});
 		}
 

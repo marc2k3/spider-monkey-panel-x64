@@ -4,7 +4,6 @@
 #include <convert/native_to_js.h>
 #include <js_utils/js_error_helper.h>
 #include <js_utils/js_object_helper.h>
-#include <js_utils/serialized_value.h>
 
 using namespace smp;
 

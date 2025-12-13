@@ -330,7 +330,7 @@ namespace mozjs
 		}
 
 		JS::RootedObject jsArray(pJsCtx_, JS::NewArrayObject(pJsCtx_, result.size() * 2));
-		smp::JsException::ExpectTrue(jsArray);
+		JsException::ExpectTrue(jsArray);
 
 		JS::RootedValue jsValue(pJsCtx_);
 		uint32_t i{};
@@ -341,13 +341,13 @@ namespace mozjs
 
 			if (!JS_SetElement(pJsCtx_, jsArray, i++, jsValue))
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 
 			jsValue.setNumber((uint32_t)width);
 			if (!JS_SetElement(pJsCtx_, jsArray, i++, jsValue))
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 		}
 

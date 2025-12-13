@@ -6,7 +6,6 @@
 #include <interfaces/gdi_bitmap.h>
 #include <interfaces/gdi_font.h>
 #include <js_utils/js_error_helper.h>
-#include <js_utils/js_hwnd_helpers.h>
 #include <js_utils/js_image_helpers.h>
 #include <js_utils/js_object_helper.h>
 #include <utils/gdi_error_helpers.h>
@@ -112,6 +111,6 @@ namespace mozjs
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 
-		return mozjs::image::GetImagePromise(m_ctx, wnd, path);
+		return mozjs::GetImagePromise(m_ctx, wnd, path);
 	}
 }

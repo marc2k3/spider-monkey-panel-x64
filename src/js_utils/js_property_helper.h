@@ -8,7 +8,7 @@ namespace mozjs
 		bool hasProp;
 		if (!JS_HasProperty(cx, jsObject, propName.c_str(), &hasProp))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		if (!hasProp)
@@ -19,7 +19,7 @@ namespace mozjs
 		JS::RootedValue jsValue(cx);
 		if (!JS_GetProperty(cx, jsObject, propName.c_str(), &jsValue))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		return convert::to_native::ToValue<T>(cx, jsValue);
@@ -32,7 +32,7 @@ namespace mozjs
 		{
 			if (!JS_DefineProperty(cx, jsObject, propName.c_str(), propValue, kDefaultPropsFlags))
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 		}
 		else
@@ -42,7 +42,7 @@ namespace mozjs
 
 			if (!JS_DefineProperty(cx, jsObject, propName.c_str(), jsProperty, kDefaultPropsFlags))
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 		}
 	};
@@ -55,7 +55,7 @@ namespace mozjs
 
 		if (!JS_SetProperty(cx, jsObject, propName.c_str(), jsProperty))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 	};
 }

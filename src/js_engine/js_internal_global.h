@@ -6,13 +6,13 @@ namespace mozjs
 	{
 	public:
 		/// @throw QwrException
-		/// @throw smp::JsException
+		/// @throw JsException
 		static [[nodiscard]] std::unique_ptr<JsInternalGlobal> Create(JSContext* cx);
 
 		~JsInternalGlobal();
 
 		/// @throw QwrException
-		/// @throw smp::JsException
+		/// @throw JsException
 		[[nodiscard]] JSScript* GetCachedScript(const std::filesystem::path& absolutePath);
 
 	private:

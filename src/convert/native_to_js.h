@@ -116,7 +116,7 @@ namespace mozjs::convert::to_js
 	void ToArrayValue(JSContext* cx, const T& inContainer, F&& accessorFunc, JS::MutableHandleValue wrappedValue)
 	{
 		JS::RootedObject jsArray(cx, JS::NewArrayObject(cx, inContainer.size()));
-		smp::JsException::ExpectTrue(jsArray);
+		JsException::ExpectTrue(jsArray);
 
 		JS::RootedValue jsValue(cx);
 		const auto size = sizeu(inContainer);
@@ -126,7 +126,7 @@ namespace mozjs::convert::to_js
 			ToValue(cx, accessorFunc(inContainer, i), &jsValue);
 			if (!JS_SetElement(cx, jsArray, i, jsValue))
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 		}
 
@@ -137,7 +137,7 @@ namespace mozjs::convert::to_js
 	void ToArrayValue(JSContext* cx, const T& inContainer, JS::MutableHandleValue wrappedValue)
 	{
 		JS::RootedObject jsArray(cx, JS::NewArrayObject(cx, inContainer.size()));
-		smp::JsException::ExpectTrue(jsArray);
+		JsException::ExpectTrue(jsArray);
 
 		JS::RootedValue jsValue(cx);
 		for (const auto& [i, elem]: ranges::views::enumerate(inContainer))
@@ -146,7 +146,7 @@ namespace mozjs::convert::to_js
 
 			if (!JS_SetElement(cx, jsArray, static_cast<uint32_t>(i), jsValue))
 			{
-				throw smp::JsException();
+				throw JsException();
 			}
 		}
 

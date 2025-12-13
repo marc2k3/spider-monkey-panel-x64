@@ -13,7 +13,6 @@
 #include <interfaces/gdi_bitmap.h>
 #include <js_utils/js_art_helpers.h>
 #include <js_utils/js_error_helper.h>
-#include <js_utils/js_hwnd_helpers.h>
 #include <js_utils/js_object_helper.h>
 #include <js_utils/js_property_helper.h>
 #include <ui/ui_html.h>
@@ -328,7 +327,7 @@ namespace mozjs
 		QwrException::ExpectTrue(handle, "handle argument is null");
 		QwrException::ExpectTrue(AlbumArtStatic::check_type_id(art_id), "Invalid art_id");
 
-		return mozjs::art::GetAlbumArtPromise(m_ctx, wnd, handle->GetHandle(), art_id, need_stub, only_embed);
+		return mozjs::GetAlbumArtPromise(m_ctx, wnd, handle->GetHandle(), art_id, need_stub, only_embed);
 	}
 
 	JSObject* Utils::GetAlbumArtAsyncV2WithOpt(size_t optArgCount, uint32_t hWnd, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool no_load)

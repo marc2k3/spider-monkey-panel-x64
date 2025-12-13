@@ -38,13 +38,13 @@ namespace
 		bool is;
 		if (!JS::IsArrayObject(ctx, jsArrayObject, &is))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		uint32_t arraySize;
 		if (!JS::GetArrayLength(ctx, jsArrayObject, &arraySize))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 
 		JS::RootedValueVector jsVector(ctx);
@@ -60,7 +60,7 @@ namespace
 			{
 				if (!JS_GetElement(ctx, jsArrayObject, i, &arrayElement))
 				{
-					throw smp::JsException();
+					throw JsException();
 				}
 
 				if (!jsVector.emplaceBack(arrayElement))
@@ -663,7 +663,7 @@ namespace mozjs
 		JS::RootedValue jsFuncValue(m_ctx, JS::ObjectValue(*JS_GetFunctionObject(jsFunction)));
 
 		JS::RootedObject jsArrayObject(m_ctx, JS::NewArrayObject(m_ctx, funcArgs));
-		smp::JsException::ExpectTrue(jsArrayObject);
+		JsException::ExpectTrue(jsArrayObject);
 		JS::RootedValue jsArrayValue(m_ctx, JS::ObjectValue(*jsArrayObject));
 
 		return m_parent.GetTimeoutManager().SetInterval(delay, std::make_unique<TimeoutJsTask>(m_ctx, jsFuncValue, jsArrayValue));
@@ -718,7 +718,7 @@ namespace mozjs
 		JS::RootedValue jsFuncValue(m_ctx, JS::ObjectValue(*JS_GetFunctionObject(jsFunction)));
 
 		JS::RootedObject jsArrayObject(m_ctx, JS::NewArrayObject(m_ctx, funcArgs));
-		smp::JsException::ExpectTrue(jsArrayObject);
+		JsException::ExpectTrue(jsArrayObject);
 		JS::RootedValue jsArrayValue(m_ctx, JS::ObjectValue(*jsArrayObject));
 
 		return m_parent.GetTimeoutManager().SetTimeout(delay, std::make_unique<TimeoutJsTask>(m_ctx, jsFuncValue, jsArrayValue));

@@ -407,7 +407,7 @@ namespace mozjs
 		bool is;
 		if (!JS::IsArrayObject(cx, jsObjectIn, &is))
 		{
-			throw smp::JsException();
+			throw JsException();
 		}
 		QwrException::ExpectTrue(is, "Object is not an array");
 
@@ -918,7 +918,7 @@ namespace mozjs
 			{
 				if (!JS_DefineUCFunction(pJsCtx_, jsObject, reinterpret_cast<const char16_t*>(name.c_str()), name.length(), ActiveX_Run, 0, JSPROP_ENUMERATE))
 				{
-					throw smp::JsException();
+					throw JsException();
 				}
 			}
 		}

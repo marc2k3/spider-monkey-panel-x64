@@ -129,7 +129,7 @@ public:
 
 private:
 	/// @throw QwrException
-	/// @throw smp::JsException
+	/// @throw JsException
 	void ParseOptions(JS::HandleValue options);
 	void SetOptions();
 
