@@ -10,9 +10,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsGdiRawBitmap::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsGdiRawBitmap::FinalizeJsObject)
 
-	JS_CLASS("GdiRawBitMap")
+	DEFINE_JS_CLASS("GdiRawBitMap")
 
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{

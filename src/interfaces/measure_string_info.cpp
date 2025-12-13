@@ -8,9 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsMeasureStringInfo::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsMeasureStringInfo::FinalizeJsObject)
 
-	JS_CLASS("MeasureStringInfo")
+	DEFINE_JS_CLASS("MeasureStringInfo")
 
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{

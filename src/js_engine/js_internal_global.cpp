@@ -18,7 +18,7 @@ namespace
 		}
 	}
 
-	JS_CLASS_OPS(JsFinalizeOpLocal, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFinalizeOpLocal)
 
 	constexpr JSClass jsClass = {
 		"InternalGlobal",

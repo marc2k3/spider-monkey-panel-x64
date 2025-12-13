@@ -8,9 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsThemeManager::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsThemeManager::FinalizeJsObject)
 
-	JS_CLASS("ThemeManager")
+	DEFINE_JS_CLASS("ThemeManager")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(DrawThemeBackground, JsThemeManager::DrawThemeBackground, JsThemeManager::DrawThemeBackgroundWithOpt, 4)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(IsThemePartDefined, JsThemeManager::IsThemePartDefined)

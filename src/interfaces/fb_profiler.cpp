@@ -10,9 +10,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbProfiler::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbProfiler::FinalizeJsObject)
 
-	JS_CLASS("FbProfiler")
+	DEFINE_JS_CLASS("FbProfiler")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(Print, JsFbProfiler::Print, JsFbProfiler::PrintWithOpt, 2)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Reset, JsFbProfiler::Reset)

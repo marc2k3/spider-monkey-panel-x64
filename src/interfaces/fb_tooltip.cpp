@@ -8,9 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbTooltip::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbTooltip::FinalizeJsObject)
 
-	JS_CLASS("FbTooltip")
+	DEFINE_JS_CLASS("FbTooltip")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Activate, JsFbTooltip::Activate)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Deactivate, JsFbTooltip::Deactivate)

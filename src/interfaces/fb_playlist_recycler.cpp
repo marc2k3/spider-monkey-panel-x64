@@ -9,9 +9,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbPlaylistRecycler::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbPlaylistRecycler::FinalizeJsObject)
 
-	JS_CLASS("FbPlaylistRecycler")
+	DEFINE_JS_CLASS("FbPlaylistRecycler")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetContent, JsFbPlaylistRecycler::GetContent)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetName, JsFbPlaylistRecycler::GetName)

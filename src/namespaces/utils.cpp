@@ -26,9 +26,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(Utils::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(Utils::FinalizeJsObject)
 
-	JS_CLASS("Utils")
+	DEFINE_JS_CLASS("Utils")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CheckComponent, Utils::CheckComponent, Utils::CheckComponentWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CheckFont, Utils::CheckFont);

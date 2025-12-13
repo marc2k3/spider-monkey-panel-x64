@@ -9,7 +9,7 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbUiSelectionHolder::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbUiSelectionHolder::FinalizeJsObject)
 
 	// NOT JS_CLASS, selection_holder must be finalized in foreground
 	constexpr JSClass jsClass = {

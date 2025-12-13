@@ -9,9 +9,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsMainMenuManager::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsMainMenuManager::FinalizeJsObject)
 
-	JS_CLASS("MainMenuManager")
+	DEFINE_JS_CLASS("MainMenuManager")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(BuildMenu, JsMainMenuManager::BuildMenu)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ExecuteByID, JsMainMenuManager::ExecuteByID)

@@ -16,9 +16,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(Gdi::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(Gdi::FinalizeJsObject)
 
-	JS_CLASS("GdiUtils")
+	DEFINE_JS_CLASS("GdiUtils")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CreateImage, Gdi::CreateImage)
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(Font, Gdi::Font, Gdi::FontWithOpt, 1)

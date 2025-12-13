@@ -15,9 +15,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsGdiGraphics::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsGdiGraphics::FinalizeJsObject)
 
-	JS_CLASS("GdiGraphics")
+	DEFINE_JS_CLASS("GdiGraphics")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CalcTextHeight, JsGdiGraphics::CalcTextHeight)
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CalcTextWidth, JsGdiGraphics::CalcTextWidth, JsGdiGraphics::CalcTextWidthWithOpt, 1)

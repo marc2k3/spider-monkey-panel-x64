@@ -11,7 +11,7 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsEnumerator::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsEnumerator::FinalizeJsObject)
 
 	// NOT JS_CLASS, COM objects must be finalized in foreground
 	constexpr JSClass jsClass = {

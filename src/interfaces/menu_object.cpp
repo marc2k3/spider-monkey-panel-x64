@@ -9,9 +9,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsMenuObject::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsMenuObject::FinalizeJsObject)
 
-	JS_CLASS("MenuObject")
+	DEFINE_JS_CLASS("MenuObject")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AppendMenuItem, JsMenuObject::AppendMenuItem)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AppendMenuSeparator, JsMenuObject::AppendMenuSeparator)

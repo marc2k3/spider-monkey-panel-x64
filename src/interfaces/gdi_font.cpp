@@ -9,9 +9,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsGdiFont::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsGdiFont::FinalizeJsObject)
 
-	JS_CLASS("GdiFont")
+	DEFINE_JS_CLASS("GdiFont")
 
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{

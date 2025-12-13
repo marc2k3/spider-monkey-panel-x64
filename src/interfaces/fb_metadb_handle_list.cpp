@@ -15,9 +15,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbMetadbHandleList::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbMetadbHandleList::FinalizeJsObject)
 
-	JS_CLASS("FbMetadbHandleList")
+	DEFINE_JS_CLASS("FbMetadbHandleList")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Add, JsFbMetadbHandleList::Add);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AddRange, JsFbMetadbHandleList::AddRange);

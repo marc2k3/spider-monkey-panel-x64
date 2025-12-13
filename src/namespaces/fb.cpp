@@ -31,9 +31,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(Fb::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(Fb::FinalizeJsObject)
 
-	JS_CLASS("FbUtils")
+	DEFINE_JS_CLASS("FbUtils")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AcquireUiSelectionHolder, Fb::AcquireUiSelectionHolder)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AddDirectory, Fb::AddDirectory)

@@ -17,9 +17,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(Plman::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(Plman::FinalizeJsObject)
 
-	JS_CLASS("FbPlaylistManager")
+	DEFINE_JS_CLASS("FbPlaylistManager")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AddItemToPlaybackQueue, Plman::AddItemToPlaybackQueue);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(AddLocations, Plman::AddLocations, Plman::AddLocationsWithOpt, 1);

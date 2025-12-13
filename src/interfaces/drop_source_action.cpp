@@ -8,9 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsDropSourceAction::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsDropSourceAction::FinalizeJsObject)
 
-	JS_CLASS("DropSourceAction")
+	DEFINE_JS_CLASS("DropSourceAction")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Effect, JsDropSourceAction::get_Effect)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(put_Base, JsDropSourceAction::put_Base)

@@ -13,9 +13,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsGdiBitmap::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsGdiBitmap::FinalizeJsObject)
 
-	JS_CLASS("GdiBitmap")
+	DEFINE_JS_CLASS("GdiBitmap")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ApplyAlpha, JsGdiBitmap::ApplyAlpha)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ApplyMask, JsGdiBitmap::ApplyMask)

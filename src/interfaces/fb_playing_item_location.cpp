@@ -8,9 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbPlayingItemLocation::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbPlayingItemLocation::FinalizeJsObject)
 
-	JS_CLASS("PlayingItemLocation")
+	DEFINE_JS_CLASS("PlayingItemLocation")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_IsValid, JsFbPlayingItemLocation::get_IsValid)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_PlaylistIndex, JsFbPlayingItemLocation::get_PlaylistIndex)

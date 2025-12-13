@@ -8,9 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbAudioChunk::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbAudioChunk::FinalizeJsObject)
 
-	JS_CLASS("FbAudioChunk")
+	DEFINE_JS_CLASS("FbAudioChunk")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Data, JsFbAudioChunk::get_Data);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_ChannelConfig, JsFbAudioChunk::get_ChannelConfig);

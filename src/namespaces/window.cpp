@@ -79,9 +79,21 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(Window::FinalizeJsObject, Window::Trace)
+	JSClassOps jsOps = {
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		Window::FinalizeJsObject,
+		nullptr,
+		nullptr,
+		nullptr,
+		Window::Trace 
+	};
 
-	JS_CLASS("Window")
+	DEFINE_JS_CLASS("Window")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ClearInterval, Window::ClearInterval)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ClearTimeout, Window::ClearTimeout)

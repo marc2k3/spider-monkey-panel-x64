@@ -8,9 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbFileInfo::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbFileInfo::FinalizeJsObject)
 
-	JS_CLASS("FbFileInfo")
+	DEFINE_JS_CLASS("FbFileInfo")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(InfoFind, JsFbFileInfo::InfoFind);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(InfoName, JsFbFileInfo::InfoName);

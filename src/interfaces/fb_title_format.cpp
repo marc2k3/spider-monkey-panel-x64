@@ -10,9 +10,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbTitleFormat::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbTitleFormat::FinalizeJsObject)
 
-	JS_CLASS("FbTitleFormat")
+	DEFINE_JS_CLASS("FbTitleFormat")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(Eval, JsFbTitleFormat::Eval, JsFbTitleFormat::EvalWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(EvalWithMetadb, JsFbTitleFormat::EvalWithMetadb)

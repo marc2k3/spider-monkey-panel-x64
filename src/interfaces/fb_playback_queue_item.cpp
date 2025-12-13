@@ -9,9 +9,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JS_CLASS_OPS(JsFbPlaybackQueueItem::FinalizeJsObject, nullptr)
+	DEFINE_JS_CLASS_OPS(JsFbPlaybackQueueItem::FinalizeJsObject)
 
-	JS_CLASS("FbPlaybackQueueItem")
+	DEFINE_JS_CLASS("FbPlaybackQueueItem")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Handle, JsFbPlaybackQueueItem::get_Handle)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_PlaylistIndex, JsFbPlaybackQueueItem::get_PlaylistIndex)
