@@ -6,237 +6,214 @@
 #include <js_utils/js_error_helper.h>
 #include <js_utils/js_object_helper.h>
 
-using namespace smp;
 
 namespace
 {
+	using namespace mozjs;
 
-using namespace mozjs;
+	JS_CLASS_OPS(JsFbMetadbHandle::FinalizeJsObject, nullptr)
 
-JSClassOps jsOps = {
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	JsFbMetadbHandle::FinalizeJsObject,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr
-};
+	JS_CLASS("FbMetadbHandle")
 
-constexpr JSClass jsClass = {
-	"FbMetadbHandle",
-	kDefaultClassFlags,
-	&jsOps
-};
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ClearStats, JsFbMetadbHandle::ClearStats)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(Compare, JsFbMetadbHandle::Compare)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFileInfo, JsFbMetadbHandle::GetFileInfo)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(RefreshStats, JsFbMetadbHandle::RefreshStats)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(SetFirstPlayed, JsFbMetadbHandle::SetFirstPlayed)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(SetLastPlayed, JsFbMetadbHandle::SetLastPlayed)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(SetLoved, JsFbMetadbHandle::SetLoved)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(SetPlaycount, JsFbMetadbHandle::SetPlaycount)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(SetRating, JsFbMetadbHandle::SetRating)
 
-MJS_DEFINE_JS_FN_FROM_NATIVE(ClearStats, JsFbMetadbHandle::ClearStats)
-MJS_DEFINE_JS_FN_FROM_NATIVE(Compare, JsFbMetadbHandle::Compare)
-MJS_DEFINE_JS_FN_FROM_NATIVE(GetFileInfo, JsFbMetadbHandle::GetFileInfo)
-MJS_DEFINE_JS_FN_FROM_NATIVE(RefreshStats, JsFbMetadbHandle::RefreshStats)
-MJS_DEFINE_JS_FN_FROM_NATIVE(SetFirstPlayed, JsFbMetadbHandle::SetFirstPlayed)
-MJS_DEFINE_JS_FN_FROM_NATIVE(SetLastPlayed, JsFbMetadbHandle::SetLastPlayed)
-MJS_DEFINE_JS_FN_FROM_NATIVE(SetLoved, JsFbMetadbHandle::SetLoved)
-MJS_DEFINE_JS_FN_FROM_NATIVE(SetPlaycount, JsFbMetadbHandle::SetPlaycount)
-MJS_DEFINE_JS_FN_FROM_NATIVE(SetRating, JsFbMetadbHandle::SetRating)
+	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
+		{
+			JS_FN("ClearStats", ClearStats, 0, kDefaultPropsFlags),
+			JS_FN("Compare", Compare, 1, kDefaultPropsFlags),
+			JS_FN("GetFileInfo", GetFileInfo, 0, kDefaultPropsFlags),
+			JS_FN("RefreshStats", RefreshStats, 0, kDefaultPropsFlags),
+			JS_FN("SetFirstPlayed", SetFirstPlayed, 1, kDefaultPropsFlags),
+			JS_FN("SetLastPlayed", SetLastPlayed, 1, kDefaultPropsFlags),
+			JS_FN("SetLoved", SetLoved, 1, kDefaultPropsFlags),
+			JS_FN("SetPlaycount", SetPlaycount, 1, kDefaultPropsFlags),
+			JS_FN("SetRating", SetRating, 1, kDefaultPropsFlags),
+			JS_FS_END,
+		});
 
-constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-	{
-		JS_FN("ClearStats", ClearStats, 0, kDefaultPropsFlags),
-		JS_FN("Compare", Compare, 1, kDefaultPropsFlags),
-		JS_FN("GetFileInfo", GetFileInfo, 0, kDefaultPropsFlags),
-		JS_FN("RefreshStats", RefreshStats, 0, kDefaultPropsFlags),
-		JS_FN("SetFirstPlayed", SetFirstPlayed, 1, kDefaultPropsFlags),
-		JS_FN("SetLastPlayed", SetLastPlayed, 1, kDefaultPropsFlags),
-		JS_FN("SetLoved", SetLoved, 1, kDefaultPropsFlags),
-		JS_FN("SetPlaycount", SetPlaycount, 1, kDefaultPropsFlags),
-		JS_FN("SetRating", SetRating, 1, kDefaultPropsFlags),
-		JS_FS_END,
-	});
+	MJS_DEFINE_JS_FN_FROM_NATIVE(get_FileSize, JsFbMetadbHandle::get_FileSize)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Length, JsFbMetadbHandle::get_Length)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Path, JsFbMetadbHandle::get_Path)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(get_RawPath, JsFbMetadbHandle::get_RawPath)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(get_SubSong, JsFbMetadbHandle::get_SubSong)
 
-MJS_DEFINE_JS_FN_FROM_NATIVE(get_FileSize, JsFbMetadbHandle::get_FileSize)
-MJS_DEFINE_JS_FN_FROM_NATIVE(get_Length, JsFbMetadbHandle::get_Length)
-MJS_DEFINE_JS_FN_FROM_NATIVE(get_Path, JsFbMetadbHandle::get_Path)
-MJS_DEFINE_JS_FN_FROM_NATIVE(get_RawPath, JsFbMetadbHandle::get_RawPath)
-MJS_DEFINE_JS_FN_FROM_NATIVE(get_SubSong, JsFbMetadbHandle::get_SubSong)
-
-constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-	{
-		JS_PSG("FileSize", get_FileSize, kDefaultPropsFlags),
-		JS_PSG("Length", get_Length, kDefaultPropsFlags),
-		JS_PSG("Path", get_Path, kDefaultPropsFlags),
-		JS_PSG("RawPath", get_RawPath, kDefaultPropsFlags),
-		JS_PSG("SubSong", get_SubSong, kDefaultPropsFlags),
-		JS_PS_END,
-	});
-
-} // namespace
+	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
+		{
+			JS_PSG("FileSize", get_FileSize, kDefaultPropsFlags),
+			JS_PSG("Length", get_Length, kDefaultPropsFlags),
+			JS_PSG("Path", get_Path, kDefaultPropsFlags),
+			JS_PSG("RawPath", get_RawPath, kDefaultPropsFlags),
+			JS_PSG("SubSong", get_SubSong, kDefaultPropsFlags),
+			JS_PS_END,
+		});
+}
 
 namespace mozjs
 {
+	using namespace smp;
 
-const JSClass JsFbMetadbHandle::JsClass = jsClass;
-const JSFunctionSpec* JsFbMetadbHandle::JsFunctions = jsFunctions.data();
-const JSPropertySpec* JsFbMetadbHandle::JsProperties = jsProperties.data();
-const JsPrototypeId JsFbMetadbHandle::PrototypeId = JsPrototypeId::FbMetadbHandle;
+	const JSClass JsFbMetadbHandle::JsClass = jsClass;
+	const JSFunctionSpec* JsFbMetadbHandle::JsFunctions = jsFunctions.data();
+	const JSPropertySpec* JsFbMetadbHandle::JsProperties = jsProperties.data();
+	const JsPrototypeId JsFbMetadbHandle::PrototypeId = JsPrototypeId::FbMetadbHandle;
 
-JsFbMetadbHandle::JsFbMetadbHandle(JSContext* cx, const metadb_handle_ptr& handle)
-	: pJsCtx_(cx)
-	, metadbHandle_(handle)
-{
-}
+	JsFbMetadbHandle::JsFbMetadbHandle(JSContext* cx, const metadb_handle_ptr& handle) : pJsCtx_(cx), metadbHandle_(handle) {}
 
-std::unique_ptr<mozjs::JsFbMetadbHandle> JsFbMetadbHandle::CreateNative(JSContext* cx, const metadb_handle_ptr& handle)
-{
-	QwrException::ExpectTrue(handle.is_valid(), "Internal error: metadb_handle_ptr is null");
-
-	return std::unique_ptr<JsFbMetadbHandle>(new JsFbMetadbHandle(cx, handle));
-}
-
-uint32_t JsFbMetadbHandle::GetInternalSize()
-{
-	return sizeof(metadb_handle);
-}
-
-metadb_handle_ptr& JsFbMetadbHandle::GetHandle()
-{
-	return metadbHandle_;
-}
-
-void JsFbMetadbHandle::ClearStats()
-{
-	if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+	std::unique_ptr<mozjs::JsFbMetadbHandle> JsFbMetadbHandle::CreateNative(JSContext* cx, const metadb_handle_ptr& handle)
 	{
-		stats::SetStats(hash, {});
-	}
-}
+		QwrException::ExpectTrue(handle.is_valid(), "Internal error: metadb_handle_ptr is null");
 
-bool JsFbMetadbHandle::Compare(JsFbMetadbHandle* handle)
-{
-	QwrException::ExpectTrue(handle, "handle argument is null");
-
-	return (handle->GetHandle() == metadbHandle_);
-}
-
-JSObject* JsFbMetadbHandle::GetFileInfo()
-{
-	auto containerInfo = metadbHandle_->query_v2_().info;
-
-	if (containerInfo.is_empty())
-	{
-		containerInfo = metadbHandle_->get_info_ref();
+		return std::unique_ptr<JsFbMetadbHandle>(new JsFbMetadbHandle(cx, handle));
 	}
 
-	return JsFbFileInfo::CreateJs(pJsCtx_, containerInfo);
-}
-
-void JsFbMetadbHandle::RefreshStats()
-{
-	if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+	uint32_t JsFbMetadbHandle::GetInternalSize()
 	{
-		stats::RefreshStats(hash);
+		return sizeof(metadb_handle);
 	}
-}
 
-void JsFbMetadbHandle::SetFirstPlayed(const pfc::string8& first_played)
-{
-	if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+	metadb_handle_ptr& JsFbMetadbHandle::GetHandle()
 	{
-		stats::Fields tmp = stats::GetStats(hash);
-		if (tmp.first_played != first_played)
+		return metadbHandle_;
+	}
+
+	void JsFbMetadbHandle::ClearStats()
+	{
+		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
 		{
-			tmp.first_played = first_played;
-			stats::SetStats(hash, tmp);
+			stats::SetStats(hash, {});
 		}
 	}
-}
 
-void JsFbMetadbHandle::SetLastPlayed(const pfc::string8& last_played)
-{
-	if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+	bool JsFbMetadbHandle::Compare(JsFbMetadbHandle* handle)
 	{
-		auto tmp = stats::GetStats(hash);
-		if (tmp.last_played != last_played)
+		QwrException::ExpectTrue(handle, "handle argument is null");
+
+		return (handle->GetHandle() == metadbHandle_);
+	}
+
+	JSObject* JsFbMetadbHandle::GetFileInfo()
+	{
+		auto containerInfo = metadbHandle_->query_v2_().info;
+
+		if (containerInfo.is_empty())
 		{
-			tmp.last_played = last_played;
-			stats::SetStats(hash, tmp);
+			containerInfo = metadbHandle_->get_info_ref();
+		}
+
+		return JsFbFileInfo::CreateJs(pJsCtx_, containerInfo);
+	}
+
+	void JsFbMetadbHandle::RefreshStats()
+	{
+		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+		{
+			stats::RefreshStats(hash);
 		}
 	}
-}
 
-void JsFbMetadbHandle::SetLoved(uint32_t loved)
-{
-	if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+	void JsFbMetadbHandle::SetFirstPlayed(const pfc::string8& first_played)
 	{
-		auto tmp = stats::GetStats(hash);
-		if (tmp.loved != loved)
+		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
 		{
-			tmp.loved = loved;
-			stats::SetStats(hash, tmp);
+			stats::Fields tmp = stats::GetStats(hash);
+			if (tmp.first_played != first_played)
+			{
+				tmp.first_played = first_played;
+				stats::SetStats(hash, tmp);
+			}
 		}
 	}
-}
 
-void JsFbMetadbHandle::SetPlaycount(uint32_t playcount)
-{
-	if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+	void JsFbMetadbHandle::SetLastPlayed(const pfc::string8& last_played)
 	{
-		auto tmp = stats::GetStats(hash);
-		if (tmp.playcount != playcount)
+		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
 		{
-			tmp.playcount = playcount;
-			stats::SetStats(hash, tmp);
+			auto tmp = stats::GetStats(hash);
+			if (tmp.last_played != last_played)
+			{
+				tmp.last_played = last_played;
+				stats::SetStats(hash, tmp);
+			}
 		}
 	}
-}
 
-void JsFbMetadbHandle::SetRating(uint32_t rating)
-{
-	if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+	void JsFbMetadbHandle::SetLoved(uint32_t loved)
 	{
-		auto tmp = stats::GetStats(hash);
-		if (tmp.rating != rating)
+		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
 		{
-			tmp.rating = rating;
-			stats::SetStats(hash, tmp);
+			auto tmp = stats::GetStats(hash);
+			if (tmp.loved != loved)
+			{
+				tmp.loved = loved;
+				stats::SetStats(hash, tmp);
+			}
 		}
 	}
-}
 
-int64_t JsFbMetadbHandle::get_FileSize()
-{
-	return static_cast<int64_t>(metadbHandle_->get_filesize());
-}
-
-double JsFbMetadbHandle::get_Length()
-{
-	return metadbHandle_->get_length();
-}
-
-std::string JsFbMetadbHandle::get_Path()
-{
-	return filesystem::g_get_native_path(metadbHandle_->get_path()).get_ptr();
-}
-
-std::string JsFbMetadbHandle::get_RawPath()
-{
-	const std::string rp = metadbHandle_->get_path();
-
-	if (rp.starts_with("file-relative://"))
+	void JsFbMetadbHandle::SetPlaycount(uint32_t playcount)
 	{
-		const auto native = filesystem::g_get_native_path(rp.c_str());
-		return fmt::format("file://{}", native.get_ptr());
+		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+		{
+			auto tmp = stats::GetStats(hash);
+			if (tmp.playcount != playcount)
+			{
+				tmp.playcount = playcount;
+				stats::SetStats(hash, tmp);
+			}
+		}
 	}
 
-	return rp;
-}
+	void JsFbMetadbHandle::SetRating(uint32_t rating)
+	{
+		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
+		{
+			auto tmp = stats::GetStats(hash);
+			if (tmp.rating != rating)
+			{
+				tmp.rating = rating;
+				stats::SetStats(hash, tmp);
+			}
+		}
+	}
 
-uint32_t JsFbMetadbHandle::get_SubSong()
-{
-	return metadbHandle_->get_subsong_index();
-}
+	int64_t JsFbMetadbHandle::get_FileSize()
+	{
+		return static_cast<int64_t>(metadbHandle_->get_filesize());
+	}
 
-} // namespace mozjs
+	double JsFbMetadbHandle::get_Length()
+	{
+		return metadbHandle_->get_length();
+	}
+
+	std::string JsFbMetadbHandle::get_Path()
+	{
+		return filesystem::g_get_native_path(metadbHandle_->get_path()).get_ptr();
+	}
+
+	std::string JsFbMetadbHandle::get_RawPath()
+	{
+		const std::string rp = metadbHandle_->get_path();
+
+		if (rp.starts_with("file-relative://"))
+		{
+			const auto native = filesystem::g_get_native_path(rp.c_str());
+			return fmt::format("file://{}", native.get_ptr());
+		}
+
+		return rp;
+	}
+
+	uint32_t JsFbMetadbHandle::get_SubSong()
+	{
+		return metadbHandle_->get_subsong_index();
+	}
+}

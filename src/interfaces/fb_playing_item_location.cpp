@@ -8,25 +8,9 @@ namespace
 {
 	using namespace mozjs;
 
-	JSClassOps jsOps = {
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		JsFbPlayingItemLocation::FinalizeJsObject,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr
-	};
+	JS_CLASS_OPS(JsFbPlayingItemLocation::FinalizeJsObject, nullptr)
 
-	constexpr JSClass jsClass = {
-		"PlayingItemLocation",
-		kDefaultClassFlags,
-		&jsOps
-	};
+	JS_CLASS("PlayingItemLocation")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_IsValid, JsFbPlayingItemLocation::get_IsValid)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_PlaylistIndex, JsFbPlayingItemLocation::get_PlaylistIndex)
@@ -45,9 +29,9 @@ namespace
 			JS_FS_END,
 		});
 }
+
 namespace mozjs
 {
-
 	const JSClass JsFbPlayingItemLocation::JsClass = jsClass;
 	const JSFunctionSpec* JsFbPlayingItemLocation::JsFunctions = jsFunctions.data();
 	const JSPropertySpec* JsFbPlayingItemLocation::JsProperties = jsProperties.data();

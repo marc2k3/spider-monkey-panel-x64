@@ -4,31 +4,13 @@
 #include <js_utils/js_error_helper.h>
 #include <js_utils/js_object_helper.h>
 
-using namespace smp;
-
 namespace
 {
 	using namespace mozjs;
 
-	JSClassOps jsOps = {
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		JsFbTooltip::FinalizeJsObject,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr
-	};
+	JS_CLASS_OPS(JsFbTooltip::FinalizeJsObject, nullptr)
 
-	constexpr JSClass jsClass = {
-		"FbTooltip",
-		kDefaultClassFlags,
-		&jsOps
-	};
+	JS_CLASS("FbTooltip")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Activate, JsFbTooltip::Activate)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Deactivate, JsFbTooltip::Deactivate)
@@ -151,7 +133,7 @@ namespace mozjs
 	{
 		if (name.empty())
 			return;
-	
+
 		m_font.reset(CreateFontW(
 			// from msdn: "< 0, The font mapper transforms this value into device units
 			//             and matches its absolute value against the character height of the available fonts."

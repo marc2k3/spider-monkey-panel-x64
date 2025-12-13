@@ -8,116 +8,93 @@
 
 namespace
 {
+	using namespace mozjs;
 
-using namespace mozjs;
+	JS_CLASS_OPS(JsFbMetadbHandleList_Iterator::FinalizeJsObject, nullptr)
 
-JSClassOps jsOps = {
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	JsFbMetadbHandleList_Iterator::FinalizeJsObject,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr
-};
+	JS_CLASS("FbMetadbHandleList_Iterator")
 
-constexpr JSClass jsClass = {
-	"FbMetadbHandleList_Iterator",
-	kDefaultClassFlags,
-	&jsOps
-};
+	MJS_DEFINE_JS_FN_FROM_NATIVE(next, JsFbMetadbHandleList_Iterator::Next)
 
-MJS_DEFINE_JS_FN_FROM_NATIVE(next, JsFbMetadbHandleList_Iterator::Next)
+	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
+		{
+			JS_FN("next", next, 0, kDefaultPropsFlags),
+			JS_FS_END,
+		});
 
-constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-	{
-		JS_FN("next", next, 0, kDefaultPropsFlags),
-		JS_FS_END,
-	});
-
-constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-	{
-		JS_PS_END,
-	});
-
-} // namespace
+	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
+		{
+			JS_PS_END,
+		});
+}
 
 namespace mozjs
 {
+	const JSClass JsFbMetadbHandleList_Iterator::JsClass = jsClass;
+	const JSFunctionSpec* JsFbMetadbHandleList_Iterator::JsFunctions = jsFunctions.data();
+	const JSPropertySpec* JsFbMetadbHandleList_Iterator::JsProperties = jsProperties.data();
+	const JsPrototypeId JsFbMetadbHandleList_Iterator::PrototypeId = JsPrototypeId::FbMetadbHandleList_Iterator;
 
-const JSClass JsFbMetadbHandleList_Iterator::JsClass = jsClass;
-const JSFunctionSpec* JsFbMetadbHandleList_Iterator::JsFunctions = jsFunctions.data();
-const JSPropertySpec* JsFbMetadbHandleList_Iterator::JsProperties = jsProperties.data();
-const JsPrototypeId JsFbMetadbHandleList_Iterator::PrototypeId = JsPrototypeId::FbMetadbHandleList_Iterator;
+	JsFbMetadbHandleList_Iterator::JsFbMetadbHandleList_Iterator(JSContext* cx, JsFbMetadbHandleList& handleList)
+		: pJsCtx_(cx)
+		, handleList_(handleList)
+		, heapHelper_(cx) {}
 
-JsFbMetadbHandleList_Iterator::JsFbMetadbHandleList_Iterator(JSContext* cx, JsFbMetadbHandleList& handleList)
-	: pJsCtx_(cx)
-	, handleList_(handleList)
-	, heapHelper_(cx)
-{
-}
-
-JsFbMetadbHandleList_Iterator::~JsFbMetadbHandleList_Iterator()
-{
-	heapHelper_.Finalize();
-}
-
-std::unique_ptr<JsFbMetadbHandleList_Iterator>
-JsFbMetadbHandleList_Iterator::CreateNative(JSContext* cx, JsFbMetadbHandleList& handleList)
-{
-	return std::unique_ptr<JsFbMetadbHandleList_Iterator>(new JsFbMetadbHandleList_Iterator(cx, handleList));
-}
-
-uint32_t JsFbMetadbHandleList_Iterator::GetInternalSize()
-{
-	return 0;
-}
-
-JSObject* JsFbMetadbHandleList_Iterator::Next()
-{
-	const bool isAtEnd = (curPosition_ >= handleList_.get_Count());
-	auto autoIncrement = wil::scope_exit([&] {
-		if (!isAtEnd)
-		{
-			++curPosition_;
-		}
-	});
-
-	if (!jsNextId_)
+	JsFbMetadbHandleList_Iterator::~JsFbMetadbHandleList_Iterator()
 	{
-		JS::RootedObject jsObject(pJsCtx_, JS_NewPlainObject(pJsCtx_));
-
-		JS::RootedObject jsValueObject(pJsCtx_);
-		if (!isAtEnd)
-		{
-			jsValueObject = handleList_.get_Item(curPosition_);
-		}
-		AddProperty(pJsCtx_, jsObject, "value", static_cast<JS::HandleObject>(jsValueObject));
-		AddProperty(pJsCtx_, jsObject, "done", isAtEnd);
-
-		jsNextId_ = heapHelper_.Store(jsObject);
-
-		JS::RootedObject jsNext(pJsCtx_, &heapHelper_.Get(*jsNextId_).toObject());
-		return jsNext;
+		heapHelper_.Finalize();
 	}
-	else
+
+	std::unique_ptr<JsFbMetadbHandleList_Iterator> JsFbMetadbHandleList_Iterator::CreateNative(JSContext* cx, JsFbMetadbHandleList& handleList)
 	{
-		JS::RootedObject jsNext(pJsCtx_, &heapHelper_.Get(*jsNextId_).toObject());
+		return std::unique_ptr<JsFbMetadbHandleList_Iterator>(new JsFbMetadbHandleList_Iterator(cx, handleList));
+	}
 
-		JS::RootedObject jsValueObject(pJsCtx_);
-		if (!isAtEnd)
+	uint32_t JsFbMetadbHandleList_Iterator::GetInternalSize()
+	{
+		return 0;
+	}
+
+	JSObject* JsFbMetadbHandleList_Iterator::Next()
+	{
+		const bool isAtEnd = (curPosition_ >= handleList_.get_Count());
+		auto autoIncrement = wil::scope_exit([&] {
+			if (!isAtEnd)
+			{
+				++curPosition_;
+			}
+			});
+
+		if (!jsNextId_)
 		{
-			jsValueObject = handleList_.get_Item(curPosition_);
-		}
-		SetProperty(pJsCtx_, jsNext, "value", static_cast<JS::HandleObject>(jsValueObject));
-		SetProperty(pJsCtx_, jsNext, "done", isAtEnd);
+			JS::RootedObject jsObject(pJsCtx_, JS_NewPlainObject(pJsCtx_));
 
-		return jsNext;
+			JS::RootedObject jsValueObject(pJsCtx_);
+			if (!isAtEnd)
+			{
+				jsValueObject = handleList_.get_Item(curPosition_);
+			}
+			AddProperty(pJsCtx_, jsObject, "value", static_cast<JS::HandleObject>(jsValueObject));
+			AddProperty(pJsCtx_, jsObject, "done", isAtEnd);
+
+			jsNextId_ = heapHelper_.Store(jsObject);
+
+			JS::RootedObject jsNext(pJsCtx_, &heapHelper_.Get(*jsNextId_).toObject());
+			return jsNext;
+		}
+		else
+		{
+			JS::RootedObject jsNext(pJsCtx_, &heapHelper_.Get(*jsNextId_).toObject());
+
+			JS::RootedObject jsValueObject(pJsCtx_);
+			if (!isAtEnd)
+			{
+				jsValueObject = handleList_.get_Item(curPosition_);
+			}
+			SetProperty(pJsCtx_, jsNext, "value", static_cast<JS::HandleObject>(jsValueObject));
+			SetProperty(pJsCtx_, jsNext, "done", isAtEnd);
+
+			return jsNext;
+		}
 	}
 }
-
-} // namespace mozjs
