@@ -101,7 +101,7 @@ namespace mozjs::convert::to_native
 			bool is{};
 			if (!JS::IsArrayObject(cx, jsObject, &is) || !is)
 				throw QwrException("Not a valid JS array");
-	
+
 			uint32_t arraySize{};
 			if (!JS::GetArrayLength(cx, jsObject, &arraySize) || arraySize == 0)
 				return;

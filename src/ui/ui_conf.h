@@ -124,4 +124,4 @@ namespace smp::ui
 		int activeTabIdx_{};
 		std::vector<std::unique_ptr<ITab>> tabs_;
 	};
-} 
+}

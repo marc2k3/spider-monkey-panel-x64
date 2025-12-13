@@ -87,7 +87,7 @@ namespace
 		nullptr,
 		nullptr,
 		nullptr,
-		Window::Trace 
+		Window::Trace
 	};
 
 	DEFINE_JS_CLASS("Window")
