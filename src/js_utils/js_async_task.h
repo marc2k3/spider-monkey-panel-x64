@@ -3,99 +3,98 @@
 namespace mozjs
 {
 
-class JsAsyncTask : public IHeapUser
-{
-public:
-	JsAsyncTask() = default;
-	~JsAsyncTask() override = default;
-
-	virtual bool InvokeJs() = 0;
-	virtual bool IsCanceled() const = 0;
-};
-
-template <typename... Args>
-class JsAsyncTaskImpl : public JsAsyncTask
-{
-	static_assert((std::is_same_v<Args, JS::HandleValue> && ...));
-
-public:
-	/// throws JsException
-	JsAsyncTaskImpl(JSContext* cx, Args... args) : pJsCtx_(cx)
+	class JsAsyncTask : public IHeapUser
 	{
-		assert(cx);
+	public:
+		JsAsyncTask() = default;
+		~JsAsyncTask() override = default;
 
-		JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-		assert(jsGlobal);
-
-		pNativeGlobal_ = static_cast<mozjs::JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &mozjs::JsGlobalObject::JsClass, nullptr));
-		assert(pNativeGlobal_);
-
-		valueHeapIds_ = { pNativeGlobal_->GetHeapManager().Store(args)... };
-
-		pNativeGlobal_->GetHeapManager().RegisterUser(this);
-
-		isJsAvailable_ = true;
-	}
-
-	~JsAsyncTaskImpl() override
-	{
-		std::scoped_lock sl(cleanupLock_);
-		if (!isJsAvailable_)
-		{
-			return;
-		}
-
-		for (auto heapId: valueHeapIds_)
-		{
-			pNativeGlobal_->GetHeapManager().Remove(heapId);
-		}
-		pNativeGlobal_->GetHeapManager().UnregisterUser(this);
+		virtual bool InvokeJs() = 0;
+		virtual bool IsCanceled() const = 0;
 	};
 
-	/// @details Assumes that JS environment is ready (global, realm and etc).
-	bool InvokeJs() final
+	template <typename... Args>
+	class JsAsyncTaskImpl : public JsAsyncTask
 	{
-		std::scoped_lock sl(cleanupLock_);
-		if (!isJsAvailable_)
+		static_assert((std::is_same_v<Args, JS::HandleValue> && ...));
+
+	public:
+		/// throws JsException
+		JsAsyncTaskImpl(JSContext* cx, Args... args) : pJsCtx_(cx)
 		{
-			return true;
+			assert(cx);
+
+			JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
+			assert(jsGlobal);
+
+			pNativeGlobal_ = static_cast<mozjs::JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &mozjs::JsGlobalObject::JsClass, nullptr));
+			assert(pNativeGlobal_);
+
+			valueHeapIds_ = { pNativeGlobal_->GetHeapManager().Store(args)... };
+
+			pNativeGlobal_->GetHeapManager().RegisterUser(this);
+
+			isJsAvailable_ = true;
 		}
 
-		JS::RootedObject jsGlobal(pJsCtx_, JS::CurrentGlobalOrNull(pJsCtx_));
-		assert(jsGlobal);
+		~JsAsyncTaskImpl() override
+		{
+			std::scoped_lock sl(cleanupLock_);
+			if (!isJsAvailable_)
+			{
+				return;
+			}
 
-		return InvokeJsInternal(jsGlobal, std::make_index_sequence<sizeof...(Args)>{});
-	}
+			for (auto heapId : valueHeapIds_)
+			{
+				pNativeGlobal_->GetHeapManager().Remove(heapId);
+			}
+			pNativeGlobal_->GetHeapManager().UnregisterUser(this);
+		};
 
-	void PrepareForGlobalGc() final
-	{
-		std::scoped_lock sl(cleanupLock_);
-		isJsAvailable_ = false;
-	}
+		/// @details Assumes that JS environment is ready (global, realm and etc).
+		bool InvokeJs() final
+		{
+			std::scoped_lock sl(cleanupLock_);
+			if (!isJsAvailable_)
+			{
+				return true;
+			}
 
-	bool IsCanceled() const final
-	{
-		std::scoped_lock sl(cleanupLock_);
-		return isJsAvailable_;
-	}
+			JS::RootedObject jsGlobal(pJsCtx_, JS::CurrentGlobalOrNull(pJsCtx_));
+			assert(jsGlobal);
 
-private:
-	virtual bool InvokeJsImpl(JSContext* cx, JS::HandleObject jsGlobal, Args... args) = 0;
+			return InvokeJsInternal(jsGlobal, std::make_index_sequence<sizeof...(Args)>{});
+		}
 
-	template <size_t... Indices>
-	bool InvokeJsInternal(JS::HandleObject jsGlobal, std::index_sequence<Indices...>)
-	{
-		return InvokeJsImpl(pJsCtx_, jsGlobal, JS::RootedValue{ pJsCtx_, pNativeGlobal_->GetHeapManager().Get(std::get<Indices>(valueHeapIds_)) }...);
-	}
+		void PrepareForGlobalGc() final
+		{
+			std::scoped_lock sl(cleanupLock_);
+			isJsAvailable_ = false;
+		}
 
-private:
-	JSContext* pJsCtx_ = nullptr;
+		bool IsCanceled() const final
+		{
+			std::scoped_lock sl(cleanupLock_);
+			return isJsAvailable_;
+		}
 
-	std::array<uint32_t, sizeof...(Args)> valueHeapIds_ = {};
-	JsGlobalObject* pNativeGlobal_ = nullptr;
+	private:
+		virtual bool InvokeJsImpl(JSContext* cx, JS::HandleObject jsGlobal, Args... args) = 0;
 
-	mutable std::mutex cleanupLock_;
-	bool isJsAvailable_ = false;
-};
+		template <size_t... Indices>
+		bool InvokeJsInternal(JS::HandleObject jsGlobal, std::index_sequence<Indices...>)
+		{
+			return InvokeJsImpl(pJsCtx_, jsGlobal, JS::RootedValue{ pJsCtx_, pNativeGlobal_->GetHeapManager().Get(std::get<Indices>(valueHeapIds_)) }...);
+		}
 
-} // namespace mozjs
+	private:
+		JSContext* pJsCtx_ = nullptr;
+
+		std::array<uint32_t, sizeof...(Args)> valueHeapIds_ = {};
+		JsGlobalObject* pNativeGlobal_ = nullptr;
+
+		mutable std::mutex cleanupLock_;
+		bool isJsAvailable_ = false;
+	};
+}
