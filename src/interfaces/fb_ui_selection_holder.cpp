@@ -11,7 +11,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsFbUiSelectionHolder::FinalizeJsObject)
 
-	// NOT JS_CLASS, selection_holder must be finalized in foreground
+	// not DEFINE_JS_CLASS, selection_holder must be finalized in foreground
 	constexpr JSClass jsClass = {
 		"FbUiSelectionHolder",
 		JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE,

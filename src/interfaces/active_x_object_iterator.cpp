@@ -14,7 +14,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsActiveXObject_Iterator::FinalizeJsObject)
 
-	// NOT JS_CLASS, COM objects must be finalized in foreground
+	// not DEFINE_JS_CLASS, COM objects must be finalized in foreground
 	constexpr JSClass jsClass = {
 		"ActiveXObject_Iterator",
 		JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE,
