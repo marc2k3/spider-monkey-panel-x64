@@ -457,7 +457,7 @@ namespace mozjs
 				temp.prealloc(512);
 
 				api->get_relative_path(metadbHandleList_[index], temp);
-				temp << metadbHandleList_[index]->get_subsong_index();
+				temp << "|" << metadbHandleList_[index]->get_subsong_index();
 				items[index].index = index;
 				items[index].text = pfc::wideFromUTF8(temp);
 			});
