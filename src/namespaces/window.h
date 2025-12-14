@@ -7,17 +7,9 @@ namespace mozjs
 	class Window : public JsObjectBase<Window>
 	{
 	public:
-		static constexpr bool HasProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-
-	public:
-		// @remark No need to cleanup JS here, since it must be performed manually beforehand anyway
 		~Window() override;
+
+		DEFINE_JS_NAMESPACE_VARS
 
 		static std::unique_ptr<Window> CreateNative(JSContext* ctx, smp::js_panel_window& parentPanel);
 		uint32_t GetInternalSize();

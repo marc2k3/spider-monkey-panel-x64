@@ -124,6 +124,14 @@ namespace mozjs
 			JS_PS_END, \
 		}); \
 
+#define DEFINE_JS_NAMESPACE_VARS \
+	static constexpr bool HasProto = false; \
+	static constexpr bool HasProxy = false; \
+	static constexpr bool HasPostCreate = false; \
+	static const JSClass JsClass; \
+	static const JSFunctionSpec* JsFunctions; \
+	static const JSPropertySpec* JsProperties; \
+
 	template <typename T>
 	class JsObjectBase
 	{
@@ -229,6 +237,8 @@ namespace mozjs
 			}
 		}
 
+		uint32_t nativeObjectSize_{};
+
 	private:
 		template <typename U = T, std::enable_if_t<U::HasProto, int> = 0>
 		[[nodiscard]] static JSObject* GetProto(JSContext* cx)
@@ -305,8 +315,5 @@ namespace mozjs
 				return jsBaseObject;
 			}
 		}
-
-	private:
-		uint32_t nativeObjectSize_ = 0;
 	};
 }

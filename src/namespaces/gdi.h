@@ -5,16 +5,9 @@ namespace mozjs
 	class Gdi : public JsObjectBase<Gdi>
 	{
 	public:
-		static constexpr bool HasProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-
-	public:
 		~Gdi() override = default;
+
+		DEFINE_JS_NAMESPACE_VARS
 
 		static std::unique_ptr<Gdi> CreateNative(JSContext* ctx);
 		uint32_t GetInternalSize();

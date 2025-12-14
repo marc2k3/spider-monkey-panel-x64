@@ -7,15 +7,8 @@ namespace mozjs
 	class Utils : public JsObjectBase<Utils>
 	{
 	public:
-		static constexpr bool HasProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
+		DEFINE_JS_NAMESPACE_VARS
 
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-
-	public:
 		static std::unique_ptr<Utils> CreateNative(JSContext* ctx);
 		uint32_t GetInternalSize();
 
