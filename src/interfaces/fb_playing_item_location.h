@@ -5,18 +5,9 @@ namespace mozjs
 	class JsFbPlayingItemLocation : public JsObjectBase<JsFbPlayingItemLocation>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsFbPlayingItemLocation() override = default;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsFbPlayingItemLocation> CreateNative(JSContext* cx, bool is_valid, size_t playlistIndex, size_t playlistItemIndex);
 		uint32_t GetInternalSize();

@@ -5,18 +5,9 @@ namespace mozjs
 	class JsFbAudioChunk : public JsObjectBase<JsFbAudioChunk>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsFbAudioChunk() override = default;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsFbAudioChunk> CreateNative(JSContext* cx, const audio_chunk_impl& chunk);
 		uint32_t GetInternalSize();

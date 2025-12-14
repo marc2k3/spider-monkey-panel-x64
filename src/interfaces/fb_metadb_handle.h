@@ -5,18 +5,9 @@ namespace mozjs
 	class JsFbMetadbHandle : public JsObjectBase<JsFbMetadbHandle>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsFbMetadbHandle() override = default;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsFbMetadbHandle> CreateNative(JSContext* cx, const metadb_handle_ptr& handle);
 		uint32_t GetInternalSize();

@@ -132,6 +132,16 @@ namespace mozjs
 	static const JSFunctionSpec* JsFunctions; \
 	static const JSPropertySpec* JsProperties; \
 
+#define DEFINE_JS_INTERFACE_VARS \
+	static constexpr bool HasProto = true; \
+	static constexpr bool HasGlobalProto = false; \
+	static constexpr bool HasProxy = false; \
+	static constexpr bool HasPostCreate = false; \
+	static const JSClass JsClass; \
+	static const JSFunctionSpec* JsFunctions; \
+	static const JSPropertySpec* JsProperties; \
+	static const JsPrototypeId PrototypeId; \
+
 	template <typename T>
 	class JsObjectBase
 	{

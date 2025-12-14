@@ -6,26 +6,15 @@ namespace mozjs
 	class JsGdiRawBitmap : public JsObjectBase<JsGdiRawBitmap>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsGdiRawBitmap() override = default;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsGdiRawBitmap> CreateNative(JSContext* cx, Gdiplus::Bitmap* pBmp);
 		uint32_t GetInternalSize();
 
 	public:
-		[[nodiscard]] __notnull
-			HDC
-			GetHDC() const;
+		[[nodiscard]] __notnull HDC GetHDC() const;
 
 	public: // props
 		std::uint32_t get_Height();

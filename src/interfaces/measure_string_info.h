@@ -5,18 +5,9 @@ namespace mozjs
 	class JsMeasureStringInfo : public JsObjectBase<JsMeasureStringInfo>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsMeasureStringInfo() override = default;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsMeasureStringInfo> CreateNative(JSContext* cx, float x, float y, float w, float h, uint32_t l, uint32_t c);
 		uint32_t GetInternalSize();

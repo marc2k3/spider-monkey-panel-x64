@@ -6,19 +6,10 @@ namespace mozjs
 	class JsFbTooltip : public JsObjectBase<JsFbTooltip>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		// @remark No need to cleanup JS here, since it must be performed manually beforehand anyway
 		~JsFbTooltip() override = default;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsFbTooltip> CreateNative(JSContext* ctx, HWND parent_wnd);
 		uint32_t GetInternalSize();

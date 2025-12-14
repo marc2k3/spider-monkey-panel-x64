@@ -5,18 +5,9 @@ namespace mozjs
 	class JsMenuObject : public JsObjectBase<JsMenuObject>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsMenuObject() override;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsMenuObject> CreateNative(JSContext* cx, HWND hParentWnd);
 		uint32_t GetInternalSize();

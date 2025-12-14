@@ -5,18 +5,9 @@ namespace mozjs
 	class JsThemeManager : public JsObjectBase<JsThemeManager>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsThemeManager() override;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static bool HasThemeData(HWND hwnd, const std::wstring& classId);
 		static std::unique_ptr<JsThemeManager> CreateNative(JSContext* cx, HWND hwnd, const std::wstring& classId);

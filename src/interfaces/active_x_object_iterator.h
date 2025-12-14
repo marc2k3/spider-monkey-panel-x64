@@ -7,18 +7,9 @@ namespace mozjs
 	class JsActiveXObject_Iterator : public JsObjectBase<JsActiveXObject_Iterator>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-
-	public:
 		~JsActiveXObject_Iterator() override;
+
+		DEFINE_JS_INTERFACE_VARS
 
 		static std::unique_ptr<JsActiveXObject_Iterator> CreateNative(JSContext* cx, JsActiveXObject& activeXObject);
 		uint32_t GetInternalSize();
