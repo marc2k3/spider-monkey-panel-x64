@@ -5,20 +5,9 @@ namespace mozjs
 	class JsGdiFont : public JsObjectBase<JsGdiFont>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = true;
-		static constexpr bool HasStaticFunctions = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-		static const JSNative JsConstructor;
-
-	public:
 		~JsGdiFont() override;
+
+		DEFINE_JS_INTERFACE_VARS_GLOBAL_PROTO
 
 		static std::unique_ptr<JsGdiFont> CreateNative(JSContext* cx, std::unique_ptr<Gdiplus::Font> gdiFont, HFONT hFont, bool isManaged);
 		uint32_t GetInternalSize();

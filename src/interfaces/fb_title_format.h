@@ -8,20 +8,9 @@ namespace mozjs
 	class JsFbTitleFormat : public JsObjectBase<JsFbTitleFormat>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = true;
-		static constexpr bool HasStaticFunctions = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-		static const JSNative JsConstructor;
-
-	public:
 		~JsFbTitleFormat() override = default;
+
+		DEFINE_JS_INTERFACE_VARS_GLOBAL_PROTO
 
 		static std::unique_ptr<JsFbTitleFormat> CreateNative(JSContext* cx, const std::string& expr);
 		uint32_t GetInternalSize();

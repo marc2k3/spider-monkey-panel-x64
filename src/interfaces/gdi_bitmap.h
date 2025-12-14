@@ -5,20 +5,9 @@ namespace mozjs
 	class JsGdiBitmap : public JsObjectBase<JsGdiBitmap>
 	{
 	public:
-		static constexpr bool HasProto = true;
-		static constexpr bool HasGlobalProto = true;
-		static constexpr bool HasStaticFunctions = false;
-		static constexpr bool HasProxy = false;
-		static constexpr bool HasPostCreate = false;
-
-		static const JSClass JsClass;
-		static const JSFunctionSpec* JsFunctions;
-		static const JSPropertySpec* JsProperties;
-		static const JsPrototypeId PrototypeId;
-		static const JSNative JsConstructor;
-
-	public:
 		~JsGdiBitmap() override = default;
+
+		DEFINE_JS_INTERFACE_VARS_GLOBAL_PROTO
 
 		static std::unique_ptr<JsGdiBitmap> CreateNative(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> gdiBitmap);
 		uint32_t GetInternalSize();
