@@ -9,12 +9,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsGdiFont::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("GdiFont")
-
-	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-		{
-			JS_FS_END,
-		});
+	DEFINE_JS_CLASS_NO_FUNCTIONS("GdiFont")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Height, JsGdiFont::get_Height)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Name, JsGdiFont::get_Name)

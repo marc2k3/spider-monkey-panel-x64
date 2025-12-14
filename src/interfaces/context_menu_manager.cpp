@@ -10,7 +10,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsContextMenuManager::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("ContextMenuManager")
+	DEFINE_JS_CLASS_NO_PROPERTIES("ContextMenuManager")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(BuildMenu, JsContextMenuManager::BuildMenu, JsContextMenuManager::BuildMenuWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ExecuteByID, JsContextMenuManager::ExecuteByID)
@@ -26,11 +26,6 @@ namespace
 			JS_FN("InitContextPlaylist", InitContextPlaylist, 0, kDefaultPropsFlags),
 			JS_FN("InitNowPlaying", InitNowPlaying, 0, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 }
 

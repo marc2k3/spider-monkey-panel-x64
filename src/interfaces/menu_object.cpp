@@ -9,7 +9,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsMenuObject::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("MenuObject")
+	DEFINE_JS_CLASS_NO_PROPERTIES("MenuObject")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AppendMenuItem, JsMenuObject::AppendMenuItem)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(AppendMenuSeparator, JsMenuObject::AppendMenuSeparator)
@@ -27,11 +27,6 @@ namespace
 			JS_FN("CheckMenuRadioItem", CheckMenuRadioItem, 3, kDefaultPropsFlags),
 			JS_FN("TrackPopupMenu", TrackPopupMenu, 2, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 }
 

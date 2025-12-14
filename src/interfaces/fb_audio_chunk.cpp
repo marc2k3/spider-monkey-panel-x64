@@ -7,7 +7,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsFbAudioChunk::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("FbAudioChunk")
+	DEFINE_JS_CLASS_NO_FUNCTIONS("FbAudioChunk")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Data, JsFbAudioChunk::get_Data);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_ChannelConfig, JsFbAudioChunk::get_ChannelConfig);
@@ -23,11 +23,6 @@ namespace
 			JS_PSG("SampleCount", get_SampleCount, kDefaultPropsFlags),
 			JS_PSG("SampleRate", get_SampleRate, kDefaultPropsFlags),
 			JS_PS_END,
-		});
-
-	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-		{
-			JS_FS_END,
 		});
 }
 

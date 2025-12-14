@@ -255,8 +255,7 @@ namespace mozjs
 	const JSNative JsActiveXObject::JsConstructor = ::ActiveXObject_Constructor;
 	const js::BaseProxyHandler& JsActiveXObject::JsProxy = ActiveXObjectProxyHandler::singleton;
 
-	JsActiveXObject::JsActiveXObject(JSContext* cx, VARIANTARG& var)
-		: pJsCtx_(cx)
+	JsActiveXObject::JsActiveXObject(JSContext* cx, VARIANTARG& var) : pJsCtx_(cx)
 	{
 		HRESULT hr = VariantCopyInd(&pStorage_->variant, &var);
 		if (FAILED(hr))
@@ -289,8 +288,7 @@ namespace mozjs
 		}
 	}
 
-	JsActiveXObject::JsActiveXObject(JSContext* cx, IUnknown* pUnknown, bool addref)
-		: pJsCtx_(cx)
+	JsActiveXObject::JsActiveXObject(JSContext* cx, IUnknown* pUnknown, bool addref) : pJsCtx_(cx)
 	{
 		pStorage_->pUnknown = pUnknown;
 		if (!pStorage_->pUnknown)
@@ -318,8 +316,7 @@ namespace mozjs
 		}
 	}
 
-	JsActiveXObject::JsActiveXObject(JSContext* cx, CLSID& clsid)
-		: pJsCtx_(cx)
+	JsActiveXObject::JsActiveXObject(JSContext* cx, CLSID& clsid) : pJsCtx_(cx)
 	{
 		HRESULT hresult = CoCreateInstance(clsid, nullptr, CLSCTX_INPROC_SERVER, IID_IUnknown, reinterpret_cast<void**>(&pStorage_->pUnknown));
 		if (FAILED(hresult))

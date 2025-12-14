@@ -108,6 +108,22 @@ namespace mozjs
 		&jsOps \
 	}; \
 
+#define DEFINE_JS_CLASS_NO_FUNCTIONS(what) \
+	DEFINE_JS_CLASS(what) \
+	\
+	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>( \
+		{ \
+			JS_FS_END, \
+		}); \
+
+#define DEFINE_JS_CLASS_NO_PROPERTIES(what) \
+	DEFINE_JS_CLASS(what) \
+	\
+	constexpr auto jsProperties = std::to_array<JSPropertySpec>( \
+		{ \
+			JS_PS_END, \
+		}); \
+
 	template <typename T>
 	class JsObjectBase
 	{

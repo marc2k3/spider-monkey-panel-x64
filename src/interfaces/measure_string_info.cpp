@@ -7,12 +7,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsMeasureStringInfo::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("MeasureStringInfo")
-
-	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-		{
-			JS_FS_END,
-		});
+	DEFINE_JS_CLASS_NO_FUNCTIONS("MeasureStringInfo")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Chars, JsMeasureStringInfo::get_Chars)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Height, JsMeasureStringInfo::get_Height)

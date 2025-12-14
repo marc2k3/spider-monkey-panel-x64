@@ -15,7 +15,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(Gdi::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("GdiUtils")
+	DEFINE_JS_CLASS_NO_PROPERTIES("GdiUtils")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CreateImage, Gdi::CreateImage)
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(Font, Gdi::Font, Gdi::FontWithOpt, 1)
@@ -31,11 +31,6 @@ namespace
 			JS_FN("LoadImageAsync", LoadImageAsync, 2, kDefaultPropsFlags),
 			JS_FN("LoadImageAsyncV2", LoadImageAsyncV2, 2, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 }
 

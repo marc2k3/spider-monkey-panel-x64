@@ -7,7 +7,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsThemeManager::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("ThemeManager")
+	DEFINE_JS_CLASS_NO_PROPERTIES("ThemeManager")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(DrawThemeBackground, JsThemeManager::DrawThemeBackground, JsThemeManager::DrawThemeBackgroundWithOpt, 4)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(IsThemePartDefined, JsThemeManager::IsThemePartDefined)
@@ -19,11 +19,6 @@ namespace
 			JS_FN("IsThemePartDefined", IsThemePartDefined, 1, kDefaultPropsFlags),
 			JS_FN("SetPartAndStateID", SetPartAndStateID, 1, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 }
 

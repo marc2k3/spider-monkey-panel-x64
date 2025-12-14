@@ -9,7 +9,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsMainMenuManager::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("MainMenuManager")
+	DEFINE_JS_CLASS_NO_PROPERTIES("MainMenuManager")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(BuildMenu, JsMainMenuManager::BuildMenu)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ExecuteByID, JsMainMenuManager::ExecuteByID)
@@ -21,11 +21,6 @@ namespace
 			JS_FN("ExecuteByID", ExecuteByID, 1, kDefaultPropsFlags),
 			JS_FN("Init", Init, 1, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 }
 

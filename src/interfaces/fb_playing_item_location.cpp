@@ -7,7 +7,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsFbPlayingItemLocation::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("PlayingItemLocation")
+	DEFINE_JS_CLASS_NO_FUNCTIONS("PlayingItemLocation")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_IsValid, JsFbPlayingItemLocation::get_IsValid)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_PlaylistIndex, JsFbPlayingItemLocation::get_PlaylistIndex)
@@ -19,11 +19,6 @@ namespace
 			JS_PSG("PlaylistIndex", get_PlaylistIndex, kDefaultPropsFlags),
 			JS_PSG("PlaylistItemIndex", get_PlaylistItemIndex, kDefaultPropsFlags),
 			JS_PS_END,
-		});
-
-	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-		{
-			JS_FS_END,
 		});
 }
 

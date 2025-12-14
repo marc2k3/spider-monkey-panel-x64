@@ -7,7 +7,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsDropSourceAction::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("DropSourceAction")
+	DEFINE_JS_CLASS_NO_FUNCTIONS("DropSourceAction")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Effect, JsDropSourceAction::get_Effect)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(put_Base, JsDropSourceAction::put_Base)
@@ -27,10 +27,6 @@ namespace
 			JS_PSG("IsInternal", get_IsInternal, kDefaultPropsFlags),
 			JS_PS_END,
 		});
-
-	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>({
-		JS_FS_END,
-	});
 }
 
 namespace mozjs

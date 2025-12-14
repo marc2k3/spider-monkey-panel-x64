@@ -10,12 +10,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsGdiRawBitmap::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("GdiRawBitMap")
-
-	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-		{
-			JS_FS_END,
-		});
+	DEFINE_JS_CLASS_NO_FUNCTIONS("GdiRawBitMap")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Height, JsGdiRawBitmap::get_Height)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Width, JsGdiRawBitmap::get_Width)

@@ -15,7 +15,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsGdiGraphics::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("GdiGraphics")
+	DEFINE_JS_CLASS_NO_PROPERTIES("GdiGraphics")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CalcTextHeight, JsGdiGraphics::CalcTextHeight)
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CalcTextWidth, JsGdiGraphics::CalcTextWidth, JsGdiGraphics::CalcTextWidthWithOpt, 1)
@@ -65,11 +65,6 @@ namespace
 			JS_FN("SetSmoothingMode", SetSmoothingMode, 0, kDefaultPropsFlags),
 			JS_FN("SetTextRenderingHint", SetTextRenderingHint, 0, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 }
 

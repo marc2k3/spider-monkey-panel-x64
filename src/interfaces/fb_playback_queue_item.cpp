@@ -9,7 +9,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsFbPlaybackQueueItem::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("FbPlaybackQueueItem")
+	DEFINE_JS_CLASS_NO_FUNCTIONS("FbPlaybackQueueItem")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_Handle, JsFbPlaybackQueueItem::get_Handle)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(get_PlaylistIndex, JsFbPlaybackQueueItem::get_PlaylistIndex)
@@ -21,11 +21,6 @@ namespace
 			JS_PSG("PlaylistIndex", get_PlaylistIndex, kDefaultPropsFlags),
 			JS_PSG("PlaylistItemIndex", get_PlaylistItemIndex, kDefaultPropsFlags),
 			JS_PS_END,
-		});
-
-	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
-		{
-			JS_FS_END,
 		});
 }
 

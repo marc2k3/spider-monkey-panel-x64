@@ -10,7 +10,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsFbTitleFormat::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("FbTitleFormat")
+	DEFINE_JS_CLASS_NO_PROPERTIES("FbTitleFormat")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(Eval, JsFbTitleFormat::Eval, JsFbTitleFormat::EvalWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(EvalWithMetadb, JsFbTitleFormat::EvalWithMetadb)
@@ -22,11 +22,6 @@ namespace
 			JS_FN("EvalWithMetadb", EvalWithMetadb, 1, kDefaultPropsFlags),
 			JS_FN("EvalWithMetadbs", EvalWithMetadbs, 1, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(FbTitleFormat_Constructor, JsFbTitleFormat::Constructor)

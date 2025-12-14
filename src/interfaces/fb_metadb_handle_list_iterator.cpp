@@ -9,7 +9,7 @@ namespace
 
 	DEFINE_JS_CLASS_OPS(JsFbMetadbHandleList_Iterator::FinalizeJsObject)
 
-	DEFINE_JS_CLASS("FbMetadbHandleList_Iterator")
+	DEFINE_JS_CLASS_NO_PROPERTIES("FbMetadbHandleList_Iterator")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(next, JsFbMetadbHandleList_Iterator::Next)
 
@@ -17,11 +17,6 @@ namespace
 		{
 			JS_FN("next", next, 0, kDefaultPropsFlags),
 			JS_FS_END,
-		});
-
-	constexpr auto jsProperties = std::to_array<JSPropertySpec>(
-		{
-			JS_PS_END,
 		});
 }
 
