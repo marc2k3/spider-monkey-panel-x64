@@ -15,6 +15,9 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.15
+- Fix crashing when using certain library iteration methods in WINE.
+
 ## 1.7.25.12.11
 - The Scintilla library used for code highlighting has been updated to the latest version. This means:
   * any previous custom colour scheme will be lost and previously generated .cfg files are no longer compatible.
