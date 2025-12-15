@@ -1,5 +1,19 @@
 #pragma once
 
+template <typename T>
+static auto pfc_array(size_t count) noexcept
+{
+	pfc::array_t<T> arr;
+	arr.set_size(count);
+	return arr;
+}
+
+template <typename T>
+static auto pfc_list(const T& item) noexcept
+{
+	return pfc::list_single_ref_t<T>(item);
+}
+
 static void set_window_theme(HWND wnd, bool is_dark) noexcept
 {
 	SetWindowTheme(wnd, is_dark ? L"DarkMode_Explorer" : nullptr, nullptr);

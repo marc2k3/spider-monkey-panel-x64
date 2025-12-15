@@ -111,9 +111,7 @@ namespace mozjs
 
 		const auto& native = handles->GetHandleList();
 		const auto count = native.get_count();
-		pfc::array_t<pfc::string8> values;
-		values.set_size(count);
-
+		auto values = pfc_array<pfc::string8>(count);
 		auto api = metadb_v2::get();
 
 		api->queryMultiParallel_(native, [&](size_t index, const metadb_v2::rec_t& rec)

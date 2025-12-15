@@ -768,9 +768,7 @@ namespace mozjs
 	void Plman::SortPlaylistsByName(int8_t direction)
 	{
 		const auto count = m_api->get_playlist_count();
-
-		pfc::array_t<CustomSort::Item> items;
-		items.set_size(count);
+		auto items = pfc_array<CustomSort::Item>(count);
 
 		pfc::string8 name;
 		name.prealloc(512);

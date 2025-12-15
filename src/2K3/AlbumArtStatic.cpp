@@ -37,8 +37,8 @@ album_art_data_ptr AlbumArtStatic::get(const metadb_handle_ptr& handle, size_t t
 	album_art_data_ptr data;
 	album_art_path_list::ptr paths;
 
-	const auto handles = pfc::list_single_ref_t<metadb_handle_ptr>(handle);
-	const auto types = pfc::list_single_ref_t<GUID>(type);
+	const auto handles = pfc_list(handle);
+	const auto types = pfc_list(type);
 
 	try
 	{

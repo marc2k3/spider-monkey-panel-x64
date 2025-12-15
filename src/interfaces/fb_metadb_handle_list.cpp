@@ -281,8 +281,7 @@ namespace mozjs
 
 	double JsFbMetadbHandleList::CalcTotalDuration()
 	{
-		pfc::array_t<double> lengths;
-		lengths.set_size(metadbHandleList_.get_count());
+		auto lengths = pfc_array<double>(metadbHandleList_.get_count());
 
 		metadb_v2::get()->queryMultiParallel_(metadbHandleList_, [&lengths](size_t index, const metadb_v2::rec_t& rec)
 			{
@@ -327,9 +326,7 @@ namespace mozjs
 	{
 		const auto count = metadbHandleList_.get_count();
 		auto api = library_manager::get();
-
-		pfc::array_t<pfc::string8> values;
-		values.set_size(count);
+		auto values = pfc_array<pfc::string8>(count);
 
 		for (auto&& [handle, value] : ranges::views::zip(metadbHandleList_, values))
 		{
@@ -447,10 +444,8 @@ namespace mozjs
 	void JsFbMetadbHandleList::OrderByRelativePath()
 	{
 		auto api = library_manager::get();
-
 		const auto count = metadbHandleList_.get_count();
-		pfc::array_t<CustomSort::Item> items;
-		items.set_size(count);
+		auto items = pfc_array<CustomSort::Item>(count);
 
 		pfc::string8 temp;
 		temp.prealloc(512);

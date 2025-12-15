@@ -23,9 +23,8 @@ namespace CustomSort
 
 	static Order order(size_t count) noexcept
 	{
-		Order sort_order;
-		sort_order.set_size(count);
-		std::iota(sort_order.begin(), sort_order.end(), size_t{});
+		auto sort_order = pfc_array<size_t>(count);
+		ranges::iota(sort_order, 0uz);
 		return sort_order;
 	}
 
