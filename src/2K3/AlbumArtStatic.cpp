@@ -72,19 +72,18 @@ album_art_data_ptr AlbumArtStatic::get_embedded(std::string_view path, size_t ty
 {
 	const auto type = get_type(type_id);
 	album_art_extractor::ptr ptr;
-	album_art_data_ptr data;
 
 	if (album_art_extractor::g_get_interface(ptr, path.data()))
 	{
 		try
 		{
 			auto instance = ptr->open(nullptr, path.data(), fb2k::noAbort);
-			data = instance->query(type, fb2k::noAbort);
+			return instance->query(type, fb2k::noAbort);
 		}
 		catch (...) {}
 	}
 
-	return data;
+	return {};
 }
 
 album_art_data_ptr AlbumArtStatic::to_data(IStream* stream) noexcept
@@ -101,20 +100,19 @@ album_art_data_ptr AlbumArtStatic::to_data(IStream* stream) noexcept
 			return data;
 	}
 
-	return album_art_data_ptr();
+	return {};
 }
 
 album_art_data_ptr AlbumArtStatic::to_data(std::wstring_view path) noexcept
 {
-	album_art_data_ptr data;
 	wil::com_ptr<IStream> stream;
 
 	if SUCCEEDED(FileHelper(path).read(stream))
 	{
-		data = to_data(stream.get());
+		return to_data(stream.get());
 	}
 
-	return data;
+	return {};
 }
 
 bool AlbumArtStatic::check_type_id(size_t type_id) noexcept
