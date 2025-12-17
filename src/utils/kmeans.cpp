@@ -109,7 +109,6 @@ namespace smp::kmeans
 					{
 						auto& clusterPoints = clusters[id_old_cluster].points;
 						const auto it = ranges::find(clusterPoints, &point);
-						assert(it != clusterPoints.cend());
 						clusterPoints.erase(it);
 					}
 

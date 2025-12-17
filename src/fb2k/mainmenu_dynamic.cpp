@@ -164,7 +164,6 @@ t_size MainMenuNodeGroup_PanelCommands::get_children_count()
 
 mainmenu_node::ptr MainMenuNodeGroup_PanelCommands::get_child(t_size index)
 {
-	assert(index < commandNodes_.size());
 	return commandNodes_.at(index);
 }
 
@@ -201,7 +200,6 @@ t_size MainMenuNodeGroup_Panels::get_children_count()
 
 mainmenu_node::ptr MainMenuNodeGroup_Panels::get_child(t_size index)
 {
-	assert(index < panelNodes_.size());
 	return panelNodes_.at(index);
 }
 
@@ -270,7 +268,6 @@ DynamicMainMenuManager& DynamicMainMenuManager::Get()
 
 void DynamicMainMenuManager::RegisterPanel(HWND hWnd, const std::string& panelName)
 {
-	assert(!panels_.contains(hWnd));
 	panels_.try_emplace(hWnd, PanelData{ panelName });
 }
 
@@ -282,8 +279,6 @@ void DynamicMainMenuManager::UnregisterPanel(HWND hWnd)
 
 void DynamicMainMenuManager::RegisterCommand(HWND hWnd, uint32_t id, const std::string& name, const std::optional<std::string>& description)
 {
-	assert(panels_.contains(hWnd));
-
 	auto& panelData = panels_.at(hWnd);
 	QwrException::ExpectTrue(!panelData.commands.contains(id), "Command with id `{}` was already registered", id);
 
@@ -292,8 +287,6 @@ void DynamicMainMenuManager::RegisterCommand(HWND hWnd, uint32_t id, const std::
 
 void DynamicMainMenuManager::UnregisterCommand(HWND hWnd, uint32_t id)
 {
-	assert(panels_.contains(hWnd));
-
 	auto& panelData = panels_.at(hWnd);
 	QwrException::ExpectTrue(panelData.commands.contains(id), "Unknown command id `{}`", id);
 

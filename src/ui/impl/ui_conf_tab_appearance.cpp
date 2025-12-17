@@ -25,7 +25,6 @@ int GetEdgeIdFromEnum(smp::config::EdgeStyle edgeStyle)
 	}
 	default:
 	{
-		assert(false);
 		return IDC_RADIO_EDGE_NO;
 	}
 	}
@@ -49,7 +48,6 @@ smp::config::EdgeStyle GetEdgeEnumFromId(int edgeStyleId)
 	}
 	default:
 	{
-		assert(false);
 		return smp::config::EdgeStyle::NoEdge;
 	}
 	}

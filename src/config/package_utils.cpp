@@ -11,7 +11,7 @@ namespace
 {
 	using namespace smp;
 
-	void Parse_PackageFromPath(const std::filesystem::path& packageDir, config::ParsedPanelSettings& parsedSettings)
+	void Parse_PackageFromPath(const fs::path& packageDir, config::ParsedPanelSettings& parsedSettings)
 	{
 		try
 		{
@@ -49,18 +49,13 @@ namespace
 
 	void Save_PackageData(const config::ParsedPanelSettings& parsedSettings)
 	{
-		namespace fs = std::filesystem;
-
-		assert(parsedSettings.scriptPath);
 		QwrException::ExpectTrue(!parsedSettings.scriptPath->empty(), "Corrupted settings: `scriptPath` is empty");
 
 		try
 		{
-			auto jsonMain = JSON::object();
-
-			assert(parsedSettings.packageId);
 			QwrException::ExpectTrue(!parsedSettings.packageId->empty(), "Corrupted settings: `id` is empty");
 
+			auto jsonMain = JSON::object();
 			jsonMain.push_back({ "id", *parsedSettings.packageId });
 			jsonMain.push_back({ "name", parsedSettings.scriptName });
 			jsonMain.push_back({ "author", parsedSettings.scriptAuthor });
@@ -141,7 +136,7 @@ namespace smp::config
 		return settings;
 	}
 
-	std::optional<std::filesystem::path> FindPackage(const std::string& packageId)
+	std::optional<fs::path> FindPackage(const std::string& packageId)
 	{
 
 		try
@@ -163,14 +158,14 @@ namespace smp::config
 		return std::nullopt;
 	}
 
-	ParsedPanelSettings GetPackageSettingsFromPath(const std::filesystem::path& packagePath)
+	ParsedPanelSettings GetPackageSettingsFromPath(const fs::path& packagePath)
 	{
 		ParsedPanelSettings settings{};
 		Parse_PackageFromPath(packagePath, settings);
 		return settings;
 	}
 
-	void FillPackageSettingsFromPath(const std::filesystem::path& packagePath, ParsedPanelSettings& settings)
+	void FillPackageSettingsFromPath(const fs::path& packagePath, ParsedPanelSettings& settings)
 	{
 		Parse_PackageFromPath(packagePath, settings);
 	}
@@ -183,22 +178,22 @@ namespace smp::config
 		}
 	}
 
-	std::filesystem::path GetPackageScriptsDir(const ParsedPanelSettings& settings)
+	fs::path GetPackageScriptsDir(const ParsedPanelSettings& settings)
 	{
 		return GetPackagePath(settings) / "scripts";
 	}
 
-	std::filesystem::path GetPackageAssetsDir(const ParsedPanelSettings& settings)
+	fs::path GetPackageAssetsDir(const ParsedPanelSettings& settings)
 	{
 		return GetPackagePath(settings) / "assets";
 	}
 
-	std::filesystem::path GetPackageStorageDir(const ParsedPanelSettings& settings)
+	fs::path GetPackageStorageDir(const ParsedPanelSettings& settings)
 	{
 		return path::Packages_Storage() / *settings.packageId;
 	}
 
-	std::filesystem::path GetPackagePath(const ParsedPanelSettings& settings)
+	fs::path GetPackagePath(const ParsedPanelSettings& settings)
 	{
 		return settings.scriptPath->parent_path();
 	}

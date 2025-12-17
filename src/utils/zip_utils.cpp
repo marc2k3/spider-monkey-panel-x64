@@ -137,9 +137,8 @@ namespace smp
 				mz_zip_archive_file_stat zFileStat;
 				zRet = mz_zip_reader_file_stat(&mzZip, i, &zFileStat);
 				CheckMZip(zRet, mzZip, "mz_zip_reader_file_stat");
-
-				assert(zFileStat.m_filename);
 				const fs::path curPath = dstFolder / smp::ToWide(std::string_view{ zFileStat.m_filename, strlen(zFileStat.m_filename) });
+
 				if (zFileStat.m_is_directory)
 				{
 					if (!fs::exists(curPath))

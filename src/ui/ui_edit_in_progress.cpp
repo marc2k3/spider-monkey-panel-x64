@@ -149,7 +149,6 @@ LRESULT CEditInProgress::OnCloseCmd(WORD, WORD wID, HWND)
 	}
 	else
 	{ // requested by user
-		assert(hEditorWnd_);
 		::SendMessage(hEditorWnd_, WM_CLOSE, 0, 0);
 	}
 

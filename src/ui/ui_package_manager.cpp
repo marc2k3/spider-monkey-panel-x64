@@ -71,7 +71,6 @@ LRESULT CDialogPackageManager::OnInitDialog(HWND, LPARAM)
 
 void CDialogPackageManager::OnDestroy()
 {
-	assert(pPackagesListBoxDrop_);
 	pPackagesListBoxDrop_->RevokeDragDrop();
 	pPackagesListBoxDrop_.Release();
 }
@@ -142,8 +141,6 @@ void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, C
 	{
 		return;
 	}
-
-	assert(focusedPackageIdx_ >= 0 && static_cast<size_t>(focusedPackageIdx_) < packages_.size());
 
 	const int iRet = popup_message_v3::get()->messageBox(
 		*this, "Are you sure you want to delete the package?", "Deleting package", MB_YESNO);
@@ -221,9 +218,6 @@ void CDialogPackageManager::OnImportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 
 void CDialogPackageManager::OnExportPackage(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
 {
-	assert(focusedPackageIdx_ >= 0 && static_cast<size_t>(focusedPackageIdx_) < packages_.size());
-	assert(packages_[focusedPackageIdx_].parsedSettings);
-
 	auto path_func = [this](fb2k::stringRef path)
 		{
 			const auto wpath = nativeW(path);
@@ -250,9 +244,6 @@ void CDialogPackageManager::OnExportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 
 void CDialogPackageManager::OnOpenFolder(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
 {
-	assert(focusedPackageIdx_ >= 0 && static_cast<size_t>(focusedPackageIdx_) < packages_.size());
-	assert(packages_[focusedPackageIdx_].parsedSettings);
-
 	try
 	{
 		ShellExecuteW(
@@ -510,16 +501,14 @@ void CDialogPackageManager::UpdatedUiPackageInfo()
 		newCharFormat.dwMask = CFM_UNDERLINE;
 		newCharFormat.dwEffects = CFM_UNDERLINE;
 
-		const auto appendText = [&](const wchar_t* field, const wchar_t* value) {
-			assert(field);
-			assert(value);
-
-			packageInfoEdit_.SetSelectionCharFormat(newCharFormat);
-			packageInfoEdit_.AppendText(field, FALSE);
-			packageInfoEdit_.SetSelectionCharFormat(savedCharFormat);
-			packageInfoEdit_.AppendText(L": ", FALSE);
-			packageInfoEdit_.AppendText(value, FALSE);
-		};
+		const auto appendText = [&](const wchar_t* field, const wchar_t* value)
+			{
+				packageInfoEdit_.SetSelectionCharFormat(newCharFormat);
+				packageInfoEdit_.AppendText(field, FALSE);
+				packageInfoEdit_.SetSelectionCharFormat(savedCharFormat);
+				packageInfoEdit_.AppendText(L": ", FALSE);
+				packageInfoEdit_.AppendText(value, FALSE);
+			};
 
 		appendText(L"Name", valueOrEmpty(parsedSettings.scriptName).c_str());
 		packageInfoEdit_.AppendText(L"\r\n", FALSE);
@@ -553,8 +542,6 @@ CDialogPackageManager::PackageData CDialogPackageManager::GeneratePackageData(co
 
 bool CDialogPackageManager::ImportPackage(const std::filesystem::path& path)
 {
-	assert(fs::exists(path));
-
 	try
 	{
 		const auto tmpPath = path::TempFolder_PackageUnpack();

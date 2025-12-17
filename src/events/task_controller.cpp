@@ -32,7 +32,6 @@ RunnableTask::RunnableTask(std::shared_ptr<Runnable> pRunnable, EventPriority pr
 
 void RunnableTask::Run()
 {
-	assert(pRunnable_);
 	pRunnable_->Run();
 }
 
@@ -49,8 +48,6 @@ std::shared_ptr<PanelTarget> TaskController::GetTarget()
 void TaskController::AddTask(std::shared_ptr<Task> pTask)
 {
 	std::scoped_lock sl(tasksMutex_);
-
-	assert(pTask);
 	const auto [it, wasInserted] = tasks_.emplace(pTask);
 	pTask->taskIterator_ = it;
 
@@ -74,7 +71,6 @@ void TaskController::AddTask(std::shared_ptr<Task> pTask)
 
 void TaskController::AddRunnable(std::shared_ptr<Runnable> pRunnable, EventPriority priority)
 {
-	assert(pRunnable);
 	AddTask(std::make_shared<RunnableTask>(pRunnable, priority));
 }
 
@@ -86,8 +82,6 @@ bool TaskController::HasTasks() const
 
 bool TaskController::ExecuteNextTask()
 {
-	assert(core_api::is_main_thread());
-
 	std::unique_lock ul(tasksMutex_);
 
 	if (tasks_.empty())

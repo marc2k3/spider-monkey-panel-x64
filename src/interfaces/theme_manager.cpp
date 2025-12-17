@@ -72,8 +72,6 @@ namespace mozjs
 		QwrException::ExpectTrue(gr, "gr argument is null");
 
 		Gdiplus::Graphics* graphics = gr->GetGraphicsObject();
-		assert(graphics);
-
 		HDC dc = graphics->GetHDC();
 		auto autoHdcReleaser = wil::scope_exit([graphics, dc]() { graphics->ReleaseHDC(dc); });
 

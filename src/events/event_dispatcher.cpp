@@ -17,8 +17,6 @@ EventDispatcher& EventDispatcher::Get() noexcept
 void EventDispatcher::AddWindow(HWND hWnd, std::shared_ptr<PanelTarget> pTarget) noexcept
 {
 	std::unique_lock ul(taskControllerMapMutex_);
-
-	assert(!taskControllerMap_.contains(hWnd));
 	taskControllerMap_.try_emplace(hWnd, std::make_shared<TaskController>(pTarget));
 	nextEventMsgStatusMap_.try_emplace(hWnd, true);
 }
@@ -26,8 +24,6 @@ void EventDispatcher::AddWindow(HWND hWnd, std::shared_ptr<PanelTarget> pTarget)
 void EventDispatcher::RemoveWindow(HWND hWnd) noexcept
 {
 	std::unique_lock ul(taskControllerMapMutex_);
-
-	assert(taskControllerMap_.contains(hWnd));
 	taskControllerMap_.erase(hWnd);
 	nextEventMsgStatusMap_.erase(hWnd);
 }
@@ -58,12 +54,11 @@ bool EventDispatcher::IsRequestEventMessage(UINT msg) noexcept
 
 bool EventDispatcher::ProcessNextEvent(HWND hWnd) noexcept
 {
-	auto pTaskController = [&] {
-		std::unique_lock ul(taskControllerMapMutex_);
-
-		assert(taskControllerMap_.contains(hWnd));
-		return taskControllerMap_.at(hWnd);
-	}();
+	auto pTaskController = [&]
+		{
+			std::unique_lock ul(taskControllerMapMutex_);
+			return taskControllerMap_.at(hWnd);
+		}();
 
 	if (!pTaskController)
 	{
@@ -95,7 +90,6 @@ void EventDispatcher::RequestNextEventImpl(HWND hWnd, TaskController& taskContro
 	const auto isWaitingForMsgIt = nextEventMsgStatusMap_.find(hWnd);
 	if (isWaitingForMsgIt == nextEventMsgStatusMap_.end())
 	{
-		assert(false);
 		return;
 	}
 
@@ -170,7 +164,6 @@ void EventDispatcher::PutEventToAll(std::unique_ptr<EventBase> pEvent, EventPrio
 		auto pClonedEvent = pEvent->Clone();
 		if (!pClonedEvent)
 		{
-			assert(false);
 			return;
 		}
 
@@ -195,7 +188,6 @@ void EventDispatcher::PutEventToOthers(HWND hWnd, std::unique_ptr<EventBase> pEv
 		auto pClonedEvent = pEvent->Clone();
 		if (!pClonedEvent)
 		{
-			assert(false);
 			return;
 		}
 
@@ -223,7 +215,6 @@ void EventDispatcher::NotifyOthers(HWND hWnd, std::unique_ptr<EventBase> pEvent)
 			auto pClonedEvent = pEvent->Clone();
 			if (!pClonedEvent)
 			{
-				assert(false);
 				return;
 			}
 

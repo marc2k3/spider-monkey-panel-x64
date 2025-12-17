@@ -89,7 +89,8 @@ config::PanelProperties DeserializePropertiesFromObject(const JSON& jsonMain)
 				throw QwrException("Corrupted serialized properties: empty key");
 			}
 
-			mozjs::SerializedJsValue serializedValue;
+			smp::config::SerializedJsValue serializedValue;
+
 			if (value.is_boolean())
 			{
 				serializedValue = value.get<bool>();
@@ -108,11 +109,10 @@ config::PanelProperties DeserializePropertiesFromObject(const JSON& jsonMain)
 			}
 			else
 			{
-				assert(0);
 				continue;
 			}
 
-			properties.values.emplace(smp::ToWide(key), std::make_shared<mozjs::SerializedJsValue>(serializedValue));
+			properties.values.emplace(smp::ToWide(key), std::make_shared<smp::config::SerializedJsValue>(serializedValue));
 		}
 
 		return properties;

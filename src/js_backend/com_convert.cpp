@@ -25,12 +25,10 @@ namespace
 			pNativeGlobal_ = static_cast<mozjs::JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &mozjs::JsGlobalObject::JsClass, nullptr));
 
 			auto& heapMgr = pNativeGlobal_->GetHeapManager();
-
 			heapMgr.RegisterUser(this);
 
 			funcId_ = heapMgr.Store(jsFunction);
 			globalId_ = heapMgr.Store(jsGlobal);
-
 			isJsAvailable_ = true;
 		}
 
@@ -81,7 +79,6 @@ namespace
 			auto& heapMgr = pNativeGlobal_->GetHeapManager();
 
 			JS::RootedObject jsGlobal(pJsCtx_, heapMgr.Get(globalId_).toObjectOrNull());
-			assert(jsGlobal);
 			JSAutoRealm ac(pJsCtx_, jsGlobal);
 
 			JS::RootedValue vFunc(pJsCtx_, heapMgr.Get(funcId_));
@@ -320,8 +317,6 @@ namespace mozjs::convert::com
 
 			std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(cx, FETCH(punkVal), true));
 			JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::move(x)));
-			assert(jsObject);
-
 			rval.setObjectOrNull(jsObject);
 			break;
 		}
@@ -335,8 +330,6 @@ namespace mozjs::convert::com
 
 			std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(cx, FETCH(pdispVal), true));
 			JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::move(x)));
-			assert(jsObject);
-
 			rval.setObjectOrNull(jsObject);
 			break;
 		}
@@ -361,8 +354,6 @@ namespace mozjs::convert::com
 				QwrException::ExpectTrue(type <= VT_CLSID || type == (VT_ARRAY | VT_UI1), "ActiveX: unsupported object type: {:#x}", type);
 
 				JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::make_unique<JsActiveXObject>(cx, var)));
-				assert(jsObject);
-
 				rval.setObjectOrNull(jsObject);
 			}
 		}

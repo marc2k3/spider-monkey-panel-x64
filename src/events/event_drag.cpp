@@ -18,10 +18,7 @@ namespace smp
 		pStorage_->pUnknown = pDataObject_;
 	}
 
-	Event_Drag::~Event_Drag()
-	{
-		assert(!pDataObject_ || core_api::is_main_thread());
-	}
+	Event_Drag::~Event_Drag() {}
 
 	Event_Drag* Event_Drag::AsDragEvent()
 	{

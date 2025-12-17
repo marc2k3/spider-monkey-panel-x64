@@ -199,7 +199,6 @@ void CConfigTabScriptSource::OnScriptSrcChange(UINT /*uNotifyCode*/, int nID, CW
 		}
 		default:
 		{
-			assert(false);
 			return std::nullopt;
 		}
 		}
@@ -239,7 +238,6 @@ void CConfigTabScriptSource::OnDdxValueChange(int nID)
 		return val->IsMatchingId(nID);
 	});
 
-	assert(ddx_.end() != it);
 	(*it)->WriteToUi();
 }
 
@@ -290,8 +288,6 @@ std::optional<std::filesystem::path> CConfigTabScriptSource::OnBrowseFileImpl()
 
 void CConfigTabScriptSource::OnOpenPackageManager(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
 {
-	assert(settings_.packageId);
-
 	const auto parsedSettingsOpt = OnOpenPackageManagerImpl(*settings_.packageId);
 	if (!parsedSettingsOpt)
 	{
@@ -392,7 +388,6 @@ void CConfigTabScriptSource::OnEditScriptWith(UINT uNotifyCode, int nID, CWindow
 	}
 	default:
 	{
-		assert(false);
 		break;
 	}
 	}
@@ -420,34 +415,32 @@ void CConfigTabScriptSource::InitializeLocalOptions()
 		? settings_.scriptName
 		: std::string{};
 
-	sampleIdx_ = [&] {
-		if (settings_.GetSourceType() != config::ScriptSourceType::Sample)
+	sampleIdx_ = [&]
 		{
-			return 0;
-		}
+			if (settings_.GetSourceType() != config::ScriptSourceType::Sample)
+			{
+				return 0;
+			}
 
-		assert(settings_.scriptPath);
+			const auto sampleName = fs::relative(*settings_.scriptPath, path::ScriptSamples()).wstring();
+			if (sampleName.empty())
+			{
+				return 0;
+			}
 
-		const auto sampleName = fs::relative(*settings_.scriptPath, path::ScriptSamples()).wstring();
-		if (sampleName.empty())
-		{
-			return 0;
-		}
+			const auto it = ranges::find_if(sampleData_, [&sampleName](const auto& elem) {
+				return (sampleName == elem.displayedName);
+			});
 
-		const auto it = ranges::find_if(sampleData_, [&sampleName](const auto& elem) {
-			return (sampleName == elem.displayedName);
-		});
+			if (it == sampleData_.cend())
+			{
+				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't find sample `{}`. Your settings will be reset.", smp::ToU8(sampleName)));
+				UpdateOnSrcChange(settings_, smp::config::ParsedPanelSettings::GetDefault());
+				return 0;
+			}
 
-		if (it == sampleData_.cend())
-		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't find sample `{}`. Your settings will be reset.", smp::ToU8(sampleName)));
-			UpdateOnSrcChange(settings_, smp::config::ParsedPanelSettings::GetDefault());
-			return 0;
-		}
-
-		assert(it != sampleData_.cend());
-		return static_cast<int>(ranges::distance(sampleData_.cbegin(), it));
-	}();
+			return static_cast<int>(ranges::distance(sampleData_.cbegin(), it));
+		}();
 
 	// Source is checked last, because it can be changed in the code above
 	InitializeSourceType();
@@ -455,22 +448,22 @@ void CConfigTabScriptSource::InitializeLocalOptions()
 
 void CConfigTabScriptSource::InitializeSourceType()
 {
-	sourceTypeId_ = [&] {
-		switch (settings_.GetSourceType())
+	sourceTypeId_ = [&]
 		{
-		case config::ScriptSourceType::Package:
-			return IDC_RADIO_SRC_PACKAGE;
-		case config::ScriptSourceType::Sample:
-			return IDC_RADIO_SRC_SAMPLE;
-		case config::ScriptSourceType::File:
-			return IDC_RADIO_SRC_FILE;
-		case config::ScriptSourceType::InMemory:
-			return IDC_RADIO_SRC_MEMORY;
-		default:
-			assert(false);
-			return IDC_RADIO_SRC_MEMORY;
-		}
-	}();
+			switch (settings_.GetSourceType())
+			{
+			case config::ScriptSourceType::Package:
+				return IDC_RADIO_SRC_PACKAGE;
+			case config::ScriptSourceType::Sample:
+				return IDC_RADIO_SRC_SAMPLE;
+			case config::ScriptSourceType::File:
+				return IDC_RADIO_SRC_FILE;
+			case config::ScriptSourceType::InMemory:
+				return IDC_RADIO_SRC_MEMORY;
+			default:
+				return IDC_RADIO_SRC_MEMORY;
+			}
+		}();
 }
 
 void CConfigTabScriptSource::DoFullDdxToUi()
@@ -534,7 +527,6 @@ void CConfigTabScriptSource::DoSourceTypeDdxToUi()
 	}
 	default:
 	{
-		assert(false);
 		break;
 	}
 	}
@@ -587,7 +579,6 @@ void CConfigTabScriptSource::DoButtonsDdxToUi()
 	}
 	default:
 	{
-		assert(false);
 		break;
 	}
 	}
@@ -607,7 +598,6 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 	// TODO: fix revert (or move the confirmation to parent window)
 	if (sourceTypeId_ == IDC_RADIO_SRC_MEMORY)
 	{
-		assert(settings_.script);
 		if (settings_.script == config::PanelSettings_InMemory::GetDefaultScript())
 		{
 			return true;
@@ -664,9 +654,6 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 
 bool CConfigTabScriptSource::RequestConfirmationOnPackageChange()
 {
-	assert(settings_.packageId);
-	assert(sourceTypeId_ == IDC_RADIO_SRC_PACKAGE);
-
 	const int iRet = popup_message_v3::get()->messageBox(
 		*this,
 		"!!! Changing package will reset all panel settings !!!\n\n"

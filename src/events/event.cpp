@@ -42,7 +42,6 @@ namespace smp
 
 	js_panel_window* PanelTarget::GetPanel()
 	{
-		assert(core_api::is_main_thread());
 		return pPanel_;
 	}
 

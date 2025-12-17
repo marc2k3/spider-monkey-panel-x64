@@ -242,7 +242,6 @@ namespace smp::ui
 		}
 		default:
 		{
-			assert(0);
 		}
 		}
 
@@ -456,7 +455,6 @@ namespace smp::ui
 		}
 
 		auto& pCurTab = tabs_[activeTabIdx_];
-		assert(pCurTab);
 		pcCurTab_ = &pCurTab->Dialog();
 		pCurTab->CreateTab(m_hWnd);
 

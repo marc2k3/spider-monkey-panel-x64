@@ -428,7 +428,6 @@ namespace smp::ui
 
 	STDMETHODIMP CDialogHtml::GetExternal(IDispatch** ppDispatch)
 	{
-		assert(ppDispatch);
 		if (!pDefaultUiHandler_)
 		{
 			return S_OK;
@@ -476,8 +475,6 @@ namespace smp::ui
 
 	void CDialogHtml::ParseOptions(JS::HandleValue options)
 	{
-		assert(pJsCtx_);
-
 		if (options.isNullOrUndefined())
 		{
 			return;

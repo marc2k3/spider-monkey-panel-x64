@@ -14,12 +14,11 @@ namespace smp::com
 		template <typename T>
 		static LRESULT ProcessMessage(HWND hDropWnd, WPARAM wParam, LPARAM lParam, T processor)
 		{
-			assert(hDropWnd == reinterpret_cast<HWND>(wParam));
-
 			auto pDataObj = reinterpret_cast<IDataObject*>(lParam);
-			const auto autoDrop = wil::scope_exit([pDataObj] {
-				pDataObj->Release();
-			});
+			const auto autoDrop = wil::scope_exit([pDataObj]
+				{
+					pDataObj->Release();
+				});
 
 			FORMATETC fmte = { CF_HDROP, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 			STGMEDIUM stgm;
@@ -27,9 +26,10 @@ namespace smp::com
 			{
 				return 0;
 			}
-			const auto autoStgm = wil::scope_exit([&stgm] {
-				ReleaseStgMedium(&stgm);
-			});
+			const auto autoStgm = wil::scope_exit([&stgm]
+				{
+					ReleaseStgMedium(&stgm);
+				});
 
 			const auto hDrop = reinterpret_cast<HDROP>(stgm.hGlobal);
 

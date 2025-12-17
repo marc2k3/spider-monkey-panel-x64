@@ -10,12 +10,13 @@ namespace smp::config
 		Default = NoEdge,
 	};
 
+	using SerializedJsValue = std::variant<bool, int32_t, double, std::string>;
+
 	struct PanelProperties
 	{
-		using PropertyMap = std::unordered_map<std::wstring, std::shared_ptr<mozjs::SerializedJsValue>>;
+		using PropertyMap = std::unordered_map<std::wstring, std::shared_ptr<SerializedJsValue>>;
 		PropertyMap values;
 
-	public:
 		/// @throw QwrException
 		[[nodiscard]] static PanelProperties FromJson(const std::string& jsonString);
 

@@ -58,7 +58,6 @@ namespace mozjs
 		std::scoped_lock sl(gcDataLock_);
 		if (size > curHeapSize_)
 		{
-			assert(0);
 			curHeapSize_ = 0;
 		}
 		else
@@ -66,11 +65,7 @@ namespace mozjs
 			curHeapSize_ -= size;
 		}
 
-		if (!curAllocCount_)
-		{
-			assert(0);
-		}
-		else
+		if (curAllocCount_)
 		{
 			--curAllocCount_;
 		}

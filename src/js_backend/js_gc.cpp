@@ -38,11 +38,7 @@ namespace mozjs
 
 	uint64_t JsGc::GetTotalHeapUsageForGlobal(JSContext*, JS::HandleObject jsGlobal)
 	{
-		assert(jsGlobal);
-
 		auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetNonCCWObjectRealm(jsGlobal)));
-		assert(pJsRealm);
-
 		return pJsRealm->GetCurrentHeapBytes();
 	}
 
@@ -289,7 +285,6 @@ namespace mozjs
 			PerformFullGc();
 			break;
 		default:
-			assert(0);
 			break;
 		}
 

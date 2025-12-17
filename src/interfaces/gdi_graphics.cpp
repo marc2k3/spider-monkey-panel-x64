@@ -427,8 +427,6 @@ namespace mozjs
 		QwrException::ExpectTrue(bitmap, "bitmap argument is null");
 
 		const auto srcDc = bitmap->GetHDC();
-		assert(srcDc);
-
 		const auto hDc = pGdi_->GetHDC();
 		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc]() { pGdi->ReleaseHDC(hDc); });
 
@@ -460,8 +458,6 @@ namespace mozjs
 		QwrException::ExpectTrue(bitmap, "bitmap argument is null");
 
 		HDC srcDc = bitmap->GetHDC();
-		assert(srcDc);
-
 		HDC hDc = pGdi_->GetHDC();
 		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc]() { pGdi->ReleaseHDC(hDc); });
 
@@ -557,8 +553,6 @@ namespace mozjs
 		QwrException::ExpectTrue(font, "font argument is null");
 
 		Gdiplus::Font* fn = font->GdiFont();
-		assert(fn);
-
 		Gdiplus::StringFormat fmt = Gdiplus::StringFormat::GenericTypographic();
 		if (flags != 0)
 		{

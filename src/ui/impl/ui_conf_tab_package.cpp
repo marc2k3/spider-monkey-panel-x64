@@ -342,7 +342,6 @@ void CConfigTabPackage::OnEditScriptWith(UINT uNotifyCode, int nID, CWindow wndC
 	}
 	default:
 	{
-		assert(false);
 		break;
 	}
 	}
@@ -497,8 +496,6 @@ void CConfigTabPackage::UpdateListBoxFromData()
 		SortFiles();
 
 		const auto it = ranges::find(files_, focusedFile_.native());
-		assert(it != files_.cend());
-
 		focusedFileIdx_ = static_cast<int>(ranges::distance(files_.cbegin(), it));
 
 		filesListBox_.ResetContent();

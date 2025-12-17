@@ -70,7 +70,6 @@ void Parse_Package(const config::PanelSettings_Package& settings, config::Parsed
 
 void Reparse_Package(config::ParsedPanelSettings& parsedSettings)
 {
-	assert(parsedSettings.packageId);
 	const auto packageId = *parsedSettings.packageId;
 
 	try
@@ -103,8 +102,6 @@ void Reparse_Package(config::ParsedPanelSettings& parsedSettings)
 config::PanelSettings_Package GetPayload_Package(const config::ParsedPanelSettings& parsedSettings)
 {
 	config::PanelSettings_Package payload;
-
-	assert(parsedSettings.packageId);
 	payload.id = *parsedSettings.packageId;
 	payload.author = parsedSettings.scriptAuthor;
 	payload.version = parsedSettings.scriptVersion;
@@ -116,32 +113,23 @@ config::PanelSettings_Package GetPayload_Package(const config::ParsedPanelSettin
 config::PanelSettings_Sample GetPayload_Sample(const config::ParsedPanelSettings& parsedSettings)
 {
 	config::PanelSettings_Sample payload;
-
-	assert(parsedSettings.scriptPath);
 	payload.sampleName = fs::relative(*parsedSettings.scriptPath, path::ScriptSamples()).u8string();
-
 	return payload;
 }
 
 config::PanelSettings_File GetPayload_File(const config::ParsedPanelSettings& parsedSettings)
 {
 	config::PanelSettings_File payload;
-
-	assert(parsedSettings.scriptPath);
 	payload.path = parsedSettings.scriptPath->u8string();
-
 	return payload;
 }
 
 config::PanelSettings_InMemory GetPayload_InMemory(const config::ParsedPanelSettings& parsedSettings)
 {
 	config::PanelSettings_InMemory payload;
-
-	assert(parsedSettings.script);
 	payload.script = *parsedSettings.script;
 	payload.enableDragDrop = parsedSettings.enableDragDrop;
 	payload.shouldGrabFocus = parsedSettings.shouldGrabFocus;
-
 	return payload;
 }
 
@@ -216,22 +204,22 @@ PanelSettings ParsedPanelSettings::GeneratePanelSettings() const
 	settings.id = panelId;
 	settings.edgeStyle = edgeStyle;
 	settings.isPseudoTransparent = isPseudoTransparent;
-	settings.payload = [&]() -> decltype(settings.payload) {
-		switch (GetSourceType())
+	settings.payload = [&]() -> decltype(settings.payload)
 		{
-		case ScriptSourceType::Package:
-			return GetPayload_Package(*this);
-		case ScriptSourceType::Sample:
-			return GetPayload_Sample(*this);
-		case ScriptSourceType::File:
-			return GetPayload_File(*this);
-		case ScriptSourceType::InMemory:
-			return GetPayload_InMemory(*this);
-		default:
-			assert(false);
-			return PanelSettings_InMemory{};
-		}
-	}();
+			switch (GetSourceType())
+			{
+			case ScriptSourceType::Package:
+				return GetPayload_Package(*this);
+			case ScriptSourceType::Sample:
+				return GetPayload_Sample(*this);
+			case ScriptSourceType::File:
+				return GetPayload_File(*this);
+			case ScriptSourceType::InMemory:
+				return GetPayload_InMemory(*this);
+			default:
+				return PanelSettings_InMemory{};
+			}
+		}();
 
 	return settings;
 }
@@ -252,7 +240,6 @@ ScriptSourceType ParsedPanelSettings::GetSourceType() const
 	}
 	else
 	{
-		assert(script);
 		return ScriptSourceType::InMemory;
 	}
 }
