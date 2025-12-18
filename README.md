@@ -16,7 +16,7 @@ Many included samples require the installation of [FontAwesome](https://github.c
 # Changelog
 
 ## 1.7.25.12.18
-- Update `Spider Monkey` engine to `102.12'.
+- Update `Spider Monkey` engine to `102.12`.
 
 ## 1.7.25.12.15
 - Fix crashing when using certain library iteration methods in WINE.
