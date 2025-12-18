@@ -36,7 +36,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);$(IncludePath);..\foobar2000-sdk;..\foobar2000-sdk\foobar2000;..\scintilla\lexilla\include;..\scintilla\scintilla\include;..\mozjs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp23</LanguageStandard>
-      <AdditionalOptions>/Zm200 /Zc:char8_t- /utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/Zm200 /Zc:char8_t- /utf-8 /Zc:preprocessor %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DisableSpecificWarnings>5105;26812;33005</DisableSpecificWarnings>
       <TreatWarningAsError>false</TreatWarningAsError>
@@ -45,7 +45,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>GdiPlus.lib;shlwapi.lib;WinMM.lib;Imm32.lib;uxtheme.lib;Windowscodecs.lib;CRYPT32.lib;Ws2_32.lib;iphlpapi.lib;secur32.lib;../foobar2000-sdk/foobar2000/shared/shared-$(Platform).lib;../mozjs/lib/mozjs-91.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>GdiPlus.lib;shlwapi.lib;WinMM.lib;Imm32.lib;uxtheme.lib;Windowscodecs.lib;CRYPT32.lib;Ws2_32.lib;iphlpapi.lib;secur32.lib;../foobar2000-sdk/foobar2000/shared/shared-$(Platform).lib;../mozjs/lib/mozjs-102.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <ResourceCompile>
@@ -76,8 +76,7 @@
 set mozjs_dir=$(SolutionDir)..\mozjs\bin\
 copy /Y "$(TargetPath)" "%component_path%"
 copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%"
-copy /Y "%mozjs_dir%mozjs-91.dll" "%component_path%"
-copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
+copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -179,10 +178,10 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClCompile Include="js_backend\js_error_helper.cpp" />
     <ClCompile Include="js_backend\js_gc.cpp" />
     <ClCompile Include="js_backend\js_image_helpers.cpp" />
-    <ClCompile Include="js_backend\js_internal_global.cpp" />
     <ClCompile Include="js_backend\js_monitor.cpp" />
     <ClCompile Include="js_backend\js_object_helper.cpp" />
     <ClCompile Include="js_backend\js_realm_inner.cpp" />
+    <ClCompile Include="js_backend\js_script_cache.cpp" />
     <ClCompile Include="js_backend\js_to_native.cpp" />
     <ClCompile Include="js_backend\native_to_js.cpp" />
     <ClCompile Include="js_backend\native_to_js_invoker.cpp" />
@@ -337,12 +336,12 @@ copy /Y "%mozjs_dir%nspr4.dll" "%component_path%"</Command>
     <ClInclude Include="js_backend\js_gc.h" />
     <ClInclude Include="js_backend\js_heap_helper.h" />
     <ClInclude Include="js_backend\js_image_helpers.h" />
-    <ClInclude Include="js_backend\js_internal_global.h" />
     <ClInclude Include="js_backend\js_monitor.h" />
     <ClInclude Include="js_backend\js_object_helper.h" />
     <ClInclude Include="js_backend\js_property_helper.h" />
     <ClInclude Include="js_backend\js_prototype_helpers.h" />
     <ClInclude Include="js_backend\js_realm_inner.h" />
+    <ClInclude Include="js_backend\js_script_cache.h" />
     <ClInclude Include="js_backend\js_to_native.h" />
     <ClInclude Include="js_backend\js_to_native_invoker.h" />
     <ClInclude Include="js_backend\native_to_js.h" />

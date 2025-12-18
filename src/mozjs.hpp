@@ -1,10 +1,14 @@
 #pragma once
+#define JS_CODEGEN_X64 1
+#define JS_STANDALONE 1
+#define XP_WIN 1
 
 __pragma(warning(push))
 __pragma(warning(disable : 4244 4251))
 #include <jsapi.h>
 #include <jsfriendapi.h>
 
+#include <js/experimental/JSStencil.h>
 #include <js/Array.h>
 #include <js/CompilationAndEvaluation.h>
 #include <js/Conversions.h>
@@ -23,6 +27,16 @@ namespace mozjs
 	class JsAsyncTask;
 	class JsContainer;
 	class JsGlobalObject;
+}
+
+namespace js::frontend
+{
+	struct CompilationStencil;
+};
+
+namespace JS
+{
+	using Stencil = js::frontend::CompilationStencil;
 }
 
 #include <js_backend/global_object.h>

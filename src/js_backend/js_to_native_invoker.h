@@ -22,7 +22,7 @@ namespace mozjs::internal
 		if (jsThis.isObject())
 		{
 			JS::RootedObject jsObject(cx, &jsThis.toObject());
-			return GetInnerInstancePrivate<BaseClass>(cx, jsObject);
+			return JsObjectBase<BaseClass>::ExtractNative(cx, jsObject);
 		}
 
 		if constexpr (std::is_same_v<BaseClass, JsGlobalObject>)
@@ -30,7 +30,7 @@ namespace mozjs::internal
 			if (jsThis.isUndefined())
 			{ // global has undefined `this`
 				JS::RootedObject jsObject(cx, JS::CurrentGlobalOrNull(cx));
-				return static_cast<BaseClass*>(JS_GetInstancePrivate(cx, jsObject, &BaseClass::JsClass, nullptr));
+				return JsGlobalObject::ExtractNative(cx, jsObject);
 			}
 		}
 

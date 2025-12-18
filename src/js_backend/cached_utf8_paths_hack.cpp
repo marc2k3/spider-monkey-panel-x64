@@ -33,8 +33,6 @@ namespace mozjs::hack
 		try
 		{
 			JS_ReportErrorUTF8(cx, "hacking around...");
-			assert(JS_IsExceptionPending(cx));
-
 			JS::ExceptionStack excn(cx);
 			(void)JS::StealPendingExceptionStack(cx, &excn);
 
@@ -45,7 +43,6 @@ namespace mozjs::hack
 			}
 
 			JSErrorReport* pReport = reportBuilder.report();
-			assert(pReport);
 
 			if (!pReport->filename || std::string(pReport->filename).empty())
 			{

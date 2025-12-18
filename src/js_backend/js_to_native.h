@@ -13,7 +13,7 @@ namespace mozjs::convert::to_native
 		template <typename T>
 		T ToSimpleValue(JSContext* cx, const JS::HandleObject& jsObject)
 		{
-			auto pNative = mozjs::GetInnerInstancePrivate<std::remove_pointer_t<T>>(cx, jsObject);
+			auto pNative = std::remove_pointer_t<T>::ExtractNative(cx, jsObject);
 			QwrException::ExpectTrue(pNative, "Object is not of valid type");
 
 			return pNative;

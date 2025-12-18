@@ -21,9 +21,7 @@ namespace
 		WrappedJs(JSContext* cx, JS::HandleFunction jsFunction) : pJsCtx_(cx)
 		{
 			JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-
-			pNativeGlobal_ = static_cast<mozjs::JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &mozjs::JsGlobalObject::JsClass, nullptr));
-
+			pNativeGlobal_ = JsGlobalObject::ExtractNative(cx, jsGlobal);
 			auto& heapMgr = pNativeGlobal_->GetHeapManager();
 			heapMgr.RegisterUser(this);
 
@@ -368,8 +366,8 @@ namespace mozjs::convert::com
 		if (rval.isObject())
 		{
 			JS::RootedObject j0(cx, &rval.toObject());
+			auto pNative = JsActiveXObject::ExtractNative(cx, j0);
 
-			auto pNative = GetInnerInstancePrivate<JsActiveXObject>(cx, j0);
 			if (pNative)
 			{
 				JsActiveXObject* x = pNative;

@@ -404,9 +404,6 @@
     <ClCompile Include="js_backend\js_image_helpers.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_internal_global.cpp">
-      <Filter>js_backend</Filter>
-    </ClCompile>
     <ClCompile Include="js_backend\js_monitor.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
@@ -442,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="utils\winapi_error_helpers.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_script_cache.cpp">
+      <Filter>js_backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -876,9 +876,6 @@
     <ClInclude Include="js_backend\js_image_helpers.h">
       <Filter>js_backend</Filter>
     </ClInclude>
-    <ClInclude Include="js_backend\js_internal_global.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
     <ClInclude Include="js_backend\js_monitor.h">
       <Filter>js_backend</Filter>
     </ClInclude>
@@ -944,6 +941,9 @@
     </ClInclude>
     <ClInclude Include="utils\winapi_error_helpers.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_script_cache.h">
+      <Filter>js_backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

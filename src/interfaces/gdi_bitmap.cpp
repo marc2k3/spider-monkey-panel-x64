@@ -239,8 +239,6 @@ namespace mozjs
 	{
 		constexpr uint32_t kMaxPixelCount = 220 * 220;
 		auto pBitmap = CreateDownsizedImage(*pGdi_, kMaxPixelCount);
-		assert(pBitmap);
-
 		const Gdiplus::Rect rect{ 0, 0, static_cast<int>(pBitmap->GetWidth()), static_cast<int>(pBitmap->GetHeight()) };
 		Gdiplus::BitmapData bmpdata{};
 
@@ -299,8 +297,6 @@ namespace mozjs
 		// rescaled image will have max of ~48k pixels
 		constexpr uint32_t kMaxPixelCount = 220 * 220;
 		auto pBitmap = CreateDownsizedImage(*pGdi_, kMaxPixelCount);
-		assert(pBitmap);
-
 		const Gdiplus::Rect rect{ 0, 0, static_cast<int>(pBitmap->GetWidth()), static_cast<int>(pBitmap->GetHeight()) };
 		Gdiplus::BitmapData bmpdata{};
 
@@ -390,7 +386,7 @@ namespace mozjs
 
 		JS::RootedObject jsObject(pJsCtx_, JsGdiGraphics::CreateJs(pJsCtx_));
 
-		auto* pNativeObject = GetInnerInstancePrivate<JsGdiGraphics>(pJsCtx_, jsObject);
+		auto* pNativeObject = JsGdiGraphics::ExtractNative(pJsCtx_, jsObject);
 		QwrException::ExpectTrue(pNativeObject, "Internal error: failed to get JsGdiGraphics object");
 
 		pNativeObject->SetGraphicsObject(g.release());

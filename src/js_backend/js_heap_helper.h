@@ -9,7 +9,7 @@ namespace mozjs
 		HeapHelper(JSContext* cx) : pJsCtx_(cx)
 		{
 			JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-			pNativeGlobal_ = static_cast<JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &JsGlobalObject::JsClass, nullptr));
+			pNativeGlobal_ = JsGlobalObject::ExtractNative(cx, jsGlobal);
 			pNativeGlobal_->GetHeapManager().RegisterUser(this);
 			isJsAvailable_ = true;
 		}

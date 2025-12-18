@@ -13,13 +13,9 @@ namespace
 
 	void RefreshValue(JSContext* cx, JS::HandleValue valToCheck)
 	{
-		auto pNative = GetInnerInstancePrivate<JsActiveXObject>(cx, valToCheck);
-		if (!pNative)
-		{
-			return;
-		}
+		auto pNative = JsActiveXObject::ExtractNative(cx, valToCheck);
 
-		if (pNative->pStorage_->pUnknown && !pNative->pStorage_->pDispatch)
+		if (pNative && pNative->pStorage_->pUnknown && !pNative->pStorage_->pDispatch)
 		{
 			HRESULT hresult = pNative->pStorage_->pUnknown->QueryInterface(IID_IDispatch, reinterpret_cast<void**>(&pNative->pStorage_->pDispatch));
 			if (FAILED(hresult))
@@ -52,20 +48,20 @@ namespace
 		{
 			const auto isString = id.isString();
 			const auto isInt = id.isInt();
-			const auto isEnumSymbol = [&] {
-				if (!id.isSymbol())
+			const auto isEnumSymbol = [&]
 				{
-					return false;
-				}
-				JS::RootedSymbol sym(cx, id.toSymbol());
-				return (JS::GetSymbolCode(sym) == JS::SymbolCode::iterator);
+					if (!id.isSymbol())
+					{
+						return false;
+					}
+					JS::RootedSymbol sym(cx, id.toSymbol());
+					return (JS::GetSymbolCode(sym) == JS::SymbolCode::iterator);
 				}();
 
 			if (isEnumSymbol)
 			{
 				JS::RootedObject target(cx, js::GetProxyTargetObject(proxy));
-				auto pNativeTarget = static_cast<JsActiveXObject*>(JS::GetPrivate(target));
-				assert(pNativeTarget);
+				auto pNativeTarget = JsActiveXObject::ExtractNativeUnchecked(target);
 
 				if (pNativeTarget->HasIterator())
 				{
@@ -77,15 +73,12 @@ namespace
 			else if (isString || isInt)
 			{
 				JS::RootedObject target(cx, js::GetProxyTargetObject(proxy));
-				auto pNativeTarget = static_cast<JsActiveXObject*>(JS::GetPrivate(target));
-				assert(pNativeTarget);
-
+				auto pNativeTarget = JsActiveXObject::ExtractNativeUnchecked(target);
 				std::wstring propName;
+
 				if (isString)
 				{
 					JS::RootedString jsString(cx, id.toString());
-					assert(jsString);
-
 					propName = convert::to_native::ToValue<std::wstring>(cx, jsString);
 				}
 				else if (isInt)
@@ -128,12 +121,9 @@ namespace
 			}
 
 			JS::RootedObject target(cx, js::GetProxyTargetObject(proxy));
-			auto pNativeTarget = static_cast<JsActiveXObject*>(JS::GetPrivate(target));
-			assert(pNativeTarget);
+			auto pNativeTarget = JsActiveXObject::ExtractNativeUnchecked(target);
 
 			JS::RootedString jsString(cx, id.toString());
-			assert(jsString);
-
 			const std::wstring propName = convert::to_native::ToValue<std::wstring>(cx, jsString);
 
 			if (pNativeTarget->IsSet(propName))
@@ -170,7 +160,7 @@ namespace
 	{
 		JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
-		auto pNative = GetInnerInstancePrivate<JsActiveXObject>(cx, args.thisv());
+		auto pNative = JsActiveXObject::ExtractNative(cx, args.thisv());
 		QwrException::ExpectTrue(pNative, "`this` is not an object of valid type");
 
 		JS::RootedString jsString(cx, JS_GetFunctionId(JS_ValueToFunction(cx, args.calleev())));
@@ -184,7 +174,7 @@ namespace
 	{
 		JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
-		auto pNative = GetInnerInstancePrivate<JsActiveXObject>(cx, args.thisv());
+		auto pNative = JsActiveXObject::ExtractNative(cx, args.thisv());
 		QwrException::ExpectTrue(pNative, "`this` is not an object of valid type");
 
 		pNative->Get(args);
@@ -195,7 +185,7 @@ namespace
 	{
 		JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
-		auto pNative = GetInnerInstancePrivate<JsActiveXObject>(cx, args.thisv());
+		auto pNative = JsActiveXObject::ExtractNative(cx, args.thisv());
 		QwrException::ExpectTrue(pNative, "`this` is not an object of valid type");
 
 		pNative->Set(args);
@@ -210,9 +200,9 @@ namespace
 	DEFINE_JS_CLASS_OPS(JsActiveXObject::FinalizeJsObject)
 
 	// not DEFINE_JS_CLASS, COM objects must be finalized in foreground
-	constexpr JSClass jsClass = {
+	JSClass jsClass = {
 		"ActiveXObject",
-		JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE,
+		JSCLASS_HAS_RESERVED_SLOTS(1) | JSCLASS_FOREGROUND_FINALIZE, // COM objects must be finalized in foreground
 		&jsOps
 	};
 
@@ -382,8 +372,7 @@ namespace mozjs
 
 	void JsActiveXObject::PostCreate(JSContext* cx, JS::HandleObject self)
 	{
-		auto pNative = static_cast<JsActiveXObject*>(JS_GetInstancePrivate(cx, self, &JsActiveXObject::JsClass, nullptr));
-		assert(pNative);
+		auto pNative = JsActiveXObject::ExtractNativeUnchecked(self);
 		return pNative->SetupMembers(self);
 	}
 
@@ -409,8 +398,6 @@ namespace mozjs
 
 		std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(cx, var));
 		JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::move(x)));
-		assert(jsObject);
-
 		return jsObject;
 	}
 

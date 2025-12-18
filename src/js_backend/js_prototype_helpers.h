@@ -3,6 +3,22 @@
 
 namespace mozjs
 {
+	inline void* GetMaybePtrFromReservedSlot(JSObject* obj, uint32_t slot)
+	{
+		JS::Value v = JS::GetReservedSlot(obj, slot);
+		return v.isUndefined() ? nullptr : v.toPrivate();
+	}
+
+	inline void* GetInstanceFromReservedSlot(JSContext* cx, JS::Handle<JSObject*> obj, const JSClass* cla, JS::CallArgs* args)
+	{
+		if (JS_InstanceOf(cx, obj, cla, args))
+		{
+			return GetMaybePtrFromReservedSlot(obj, 0u);
+		}
+
+		return nullptr;
+	}
+
 	/// @brief Create a prototype for the specified object
 	///        and store it in the current global object.
 	///        Created prototype is not accessible from JS.

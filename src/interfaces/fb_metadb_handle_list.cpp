@@ -116,10 +116,9 @@ namespace
 		if (id.isInt())
 		{
 			JS::RootedObject target(cx, js::GetProxyTargetObject(proxy));
-			auto pNativeTarget = static_cast<JsFbMetadbHandleList*>(JS::GetPrivate(target));
-			assert(pNativeTarget);
-
+			auto pNativeTarget = JsFbMetadbHandleList::ExtractNativeUnchecked(target);
 			const auto index = static_cast<uint32_t>(id.toInt());
+
 			try
 			{
 				vp.setObjectOrNull(pNativeTarget->get_Item(index));
@@ -141,9 +140,7 @@ namespace
 		if (id.isInt())
 		{
 			JS::RootedObject target(cx, js::GetProxyTargetObject(proxy));
-			auto pNativeTarget = static_cast<JsFbMetadbHandleList*>(JS::GetPrivate(target));
-			assert(pNativeTarget);
-
+			auto pNativeTarget = JsFbMetadbHandleList::ExtractNativeUnchecked(target);
 			const auto index = static_cast<uint32_t>(id.toInt());
 
 			if (!v.isObjectOrNull())
@@ -155,7 +152,7 @@ namespace
 			JS::RootedObject jsObject(cx, v.toObjectOrNull());
 			JsFbMetadbHandle* pNativeValue =
 				jsObject
-					? static_cast<JsFbMetadbHandle*>(JS_GetInstancePrivate(cx, jsObject, &JsFbMetadbHandle::JsClass, nullptr))
+					? static_cast<JsFbMetadbHandle*>(GetInstanceFromReservedSlot(cx, jsObject, &JsFbMetadbHandle::JsClass, nullptr))
 					: nullptr;
 
 			try
@@ -209,14 +206,14 @@ namespace mozjs
 			return JsFbMetadbHandleList::CreateJs(cx, metadb_handle_list());
 		}
 
-		if (auto pNativeHandle = GetInnerInstancePrivate<JsFbMetadbHandle>(cx, jsValue); pNativeHandle)
+		if (auto pNativeHandle = JsFbMetadbHandle::ExtractNative(cx, jsValue); pNativeHandle)
 		{
 			metadb_handle_list handleList;
 			handleList.add_item(pNativeHandle->GetHandle());
 			return JsFbMetadbHandleList::CreateJs(cx, handleList);
 		}
 
-		if (auto pNativeHandleList = GetInnerInstancePrivate<JsFbMetadbHandleList>(cx, jsValue); pNativeHandleList)
+		if (auto pNativeHandleList = JsFbMetadbHandleList::ExtractNative(cx, jsValue); pNativeHandleList)
 		{
 			return JsFbMetadbHandleList::CreateJs(cx, pNativeHandleList->GetHandleList());
 		}

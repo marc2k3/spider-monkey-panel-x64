@@ -64,10 +64,9 @@ namespace mozjs
 			return false;
 		}
 
-		pNativeGlobal_ = static_cast<JsGlobalObject*>(JS::GetPrivate(jsGlobal_));
-		pNativeGraphics_ = static_cast<JsGdiGraphics*>(JS::GetPrivate(jsGraphics_));
+		pNativeGlobal_ = static_cast<JsGlobalObject*>(GetMaybePtrFromReservedSlot(jsGlobal_, kReservedObjectSlot));
+		pNativeGraphics_ = JsGdiGraphics::ExtractNativeUnchecked(jsGraphics_);
 		jsStatus_ = JsStatus::Working;
-
 		return true;
 	}
 
@@ -330,8 +329,7 @@ namespace mozjs
 			return false;
 		}
 
-		pNativeDropAction_ = static_cast<JsDropSourceAction*>(JS::GetPrivate(jsDropAction_));
-
+		pNativeDropAction_ = JsDropSourceAction::ExtractNativeUnchecked(jsDropAction_);
 		return true;
 	}
 

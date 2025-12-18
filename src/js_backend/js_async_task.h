@@ -22,7 +22,7 @@ namespace mozjs
 		JsAsyncTaskImpl(JSContext* cx, Args... args) : pJsCtx_(cx)
 		{
 			JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-			pNativeGlobal_ = static_cast<mozjs::JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &mozjs::JsGlobalObject::JsClass, nullptr));
+			pNativeGlobal_ = JsGlobalObject::ExtractNative(cx, jsGlobal);
 			valueHeapIds_ = { pNativeGlobal_->GetHeapManager().Store(args)... };
 			pNativeGlobal_->GetHeapManager().RegisterUser(this);
 			isJsAvailable_ = true;

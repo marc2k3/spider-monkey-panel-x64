@@ -1,8 +1,8 @@
 #pragma once
 #include "heartbeat_window.h"
 #include "js_gc.h"
-#include "js_internal_global.h"
 #include "js_monitor.h"
+#include "js_script_cache.h"
 
 namespace mozjs
 {
@@ -28,7 +28,7 @@ namespace mozjs
 	public: // methods accessed by js objects
 		[[nodiscard]] JsGc& GetGcEngine() noexcept;
 		[[nodiscard]] const JsGc& GetGcEngine() const noexcept;
-		[[nodiscard]] JsInternalGlobal& GetInternalGlobal() noexcept;
+		[[nodiscard]] JsScriptCache& GetScriptCache() noexcept;
 
 	public: // methods accessed by other internals
 		void OnHeartbeat() noexcept;
@@ -76,6 +76,6 @@ namespace mozjs
 		bool areJobsInProgress_ = false;
 		uint32_t jobsStartTime_ = 0;
 
-		std::unique_ptr<JsInternalGlobal> internalGlobal_;
+		std::unique_ptr<JsScriptCache> pScriptCache_;
 	};
 }

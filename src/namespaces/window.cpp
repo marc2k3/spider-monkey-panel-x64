@@ -86,7 +86,6 @@ namespace
 		Window::FinalizeJsObject,
 		nullptr,
 		nullptr,
-		nullptr,
 		Window::Trace
 	};
 
@@ -231,10 +230,11 @@ namespace mozjs
 
 	void Window::Trace(JSTracer* trc, JSObject* obj)
 	{
-		auto x = static_cast<Window*>(JS::GetPrivate(obj));
-		if (x && x->m_properties)
+		auto pNative = JsObjectBase<Window>::ExtractNativeUnchecked(obj);
+
+		if (pNative && pNative->m_properties)
 		{
-			x->m_properties->Trace(trc);
+			pNative->m_properties->Trace(trc);
 		}
 	}
 
@@ -321,7 +321,7 @@ namespace mozjs
 		if (!m_tooltip.initialized())
 		{
 			m_tooltip.init(m_ctx, JsFbTooltip::CreateJs(m_ctx, m_parent.GetHWND()));
-			m_parent.m_native_tooltip = static_cast<JsFbTooltip*>(JS::GetPrivate(m_tooltip));
+			m_parent.m_native_tooltip = JsFbTooltip::ExtractNativeUnchecked(m_tooltip);
 		}
 
 		m_parent.m_native_tooltip->SetFont(name, pxSize, style);

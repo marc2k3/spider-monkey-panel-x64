@@ -13,7 +13,7 @@ namespace
 	// not DEFINE_JS_CLASS, selection_holder must be finalized in foreground
 	constexpr JSClass jsClass = {
 		"FbUiSelectionHolder",
-		JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE,
+		JSCLASS_HAS_RESERVED_SLOTS(1) | JSCLASS_FOREGROUND_FINALIZE,
 		&jsOps
 	};
 

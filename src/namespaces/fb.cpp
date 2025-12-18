@@ -745,8 +745,8 @@ namespace
 			JS::RootedObject jsObject(m_ctx, &handle.toObject());
 			metadb_handle_list handle_list;
 
-			auto* jsHandle = GetInnerInstancePrivate<JsFbMetadbHandle>(m_ctx, jsObject);
-			auto* jsHandleList = GetInnerInstancePrivate<JsFbMetadbHandleList>(m_ctx, jsObject);
+			auto* jsHandle = JsFbMetadbHandle::ExtractNative(m_ctx, jsObject);
+			auto* jsHandleList = JsFbMetadbHandleList::ExtractNative(m_ctx, jsObject);
 			QwrException::ExpectTrue(jsHandle || jsHandleList, "handle argument is invalid");
 
 			if (jsHandleList)

@@ -173,9 +173,9 @@ const JsGc& JsEngine::GetGcEngine() const noexcept
 	return jsGc_;
 }
 
-JsInternalGlobal& JsEngine::GetInternalGlobal() noexcept
+JsScriptCache& JsEngine::GetScriptCache() noexcept
 {
-	return *internalGlobal_;
+	return *pScriptCache_;
 }
 
 void JsEngine::OnHeartbeat() noexcept
@@ -238,9 +238,8 @@ bool JsEngine::Initialize() noexcept
 		}
 
 		jsGc_.Initialize(cx);
-
 		rejectedPromises_.init(cx, JS::GCVector<JSObject*, 0, js::SystemAllocPolicy>(js::SystemAllocPolicy()));
-		internalGlobal_ = JsInternalGlobal::Create(cx);
+		pScriptCache_ = std::make_unique<JsScriptCache>();
 
 		StartHeartbeatThread();
 		jsMonitor_.Start(cx);
@@ -271,7 +270,7 @@ void JsEngine::Finalize() noexcept
 		StopHeartbeatThread();
 		jsGc_.Finalize();
 
-		internalGlobal_.reset();
+		pScriptCache_.reset();
 		rejectedPromises_.reset();
 
 		JS_DestroyContext(pJsCtx_);

@@ -110,13 +110,13 @@ namespace
 		}
 	}
 
-	void JsFinalizeOpLocal(JSFreeOp* /*fop*/, JSObject* obj)
+	void JsFinalizeOpLocal(JS::GCContext* /*gcCtx*/, JSObject* obj)
 	{
-		auto x = static_cast<JsGlobalObject*>(JS::GetPrivate(obj));
+		auto x = static_cast<JsGlobalObject*>(GetMaybePtrFromReservedSlot(obj, kReservedObjectSlot));
 		if (x)
 		{
 			delete x;
-			JS::SetPrivate(obj, nullptr);
+			JS::SetReservedSlot(obj, kReservedObjectSlot, JS::UndefinedValue());
 
 			auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetNonCCWObjectRealm(obj)));
 			if (pJsRealm)
@@ -137,13 +137,12 @@ namespace
 		JsFinalizeOpLocal,
 		nullptr,
 		nullptr,
-		nullptr,
 		nullptr // set in runtime to JS_GlobalObjectTraceHook
 	};
 
 	constexpr JSClass jsClass = {
 		"Global",
-		JSCLASS_GLOBAL_FLAGS_WITH_SLOTS(static_cast<uint32_t>(JsPrototypeId::PrototypeCount)) | JSCLASS_HAS_PRIVATE | JSCLASS_FOREGROUND_FINALIZE,
+		JSCLASS_GLOBAL_FLAGS_WITH_SLOTS(std::to_underlying(JsPrototypeId::PrototypeCount)) | JSCLASS_FOREGROUND_FINALIZE,
 		&jsOps
 	};
 
@@ -224,11 +223,14 @@ namespace mozjs
 		auto pNative = std::unique_ptr<JsGlobalObject>(new JsGlobalObject(cx, parentContainer, pWindow));
 		pNative->heapManager_ = GlobalHeapManager::Create(cx);
 
-		JS::SetPrivate(jsObj, pNative.release());
-
+		JS::SetReservedSlot(jsObj, kReservedObjectSlot, JS::PrivateValue(pNative.release()));
 		JS_FireOnNewGlobalObject(cx, jsObj);
-
 		return jsObj;
+	}
+
+	JsGlobalObject* JsGlobalObject::ExtractNative(JSContext* cx, JS::HandleObject jsObject)
+	{
+		return static_cast<mozjs::JsGlobalObject*>(GetInstanceFromReservedSlot(cx, jsObject, &mozjs::JsGlobalObject::JsClass, nullptr));
 	}
 
 	void JsGlobalObject::Fail(const std::string& errorText)
@@ -243,15 +245,15 @@ namespace mozjs
 
 	void JsGlobalObject::PrepareForGc(JSContext* cx, JS::HandleObject self)
 	{
-		auto nativeGlobal = static_cast<JsGlobalObject*>(JS_GetInstancePrivate(cx, self, &JsGlobalObject::JsClass, nullptr));
+		auto pNativeGlobal = JsGlobalObject::ExtractNative(cx, self);
 
 		CleanupObjectProperty<Window>(cx, self, "window");
 		CleanupObjectProperty<Plman>(cx, self, "plman");
 
-		if (nativeGlobal->heapManager_)
+		if (pNativeGlobal->heapManager_)
 		{
-			nativeGlobal->heapManager_->PrepareForGc();
-			nativeGlobal->heapManager_.reset();
+			pNativeGlobal->heapManager_->PrepareForGc();
+			pNativeGlobal->heapManager_.reset();
 		}
 	}
 
@@ -300,10 +302,10 @@ namespace mozjs
 
 		includedFiles_.emplace(fsPath.native());
 
-		JS::RootedScript jsScript(pJsCtx_, JsEngine::GetInstance().GetInternalGlobal().GetCachedScript(fsPath));
+		JS::RootedScript jsScript(pJsCtx_, JsEngine::GetInstance().GetScriptCache().GetCachedScript(pJsCtx_, fsPath));
 		JS::RootedValue dummyRval(pJsCtx_);
 
-		if (!JS::CloneAndExecuteScript(pJsCtx_, jsScript, &dummyRval))
+		if (!JS_ExecuteScript(pJsCtx_, jsScript, &dummyRval))
 		{
 			throw JsException();
 		}
@@ -359,11 +361,11 @@ namespace mozjs
 
 	void JsGlobalObject::Trace(JSTracer* trc, JSObject* obj)
 	{
-		auto x = static_cast<JsGlobalObject*>(JS::GetPrivate(obj));
+		auto pNative = static_cast<JsGlobalObject*>(GetMaybePtrFromReservedSlot(obj, kReservedObjectSlot));
 
-		if (x && x->heapManager_)
+		if (pNative && pNative->heapManager_)
 		{
-			x->heapManager_->Trace(trc);
+			pNative->heapManager_->Trace(trc);
 		}
 	}
 }

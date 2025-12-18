@@ -151,7 +151,8 @@ namespace
 			return false;
 		}
 
-		if (!JS::CreateError(cx, static_cast<JSExnType>(pReport->exnType), excnStackObject, jsFilenameStr, pReport->lineno, pReport->column, nullptr, jsMessageStr, &newExcn))
+		JS::Rooted<mozilla::Maybe<JS::Value>> cause(cx, mozilla::Nothing{});
+		if (!JS::CreateError(cx, static_cast<JSExnType>(pReport->exnType), excnStackObject, jsFilenameStr, pReport->lineno, pReport->column, nullptr, jsMessageStr, cause, &newExcn))
 		{
 			return false;
 		}
@@ -186,19 +187,15 @@ namespace mozjs
 			JS::RootedObject global(cx, JS::CurrentGlobalOrNull(cx));
 			if (!global)
 			{
-				assert(0);
 				return;
 			}
 
-			auto globalCtx = static_cast<JsGlobalObject*>(JS::GetPrivate(global));
-			if (!globalCtx)
+			auto globalCtx = static_cast<JsGlobalObject*>(GetMaybePtrFromReservedSlot(global, kReservedObjectSlot));
+			if (globalCtx)
 			{
-				assert(0);
-				return;
+				globalCtx->Fail(errorText);
+				JS_ClearPendingException(cx);
 			}
-
-			globalCtx->Fail(errorText);
-			JS_ClearPendingException(cx);
 		}
 		catch (const std::exception&)
 		{
@@ -212,8 +209,6 @@ namespace mozjs
 
 	std::string JsErrorToText(JSContext* cx)
 	{
-		assert(JS_IsExceptionPending(cx));
-
 		JS::RootedValue excn(cx);
 		(void)JS_GetPendingException(cx, &excn);
 		JS_ClearPendingException(cx); ///< need this for js::ErrorReport::init
@@ -244,8 +239,6 @@ namespace mozjs
 			{ // Sometimes happens with custom JS errors
 				return errorText;
 			}
-
-			assert(!pReport->isWarning());
 
 			errorText = pReport->message().c_str();
 
@@ -317,7 +310,6 @@ namespace mozjs
 		}
 		catch (const JsException&)
 		{
-			assert(JS_IsExceptionPending(cx));
 		}
 		catch (const QwrException& e)
 		{

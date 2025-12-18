@@ -1,6 +1,7 @@
 #pragma once
-#include "js_realm_inner.h"
+#include "js_object_helper.h"
 #include "js_prototype_helpers.h"
+#include "js_realm_inner.h"
 
 namespace mozjs
 {
@@ -98,7 +99,6 @@ namespace mozjs
 		nullptr, \
 		nullptr, \
 		nullptr, \
-		nullptr \
 	}; \
 
 #define DEFINE_JS_CLASS(what) \
@@ -158,6 +158,8 @@ namespace mozjs
 	class JsObjectBase
 	{
 	public:
+		using Self = JsObjectBase<T>;
+
 		JsObjectBase() = default;
 		JsObjectBase(const JsObjectBase&) = delete;
 		JsObjectBase& operator=(const JsObjectBase&) = delete;
@@ -243,25 +245,75 @@ namespace mozjs
 			return CreateJsObject_Final(cx, jsProto, jsObject, std::move(nativeObject));
 		}
 
-		static void FinalizeJsObject(JSFreeOp* /*fop*/, JSObject* pSelf)
+		static void FinalizeJsObject(JS::GCContext* /*gcCtx*/, JSObject* pSelf)
 		{
-			auto pNative = static_cast<T*>(JS::GetPrivate(pSelf));
+			auto pNative = Self::ExtractNativeUnchecked(pSelf);
+
 			if (pNative)
 			{
 				auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetNonCCWObjectRealm(pSelf)));
 				if (pJsRealm)
 				{
-					pJsRealm->OnHeapDeallocate(pNative->nativeObjectSize_);
+					pJsRealm->OnHeapDeallocate(pNative->Self::nativeObjectSize_);
 				}
 
 				delete pNative;
-				JS::SetPrivate(pSelf, nullptr);
+				JS::SetReservedSlot(pSelf, kReservedObjectSlot, JS::UndefinedValue());
 			}
+		}
+
+		[[nodiscard]] static T* ExtractNative(JSContext* cx, JS::HandleObject jsObjectHandle)
+		{
+			JS::RootedObject jsObject(cx, jsObjectHandle);
+
+			if (js::IsWrapper(jsObject))
+			{
+				jsObject = js::UncheckedUnwrap(jsObject);
+			}
+
+			if (js::IsProxy(jsObject) && js::GetProxyHandler(jsObject)->family() == GetSmpProxyFamily())
+			{
+				jsObject = js::GetProxyTargetObject(jsObject);
+			}
+
+			if (auto pNative = ExtractNativeExact(cx, jsObject))
+			{
+				return pNative;
+			}
+
+			return nullptr;
+		}
+
+		[[nodiscard]] static T* ExtractNative(JSContext* cx, JS::HandleValue jsValue)
+		{
+			if (jsValue.isObject())
+			{
+				JS::RootedObject jsObject(cx, &jsValue.toObject());
+				return Self::ExtractNative(cx, jsObject);
+			}
+
+			return nullptr;
+		}
+
+		[[nodiscard]] static T* ExtractNativeUnchecked(JSObject* jsObject)
+		{
+			return Self::ExtractNativeFromVoid(GetMaybePtrFromReservedSlot(jsObject, kReservedObjectSlot));
 		}
 
 		uint32_t nativeObjectSize_{};
 
 	private:
+		[[nodiscard]] static T* ExtractNativeExact(JSContext* cx, JS::HandleObject jsObject)
+		{
+			auto pVoid = GetInstanceFromReservedSlot(cx, jsObject, &T::JsClass, nullptr);
+			return Self::ExtractNativeFromVoid(pVoid);
+		}
+
+		[[nodiscard]] static T* ExtractNativeFromVoid(void* pVoid)
+		{
+			return static_cast<T*>(pVoid);
+		}
+
 		template <typename U = T, std::enable_if_t<U::HasProto, int> = 0>
 		[[nodiscard]] static JSObject* GetProto(JSContext* cx)
 		{
@@ -315,7 +367,7 @@ namespace mozjs
 			auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(cx)));
 			pJsRealm->OnHeapAllocate(premadeNative->nativeObjectSize_);
 
-			JS::SetPrivate(jsBaseObject, premadeNative.release());
+			JS::SetReservedSlot(jsBaseObject, kReservedObjectSlot, JS::PrivateValue(premadeNative.release()));
 
 			if constexpr (T::HasPostCreate)
 			{

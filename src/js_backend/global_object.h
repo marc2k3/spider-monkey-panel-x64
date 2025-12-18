@@ -20,6 +20,7 @@ namespace mozjs
 		~JsGlobalObject() = default;
 
 		static JSObject* CreateNative(JSContext* cx, JsContainer& parentContainer);
+		static JsGlobalObject* ExtractNative(JSContext* cx, JS::HandleObject jsObject);
 
 	public:
 		void Fail(const std::string& errorText);
@@ -59,7 +60,7 @@ namespace mozjs
 			if (JS_GetProperty(cx, self, propName.data(), &jsPropertyValue) && jsPropertyValue.isObject())
 			{
 				JS::RootedObject jsProperty(cx, &jsPropertyValue.toObject());
-				return static_cast<T*>(JS_GetInstancePrivate(cx, jsProperty, &T::JsClass, nullptr));
+				return JsObjectBase<T>::ExtractNative(cx, jsProperty);
 			}
 
 			return nullptr;
@@ -89,7 +90,7 @@ namespace mozjs
 	static HWND GetPanelHwndForCurrentGlobal(JSContext* cx)
 	{
 		JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-		const auto pNativeGlobal = static_cast<JsGlobalObject*>(JS_GetInstancePrivate(cx, jsGlobal, &JsGlobalObject::JsClass, nullptr));
+		const auto pNativeGlobal = JsGlobalObject::ExtractNative(cx, jsGlobal);
 		return pNativeGlobal->GetPanelHwnd();
 	}
 }
