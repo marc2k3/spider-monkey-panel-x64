@@ -438,6 +438,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="resources\cfgBright.cfg" />
     <None Include="resources\cfgDarkGray.cfg" />
     <None Include="resources\cfgDefault.cfg" />

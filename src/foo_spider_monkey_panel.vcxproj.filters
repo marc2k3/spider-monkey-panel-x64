@@ -1011,6 +1011,7 @@
     <None Include="resources\cfgRubyBlue.cfg">
       <Filter>resources</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="com_utils\com_interface.idl">
