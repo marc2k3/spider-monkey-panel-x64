@@ -91,18 +91,6 @@ BEGIN
     CONTROL         "Edit script...",IDC_BUTTON_EDIT_SCRIPT,"Button",BS_SPLITBUTTON | WS_GROUP | WS_TABSTOP,332,189,71,14
 END
 
-IDD_DIALOG_CONF_TAB_APPEARANCE DIALOGEX 0, 0, 428, 247
-STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    GROUPBOX        "Edge style",IDC_STATIC,18,23,231,76,WS_GROUP
-    CONTROL         "No edge",IDC_RADIO_EDGE_NO,"Button",BS_AUTORADIOBUTTON | WS_TABSTOP,27,41,43,10
-    CONTROL         "Sunken edge",IDC_RADIO_EDGE_SUNKEN,"Button",BS_AUTORADIOBUTTON,27,59,57,10
-    CONTROL         "Grey edge",IDC_RADIO_EDGE_GREY,"Button",BS_AUTORADIOBUTTON,27,78,49,10
-    CONTROL         "Use pseudo-transparency",IDC_CHECK_PSEUDOTRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,21,105,99,10
-END
-
 IDD_DIALOG_CONF_TAB_PROPERTIES DIALOGEX 0, 0, 375, 258
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
@@ -212,42 +200,6 @@ BEGIN
     EDITTEXT                      IDC_EDIT_LINE_NUMBER, 7, 17, 192, 14, ES_NUMBER | ES_AUTOHSCROLL
     DEFPUSHBUTTON "&OK",          IDOK,                 95, 38, 50, 14
     PUSHBUTTON    "&Cancel",      IDCANCEL,             149, 38, 50, 14
-END
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MENU_CONF MENU
-BEGIN
-    POPUP "File"
-    BEGIN
-        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
-        MENUITEM SEPARATOR
-        MENUITEM "Import...",                   ID_FILE_IMPORT
-        MENUITEM "Export...",                   ID_FILE_EXPORT
-    END
-    POPUP "Edit"
-    BEGIN
-        MENUITEM "Reset to Default",            ID_EDIT_RESETTODEFAULT
-    END
-    POPUP "Panel Features"
-    BEGIN
-        POPUP "Edge Style"
-        BEGIN
-            MENUITEM "None",                        ID_EDGESTYLE_NONE
-            MENUITEM "Sunken",                      ID_EDGESTYLE_SUNKEN
-            MENUITEM "Grey",                        ID_EDGESTYLE_GREY
-        END
-        MENUITEM "Pseudo Transparent",          ID_PANELFEATURES_PSEUDOTRANSPARENT
-    END
-    POPUP "Help"
-    BEGIN
-        MENUITEM "View Help", ID_HELP
-        MENUITEM SEPARATOR
-        MENUITEM "About Spider Monkey Panel",   ID_APP_ABOUT
-    END
 END
 
 /////////////////////////////////////////////////////////////////////////////

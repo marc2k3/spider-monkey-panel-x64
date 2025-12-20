@@ -8,7 +8,6 @@
 #define IDR_SCINTILLA_JS_API               103
 #define IDD_DIALOG_CONF_TAB_PROPERTIES     109
 #define IDD_DIALOG_HTML                    111
-#define IDR_MENU_CONF                      115
 #define IDD_DIALOG_SLOWSCRIPT              116
 #define IDD_DIALOG_CONF                    119
 #define IDD_DIALOG_CONF_TAB_SCRIPT_SRC     120
@@ -31,7 +30,6 @@
 #define IDC_SLOWSCRIPT_STOP                1067
 #define IDC_SLOWSCRIPT_CHECK_DONTASK       1068
 #define IDC_SLOWSCRIPT_SCRIPT_NAME         1069
-#define IDD_DIALOG_CONF_TAB_APPEARANCE     1072
 #define IDC_TAB_CONF                       1073
 #define IDC_COMBO_SRC_SAMPLE               1074
 #define IDC_TEXTEDIT_SRC_PATH              1075
@@ -82,9 +80,6 @@
 #define ID_FILE_IMPORT                     40014
 #define ID_FILE_EXPORT                     40015
 #define ID_EDIT_RESETTODEFAULT             40016
-#define ID_EDGESTYLE_NONE                  40019
-#define ID_EDGESTYLE_SUNKEN                40020
-#define ID_EDGESTYLE_GREY                  40021
 #define ID_PANELFEATURES_PSEUDOTRANSPARENT 40022
 #define ID_PANELFEATURES_GRABFOCUS         40023
 #define IDAPPLY                            40024

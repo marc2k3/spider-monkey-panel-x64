@@ -144,7 +144,6 @@ namespace smp::config
 	{
 		ParsedPanelSettings parsedSettings;
 		parsedSettings.panelId = settings.id;
-		parsedSettings.edgeStyle = settings.edgeStyle;
 		parsedSettings.isPseudoTransparent = settings.isPseudoTransparent;
 
 		std::visit([&parsedSettings](const auto& data) {
@@ -199,7 +198,6 @@ namespace smp::config
 		config::PanelSettings settings;
 
 		settings.id = panelId;
-		settings.edgeStyle = edgeStyle;
 		settings.isPseudoTransparent = isPseudoTransparent;
 		settings.payload = [&]() -> decltype(settings.payload)
 			{

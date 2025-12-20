@@ -3,7 +3,6 @@
 
 #include <config/package_utils.h>
 #include <panel/js_panel_window.h>
-#include <ui/impl/ui_conf_tab_appearance.h>
 #include <ui/impl/ui_conf_tab_package.h>
 #include <ui/impl/ui_conf_tab_properties.h>
 #include <ui/impl/ui_conf_tab_script_source.h>
@@ -383,7 +382,6 @@ namespace smp::ui
 		{
 			tabs_.emplace_back(std::make_unique<CConfigTabPackage>(*this, localSettings_));
 		}
-		tabs_.emplace_back(std::make_unique<CConfigTabAppearance>(*this, localSettings_));
 		tabs_.emplace_back(std::make_unique<CConfigTabProperties>(*this, localProperties_));
 
 		SetActiveTabIdx(tabId);

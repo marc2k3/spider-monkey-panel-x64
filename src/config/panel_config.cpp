@@ -38,7 +38,6 @@ namespace smp::config
 
 		payload = PanelSettings_InMemory{};
 		isPseudoTransparent = false;
-		edgeStyle = EdgeStyle::NoEdge;
 		id = smp::ToU8(guidStr);
 	}
 

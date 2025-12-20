@@ -22,8 +22,6 @@ namespace smp::config
 		std::string scriptAuthor;
 		std::string scriptDescription;
 		bool isSample = false;
-
-		EdgeStyle edgeStyle = EdgeStyle::Default;
 		bool isPseudoTransparent = false;
 		bool shouldGrabFocus = true;
 		bool enableDragDrop = false;

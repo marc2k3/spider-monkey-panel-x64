@@ -2,14 +2,6 @@
 
 namespace smp::config
 {
-	enum class EdgeStyle : uint8_t
-	{
-		NoEdge = 0,
-		SunkenEdge,
-		GreyEdge,
-		Default = NoEdge,
-	};
-
 	using SerializedJsValue = std::variant<bool, int32_t, double, std::string>;
 
 	struct PanelProperties
@@ -67,7 +59,6 @@ namespace smp::config
 		void Save(stream_writer* writer, abort_callback& abort) const;
 
 		std::string id;
-		EdgeStyle edgeStyle;
 		bool isPseudoTransparent;
 		PanelProperties properties;
 

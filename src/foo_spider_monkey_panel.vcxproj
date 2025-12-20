@@ -208,7 +208,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="timeout\timer_manager_custom.cpp" />
     <ClCompile Include="timeout\timer_manager_native.cpp" />
     <ClCompile Include="timeout\timer_native.cpp" />
-    <ClCompile Include="ui\impl\ui_conf_tab_appearance.cpp" />
     <ClCompile Include="ui\impl\ui_conf_tab_package.cpp" />
     <ClCompile Include="ui\impl\ui_conf_tab_properties.cpp" />
     <ClCompile Include="ui\impl\ui_conf_tab_script_source.cpp" />
@@ -374,7 +373,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="timeout\timer_manager_native.h" />
     <ClInclude Include="timeout\timer_native.h" />
     <ClInclude Include="timeout\time_types.h" />
-    <ClInclude Include="ui\impl\ui_conf_tab_appearance.h" />
     <ClInclude Include="ui\impl\ui_conf_tab_package.h" />
     <ClInclude Include="ui\impl\ui_conf_tab_properties.h" />
     <ClInclude Include="ui\impl\ui_conf_tab_script_source.h" />

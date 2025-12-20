@@ -206,9 +206,7 @@ namespace smp::config::json
 			}
 
 			panelSettings.properties = DeserializePropertiesFromObject(jsonMain.at("properties"));
-			panelSettings.edgeStyle = static_cast<EdgeStyle>(jsonMain.value("edgeStyle", static_cast<uint8_t>(EdgeStyle::Default)));
 			panelSettings.isPseudoTransparent = jsonMain.value("isPseudoTransparent", false);
-
 			return panelSettings;
 		}
 		catch (const JSON::exception& e)
@@ -302,7 +300,6 @@ namespace smp::config::json
 			jsonMain.push_back({ "scriptType", static_cast<uint8_t>(scriptType) });
 			jsonMain.push_back({ "payload", jsonPayload });
 			jsonMain.push_back({ "properties", SerializePropertiesToObject(settings.properties) });
-			jsonMain.push_back({ "edgeStyle", static_cast<uint8_t>(settings.edgeStyle) });
 			jsonMain.push_back({ "isPseudoTransparent", settings.isPseudoTransparent });
 
 			writer->write_string(jsonMain.dump(2), abort);

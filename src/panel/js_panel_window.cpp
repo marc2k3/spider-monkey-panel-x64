@@ -20,23 +20,6 @@
 #include <utils/image_helpers.h>
 #include <utils/logging.h>
 
-namespace
-{
-	DWORD ConvertEdgeStyleToNativeFlags(smp::config::EdgeStyle edge_style)
-	{
-		switch (edge_style)
-		{
-		case smp::config::EdgeStyle::SunkenEdge:
-			return WS_EX_CLIENTEDGE;
-		case smp::config::EdgeStyle::GreyEdge:
-			return WS_EX_STATICEDGE;
-		default:
-			return 0;
-		}
-	}
-
-}
-
 namespace smp
 {
 	js_panel_window::js_panel_window(PanelType instanceType) : panelType_(instanceType) {}
@@ -1098,6 +1081,8 @@ namespace smp
 			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Open component folder");
 			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Open documentation");
 			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
+			menu.AppendMenuW(MF_STRING + (settings_.isPseudoTransparent ? MF_CHECKED : 0), ++curIdx, L"P&seudo transparent");
+			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
 
 			if (settings_.GetSourceType() == config::ScriptSourceType::Package)
 			{
@@ -1158,25 +1143,31 @@ namespace smp
 			}
 			case 2:
 			{
-				ShellExecute(nullptr, L"open", path::Component().c_str(), nullptr, nullptr, SW_SHOW);
+				ShellExecuteW(nullptr, L"open", path::Component().c_str(), nullptr, nullptr, SW_SHOW);
 				break;
 			}
 			case 3:
 			{
-				ShellExecute(nullptr, L"open", path::JsDocsIndex().c_str(), nullptr, nullptr, SW_SHOW);
+				ShellExecuteW(nullptr, L"open", path::JsDocsIndex().c_str(), nullptr, nullptr, SW_SHOW);
 				break;
 			}
 			case 4:
 			{
-				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptEdit), EventPriority::kControl);
+				settings_.isPseudoTransparent = !settings_.isPseudoTransparent;
+				ReloadScript();
 				break;
 			}
 			case 5:
 			{
-				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptShowProperties), EventPriority::kControl);
+				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptEdit), EventPriority::kControl);
 				break;
 			}
 			case 6:
+			{
+				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptShowProperties), EventPriority::kControl);
+				break;
+			}
+			case 7:
 			{
 				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptShowConfigure), EventPriority::kControl);
 				break;
@@ -1347,15 +1338,6 @@ namespace smp
 		}
 		DynamicMainMenuManager::Get().RegisterPanel(wnd_, settings_.panelId);
 
-		const auto extstyle = [&]() {
-			auto extstyle = wnd_.GetWindowLongPtrW(GWL_EXSTYLE);
-			extstyle &= ~WS_EX_CLIENTEDGE & ~WS_EX_STATICEDGE;
-			extstyle |= ConvertEdgeStyleToNativeFlags(settings_.edgeStyle);
-
-			return extstyle;
-		}();
-
-		wnd_.SetWindowLongPtrW(GWL_EXSTYLE, extstyle);
 		wnd_.SetWindowPos(nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
 		maxSize_ = { INT_MAX, INT_MAX };
