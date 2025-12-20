@@ -6,86 +6,84 @@
 #define IDR_DEFAULT_SCRIPT                 101
 #define IDR_SCINTILLA_INTERFACE_API        102
 #define IDR_SCINTILLA_JS_API               103
-#define IDD_DIALOG_CONF_PROPERTIES         109
+#define IDR_RECOVERY_PACKAGE_SCRIPT        104
+#define IDR_RECOVERY_PACKAGE_JSON          105
+
+#define IDD_DIALOG_CONF_PROPERTIES         110
 #define IDD_DIALOG_HTML                    111
-#define IDD_DIALOG_SLOWSCRIPT              116
-#define IDD_DIALOG_CONF                    119
-#define IDD_DIALOG_CONF_TAB_SCRIPT_SRC     120
-#define IDD_DIALOG_EDIT_IN_PROGRESS        121
-#define IDD_DIALOG_PACKAGE_MANAGER         126
-#define IDR_RECOVERY_PACKAGE_SCRIPT        129
-#define IDR_RECOVERY_PACKAGE_JSON          130
-#define IDC_EDIT_PANEL_NAME                1000
-#define IDC_DEL                            1010
-#define IDC_CLEARALL                       1011
-#define IDC_IMPORT                         1012
-#define IDC_EXPORT                         1013
-#define IDC_BUTTON_IMPORT                  1051
-#define IDC_BUTTON_EXPORT                  1052
-#define IDD_DIALOG_INPUT                   1062
-#define IDC_INPUT_PROMPT                   1063
-#define IDC_INPUT_VALUE                    1064
-#define IDC_IE                             1065
-#define IDC_SLOWSCRIPT_CONTINUE            1066
-#define IDC_SLOWSCRIPT_STOP                1067
-#define IDC_SLOWSCRIPT_CHECK_DONTASK       1068
-#define IDC_SLOWSCRIPT_SCRIPT_NAME         1069
-#define IDC_TAB_CONF                       1073
-#define IDC_COMBO_SRC_SAMPLE               1074
-#define IDC_TEXTEDIT_SRC_PATH              1075
-#define IDC_BUTTON_EDIT_SCRIPT             1076
-#define IDC_RADIO_SRC_SAMPLE               1077
-#define IDC_RADIO_SRC_FILE                 1078
-#define IDC_RADIO_SRC_MEMORY               1079
-#define IDC_RADIO_EDGE_NO                  1082
-#define IDC_RADIO_EDGE_SUNKEN              1083
-#define IDC_RADIO_EDGE_GREY                1084
-#define IDC_CHECK_PSEUDOTRANSPARENT        1085
-#define IDC_EDIT_IN_PROGRESS_FOCUS         1086
-#define IDC_LIST_PACKAGE_FILES             1087
-#define IDC_EDIT_PACKAGE_NAME              1088
-#define IDC_EDIT_PACKAGE_AUTHOR            1089
-#define IDC_EDIT_PACKAGE_VERSION           1090
-#define IDC_EDIT_PACKAGE_DESCRIPTION       1091
-#define IDC_BUTTON_ADD_FILE                1092
-#define IDC_BUTTON_REMOVE_FILE             1093
-#define IDC_BUTTON_OPEN_FOLDER             1094
-#define IDC_RADIO_SRC_PACKAGE              1095
-#define IDC_BUTTON_BROWSE                  1096
-#define IDC_BUTTON_OPEN_PKG_MGR            1097
-#define IDC_CHECK_SHOULD_GRAB_FOCUS        1100
-#define IDC_CHECK_ENABLE_DRAG_N_DROP       1101
-#define IDD_DIALOG_CONF_TAB_PACKAGE        1102
-#define IDC_BUTTON_RENAME_FILE             1105
-#define IDC_TEXTEDIT_SRC_PACKAGE           1106
-#define IDC_LIST_PACKAGES                  1108
-#define IDC_BUTTON_NEW_PACKAGE             1109
-#define IDC_BUTTON_DELETE_PACKAGE          1110
-#define IDC_BUTTON_EXPORT_PACKAGE          1111
-#define IDC_BUTTON_IMPORT_PACKAGE          1112
-#define IDC_PACKAGE_INFO                   1113
-#define IDC_BUTTON_EDIT_PANEL_NAME         1114
-#define IDC_BUTTON_NEW_SCRIPT              1115
-#define IDC_BUTTON_COMMIT_PANEL_NAME       1118
-#define IDC_BUTTON_RESET                   1119
-#define IDC_STATIC_LINE                    1120
-#define IDC_GROUP_SCRIPT_SRC               1121
-#define IDC_GROUP_PKG_FILES                1122
-#define IDC_GROUP_PKG_INFO                 1123
-#define IDC_GROUP_PANEL_BEHAVIOUR          1124
-#define IDC_LTEXT_NAME                     1125
-#define IDC_LTEXT_VERSION                  1126
-#define IDC_LTEXT_AUTHOR                   1127
-#define IDC_LTEXT_DESCRIPTION              1128
-#define ID_FILE_IMPORT                     40014
-#define ID_FILE_EXPORT                     40015
-#define ID_EDIT_RESETTODEFAULT             40016
-#define ID_PANELFEATURES_PSEUDOTRANSPARENT 40022
-#define ID_PANELFEATURES_GRABFOCUS         40023
-#define IDAPPLY                            40024
-#define ID_EDIT_WITH_INTERNAL              40028
-#define ID_EDIT_WITH_EXTERNAL              40029
-#define ID_OPTIONS_PROPERTIES              40030
+#define IDD_DIALOG_SLOWSCRIPT              112
+#define IDD_DIALOG_CONF                    113
+#define IDD_DIALOG_CONF_TAB_SCRIPT_SRC     114
+#define IDD_DIALOG_EDIT_IN_PROGRESS        115
+#define IDD_DIALOG_PACKAGE_MANAGER         116
+#define IDD_DIALOG_INPUT                   117
+#define IDD_DIALOG_CONF_TAB_PACKAGE        118
+
+#define IDC_BUTTON_EDIT_SCRIPT             210
+#define IDC_BUTTON_ADD_FILE                211
+#define IDC_BUTTON_REMOVE_FILE             212
+#define IDC_BUTTON_OPEN_FOLDER             213
+#define IDC_BUTTON_BROWSE                  214
+#define IDC_BUTTON_OPEN_PKG_MGR            215
+#define IDC_BUTTON_RENAME_FILE             216
+#define IDC_BUTTON_EDIT_PANEL_NAME         217
+#define IDC_BUTTON_NEW_SCRIPT              218
+#define IDC_BUTTON_COMMIT_PANEL_NAME       219
+#define IDC_BUTTON_NEW_PACKAGE             220
+#define IDC_BUTTON_DELETE_PACKAGE          221
+#define IDC_BUTTON_EXPORT_PACKAGE          222
+#define IDC_BUTTON_IMPORT_PACKAGE          223
+
+#define IDC_CHECK_SHOULD_GRAB_FOCUS        230
+#define IDC_CHECK_ENABLE_DRAG_N_DROP       231
+
+#define IDC_COMBO_SRC_SAMPLE               240
+
+#define IDC_EDIT_PANEL_NAME                250
+#define IDC_EDIT_PACKAGE_NAME              251
+#define IDC_EDIT_PACKAGE_AUTHOR            252
+#define IDC_EDIT_PACKAGE_VERSION           253
+#define IDC_EDIT_PACKAGE_DESCRIPTION       254
+#define IDC_EDIT_IN_PROGRESS_FOCUS         255
+
+#define IDC_GROUP_SCRIPT_SRC               260
+#define IDC_GROUP_PKG_FILES                261
+#define IDC_GROUP_PKG_INFO                 262
+#define IDC_GROUP_PANEL_BEHAVIOUR          263
+
+#define IDC_IE                             270
+
+#define IDC_INPUT_PROMPT                   280
+#define IDC_INPUT_VALUE                    281
+
+#define IDC_LIST_PACKAGE_FILES             290
+#define IDC_LIST_PACKAGES                  291
+
+#define IDC_LTEXT_NAME                     300
+#define IDC_LTEXT_VERSION                  301
+#define IDC_LTEXT_AUTHOR                   302
+#define IDC_LTEXT_DESCRIPTION              303
+
+#define IDC_PACKAGE_INFO                   310
+
+#define IDC_RADIO_SRC_SAMPLE               320
+#define IDC_RADIO_SRC_FILE                 321
+#define IDC_RADIO_SRC_MEMORY               322
+#define IDC_RADIO_SRC_PACKAGE              323
+
+#define IDC_SLOWSCRIPT_CONTINUE            340
+#define IDC_SLOWSCRIPT_STOP                341
+#define IDC_SLOWSCRIPT_CHECK_DONTASK       342
+#define IDC_SLOWSCRIPT_SCRIPT_NAME         343
+
+#define IDC_TAB_CONF                       350
+
+#define IDC_TEXTEDIT_SRC_PATH              360
+#define IDC_TEXTEDIT_SRC_PACKAGE           361
+
+#define IDAPPLY                            370
+#define ID_EDIT_WITH_INTERNAL              371
+#define ID_EDIT_WITH_EXTERNAL              372
 
 // 2K3
 #define IDR_TYPELIB                      1
@@ -100,7 +98,6 @@
 #define IDD_DIALOG_GOTO                  2112
 #define IDD_DIALOG_PROPERTIES            2113
 #define IDD_DIALOG_PLAYLIST_LOCK         2114
-#define IDD_DIALOG_INPUTBOX              2115
 #define IDD_DIALOG_STYLE                 2116
 #define IDD_DIALOG_TEXTBOX               2117
 
@@ -121,6 +118,7 @@
 #define IDC_BTN_SAMPLES                  2140
 #define IDC_BTN_STYLE                    2141
 #define IDC_BTN_HELP                     2142
+#define IDC_BTN_DEL                      2143
 
 #define IDC_CHECK_MATCHCASE              2150
 #define IDC_CHECK_WHOLEWORD              2151

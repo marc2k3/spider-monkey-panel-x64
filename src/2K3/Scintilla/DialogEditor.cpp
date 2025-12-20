@@ -15,9 +15,9 @@ namespace
 	};
 
 	static const CRect resize_min_max(620, 400, 0, 0);
-
-	cfgDialogPosition dialog_position(smp::guid::dialog_position);
 }
+
+cfgDialogPosition dialog_position(smp::guid::dialog_position);
 
 CDialogEditor::CDialogEditor(std::wstring title, std::string& text, SaveCallback callback)
 	: m_title(title)

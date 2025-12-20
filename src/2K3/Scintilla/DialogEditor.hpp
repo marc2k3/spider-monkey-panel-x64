@@ -39,3 +39,5 @@ private:
 	std::wstring m_title;
 	std::string& m_text;
 };
+
+extern cfgDialogPosition dialog_position;
