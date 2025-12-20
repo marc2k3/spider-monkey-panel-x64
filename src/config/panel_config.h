@@ -29,11 +29,11 @@ namespace smp::config
 
 	struct PanelSettings_InMemory
 	{
+		[[nodiscard]] static std::string GetDefaultScript();
+
 		std::string script = GetDefaultScript();
 		bool shouldGrabFocus = true;
 		bool enableDragDrop = false;
-
-		[[nodiscard]] static std::string GetDefaultScript();
 	};
 
 	struct PanelSettings_File
@@ -56,15 +56,6 @@ namespace smp::config
 
 	struct PanelSettings
 	{
-		std::string id;
-		EdgeStyle edgeStyle;
-		bool isPseudoTransparent;
-		PanelProperties properties;
-
-		using ScriptVariant = std::variant<PanelSettings_InMemory, PanelSettings_File, PanelSettings_Sample, PanelSettings_Package>;
-		ScriptVariant payload;
-
-	public:
 		PanelSettings();
 
 		void ResetToDefault();
@@ -74,6 +65,14 @@ namespace smp::config
 
 		/// @throw QwrException
 		void Save(stream_writer* writer, abort_callback& abort) const;
+
+		std::string id;
+		EdgeStyle edgeStyle;
+		bool isPseudoTransparent;
+		PanelProperties properties;
+
+		using ScriptVariant = std::variant<PanelSettings_InMemory, PanelSettings_File, PanelSettings_Sample, PanelSettings_Package>;
+		ScriptVariant payload;
 	};
 }
 

@@ -34,13 +34,12 @@ namespace smp::config
 
 	void PanelSettings::ResetToDefault()
 	{
+		const auto guidStr = GuidToStr(GenerateGuid());
+
 		payload = PanelSettings_InMemory{};
 		isPseudoTransparent = false;
 		edgeStyle = EdgeStyle::NoEdge;
-		id = [] {
-			const auto guidStr = GuidToStr(GenerateGuid());
-			return smp::ToU8(guidStr);
-		}();
+		id = smp::ToU8(guidStr);
 	}
 
 	PanelSettings PanelSettings::Load(stream_reader* reader, size_t size, abort_callback& abort)

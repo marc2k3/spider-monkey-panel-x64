@@ -31,7 +31,6 @@ namespace smp::config
 	/// @throw QwrException
 	[[nodiscard]] std::filesystem::path GetPackageStorageDir(const ParsedPanelSettings& settings);
 
-
 	[[nodiscard]] std::filesystem::path GetPackagePath(const ParsedPanelSettings& settings);
 	[[nodiscard]] WStrings GetPackageFiles(const ParsedPanelSettings& settings);
 	[[nodiscard]] WStrings GetPackageScriptFiles(const ParsedPanelSettings& settings);
