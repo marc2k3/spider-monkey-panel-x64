@@ -76,6 +76,7 @@ namespace smp::ui
 		bool ConfirmRebootOnPackageInUse();
 
 	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
 		std::string focusedPackageId_;
 		int focusedPackageIdx_ = -1;
 		std::array<std::unique_ptr<smp::IUiDdx>, 1> ddx_;

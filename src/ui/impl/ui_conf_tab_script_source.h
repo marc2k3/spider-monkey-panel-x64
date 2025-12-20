@@ -98,6 +98,7 @@ namespace smp::ui
 		bool RequestConfirmationOnPackageChange();
 
 	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
 		bool suppressUiDdx_ = true;
 
 		CDialogConf& parent_;

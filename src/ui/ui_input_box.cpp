@@ -8,8 +8,7 @@ namespace smp::ui
 	CInputBox::CInputBox(std::string_view prompt, std::string_view caption, std::string_view value)
 		: prompt_(prompt)
 		, caption_(caption)
-		, value_(value) {
-	}
+		, value_(value) {}
 
 	LRESULT CInputBox::OnInitDialog(HWND /*hwndFocus*/, LPARAM /*lParam*/)
 	{

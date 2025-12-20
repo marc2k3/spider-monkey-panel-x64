@@ -107,6 +107,7 @@ namespace smp::ui
 		void AddFile(const std::filesystem::path& path);
 
 	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
 		bool suppressDdxFromUi_ = true;
 
 		CDialogConf& parent_;

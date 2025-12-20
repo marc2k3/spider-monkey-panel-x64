@@ -6,7 +6,7 @@
 #define IDR_DEFAULT_SCRIPT                 101
 #define IDR_SCINTILLA_INTERFACE_API        102
 #define IDR_SCINTILLA_JS_API               103
-#define IDD_DIALOG_CONF_TAB_PROPERTIES     109
+#define IDD_DIALOG_CONF_PROPERTIES         109
 #define IDD_DIALOG_HTML                    111
 #define IDD_DIALOG_SLOWSCRIPT              116
 #define IDD_DIALOG_CONF                    119

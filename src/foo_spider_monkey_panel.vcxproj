@@ -209,9 +209,9 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="timeout\timer_manager_native.cpp" />
     <ClCompile Include="timeout\timer_native.cpp" />
     <ClCompile Include="ui\impl\ui_conf_tab_package.cpp" />
-    <ClCompile Include="ui\impl\ui_conf_tab_properties.cpp" />
     <ClCompile Include="ui\impl\ui_conf_tab_script_source.cpp" />
     <ClCompile Include="ui\ui_conf.cpp" />
+    <ClCompile Include="ui\ui_conf_properties.cpp" />
     <ClCompile Include="ui\ui_edit_in_progress.cpp" />
     <ClCompile Include="ui\ui_html.cpp">
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -374,10 +374,10 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="timeout\timer_native.h" />
     <ClInclude Include="timeout\time_types.h" />
     <ClInclude Include="ui\impl\ui_conf_tab_package.h" />
-    <ClInclude Include="ui\impl\ui_conf_tab_properties.h" />
     <ClInclude Include="ui\impl\ui_conf_tab_script_source.h" />
     <ClInclude Include="ui\impl\ui_itab.h" />
     <ClInclude Include="ui\ui_conf.h" />
+    <ClInclude Include="ui\ui_conf_properties.h" />
     <ClInclude Include="ui\ui_edit_in_progress.h" />
     <ClInclude Include="ui\ui_html.h" />
     <ClInclude Include="ui\ui_input_box.h" />

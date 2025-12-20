@@ -4,7 +4,6 @@
 #include <config/package_utils.h>
 #include <panel/js_panel_window.h>
 #include <ui/impl/ui_conf_tab_package.h>
-#include <ui/impl/ui_conf_tab_properties.h>
 #include <ui/impl/ui_conf_tab_script_source.h>
 #include <utils/guid_helpers.h>
 
@@ -150,6 +149,7 @@ namespace smp::ui
 		DoFullDdxToUi();
 
 		suppressDdxFromUi_ = false;
+		m_hooks.AddDialogWithControls(m_hWnd);
 
 		return TRUE; // set focus to default control
 	}
@@ -376,13 +376,12 @@ namespace smp::ui
 	void CDialogConf::InitializeTabData(smp::ui::CDialogConf::Tab tabId)
 	{
 		tabs_.clear();
-
 		tabs_.emplace_back(std::make_unique<CConfigTabScriptSource>(*this, localSettings_));
+
 		if (localSettings_.GetSourceType() == config::ScriptSourceType::Package)
 		{
 			tabs_.emplace_back(std::make_unique<CConfigTabPackage>(*this, localSettings_));
 		}
-		tabs_.emplace_back(std::make_unique<CConfigTabProperties>(*this, localProperties_));
 
 		SetActiveTabIdx(tabId);
 	}

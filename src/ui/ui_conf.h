@@ -103,6 +103,7 @@ namespace smp::ui
 		void SetActiveTabIdx(CDialogConf::Tab tabId);
 
 	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
 		bool suppressDdxFromUi_ = true;
 
 		js_panel_window* pParent_ = nullptr;

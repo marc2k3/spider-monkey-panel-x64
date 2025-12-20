@@ -84,9 +84,6 @@
     <ClCompile Include="fb2k\selection_holder_helper.cpp">
       <Filter>fb2k</Filter>
     </ClCompile>
-    <ClCompile Include="ui\impl\ui_conf_tab_properties.cpp">
-      <Filter>ui\impl</Filter>
-    </ClCompile>
     <ClCompile Include="ui\impl\ui_conf_tab_script_source.cpp">
       <Filter>ui\impl</Filter>
     </ClCompile>
@@ -440,6 +437,9 @@
     <ClCompile Include="js_backend\js_script_cache.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
+    <ClCompile Include="ui\ui_conf_properties.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\kmeans.h">
@@ -534,9 +534,6 @@
     </ClInclude>
     <ClInclude Include="resources\resource.h">
       <Filter>resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\impl\ui_conf_tab_properties.h">
-      <Filter>ui\impl</Filter>
     </ClInclude>
     <ClInclude Include="ui\impl\ui_conf_tab_script_source.h">
       <Filter>ui\impl</Filter>
@@ -938,6 +935,9 @@
     </ClInclude>
     <ClInclude Include="js_backend\js_script_cache.h">
       <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\ui_conf_properties.h">
+      <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

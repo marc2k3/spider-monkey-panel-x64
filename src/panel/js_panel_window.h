@@ -84,6 +84,7 @@ namespace smp
 
 		void EditScript();
 		void ShowConfigure(HWND parent, ui::CDialogConf::Tab tab = ui::CDialogConf::Tab::def);
+		void ShowProperties(HWND parent);
 
 		void GenerateContextMenu(HMENU hMenu, int x, int y, size_t id_base);
 		void ExecuteContextMenu(size_t id, size_t id_base);

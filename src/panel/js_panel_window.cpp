@@ -16,6 +16,7 @@
 #include <panel/modal_blocking_scope.h>
 #include <timeout/timeout_manager.h>
 #include <ui/ui_conf.h>
+#include <ui/ui_conf_properties.h>
 #include <utils/gdi_helpers.h>
 #include <utils/image_helpers.h>
 #include <utils/logging.h>
@@ -257,7 +258,7 @@ namespace smp
 		}
 		case EventId::kScriptShowProperties:
 		{
-			ShowConfigure(wnd_, ui::CDialogConf::Tab::properties);
+			ShowProperties(wnd_);
 			break;
 		}
 		case EventId::kWndPaint:
@@ -1063,6 +1064,19 @@ namespace smp
 		modal::ModalBlockingScope scope(parent, true);
 
 		ui::CDialogConf dlg(this, tab);
+		dlg.DoModal(parent);
+	}
+
+	void js_panel_window::ShowProperties(HWND parent)
+	{
+		if (!modal_dialog_scope::can_create())
+		{
+			return;
+		}
+
+		modal::ModalBlockingScope scope(parent, true);
+
+		auto dlg = ui::CConfigProperties(*this, properties_);
 		dlg.DoModal(parent);
 	}
 
