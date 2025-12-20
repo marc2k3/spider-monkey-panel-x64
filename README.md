@@ -15,6 +15,13 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.20
+- The main configure dialog now supports dark mode.
+- For the above change to work, the properties tab has been removed and the properties are now a separate dialog. This dialog does not support dark mode.
+- The appearance tab has been removed and you can no longer set an edge style.
+- Pseudo transparency can be toggled directly from the default context menu.
+- Maybe fix crash for WINE users when deleting properties.
+
 ## 1.7.25.12.18
 - Update `Spider Monkey` engine to `102.12`.
 
