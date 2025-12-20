@@ -383,7 +383,8 @@ public:
 			// Find property...
 			IProperty* prop = reinterpret_cast<IProperty*>(TBase::GetItemData(m_iInplaceIndex));
 			ATLASSERT(prop);
-			BYTE bKind = prop->GetKind();
+			BYTE bKind{};
+			if (prop) bKind = prop->GetKind();
 			// Remember who the inplace was before we proceed
 			HWND hwndInplace = m_hwndInplace;
 			m_hwndInplace = NULL;
