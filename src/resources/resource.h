@@ -63,7 +63,7 @@
 #define IDC_BUTTON_DELETE_PACKAGE          1110
 #define IDC_BUTTON_EXPORT_PACKAGE          1111
 #define IDC_BUTTON_IMPORT_PACKAGE          1112
-#define IDC_RICHEDIT_PACKAGE_INFO          1113
+#define IDC_PACKAGE_INFO                   1113
 #define IDC_BUTTON_EDIT_PANEL_NAME         1114
 #define IDC_BUTTON_NEW_SCRIPT              1115
 #define IDC_BUTTON_COMMIT_PANEL_NAME       1118

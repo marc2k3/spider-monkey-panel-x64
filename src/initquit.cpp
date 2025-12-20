@@ -12,7 +12,6 @@ namespace
 {
 	CAppModule wtl_module;
 	GdiplusScope scope;
-	wil::unique_hmodule rich_edit_ctrl;
 
 	class InitStageCallback : public init_stage_callback
 	{
@@ -28,7 +27,6 @@ namespace
 				Scintilla_RegisterClasses(ins);
 				PlaylistLock::before_ui_init();
 
-				rich_edit_ctrl.reset(LoadLibraryW(CRichEditCtrl::GetLibraryName()));
 				std::ignore = wtl_module.Init(nullptr, ins);
 
 				const auto path = wil::GetModuleFileNameW(ins);
@@ -43,7 +41,6 @@ namespace
 		smp::EventDispatcher::Get().NotifyAllAboutExit();
 		QwrThreadPool::GetInstance().Finalize();
 		Scintilla_ReleaseResources();
-		rich_edit_ctrl.reset();
 		typelib_smp.reset();
 		wtl_module.Term();
 	}

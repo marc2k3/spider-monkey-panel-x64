@@ -34,6 +34,7 @@ namespace smp::ui
 		}
 
 		packagesListBox_ = GetDlgItem(IDC_LIST_PACKAGES);
+		m_edit_package = GetDlgItem(IDC_PACKAGE_INFO);
 		pPackagesListBoxDrop_.Attach(new ComPtrImpl<com::FileDropTarget>(packagesListBox_, *this));
 
 		try
@@ -46,14 +47,7 @@ namespace smp::ui
 			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 
-		// TODO: add context menu
-		packageInfoEdit_ = GetDlgItem(IDC_RICHEDIT_PACKAGE_INFO);
-		packageInfoEdit_.SetWindowLong(GWL_EXSTYLE, packageInfoEdit_.GetWindowLong(GWL_EXSTYLE) & ~WS_EX_CLIENTEDGE);
-		packageInfoEdit_.SetEditStyle(SES_HYPERLINKTOOLTIPS | SES_NOFOCUSLINKNOTIFY, SES_HYPERLINKTOOLTIPS | SES_NOFOCUSLINKNOTIFY);
-		packageInfoEdit_.SetAutoURLDetect();
-		packageInfoEdit_.SetEventMask(packageInfoEdit_.GetEventMask() | ENM_LINK);
-
-		SetWindowText(L"Script package manager");
+		SetWindowTextW(L"Script package manager");
 
 		CenterWindow();
 		::SetFocus(packagesListBox_);
@@ -268,22 +262,8 @@ namespace smp::ui
 		{
 			focusedPackageIdx_ = -1;
 		}
+
 		EndDialog(wID);
-		return 0;
-	}
-
-	LRESULT CDialogPackageManager::OnRichEditLinkClick(LPNMHDR pnmh)
-	{
-		const auto* pEl = reinterpret_cast<ENLINK*>(pnmh);
-		if (pEl->msg == WM_LBUTTONUP)
-		{
-			std::wstring url;
-			url.resize(pEl->chrg.cpMax - pEl->chrg.cpMin);
-			packageInfoEdit_.GetTextRange(pEl->chrg.cpMin, pEl->chrg.cpMax, url.data());
-
-			ShellExecute(nullptr, L"open", url.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
-		}
-
 		return 0;
 	}
 
@@ -295,6 +275,7 @@ namespace smp::ui
 			wParam,
 			lParam,
 			[&](const auto& path) { isRestartNeeded |= ImportPackage(path); });
+
 		if (isRestartNeeded && ConfirmRebootOnPackageInUse())
 		{
 			standard_commands::main_restart();
@@ -442,90 +423,75 @@ namespace smp::ui
 
 		for (const auto& package : packages_)
 		{
-			const auto prefix = [&]() -> std::wstring {
-				switch (package.status)
+			const auto prefix = [&]() -> std::wstring
 				{
-				case config::PackageDelayStatus::ToBeRemoved:
-					return L"(will be removed) ";
-				case config::PackageDelayStatus::ToBeUpdated:
-					return L"(will be updated) ";
-				default:
-					return L"";
-				}
+					switch (package.status)
+					{
+					case config::PackageDelayStatus::ToBeRemoved:
+						return L"(will be removed) ";
+					case config::PackageDelayStatus::ToBeUpdated:
+						return L"(will be updated) ";
+					default:
+						return L"";
+					}
 				}();
+
 			packagesListBox_.AddString((prefix + package.displayedName).c_str());
 		}
 	}
 
 	void CDialogPackageManager::UpdatedUiPackageInfo()
 	{
+		m_edit_package.SetWindowTextW(L"");
+
 		if (focusedPackageIdx_ < 0)
 		{
-			packageInfoEdit_.SetWindowText(L"");
 			return;
 		}
 
-		const auto packageData = packages_[focusedPackageIdx_];
+		const auto& packageData = packages_[focusedPackageIdx_];
 
-		packageInfoEdit_.SetWindowText(L"");
-
-		CHARFORMAT savedCharFormat{};
-		packageInfoEdit_.GetSelectionCharFormat(savedCharFormat);
-		auto autoFormat = wil::scope_exit([&] { packageInfoEdit_.SetSelectionCharFormat(savedCharFormat); });
-
-		if (!packageData.parsedSettings)
+		if (packageData.parsedSettings)
 		{
-			CHARFORMAT newCharFormat = savedCharFormat;
-			newCharFormat.dwMask = CFM_COLOR;
-			newCharFormat.dwEffects = ~CFE_AUTOCOLOR;
-			newCharFormat.crTextColor = RGB(255, 0, 0);
-
-			packageInfoEdit_.SetSelectionCharFormat(newCharFormat);
-			packageInfoEdit_.AppendText(L"Error:\r\n", FALSE);
-
-			packageInfoEdit_.SetSelectionCharFormat(savedCharFormat);
-			packageInfoEdit_.AppendText(packages_[focusedPackageIdx_].errorText.c_str(), FALSE);
-		}
-		else
-		{
-			const auto valueOrEmpty = [](const std::string& str) -> std::wstring {
-				return (str.empty() ? L"<empty>" : smp::ToWide(str));
-				};
-
 			const auto& parsedSettings = *packageData.parsedSettings;
 
-			CHARFORMAT newCharFormat = savedCharFormat;
-			newCharFormat.dwMask = CFM_UNDERLINE;
-			newCharFormat.dwEffects = CFM_UNDERLINE;
+			const auto valueOrEmpty = [](const std::string& str) -> std::wstring
+				{
+					return (str.empty() ? L"<empty>" : smp::ToWide(str));
+				};
 
 			const auto appendText = [&](const wchar_t* field, const wchar_t* value)
 				{
-					packageInfoEdit_.SetSelectionCharFormat(newCharFormat);
-					packageInfoEdit_.AppendText(field, FALSE);
-					packageInfoEdit_.SetSelectionCharFormat(savedCharFormat);
-					packageInfoEdit_.AppendText(L": ", FALSE);
-					packageInfoEdit_.AppendText(value, FALSE);
+					m_edit_package.AppendText(field, FALSE);
+					m_edit_package.AppendText(L": ", FALSE);
+					m_edit_package.AppendText(value, FALSE);
 				};
 
 			appendText(L"Name", valueOrEmpty(parsedSettings.scriptName).c_str());
-			packageInfoEdit_.AppendText(L"\r\n", FALSE);
+			m_edit_package.AppendText(L"\r\n", FALSE);
 
 			appendText(L"Version", valueOrEmpty(parsedSettings.scriptVersion).c_str());
-			packageInfoEdit_.AppendText(L"\r\n", FALSE);
+			m_edit_package.AppendText(L"\r\n", FALSE);
 
 			appendText(L"Author", valueOrEmpty(parsedSettings.scriptAuthor).c_str());
-			packageInfoEdit_.AppendText(L"\r\n", FALSE);
+			m_edit_package.AppendText(L"\r\n", FALSE);
 
 			appendText(L"Description", (L"\r\n" + valueOrEmpty(parsedSettings.scriptDescription)).c_str());
+		}
+		else
+		{
+			m_edit_package.AppendText(L"Error:\r\n", FALSE);
+			m_edit_package.AppendText(packages_[focusedPackageIdx_].errorText.c_str(), FALSE);
 		}
 	}
 
 	CDialogPackageManager::PackageData CDialogPackageManager::GeneratePackageData(const config::ParsedPanelSettings& parsedSettings)
 	{
-		const auto displayedName = [&parsedSettings] {
-			return (parsedSettings.scriptAuthor.empty()
-				? parsedSettings.scriptName
-				: fmt::format("{} (by {})", parsedSettings.scriptName, parsedSettings.scriptAuthor));
+		const auto displayedName = [&parsedSettings]
+			{
+				return (parsedSettings.scriptAuthor.empty()
+					? parsedSettings.scriptName
+					: fmt::format("{} (by {})", parsedSettings.scriptName, parsedSettings.scriptAuthor));
 			}();
 
 		return PackageData{
@@ -544,14 +510,13 @@ namespace smp::ui
 			const auto tmpPath = path::TempFolder_PackageUnpack();
 			fs::remove_all(tmpPath);
 			fs::create_directories(tmpPath);
-			auto autoTmp = wil::scope_exit([&] {
-				try
+			auto autoTmp = wil::scope_exit([&]
 				{
-					fs::remove_all(tmpPath);
-				}
-				catch (const fs::filesystem_error&)
-				{
-				}
+					try
+					{
+						fs::remove_all(tmpPath);
+					}
+					catch (const fs::filesystem_error&) {}
 				});
 
 			UnpackZip(path, tmpPath);
