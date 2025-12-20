@@ -3,7 +3,6 @@
 
 #include <2K3/FileDialog.hpp>
 #include <panel/edit_script.h>
-#include <ui/ui_conf.h>
 #include <ui/ui_package_manager.h>
 
 namespace

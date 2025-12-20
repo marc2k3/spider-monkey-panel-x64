@@ -1,5 +1,5 @@
 #include <stdafx.h>
-#include "ui_conf_properties.h"
+#include "ui_properties.h"
 
 #include <2K3/Scintilla/DialogEditor.hpp>
 #include <2K3/FileDialog.hpp>
@@ -25,12 +25,12 @@ namespace
 
 namespace smp::ui
 {
-	CConfigProperties::CConfigProperties(js_panel_window& parent, config::PanelProperties& properties)
+	CDialogProperties::CDialogProperties(js_panel_window& parent, config::PanelProperties& properties)
 		: m_parent(parent)
 		, m_properties(properties)
 		, m_resizer(resize_data, resize_min_max) {}
 
-	LRESULT CConfigProperties::OnInitDialog(HWND, LPARAM)
+	LRESULT CDialogProperties::OnInitDialog(HWND, LPARAM)
 	{
 		// Subclassing
 		m_list_ctrl.SubclassWindow(GetDlgItem(IDC_LIST_PROPERTIES));
@@ -44,7 +44,7 @@ namespace smp::ui
 		return TRUE; // set focus to default control
 	}
 
-	LRESULT CConfigProperties::OnPinItemChanged(LPNMHDR pnmh)
+	LRESULT CDialogProperties::OnPinItemChanged(LPNMHDR pnmh)
 	{
 		auto pnpi = (LPNMPROPERTYITEM)pnmh;
 
@@ -112,20 +112,20 @@ namespace smp::ui
 		return 0;
 	}
 
-	LRESULT CConfigProperties::OnSelChanged(LPNMHDR)
+	LRESULT CDialogProperties::OnSelChanged(LPNMHDR)
 	{
 		UpdateUiDelButton();
 		return 0;
 	}
 
-	void CConfigProperties::OnClearAllBnClicked(uint32_t, int32_t, CWindow)
+	void CDialogProperties::OnClearAllBnClicked(uint32_t, int32_t, CWindow)
 	{
 		m_properties.values.clear();
 		m_list_ctrl.ResetContent();
 		m_parent.ReloadScript();
 	}
 
-	void CConfigProperties::OnDelBnClicked(uint32_t, int32_t, CWindow)
+	void CDialogProperties::OnDelBnClicked(uint32_t, int32_t, CWindow)
 	{
 		if (int idx = m_list_ctrl.GetCurSel(); idx >= 0)
 		{
@@ -140,7 +140,7 @@ namespace smp::ui
 		m_parent.ReloadScript();
 	}
 
-	void CConfigProperties::OnImportBnClicked(uint32_t, int32_t, CWindow)
+	void CDialogProperties::OnImportBnClicked(uint32_t, int32_t, CWindow)
 	{
 		auto path_func = [this](fb2k::stringRef path)
 			{
@@ -167,7 +167,7 @@ namespace smp::ui
 		FileDialog::open(m_hWnd, "Import from", "Property files|*.json|All files|*.*", path_func);
 	}
 
-	void CConfigProperties::OnExportBnClicked(uint32_t, int32_t, CWindow)
+	void CDialogProperties::OnExportBnClicked(uint32_t, int32_t, CWindow)
 	{
 		auto path_func = [this](fb2k::stringRef path)
 			{
@@ -178,7 +178,7 @@ namespace smp::ui
 		FileDialog::save(m_hWnd, "Import from", "Property files|*.json|All files|*.*", "json", path_func);
 	}
 
-	void CConfigProperties::UpdateUiFromData()
+	void CDialogProperties::UpdateUiFromData()
 	{
 		m_list_ctrl.ResetContent();
 
@@ -230,12 +230,12 @@ namespace smp::ui
 		}
 	}
 
-	void CConfigProperties::UpdateUiDelButton()
+	void CDialogProperties::UpdateUiDelButton()
 	{
 		CWindow{ GetDlgItem(IDC_BTN_DEL) }.EnableWindow(m_list_ctrl.GetCurSel() != -1);
 	}
 
-	void CConfigProperties::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
+	void CDialogProperties::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
 	{
 		dialog_position.read_from_window(m_hWnd);
 		m_parent.ReloadScript();
@@ -250,7 +250,7 @@ namespace smp::ui
 		}
 	}
 
-	void CConfigProperties::OnCancel(uint32_t, int32_t nID, CWindow)
+	void CDialogProperties::OnCancel(uint32_t, int32_t nID, CWindow)
 	{
 		EndDialog(nID);
 	}

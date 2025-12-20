@@ -1,7 +1,6 @@
 #pragma once
-
 #include <config/parsed_panel_config.h>
-#include <ui/impl/ui_itab.h>
+#include <panel/user_message.h>
 #include <utils/ui_ddx.h>
 #include <utils/ui_option.h>
 
@@ -12,6 +11,21 @@ namespace smp
 
 namespace smp::ui
 {
+	class ITab
+	{
+	public:
+		virtual ~ITab() = default;
+
+		virtual HWND CreateTab(HWND hParent) = 0;
+		[[nodiscard]] virtual CDialogImplBase& Dialog() = 0;
+		[[nodiscard]] virtual const wchar_t* Name() const = 0;
+
+		[[nodiscard]] virtual bool HasChanged() = 0;
+		virtual void Apply() = 0;
+		virtual void Revert() = 0;
+		virtual void Refresh() = 0;
+	};
+
 	class CDialogConf : public CDialogImpl<CDialogConf>, public CDialogResize<CDialogConf>
 	{
 	public:

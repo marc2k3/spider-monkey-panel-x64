@@ -9,7 +9,6 @@
 #define IDR_RECOVERY_PACKAGE_SCRIPT        104
 #define IDR_RECOVERY_PACKAGE_JSON          105
 
-#define IDD_DIALOG_CONF_PROPERTIES         110
 #define IDD_DIALOG_HTML                    111
 #define IDD_DIALOG_SLOWSCRIPT              112
 #define IDD_DIALOG_CONF                    113

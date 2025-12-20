@@ -15,8 +15,7 @@
 #include <panel/edit_script.h>
 #include <panel/modal_blocking_scope.h>
 #include <timeout/timeout_manager.h>
-#include <ui/ui_conf.h>
-#include <ui/ui_conf_properties.h>
+#include <ui/ui_properties.h>
 #include <utils/gdi_helpers.h>
 #include <utils/image_helpers.h>
 #include <utils/logging.h>
@@ -1076,7 +1075,7 @@ namespace smp
 
 		modal::ModalBlockingScope scope(parent, true);
 
-		auto dlg = ui::CConfigProperties(*this, properties_);
+		auto dlg = ui::CDialogProperties(*this, properties_);
 		dlg.DoModal(parent);
 	}
 

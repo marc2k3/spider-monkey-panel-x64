@@ -1,9 +1,7 @@
 #pragma once
+#include "ui_conf.h"
+
 #include <com_utils/file_drop_target.h>
-#include <config/parsed_panel_config.h>
-#include <panel/user_message.h>
-#include <ui/impl/ui_itab.h>
-#include <utils/ui_ddx.h>
 
 namespace smp::ui
 {

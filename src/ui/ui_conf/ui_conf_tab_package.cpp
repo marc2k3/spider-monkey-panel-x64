@@ -5,7 +5,6 @@
 #include <2K3/FileDialog.hpp>
 #include <2K3/TextFile.hpp>
 #include <config/package_utils.h>
-#include <ui/ui_conf.h>
 #include <ui/ui_input_box.h>
 #include <utils/edit_text.h>
 

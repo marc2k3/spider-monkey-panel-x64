@@ -5,7 +5,7 @@
 #include <interfaces/fb_tooltip.h>
 #include <panel/drag_action_params.h>
 #include <panel/user_message.h>
-#include <ui/ui_conf.h>
+#include <ui/ui_conf/ui_conf.h>
 
 namespace smp
 {

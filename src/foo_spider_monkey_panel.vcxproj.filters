@@ -72,9 +72,6 @@
     <ClCompile Include="utils\zip_utils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="ui\ui_conf.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
     <ClCompile Include="config\package_utils.cpp">
       <Filter>config</Filter>
     </ClCompile>
@@ -83,12 +80,6 @@
     </ClCompile>
     <ClCompile Include="fb2k\selection_holder_helper.cpp">
       <Filter>fb2k</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\impl\ui_conf_tab_script_source.cpp">
-      <Filter>ui\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\impl\ui_conf_tab_package.cpp">
-      <Filter>ui\impl</Filter>
     </ClCompile>
     <ClCompile Include="component_paths.cpp" />
     <ClCompile Include="utils\guid_helpers.cpp">
@@ -437,7 +428,16 @@
     <ClCompile Include="js_backend\js_script_cache.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
-    <ClCompile Include="ui\ui_conf_properties.cpp">
+    <ClCompile Include="ui\ui_conf\ui_conf.cpp">
+      <Filter>ui\ui_conf</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\ui_conf\ui_conf_tab_package.cpp">
+      <Filter>ui\ui_conf</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\ui_conf\ui_conf_tab_script_source.cpp">
+      <Filter>ui\ui_conf</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\ui_properties.cpp">
       <Filter>ui</Filter>
     </ClCompile>
   </ItemGroup>
@@ -520,9 +520,6 @@
     <ClInclude Include="utils\zip_utils.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_conf.h">
-      <Filter>ui</Filter>
-    </ClInclude>
     <ClInclude Include="config\package_utils.h">
       <Filter>config</Filter>
     </ClInclude>
@@ -534,15 +531,6 @@
     </ClInclude>
     <ClInclude Include="resources\resource.h">
       <Filter>resources</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\impl\ui_conf_tab_script_source.h">
-      <Filter>ui\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\impl\ui_itab.h">
-      <Filter>ui\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\impl\ui_conf_tab_package.h">
-      <Filter>ui\impl</Filter>
     </ClInclude>
     <ClInclude Include="component_paths.h" />
     <ClInclude Include="utils\guid_helpers.h">
@@ -936,7 +924,16 @@
     <ClInclude Include="js_backend\js_script_cache.h">
       <Filter>js_backend</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_conf_properties.h">
+    <ClInclude Include="ui\ui_conf\ui_conf.h">
+      <Filter>ui\ui_conf</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\ui_conf\ui_conf_tab_package.h">
+      <Filter>ui\ui_conf</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\ui_conf\ui_conf_tab_script_source.h">
+      <Filter>ui\ui_conf</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\ui_properties.h">
       <Filter>ui</Filter>
     </ClInclude>
   </ItemGroup>
@@ -958,9 +955,6 @@
     </Filter>
     <Filter Include="config">
       <UniqueIdentifier>{3a9d2773-53cc-42cc-8c4d-b8e23af110e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\impl">
-      <UniqueIdentifier>{6470c9be-1e65-41eb-8ed9-74e95928e341}</UniqueIdentifier>
     </Filter>
     <Filter Include="com_utils">
       <UniqueIdentifier>{b23d43d7-b904-4566-bbbe-2d2b677efb7d}</UniqueIdentifier>
@@ -988,6 +982,9 @@
     </Filter>
     <Filter Include="js_backend">
       <UniqueIdentifier>{82fda107-c970-4ad4-9ad2-b6aae7fddd6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\ui_conf">
+      <UniqueIdentifier>{e5a5165b-0c8d-4a75-a97d-936d99361cbf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

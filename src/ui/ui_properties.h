@@ -5,15 +5,15 @@
 
 namespace smp::ui
 {
-	class CConfigProperties : public CDialogImpl<CConfigProperties>
+	class CDialogProperties : public CDialogImpl<CDialogProperties>
 	{
 	public:
 		enum
 		{
-			IDD = IDD_DIALOG_CONF_PROPERTIES
+			IDD = IDD_DIALOG_PROPERTIES
 		};
 
-		BEGIN_MSG_MAP(CConfigProperties)
+		BEGIN_MSG_MAP(CDialogProperties)
 			CHAIN_MSG_MAP_MEMBER(m_resizer)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			COMMAND_ID_HANDLER_EX(IDOK, OnApplyOrOK)
@@ -31,7 +31,7 @@ namespace smp::ui
 			REFLECT_NOTIFICATIONS()
 		END_MSG_MAP()
 
-		CConfigProperties(js_panel_window& parent, config::PanelProperties& properties);
+		CDialogProperties(js_panel_window& parent, config::PanelProperties& properties);
 
 	private:
 		LRESULT OnInitDialog(HWND hwndFocus, LPARAM lParam);

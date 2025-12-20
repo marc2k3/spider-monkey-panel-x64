@@ -208,16 +208,16 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="timeout\timer_manager_custom.cpp" />
     <ClCompile Include="timeout\timer_manager_native.cpp" />
     <ClCompile Include="timeout\timer_native.cpp" />
-    <ClCompile Include="ui\impl\ui_conf_tab_package.cpp" />
-    <ClCompile Include="ui\impl\ui_conf_tab_script_source.cpp" />
-    <ClCompile Include="ui\ui_conf.cpp" />
-    <ClCompile Include="ui\ui_conf_properties.cpp" />
+    <ClCompile Include="ui\ui_conf\ui_conf.cpp" />
+    <ClCompile Include="ui\ui_conf\ui_conf_tab_package.cpp" />
+    <ClCompile Include="ui\ui_conf\ui_conf_tab_script_source.cpp" />
     <ClCompile Include="ui\ui_edit_in_progress.cpp" />
     <ClCompile Include="ui\ui_html.cpp">
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="ui\ui_input_box.cpp" />
     <ClCompile Include="ui\ui_package_manager.cpp" />
+    <ClCompile Include="ui\ui_properties.cpp" />
     <ClCompile Include="ui\ui_slow_script.cpp" />
     <ClCompile Include="utils\edit_text.cpp" />
     <ClCompile Include="utils\error_popup.cpp" />
@@ -373,15 +373,14 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="timeout\timer_manager_native.h" />
     <ClInclude Include="timeout\timer_native.h" />
     <ClInclude Include="timeout\time_types.h" />
-    <ClInclude Include="ui\impl\ui_conf_tab_package.h" />
-    <ClInclude Include="ui\impl\ui_conf_tab_script_source.h" />
-    <ClInclude Include="ui\impl\ui_itab.h" />
-    <ClInclude Include="ui\ui_conf.h" />
-    <ClInclude Include="ui\ui_conf_properties.h" />
+    <ClInclude Include="ui\ui_conf\ui_conf.h" />
+    <ClInclude Include="ui\ui_conf\ui_conf_tab_package.h" />
+    <ClInclude Include="ui\ui_conf\ui_conf_tab_script_source.h" />
     <ClInclude Include="ui\ui_edit_in_progress.h" />
     <ClInclude Include="ui\ui_html.h" />
     <ClInclude Include="ui\ui_input_box.h" />
     <ClInclude Include="ui\ui_package_manager.h" />
+    <ClInclude Include="ui\ui_properties.h" />
     <ClInclude Include="ui\ui_slow_script.h" />
     <ClInclude Include="utils\colour_helpers.h" />
     <ClInclude Include="utils\edit_text.h" />

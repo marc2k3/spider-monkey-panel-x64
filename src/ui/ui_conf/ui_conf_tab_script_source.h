@@ -1,8 +1,5 @@
 #pragma once
-#include <config/parsed_panel_config.h>
-#include <panel/user_message.h>
-#include <ui/impl/ui_itab.h>
-#include <utils/ui_ddx.h>
+#include "ui_conf.h"
 
 namespace smp::ui
 {

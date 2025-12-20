@@ -1,10 +1,11 @@
 #include <stdafx.h>
 #include "ui_conf.h"
 
+#include "ui_conf_tab_package.h"
+#include "ui_conf_tab_script_source.h"
+
 #include <config/package_utils.h>
 #include <panel/js_panel_window.h>
-#include <ui/impl/ui_conf_tab_package.h>
-#include <ui/impl/ui_conf_tab_script_source.h>
 #include <utils/guid_helpers.h>
 
 namespace
