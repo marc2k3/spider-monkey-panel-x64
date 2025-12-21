@@ -245,6 +245,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\FileDialog.hpp" />
     <ClInclude Include="2K3\FileHelper.hpp" />
     <ClInclude Include="2K3\FileInfoFilter.hpp" />
+    <ClInclude Include="2K3\FontHelper.hpp" />
     <ClInclude Include="2K3\GetAlbumArtAsync.hpp" />
     <ClInclude Include="2K3\Helpers.hpp" />
     <ClInclude Include="2K3\HTTPRequestAsync.hpp" />

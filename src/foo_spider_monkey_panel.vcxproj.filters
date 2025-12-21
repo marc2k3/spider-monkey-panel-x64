@@ -936,6 +936,9 @@
     <ClInclude Include="ui\ui_properties.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="2K3\FontHelper.hpp">
+      <Filter>2K3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">

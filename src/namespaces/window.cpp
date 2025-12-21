@@ -492,15 +492,7 @@ namespace mozjs
 			smp::CheckHR(hr, "CLSIDFromString");
 		}
 
-		auto hFont = wil::unique_hfont(m_parent.GetFont(guid, type));
-		std::unique_ptr<Gdiplus::Font> pGdiFont(new Gdiplus::Font(m_parent.GetHDC(), hFont.get()));
-
-		if (gdi::IsGdiPlusObjectValid(pGdiFont.get()))
-		{
-			return JsGdiFont::CreateJs(m_ctx, std::move(pGdiFont), hFont.release(), true);
-		}
-
-		return nullptr;
+		return m_parent.GetFont(m_ctx, guid, type);
 	}
 
 	JSObject* Window::GetFontCUIWithOpt(size_t optArgCount, uint32_t type, const std::wstring& guidstr)
@@ -536,15 +528,7 @@ namespace mozjs
 		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelType::DUI, "Can be called only in DUI");
 		QwrException::ExpectTrue(type < guids.size(), "Invalid font type specified");
 
-		auto hFont = m_parent.GetFont(*guids[type]);
-		std::unique_ptr<Gdiplus::Font> pGdiFont(new Gdiplus::Font(m_parent.GetHDC(), hFont));
-
-		if (gdi::IsGdiPlusObjectValid(pGdiFont.get()))
-		{
-			return JsGdiFont::CreateJs(m_ctx, std::move(pGdiFont), hFont, false);
-		}
-
-		return nullptr;
+		return m_parent.GetFont(m_ctx, *guids[type]);
 	}
 
 	JS::Value Window::GetProperty(const std::wstring& name, JS::HandleValue defaultval)

@@ -9,7 +9,8 @@ namespace mozjs
 
 		DEFINE_JS_INTERFACE_VARS_GLOBAL_PROTO
 
-		static std::unique_ptr<JsGdiFont> CreateNative(JSContext* cx, std::unique_ptr<Gdiplus::Font> gdiFont, HFONT hFont, bool isManaged);
+		static std::unique_ptr<JsGdiFont> CreateNative(JSContext* cx, LOGFONT& lf);
+		static std::unique_ptr<JsGdiFont> CreateNative(JSContext* cx, const std::wstring& name, int pxSize, int style);
 		uint32_t GetInternalSize();
 
 	public:
@@ -17,8 +18,8 @@ namespace mozjs
 		[[nodiscard]] HFONT GetHFont() const;
 
 	public:
-		static JSObject* Constructor(JSContext* cx, const std::wstring& fontName, uint32_t pxSize, uint32_t style = 0);
-		static JSObject* ConstructorWithOpt(JSContext* cx, size_t optArgCount, const std::wstring& fontName, uint32_t pxSize, uint32_t style);
+		static JSObject* Constructor(JSContext* cx, const std::wstring& fontName, int pxSize, int style = 0);
+		static JSObject* ConstructorWithOpt(JSContext* cx, size_t optArgCount, const std::wstring& fontName, int pxSize, int style);
 
 	public:
 		[[nodiscard]] uint32_t get_Height() const;
@@ -27,12 +28,13 @@ namespace mozjs
 		[[nodiscard]] uint32_t get_Style() const;
 
 	private:
-		JsGdiFont(JSContext* cx, std::unique_ptr<Gdiplus::Font> gdiFont, HFONT hFont, bool isManaged);
+		JsGdiFont(JSContext* cx, LOGFONT& lf);
+		JsGdiFont(JSContext* cx, const std::wstring& name, int pxSize, int style);
 
 	private:
-		[[maybe_unused]] JSContext* pJsCtx_ = nullptr;
-		bool isManaged_;
-		std::unique_ptr<Gdiplus::Font> pGdi_;
-		HFONT hFont_ = nullptr;
+		[[maybe_unused]] JSContext* m_ctx{};
+		std::wstring m_name = L"Segoe UI";
+		std::unique_ptr<Gdiplus::Font> m_font;
+		wil::unique_hfont m_hFont;
 	};
 }

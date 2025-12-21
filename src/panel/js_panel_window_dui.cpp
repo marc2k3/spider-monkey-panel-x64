@@ -1,5 +1,7 @@
 #include <stdafx.h>
-#include <panel/js_panel_window.h>
+#include "js_panel_window.h"
+
+#include <interfaces/gdi_font.h>
 #include <utils/colour_helpers.h>
 
 namespace smp
@@ -14,9 +16,11 @@ namespace smp
 			return smp::colour::ColorrefToArgb(colour);
 		}
 
-		HFONT GetFont(const GUID& guid, uint32_t) final
+		JSObject* GetFont(JSContext* cx, const GUID& guid, uint32_t) final
 		{
-			return uiCallback_->query_font_ex(guid);
+			LOGFONT lf;
+			CFontHandle(uiCallback_->query_font_ex(guid)).GetLogFont(&lf);
+			return mozjs::JsGdiFont::CreateJs(cx, lf);
 		}
 
 		void NotifySizeLimitChanged() final

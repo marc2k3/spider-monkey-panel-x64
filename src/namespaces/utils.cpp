@@ -5,6 +5,7 @@
 #include <2K3/CustomSort.hpp>
 #include <2K3/DownloadFileAsync.hpp>
 #include <2K3/FileHelper.hpp>
+#include <2K3/FontHelper.hpp>
 #include <2K3/GetAlbumArtAsync.hpp>
 #include <2K3/HTTPRequestAsync.hpp>
 #include <2K3/TextFile.hpp>
@@ -170,29 +171,7 @@ namespace mozjs
 
 	bool Utils::CheckFont(const std::wstring& name) const
 	{
-		Gdiplus::InstalledFontCollection font_collection;
-		const int count = font_collection.GetFamilyCount();
-		std::vector<Gdiplus::FontFamily> font_families(count);
-
-		int recv{};
-		const auto status = font_collection.GetFamilies(count, font_families.data(), &recv);
-		smp::CheckGdi(status, "GetFamilies");
-		QwrException::ExpectTrue(recv == count, "Internal error: GetFamilies numSought != numFound");
-
-		std::array<wchar_t, LF_FACESIZE> family_name_eng{};
-		std::array<wchar_t, LF_FACESIZE> family_name_loc{};
-
-		const auto it = ranges::find_if(font_families, [&family_name_eng, &family_name_loc, &name](const auto& fontFamily) {
-			auto status = fontFamily.GetFamilyName(family_name_eng.data(), MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
-			smp::CheckGdi(status, "GetFamilyName");
-
-			status = fontFamily.GetFamilyName(family_name_loc.data());
-			smp::CheckGdi(status, "GetFamilyName");
-
-			return (!_wcsicmp(name.c_str(), family_name_loc.data()) || !_wcsicmp(name.c_str(), family_name_eng.data()));
-			});
-
-		return (it != font_families.cend());
+		return FontHelper::get().check_name(name);
 	}
 
 	uint32_t Utils::ColourPicker(uint32_t, uint32_t default_colour)

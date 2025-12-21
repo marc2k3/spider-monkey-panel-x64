@@ -62,7 +62,7 @@ namespace mozjs
 
 	JSObject* Gdi::Font(const std::wstring& fontName, uint32_t pxSize, uint32_t style)
 	{
-		return JsGdiFont::Constructor(m_ctx, fontName, pxSize, style);
+		return JsGdiFont::CreateJs(m_ctx, fontName, pxSize, style);
 	}
 
 	JSObject* Gdi::FontWithOpt(size_t optArgCount, const std::wstring& fontName, uint32_t pxSize, uint32_t style)
