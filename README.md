@@ -15,6 +15,10 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.21
+- Rework font handling so built in methods never return `null`. If using an unsupported raster
+font in your UI preferences, the component will fallback to `Segoe UI` automatically.
+
 ## 1.7.25.12.20
 - The main configure dialog now supports dark mode.
 - For the above change to work, the properties tab has been removed and the properties are now a separate dialog. This dialog does not support dark mode.
