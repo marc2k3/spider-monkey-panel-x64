@@ -1075,7 +1075,7 @@ namespace smp
 
 		modal::ModalBlockingScope scope(parent, true);
 
-		auto dlg = ui::CDialogProperties(*this, properties_);
+		auto dlg = ui::CDialogProperties(*this);
 		dlg.DoModal(parent);
 	}
 

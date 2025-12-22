@@ -31,7 +31,7 @@ namespace smp::ui
 			REFLECT_NOTIFICATIONS()
 		END_MSG_MAP()
 
-		CDialogProperties(js_panel_window& parent, config::PanelProperties& properties);
+		CDialogProperties(js_panel_window& parent);
 
 	private:
 		LRESULT OnInitDialog(HWND hwndFocus, LPARAM lParam);
@@ -45,12 +45,23 @@ namespace smp::ui
 		void OnCancel(uint32_t, int32_t nID, CWindow);
 
 		void UpdateUiFromData();
-		void UpdateUiDelButton();
+		void UpdateButtons();
 
 	private:
+		struct LowerLexCmp
+		{
+			// lexicographical comparison but with lower cased chars
+			bool operator()(const std::wstring& a, const std::wstring& b) const
+			{
+				return (_wcsicmp(a.c_str(), b.c_str()) < 0);
+			}
+		};
+
+		using Map = std::map<std::wstring, HPROPERTY, LowerLexCmp>;
+
 		CDialogResizeHelper m_resizer;
 		CPropertyListCtrl m_list_ctrl;
 		js_panel_window& m_parent;
-		config::PanelProperties& m_properties;
+		config::PanelProperties::PropertyMap m_property_values;
 	};
 }

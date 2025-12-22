@@ -25,9 +25,8 @@ namespace
 
 namespace smp::ui
 {
-	CDialogProperties::CDialogProperties(js_panel_window& parent, config::PanelProperties& properties)
+	CDialogProperties::CDialogProperties(js_panel_window& parent)
 		: m_parent(parent)
-		, m_properties(properties)
 		, m_resizer(resize_data, resize_min_max) {}
 
 	LRESULT CDialogProperties::OnInitDialog(HWND, LPARAM)
@@ -37,9 +36,9 @@ namespace smp::ui
 		m_list_ctrl.ModifyStyle(0, LBS_SORT | LBS_HASSTRINGS);
 		m_list_ctrl.SetExtendedListStyle(PLS_EX_SORTED | PLS_EX_XPLOOK);
 
-		CWindow{ GetDlgItem(IDC_BTN_DEL) }.EnableWindow(m_list_ctrl.GetCurSel() != -1);
-
+		m_property_values = m_parent.GetPanelProperties().values;
 		UpdateUiFromData();
+		UpdateButtons();
 		dialog_position.apply_to_window(m_hWnd);
 		return TRUE; // set focus to default control
 	}
@@ -48,65 +47,49 @@ namespace smp::ui
 	{
 		auto pnpi = (LPNMPROPERTYITEM)pnmh;
 
-		const auto hasChanged = [pnpi, &properties = m_properties]() {
-			auto& propValues = properties.values;
-
-			if (!propValues.contains(pnpi->prop->GetName()))
-			{
-				return false;
-			}
-
-			auto& val = *propValues.at(pnpi->prop->GetName());
+		if (m_property_values.contains(pnpi->prop->GetName()))
+		{
+			auto& val = *m_property_values.at(pnpi->prop->GetName());
 			_variant_t var;
 
-			if (!pnpi->prop->GetValue(&var))
+			if (pnpi->prop->GetValue(&var))
 			{
-				return false;
-			}
-
-			return std::visit([&var](auto& arg)
-				{
-					using T = std::decay_t<decltype(arg)>;
-					const auto prevArgValue = arg;
-					if constexpr (std::is_same_v<T, bool>)
+				std::visit([&var](auto& arg)
 					{
-						var.ChangeType(VT_BOOL);
-						arg = static_cast<bool>(var.boolVal);
-					}
-					else if constexpr (std::is_same_v<T, int32_t>)
-					{
-						var.ChangeType(VT_I4);
-						arg = static_cast<int32_t>(var.lVal);
-					}
-					else if constexpr (std::is_same_v<T, double>)
-					{
-						if (VT_BSTR == var.vt)
+						using T = std::decay_t<decltype(arg)>;
+						if constexpr (std::is_same_v<T, bool>)
 						{
-							arg = std::stod(var.bstrVal);
+							var.ChangeType(VT_BOOL);
+							arg = static_cast<bool>(var.boolVal);
+						}
+						else if constexpr (std::is_same_v<T, int32_t>)
+						{
+							var.ChangeType(VT_I4);
+							arg = static_cast<int32_t>(var.lVal);
+						}
+						else if constexpr (std::is_same_v<T, double>)
+						{
+							if (VT_BSTR == var.vt)
+							{
+								arg = std::stod(var.bstrVal);
+							}
+							else
+							{
+								var.ChangeType(VT_R8);
+								arg = var.dblVal;
+							}
+						}
+						else if constexpr (std::is_same_v<T, std::string>)
+						{
+							var.ChangeType(VT_BSTR);
+							arg = smp::ToU8(std::wstring_view{ var.bstrVal ? var.bstrVal : L"" });
 						}
 						else
 						{
-							var.ChangeType(VT_R8);
-							arg = var.dblVal;
+							static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
 						}
-					}
-					else if constexpr (std::is_same_v<T, std::string>)
-					{
-						var.ChangeType(VT_BSTR);
-						arg = smp::ToU8(std::wstring_view{ var.bstrVal ? var.bstrVal : L"" });
-					}
-					else
-					{
-						static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
-					}
-
-					return (prevArgValue != arg);
 					}, val);
-				}();
-
-		if (hasChanged)
-		{
-			m_parent.ReloadScript();
+			}
 		}
 
 		return 0;
@@ -114,15 +97,15 @@ namespace smp::ui
 
 	LRESULT CDialogProperties::OnSelChanged(LPNMHDR)
 	{
-		UpdateUiDelButton();
+		UpdateButtons();
 		return 0;
 	}
 
 	void CDialogProperties::OnClearAllBnClicked(uint32_t, int32_t, CWindow)
 	{
-		m_properties.values.clear();
+		m_property_values.clear();
 		m_list_ctrl.ResetContent();
-		m_parent.ReloadScript();
+		UpdateButtons();
 	}
 
 	void CDialogProperties::OnDelBnClicked(uint32_t, int32_t, CWindow)
@@ -132,12 +115,11 @@ namespace smp::ui
 			HPROPERTY hproperty = m_list_ctrl.GetProperty(idx);
 			std::wstring name = hproperty->GetName();
 
-			m_properties.values.erase(name);
+			m_property_values.erase(name);
 			m_list_ctrl.DeleteItem(hproperty);
 		}
 
-		UpdateUiDelButton();
-		m_parent.ReloadScript();
+		UpdateButtons();
 	}
 
 	void CDialogProperties::OnImportBnClicked(uint32_t, int32_t, CWindow)
@@ -149,7 +131,7 @@ namespace smp::ui
 
 				try
 				{
-					m_properties = smp::config::PanelProperties::FromJson(str);
+					m_property_values = smp::config::PanelProperties::FromJson(str).values;
 					UpdateUiFromData();
 				}
 				catch (const QwrException& e)
@@ -161,7 +143,7 @@ namespace smp::ui
 					smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 				}
 
-				m_parent.ReloadScript();
+				UpdateButtons();
 			};
 
 		FileDialog::open(m_hWnd, "Import from", "Property files|*.json|All files|*.*", path_func);
@@ -171,8 +153,11 @@ namespace smp::ui
 	{
 		auto path_func = [this](fb2k::stringRef path)
 			{
+				config::PanelProperties properties;
+				properties.values = m_property_values;
+
 				const auto wpath = nativeW(path);
-				TextFile(wpath).write(m_properties.ToJson());
+				TextFile(wpath).write(properties.ToJson());
 			};
 
 		FileDialog::save(m_hWnd, "Import from", "Property files|*.json|All files|*.*", "json", path_func);
@@ -180,45 +165,41 @@ namespace smp::ui
 
 	void CDialogProperties::UpdateUiFromData()
 	{
+		Map propMap;
 		m_list_ctrl.ResetContent();
 
-		struct LowerLexCmp
-		{ // lexicographical comparison but with lower cased chars
-			bool operator()(const std::wstring& a, const std::wstring& b) const
-			{
-				return (_wcsicmp(a.c_str(), b.c_str()) < 0);
-			}
-		};
-		std::map<std::wstring, HPROPERTY, LowerLexCmp> propMap;
-		for (const auto& [name, pSerializedValue] : m_properties.values)
+		for (const auto& [name, pSerializedValue] : m_property_values)
 		{
-			HPROPERTY hProp = std::visit([&name = name](auto&& arg) {
-				using T = std::decay_t<decltype(arg)>;
-				if constexpr (std::is_same_v<T, bool> || std::is_same_v<T, int32_t>)
+			HPROPERTY hProp = std::visit([&name = name](auto&& arg)
 				{
-					return PropCreateSimple(name.c_str(), arg);
-				}
-				else if constexpr (std::is_same_v<T, double>)
-				{
-					const std::wstring strNumber = [arg] {
-						if (std::trunc(arg) == arg)
-						{ // Most likely uint64_t
-							return std::to_wstring(static_cast<uint64_t>(arg));
-						}
+					using T = std::decay_t<decltype(arg)>;
+					if constexpr (std::is_same_v<T, bool> || std::is_same_v<T, int32_t>)
+					{
+						return PropCreateSimple(name.c_str(), arg);
+					}
+					else if constexpr (std::is_same_v<T, double>)
+					{
+						const std::wstring strNumber = [arg]
+							{
+								if (std::trunc(arg) == arg)
+								{ // Most likely uint64_t
+									return std::to_wstring(static_cast<uint64_t>(arg));
+								}
 
-						// std::to_string(double) has precision of float
-						return fmt::format(L"{:.16g}", arg);
-						}();
-					return PropCreateSimple(name.c_str(), strNumber.c_str());
-				}
-				else if constexpr (std::is_same_v<T, std::string>)
-				{
-					return PropCreateSimple(name.c_str(), smp::ToWide(arg).c_str());
-				}
-				else
-				{
-					static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
-				}
+								// std::to_string(double) has precision of float
+								return fmt::format(L"{:.16g}", arg);
+							}();
+
+						return PropCreateSimple(name.c_str(), strNumber.c_str());
+					}
+					else if constexpr (std::is_same_v<T, std::string>)
+					{
+						return PropCreateSimple(name.c_str(), smp::ToWide(arg).c_str());
+					}
+					else
+					{
+						static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
+					}
 				}, *pSerializedValue);
 
 			propMap.emplace(name, hProp);
@@ -230,15 +211,23 @@ namespace smp::ui
 		}
 	}
 
-	void CDialogProperties::UpdateUiDelButton()
+	void CDialogProperties::UpdateButtons()
 	{
-		CWindow{ GetDlgItem(IDC_BTN_DEL) }.EnableWindow(m_list_ctrl.GetCurSel() != -1);
+		GetDlgItem(IDC_BTN_DEL).EnableWindow(m_list_ctrl.GetCurSel() != -1);
+		GetDlgItem(IDC_BTN_EXPORT).EnableWindow(m_list_ctrl.GetCount() > 0);
+		GetDlgItem(IDC_BTN_CLEAR).EnableWindow(m_list_ctrl.GetCount() > 0);
 	}
 
 	void CDialogProperties::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
 	{
 		dialog_position.read_from_window(m_hWnd);
+
+		auto& properties = m_parent.GetPanelProperties();
+		properties.values = m_property_values;
+
 		m_parent.ReloadScript();
+		m_property_values = properties.values;
+		UpdateUiFromData();
 
 		if (nID == IDOK)
 		{
