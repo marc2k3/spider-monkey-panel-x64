@@ -38,7 +38,6 @@ namespace smp::ui
 
 		m_property_values = m_parent.GetPanelProperties().values;
 		UpdateUiFromData();
-		UpdateButtons();
 		dialog_position.apply_to_window(m_hWnd);
 		return TRUE; // set focus to default control
 	}
@@ -138,12 +137,6 @@ namespace smp::ui
 				{
 					smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 				}
-				catch (const pfc::exception& e)
-				{
-					smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
-				}
-
-				UpdateButtons();
 			};
 
 		FileDialog::open(m_hWnd, "Import from", "Property files|*.json|All files|*.*", path_func);
@@ -209,13 +202,17 @@ namespace smp::ui
 		{
 			m_list_ctrl.AddItem(hProp);
 		}
+
+		UpdateButtons();
 	}
 
 	void CDialogProperties::UpdateButtons()
 	{
+		const auto count = m_list_ctrl.GetCount();
+
 		GetDlgItem(IDC_BTN_DEL).EnableWindow(m_list_ctrl.GetCurSel() != -1);
-		GetDlgItem(IDC_BTN_EXPORT).EnableWindow(m_list_ctrl.GetCount() > 0);
-		GetDlgItem(IDC_BTN_CLEAR).EnableWindow(m_list_ctrl.GetCount() > 0);
+		GetDlgItem(IDC_BTN_EXPORT).EnableWindow(count > 0);
+		GetDlgItem(IDC_BTN_CLEAR).EnableWindow(count > 0);
 	}
 
 	void CDialogProperties::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
@@ -226,8 +223,6 @@ namespace smp::ui
 		properties.values = m_property_values;
 
 		m_parent.ReloadScript();
-		m_property_values = properties.values;
-		UpdateUiFromData();
 
 		if (nID == IDOK)
 		{
@@ -235,6 +230,7 @@ namespace smp::ui
 		}
 		else
 		{
+			m_property_values = properties.values;
 			UpdateUiFromData();
 		}
 	}
