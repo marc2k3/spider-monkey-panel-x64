@@ -15,6 +15,9 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.22
+- Fix various properties dialog bugs.
+
 ## 1.7.25.12.21
 - Rework font handling so built in methods never return `null`. If using an unsupported raster
 font in your UI preferences, the component will fallback to `Segoe UI` automatically.
