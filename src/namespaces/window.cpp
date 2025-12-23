@@ -214,13 +214,14 @@ namespace mozjs
 
 	std::unique_ptr<Window> Window::CreateNative(JSContext* ctx, js_panel_window& parentPanel)
 	{
-		std::unique_ptr<FbProperties> fbProperties = FbProperties::Create(ctx, parentPanel);
-		if (!fbProperties)
-		{ // report in Create
-			return nullptr;
+		auto fbProperties = FbProperties::Create(ctx, parentPanel);
+
+		if (fbProperties)
+		{
+			return std::unique_ptr<Window>(new Window(ctx, parentPanel, std::move(fbProperties)));
 		}
 
-		return std::unique_ptr<Window>(new Window(ctx, parentPanel, std::move(fbProperties)));
+		return nullptr;
 	}
 
 	uint32_t Window::GetInternalSize()
