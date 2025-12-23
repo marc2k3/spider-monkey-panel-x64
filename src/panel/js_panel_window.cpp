@@ -1203,21 +1203,26 @@ namespace smp
 
 	std::string js_panel_window::GetPanelDescription(bool includeVersionAndAuthor)
 	{
-		std::string ret = fmt::format("{}", settings_.panelId);
-
-		if (!settings_.scriptName.empty())
+		std::string ret;
+		
+		if (settings_.scriptName.empty())
 		{
-			ret += fmt::format(": {}", settings_.scriptName);
-			if (includeVersionAndAuthor)
+			ret += settings_.panelId;
+		}
+		else
+		{
+			ret += settings_.scriptName;
+		}
+
+		if (includeVersionAndAuthor)
+		{
+			if (!settings_.scriptVersion.empty())
 			{
-				if (!settings_.scriptVersion.empty())
-				{
-					ret += fmt::format(" v{}", settings_.scriptVersion);
-				}
-				if (!settings_.scriptAuthor.empty())
-				{
-					ret += fmt::format(" by {}", settings_.scriptAuthor);
-				}
+				ret += fmt::format(" v{}", settings_.scriptVersion);
+			}
+			if (!settings_.scriptAuthor.empty())
+			{
+				ret += fmt::format(" by {}", settings_.scriptAuthor);
 			}
 		}
 
