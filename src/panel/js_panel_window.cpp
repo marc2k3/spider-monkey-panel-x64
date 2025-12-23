@@ -112,12 +112,6 @@ namespace smp
 		}
 	}
 
-	void js_panel_window::SetSettings(const config::ParsedPanelSettings& settings)
-	{
-		settings_ = settings;
-		ReloadScript();
-	}
-
 	bool js_panel_window::UpdateSettings(const config::PanelSettings& settings, bool reloadPanel)
 	{
 		try
