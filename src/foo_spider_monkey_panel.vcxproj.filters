@@ -338,9 +338,6 @@
     <ClCompile Include="interfaces\active_x_object_iterator.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="panel\fb_properties.cpp">
-      <Filter>panel</Filter>
-    </ClCompile>
     <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp">
       <Filter>2K3\Scintilla</Filter>
     </ClCompile>
@@ -788,9 +785,6 @@
     </ClInclude>
     <ClInclude Include="interfaces\active_x_object_iterator.h">
       <Filter>interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="panel\fb_properties.h">
-      <Filter>panel</Filter>
     </ClInclude>
     <ClInclude Include="2K3\Helpers.hpp">
       <Filter>2K3</Filter>

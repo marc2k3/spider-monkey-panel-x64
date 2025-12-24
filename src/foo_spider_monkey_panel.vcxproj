@@ -192,7 +192,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="namespaces\utils.cpp" />
     <ClCompile Include="namespaces\window.cpp" />
     <ClCompile Include="panel\edit_script.cpp" />
-    <ClCompile Include="panel\fb_properties.cpp" />
     <ClCompile Include="panel\js_panel_window.cpp" />
     <ClCompile Include="panel\js_panel_window_cui.cpp" />
     <ClCompile Include="panel\js_panel_window_dui.cpp" />
@@ -358,7 +357,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="namespaces\window.h" />
     <ClInclude Include="panel\drag_action_params.h" />
     <ClInclude Include="panel\edit_script.h" />
-    <ClInclude Include="panel\fb_properties.h" />
     <ClInclude Include="panel\js_panel_window.h" />
     <ClInclude Include="panel\modal_blocking_scope.h" />
     <ClInclude Include="panel\user_message.h" />

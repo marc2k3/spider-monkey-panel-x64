@@ -124,9 +124,6 @@ namespace smp::ui
 		config::ParsedPanelSettings oldSettings_;
 		config::ParsedPanelSettings localSettings_;
 
-		config::PanelProperties oldProperties_;
-		config::PanelProperties localProperties_;
-
 		bool hasChanged_ = false;
 		bool isCleanSlate_ = false;
 

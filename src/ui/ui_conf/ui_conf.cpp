@@ -47,7 +47,8 @@ namespace smp::ui
 
 		OnDataChangedImpl(true);
 
-		localProperties_.values.clear();
+		auto& properties = pParent_->GetPanelProperties();
+		properties.values.clear();
 		// package data is saved by the caller
 		Apply(false);
 
@@ -73,7 +74,6 @@ namespace smp::ui
 		}
 
 		oldSettings_ = localSettings_;
-		oldProperties_ = localProperties_;
 
 		for (auto& pTab : tabs_)
 		{
@@ -96,7 +96,6 @@ namespace smp::ui
 		}
 
 		auto updatedSettings = oldSettings_.GeneratePanelSettings();
-		updatedSettings.properties = oldProperties_;
 		pParent_->UpdateSettings(updatedSettings);
 
 		// setting might've been modified by the script
@@ -111,7 +110,6 @@ namespace smp::ui
 	void CDialogConf::Revert()
 	{
 		localSettings_ = oldSettings_;
-		localProperties_ = oldProperties_;
 
 		for (auto& pTab : tabs_)
 		{
@@ -351,8 +349,6 @@ namespace smp::ui
 	{
 		oldSettings_ = pParent_->GetSettings();
 		localSettings_ = oldSettings_;
-		oldProperties_ = pParent_->GetPanelProperties();
-		localProperties_ = oldProperties_;
 
 		constexpr std::string_view kOverridenSuffix = " (overriden by script)";
 		if (pParent_->IsPanelIdOverridenByScript())

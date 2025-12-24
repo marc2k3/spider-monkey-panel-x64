@@ -1,5 +1,4 @@
 #pragma once
-#include <panel/fb_properties.h>
 #include <panel/js_panel_window.h>
 
 namespace mozjs
@@ -15,7 +14,6 @@ namespace mozjs
 		uint32_t GetInternalSize();
 
 	public:
-		static void Trace(JSTracer* trc, JSObject* obj);
 		void PrepareForGc();
 		[[nodiscard]] HWND GetHwnd() const;
 
@@ -91,7 +89,7 @@ namespace mozjs
 		void put_MinWidth(uint32_t width);
 
 	private:
-		Window(JSContext* ctx, smp::js_panel_window& parent, std::unique_ptr<FbProperties> properties);
+		Window(JSContext* ctx, smp::js_panel_window& parent);
 
 		struct DefineScriptOptions
 		{
@@ -110,7 +108,6 @@ namespace mozjs
 		JSContext* m_ctx{};
 		smp::js_panel_window& m_parent;
 		bool m_isFinalized{}, m_isScriptDefined{};
-		std::unique_ptr<FbProperties> m_properties;
 		JS::PersistentRootedObject m_tooltip;
 	};
 }

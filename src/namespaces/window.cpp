@@ -70,24 +70,73 @@ namespace
 		JS::RootedValue dummyRetVal(ctx);
 		return JS::Call(ctx, jsGlobal, jsFunc, jsVector, &dummyRetVal);
 	}
+
+	static smp::config::SerializedJsValue SerializeJsValue(JSContext* cx, JS::HandleValue jsValue)
+	{
+		smp::config::SerializedJsValue serializedValue;
+
+		if (jsValue.isBoolean())
+		{
+			serializedValue = jsValue.toBoolean();
+		}
+		else if (jsValue.isInt32())
+		{
+			serializedValue = jsValue.toInt32();
+		}
+		else if (jsValue.isDouble())
+		{
+			serializedValue = jsValue.toDouble();
+		}
+		else if (jsValue.isString())
+		{
+			JS::RootedValue rVal(cx, jsValue);
+			serializedValue = mozjs::convert::to_native::ToValue<std::string>(cx, rVal);
+		}
+		else
+		{
+			throw QwrException("Unsupported value type");
+		}
+
+		return serializedValue;
+	}
+
+	static void DeserializeJsValue(JSContext* cx, const smp::config::SerializedJsValue& serializedValue, JS::MutableHandleValue jsValue)
+	{
+		auto visitor = [cx, &jsValue](auto&& arg)
+			{
+				using T = std::decay_t<decltype(arg)>;
+
+				if constexpr (std::is_same_v<T, bool>)
+				{
+					jsValue.setBoolean(arg);
+				}
+				else if constexpr (std::is_same_v<T, int32_t>)
+				{
+					jsValue.setInt32(arg);
+				}
+				else if constexpr (std::is_same_v<T, double>)
+				{
+					jsValue.setDouble(arg);
+				}
+				else if constexpr (std::is_same_v<T, std::string>)
+				{
+					mozjs::convert::to_js::ToValue(cx, arg, jsValue);
+				}
+				else
+				{
+					static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
+				}
+			};
+
+		std::visit(visitor, serializedValue);
+	}
 }
 
 namespace
 {
 	using namespace mozjs;
 
-	JSClassOps jsOps = {
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		nullptr,
-		Window::FinalizeJsObject,
-		nullptr,
-		nullptr,
-		Window::Trace
-	};
+	DEFINE_JS_CLASS_OPS(Window::FinalizeJsObject)
 
 	DEFINE_JS_CLASS("Window")
 
@@ -205,48 +254,24 @@ namespace mozjs
 	const JSFunctionSpec* Window::JsFunctions = jsFunctions.data();
 	const JSPropertySpec* Window::JsProperties = jsProperties.data();
 
-	Window::Window(JSContext* ctx, js_panel_window& parent, std::unique_ptr<FbProperties> properties)
+	Window::Window(JSContext* ctx, js_panel_window& parent)
 		: m_ctx(ctx)
-		, m_parent(parent)
-		, m_properties(std::move(properties)) {}
+		, m_parent(parent) {}
 
 	Window::~Window() {}
 
 	std::unique_ptr<Window> Window::CreateNative(JSContext* ctx, js_panel_window& parentPanel)
 	{
-		auto fbProperties = FbProperties::Create(ctx, parentPanel);
-
-		if (fbProperties)
-		{
-			return std::unique_ptr<Window>(new Window(ctx, parentPanel, std::move(fbProperties)));
-		}
-
-		return nullptr;
+		return std::unique_ptr<Window>(new Window(ctx, parentPanel));
 	}
 
 	uint32_t Window::GetInternalSize()
 	{
-		return sizeof(FbProperties);
-	}
-
-	void Window::Trace(JSTracer* trc, JSObject* obj)
-	{
-		auto pNative = JsObjectBase<Window>::ExtractNativeUnchecked(obj);
-
-		if (pNative && pNative->m_properties)
-		{
-			pNative->m_properties->Trace(trc);
-		}
+		return 0u;
 	}
 
 	void Window::PrepareForGc()
 	{
-		if (m_properties)
-		{
-			m_properties->PrepareForGc();
-			m_properties.reset();
-		}
-
 		if (m_parent.m_native_tooltip)
 		{
 			m_parent.m_native_tooltip->PrepareForGc();
@@ -539,7 +564,24 @@ namespace mozjs
 			return JS::UndefinedValue();
 		}
 
-		return m_properties->GetProperty(name, defaultval);
+		auto& properties = m_parent.GetPanelProperties();
+		auto it = properties.values.find(name);
+
+		if (it != properties.values.end())
+		{
+			JS::RootedValue jsValue(m_ctx);
+			DeserializeJsValue(m_ctx, *it->second, &jsValue);
+			return jsValue;
+		}
+		else
+		{
+			// Not an error: user does not want to set default value
+			if (defaultval.isNullOrUndefined())
+				return JS::NullValue();
+
+			SetProperty(name, defaultval);
+			return defaultval;
+		}
 	}
 
 	JS::Value Window::GetPropertyWithOpt(size_t optArgCount, const std::wstring& name, JS::HandleValue defaultval)
@@ -671,7 +713,17 @@ namespace mozjs
 			return;
 		}
 
-		m_properties->SetProperty(name, val);
+		auto& properties = m_parent.GetPanelProperties();
+
+		if (val.isNullOrUndefined())
+		{
+			properties.values.erase(name);
+		}
+		else
+		{
+			auto serializedValue = SerializeJsValue(m_ctx, val);
+			properties.values.insert_or_assign(name, std::make_shared<smp::config::SerializedJsValue>(serializedValue));
+		}
 	}
 
 	void Window::SetPropertyWithOpt(size_t optArgCount, const std::wstring& name, JS::HandleValue val)
