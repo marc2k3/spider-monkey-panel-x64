@@ -6,22 +6,22 @@
 
 namespace
 {
-	constexpr uint32_t kDefaultHeapMaxMb = 1024L * 1024 * 1024;
-	constexpr uint32_t kDefaultHeapThresholdMb = 50L * 1024 * 1024;
-	constexpr uint32_t kHighFreqTimeLimitMs = 1000;
-	constexpr uint32_t kHighFreqBudgetMultiplier = 2;
-	constexpr uint32_t kHighFreqHeapGrowthMultiplier = 2;
+	constexpr uint32_t kDefaultHeapMaxMb = 1024u * 1024u * 1024u * 2u;
+	constexpr uint32_t kDefaultHeapThresholdMb = 50u * 1024u * 1024u;
+	constexpr uint32_t kHighFreqTimeLimitMs = 1000u;
+	constexpr uint32_t kHighFreqBudgetMultiplier = 2u;
+	constexpr uint32_t kHighFreqHeapGrowthMultiplier = 2u;
 
-	enum class CustomGcReason : std::underlying_type_t<JS::GCReason>
+	enum class CustomGcReason
 	{
-		kIncrementalNormal = static_cast<std::underlying_type_t<JS::GCReason>>(JS::GCReason::FIRST_FIREFOX_REASON),
+		kIncrementalNormal = JS::GCReason::FIRST_FIREFOX_REASON,
 		kIncrementalFull,
 		kNonIncremental
 	};
 
 	constexpr JS::GCReason GetGcReason(CustomGcReason customReason)
 	{
-		return JS::GCReason{ static_cast<std::underlying_type_t<CustomGcReason>>(customReason) };
+		return static_cast<JS::GCReason>(customReason);
 	}
 }
 
@@ -94,7 +94,7 @@ namespace mozjs
 		PerformGc(gcLevel);
 		UpdateGcStats();
 
-		return (lastTotalHeapSize_ < maxHeapSize_);
+		return lastTotalHeapSize_ < maxHeapSize_;
 	}
 
 	bool JsGc::TriggerGc()
@@ -105,13 +105,15 @@ namespace mozjs
 
 	void JsGc::UpdateGcConfig()
 	{
-		MEMORYSTATUSEX statex = { 0 };
+		MEMORYSTATUSEX statex{};
 		statex.dwLength = sizeof(statex);
-		BOOL bRet = GlobalMemoryStatusEx(&statex);
-		smp::CheckWinApi(!!bRet, "GlobalMemoryStatusEx");
+		const auto bRet = GlobalMemoryStatusEx(&statex);
+		smp::CheckWinApi(bRet == TRUE, "GlobalMemoryStatusEx");
 
-		if (!config::advanced::gc_max_heap.get())
-		{ // detect settings automatically
+
+		if (config::advanced::gc_max_heap.get() == ZERO)
+		{
+			// detect settings automatically
 			config::advanced::gc_max_heap = std::min<uint64_t>(statex.ullTotalPhys / 4, kDefaultHeapMaxMb);
 		}
 		else if (config::advanced::gc_max_heap.get() > statex.ullTotalPhys)
@@ -119,8 +121,9 @@ namespace mozjs
 			config::advanced::gc_max_heap = statex.ullTotalPhys;
 		}
 
-		if (!config::advanced::gc_max_heap_growth.get())
-		{ // detect settings automatically
+		if (config::advanced::gc_max_heap_growth.get() == ZERO)
+		{
+			// detect settings automatically
 			config::advanced::gc_max_heap_growth = std::min<uint64_t>(config::advanced::gc_max_heap.get() / 8, kDefaultHeapThresholdMb);
 		}
 		else if (config::advanced::gc_max_heap_growth.get() > config::advanced::gc_max_heap.get() / 2)
@@ -144,11 +147,13 @@ namespace mozjs
 	JsGc::GcLevel JsGc::GetRequiredGcLevel()
 	{
 		if (GcLevel gcLevel = GetGcLevelFromHeapSize(); gcLevel > GcLevel::None)
-		{ // heap trigger always has the highest priority
+		{
+			// heap trigger always has the highest priority
 			return gcLevel;
 		}
 		else if (JS::IsIncrementalGCInProgress(pJsCtx_) || isManuallyTriggered_ || GetGcLevelFromAllocCount() > GcLevel::None)
-		{                                 // currently alloc trigger can be at most `GcLevel::Incremental`
+		{
+			// currently alloc trigger can be at most `GcLevel::Incremental`
 			isManuallyTriggered_ = false; // reset trigger
 			return GcLevel::Incremental;
 		}
@@ -160,13 +165,17 @@ namespace mozjs
 
 	JsGc::GcLevel JsGc::GetGcLevelFromHeapSize()
 	{
-		uint64_t curTotalHeapSize = GetCurrentTotalHeapSize();
-		if (!lastTotalHeapSize_ || lastTotalHeapSize_ > curTotalHeapSize)
+		auto curTotalHeapSize = GetCurrentTotalHeapSize();
+
+		if (lastTotalHeapSize_ == ZERO || lastTotalHeapSize_ > curTotalHeapSize)
 		{
 			lastTotalHeapSize_ = curTotalHeapSize;
 		}
 
-		const uint32_t maxHeapGrowthRate = (isHighFrequency_ ? kHighFreqHeapGrowthMultiplier * heapGrowthRateTrigger_ : heapGrowthRateTrigger_);
+		const auto maxHeapGrowthRate = isHighFrequency_
+			? kHighFreqHeapGrowthMultiplier * heapGrowthRateTrigger_
+			: heapGrowthRateTrigger_;
+
 		if (curTotalHeapSize <= lastTotalHeapSize_ + maxHeapGrowthRate)
 		{
 			return GcLevel::None;
@@ -188,7 +197,7 @@ namespace mozjs
 	JsGc::GcLevel JsGc::GetGcLevelFromAllocCount()
 	{
 		uint64_t curTotalAllocCount = GetCurrentTotalAllocCount();
-		if (!lastTotalAllocCount_ || lastTotalAllocCount_ > curTotalAllocCount)
+		if (lastTotalAllocCount_ == ZERO || lastTotalAllocCount_ > curTotalAllocCount)
 		{
 			lastTotalAllocCount_ = curTotalAllocCount;
 		}
@@ -208,7 +217,8 @@ namespace mozjs
 	void JsGc::UpdateGcStats()
 	{
 		if (JS::IsIncrementalGCInProgress(pJsCtx_))
-		{ // update only after current gc cycle is finished
+		{
+			// update only after current gc cycle is finished
 			return;
 		}
 
@@ -217,10 +227,10 @@ namespace mozjs
 		lastTotalAllocCount_ = GetCurrentTotalAllocCount();
 
 		const auto curTime = timeGetTime();
-		isHighFrequency_ = (lastGcTime_
+
+		isHighFrequency_ = lastGcTime_
 			? curTime < (lastGcTime_ + kHighFreqTimeLimitMs)
-			: false
-			);
+			: false;
 
 		lastGcTime_ = curTime;
 	}
@@ -233,11 +243,11 @@ namespace mozjs
 			{
 				auto pCurTotalHeapSize = static_cast<uint64_t*>(data);
 				auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
-				if (!pNativeRealm)
+
+				if (pNativeRealm)
 				{
-					return;
+					*pCurTotalHeapSize += pNativeRealm->GetCurrentHeapBytes();
 				}
-				*pCurTotalHeapSize += pNativeRealm->GetCurrentHeapBytes();
 			});
 
 		return curTotalHeapSize;
@@ -245,16 +255,16 @@ namespace mozjs
 
 	uint64_t JsGc::GetCurrentTotalAllocCount()
 	{
-		uint64_t curTotalAllocCount = 0;
+		uint64_t curTotalAllocCount{};
+
 		JS::IterateRealms(pJsCtx_, &curTotalAllocCount, [](JSContext*, void* data, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& /*nogc*/)
 			{
 				auto pCurTotalAllocCount = static_cast<uint64_t*>(data);
 				auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
-				if (!pNativeRealm)
+				if (pNativeRealm)
 				{
-					return;
+					*pCurTotalAllocCount += pNativeRealm->GetCurrentAllocCount();
 				}
-				*pCurTotalAllocCount += pNativeRealm->GetCurrentAllocCount();
 			});
 
 		return curTotalAllocCount;
@@ -290,16 +300,16 @@ namespace mozjs
 
 	void JsGc::PrepareRealmsForGc(GcLevel gcLevel)
 	{
-		const auto markAllRealms = [&] {
-			JS::IterateRealms(pJsCtx_, nullptr, [](JSContext*, void*, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc) {
-				auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
-				if (!pNativeRealm)
-				{
-					return;
-				}
-
-				pNativeRealm->OnGcStart();
-				});
+		const auto markAllRealms = [this]
+			{
+				JS::IterateRealms(pJsCtx_, nullptr, [](JSContext*, void*, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc)
+					{
+						auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
+						if (pNativeRealm)
+						{
+							pNativeRealm->OnGcStart();
+						}
+					});
 			};
 
 		switch (gcLevel)
@@ -317,23 +327,24 @@ namespace mozjs
 			};
 
 			if (uint64_t curGlobalHeapSize = JS_GetGCParameter(pJsCtx_, JSGC_BYTES); curGlobalHeapSize > (lastGlobalHeapSize_ + triggers.heapGrowthRateTrigger))
-			{ // mark all, since we don't have any per-realm information about allocated native JS objects
+			{
+				// mark all, since we don't have any per-realm information about allocated native JS objects
 				markAllRealms();
 			}
 			else
 			{
 				JS::IterateRealms(pJsCtx_, &triggers, [](JSContext*, void* data, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc)
 					{
-						const TriggerData& pTriggerData = *reinterpret_cast<const TriggerData*>(data);
-
 						auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
 						if (!pNativeRealm)
 						{
 							return;
 						}
 
+						const TriggerData& pTriggerData = *reinterpret_cast<const TriggerData*>(data);
 						const bool hasHeapOvergrowth = pNativeRealm->GetCurrentHeapBytes() > (pNativeRealm->GetLastHeapBytes() + pTriggerData.heapGrowthRateTrigger);
 						const bool hasOveralloc = pNativeRealm->GetCurrentAllocCount() > (pNativeRealm->GetLastAllocCount() + pTriggerData.allocCountTrigger);
+
 						if (hasHeapOvergrowth || hasOveralloc || pNativeRealm->IsMarkedForDeletion())
 						{
 							pNativeRealm->OnGcStart();
@@ -376,16 +387,16 @@ namespace mozjs
 					}
 				});
 
-			if (!realms.empty())
+			if (realms.empty())
+			{
+				JS::PrepareForFullGC(pJsCtx_);
+			}
+			else
 			{
 				for (auto pRealm : realms)
 				{
 					JS::PrepareZoneForGC(pJsCtx_, js::GetRealmZone(pRealm));
 				}
-			}
-			else
-			{
-				JS::PrepareForFullGC(pJsCtx_);
 			}
 
 			JS::StartIncrementalGC(pJsCtx_, JS::GCOptions::Normal, GetGcReason(CustomGcReason::kIncrementalNormal), sliceBudget);
@@ -427,12 +438,8 @@ namespace mozjs
 		JS::IterateRealms(pJsCtx_, nullptr, [](JSContext*, void*, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc)
 			{
 				auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
-				if (!pNativeRealm)
-				{
-					return;
-				}
 
-				if (pNativeRealm->IsMarkedForGc())
+				if (pNativeRealm && pNativeRealm->IsMarkedForGc())
 				{
 					pNativeRealm->OnGcDone();
 				}

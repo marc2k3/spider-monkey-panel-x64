@@ -55,22 +55,24 @@ namespace mozjs
 		void NotifyRealmsOnGcEnd();
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
+		static constexpr auto ZERO = uint64_t{};
 
-		bool isManuallyTriggered_ = false;
-		bool isHighFrequency_ = false;
-		uint32_t lastGcCheckTime_ = 0;
-		uint32_t lastGcTime_ = 0;
-		uint64_t lastTotalHeapSize_ = 0;
-		uint64_t lastTotalAllocCount_ = 0;
-		uint64_t lastGlobalHeapSize_ = 0;
+		JSContext* pJsCtx_{};
+
+		bool isManuallyTriggered_{};
+		bool isHighFrequency_{};
+		uint32_t lastGcCheckTime_{};
+		uint32_t lastGcTime_{};
+		uint64_t lastTotalHeapSize_{};
+		uint64_t lastTotalAllocCount_{};
+		uint64_t lastGlobalHeapSize_{};
 
 		// These values are overwritten by config.
 		// Remain here mostly as a reference.
-		uint32_t maxHeapSize_ = 1024UL * 1024 * 1024;
-		uint32_t heapGrowthRateTrigger_ = 50UL * 1024 * 1024;
-		uint32_t gcSliceTimeBudget_ = 10;
-		uint32_t gcCheckDelay_ = 50;
-		uint32_t allocCountTrigger_ = 50;
+		uint32_t maxHeapSize_ = 1024u * 1024u * 1024u * 2u;
+		uint32_t heapGrowthRateTrigger_ = 50u * 1024u * 1024u;
+		uint32_t gcSliceTimeBudget_ = 10u;
+		uint32_t gcCheckDelay_ = 50u;
+		uint32_t allocCountTrigger_ = 50u;
 	};
 }
