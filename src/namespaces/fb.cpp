@@ -9,7 +9,6 @@
 #include <events/event_js_callback.h>
 #include <fb2k/mainmenu_dynamic.h>
 #include <fb2k/selection_holder_helper.h>
-#include <fb2k/stats.h>
 #include <interfaces/context_menu_manager.h>
 #include <interfaces/fb_audio_chunk.h>
 #include <interfaces/fb_metadb_handle.h>

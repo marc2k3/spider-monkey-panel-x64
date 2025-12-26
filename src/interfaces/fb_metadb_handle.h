@@ -16,15 +16,8 @@ namespace mozjs
 		metadb_handle_ptr& GetHandle();
 
 	public: // methods
-		void ClearStats();
 		bool Compare(JsFbMetadbHandle* handle);
 		JSObject* GetFileInfo();
-		void RefreshStats();
-		void SetFirstPlayed(const pfc::string8& first_played);
-		void SetLastPlayed(const pfc::string8& last_played);
-		void SetLoved(uint32_t loved);
-		void SetPlaycount(uint32_t playcount);
-		void SetRating(uint32_t rating);
 
 	public: // props
 		int64_t get_FileSize();

@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "fb_metadb_handle.h"
 
-#include <fb2k/stats.h>
 #include <interfaces/fb_file_info.h>
 
 namespace
@@ -12,27 +11,13 @@ namespace
 
 	DEFINE_JS_CLASS("FbMetadbHandle")
 
-	MJS_DEFINE_JS_FN_FROM_NATIVE(ClearStats, JsFbMetadbHandle::ClearStats)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Compare, JsFbMetadbHandle::Compare)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFileInfo, JsFbMetadbHandle::GetFileInfo)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(RefreshStats, JsFbMetadbHandle::RefreshStats)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(SetFirstPlayed, JsFbMetadbHandle::SetFirstPlayed)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(SetLastPlayed, JsFbMetadbHandle::SetLastPlayed)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(SetLoved, JsFbMetadbHandle::SetLoved)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(SetPlaycount, JsFbMetadbHandle::SetPlaycount)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(SetRating, JsFbMetadbHandle::SetRating)
 
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{
-			JS_FN("ClearStats", ClearStats, 0, kDefaultPropsFlags),
 			JS_FN("Compare", Compare, 1, kDefaultPropsFlags),
 			JS_FN("GetFileInfo", GetFileInfo, 0, kDefaultPropsFlags),
-			JS_FN("RefreshStats", RefreshStats, 0, kDefaultPropsFlags),
-			JS_FN("SetFirstPlayed", SetFirstPlayed, 1, kDefaultPropsFlags),
-			JS_FN("SetLastPlayed", SetLastPlayed, 1, kDefaultPropsFlags),
-			JS_FN("SetLoved", SetLoved, 1, kDefaultPropsFlags),
-			JS_FN("SetPlaycount", SetPlaycount, 1, kDefaultPropsFlags),
-			JS_FN("SetRating", SetRating, 1, kDefaultPropsFlags),
 			JS_FS_END,
 		});
 
@@ -81,14 +66,6 @@ namespace mozjs
 		return metadbHandle_;
 	}
 
-	void JsFbMetadbHandle::ClearStats()
-	{
-		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
-		{
-			stats::SetStats(hash, {});
-		}
-	}
-
 	bool JsFbMetadbHandle::Compare(JsFbMetadbHandle* handle)
 	{
 		QwrException::ExpectTrue(handle, "handle argument is null");
@@ -106,79 +83,6 @@ namespace mozjs
 		}
 
 		return JsFbFileInfo::CreateJs(pJsCtx_, containerInfo);
-	}
-
-	void JsFbMetadbHandle::RefreshStats()
-	{
-		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
-		{
-			stats::RefreshStats(hash);
-		}
-	}
-
-	void JsFbMetadbHandle::SetFirstPlayed(const pfc::string8& first_played)
-	{
-		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
-		{
-			stats::Fields tmp = stats::GetStats(hash);
-			if (tmp.first_played != first_played)
-			{
-				tmp.first_played = first_played;
-				stats::SetStats(hash, tmp);
-			}
-		}
-	}
-
-	void JsFbMetadbHandle::SetLastPlayed(const pfc::string8& last_played)
-	{
-		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
-		{
-			auto tmp = stats::GetStats(hash);
-			if (tmp.last_played != last_played)
-			{
-				tmp.last_played = last_played;
-				stats::SetStats(hash, tmp);
-			}
-		}
-	}
-
-	void JsFbMetadbHandle::SetLoved(uint32_t loved)
-	{
-		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
-		{
-			auto tmp = stats::GetStats(hash);
-			if (tmp.loved != loved)
-			{
-				tmp.loved = loved;
-				stats::SetStats(hash, tmp);
-			}
-		}
-	}
-
-	void JsFbMetadbHandle::SetPlaycount(uint32_t playcount)
-	{
-		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
-		{
-			auto tmp = stats::GetStats(hash);
-			if (tmp.playcount != playcount)
-			{
-				tmp.playcount = playcount;
-				stats::SetStats(hash, tmp);
-			}
-		}
-	}
-
-	void JsFbMetadbHandle::SetRating(uint32_t rating)
-	{
-		if (metadb_index_hash hash; stats::HashHandle(metadbHandle_, hash))
-		{
-			auto tmp = stats::GetStats(hash);
-			if (tmp.rating != rating)
-			{
-				tmp.rating = rating;
-				stats::SetStats(hash, tmp);
-			}
-		}
 	}
 
 	int64_t JsFbMetadbHandle::get_FileSize()

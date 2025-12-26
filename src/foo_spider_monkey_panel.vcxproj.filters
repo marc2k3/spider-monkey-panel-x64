@@ -28,9 +28,6 @@
     <ClCompile Include="ui\ui_slow_script.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="fb2k\stats.cpp">
-      <Filter>fb2k</Filter>
-    </ClCompile>
     <ClCompile Include="fb2k\mainmenu.cpp">
       <Filter>fb2k</Filter>
     </ClCompile>
@@ -207,12 +204,6 @@
     </ClCompile>
     <ClCompile Include="2K3\HTTPRequestAsync.cpp">
       <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="fb2k\track_property_provider_impl.cpp">
-      <Filter>fb2k</Filter>
-    </ClCompile>
-    <ClCompile Include="fb2k\metadb_display_field_provider_impl.cpp">
-      <Filter>fb2k</Filter>
     </ClCompile>
     <ClCompile Include="2K3\PlaylistLock.cpp">
       <Filter>2K3</Filter>
@@ -462,9 +453,6 @@
     </ClInclude>
     <ClInclude Include="ui\ui_slow_script.h">
       <Filter>ui</Filter>
-    </ClInclude>
-    <ClInclude Include="fb2k\stats.h">
-      <Filter>fb2k</Filter>
     </ClInclude>
     <ClInclude Include="panel\modal_blocking_scope.h">
       <Filter>panel</Filter>

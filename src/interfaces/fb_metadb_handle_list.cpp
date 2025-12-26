@@ -4,7 +4,6 @@
 #include <2K3/Attach.hpp>
 #include <2K3/CustomSort.hpp>
 #include <2K3/TagWriter.hpp>
-#include <fb2k/stats.h>
 #include <interfaces/fb_metadb_handle.h>
 #include <interfaces/fb_metadb_handle_list_iterator.h>
 #include <interfaces/fb_title_format.h>
@@ -38,7 +37,6 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE(OrderByFormat, JsFbMetadbHandleList::OrderByFormat);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(OrderByPath, JsFbMetadbHandleList::OrderByPath);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(OrderByRelativePath, JsFbMetadbHandleList::OrderByRelativePath);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(RefreshStats, JsFbMetadbHandleList::RefreshStats);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Remove, JsFbMetadbHandleList::Remove);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(RemoveAll, JsFbMetadbHandleList::RemoveAll);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(RemoveById, JsFbMetadbHandleList::RemoveById);
@@ -70,7 +68,6 @@ namespace
 			JS_FN("OrderByFormat", OrderByFormat, 2, kDefaultPropsFlags),
 			JS_FN("OrderByPath", OrderByPath, 0, kDefaultPropsFlags),
 			JS_FN("OrderByRelativePath", OrderByRelativePath, 0, kDefaultPropsFlags),
-			JS_FN("RefreshStats", RefreshStats, 0, kDefaultPropsFlags),
 			JS_FN("Remove", Remove, 1, kDefaultPropsFlags),
 			JS_FN("RemoveAll", RemoveAll, 0, kDefaultPropsFlags),
 			JS_FN("RemoveAttachedImage", RemoveAttachedImage, 1, kDefaultPropsFlags),
@@ -458,21 +455,6 @@ namespace mozjs
 
 		auto order = CustomSort::sort(items);
 		metadbHandleList_.reorder(order.get_ptr());
-	}
-
-	void JsFbMetadbHandleList::RefreshStats()
-	{
-		pfc::list_t<metadb_index_hash> hashes;
-		for (const auto& handle : metadbHandleList_)
-		{
-			metadb_index_hash hash;
-			if (smp::stats::HashHandle(handle, hash))
-			{
-				hashes.add_item(hash);
-			}
-		}
-
-		smp::stats::RefreshStats(hashes);
 	}
 
 	void JsFbMetadbHandleList::Remove(JsFbMetadbHandle* handle)

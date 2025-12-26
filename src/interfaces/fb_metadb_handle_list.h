@@ -55,7 +55,6 @@ namespace mozjs
 		void OrderByFormat(JsFbTitleFormat* script, int8_t direction);
 		void OrderByPath();
 		void OrderByRelativePath();
-		void RefreshStats();
 		void Remove(JsFbMetadbHandle* handle);
 		void RemoveAll();
 		void RemoveAttachedImage(uint32_t art_id);

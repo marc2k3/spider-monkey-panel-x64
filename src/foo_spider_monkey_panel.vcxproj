@@ -123,8 +123,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="config\package_utils.cpp" />
     <ClCompile Include="config\panel_config.cpp" />
     <ClCompile Include="config\parsed_panel_config.cpp" />
-    <ClCompile Include="fb2k\metadb_display_field_provider_impl.cpp" />
-    <ClCompile Include="fb2k\track_property_provider_impl.cpp" />
     <ClCompile Include="initquit.cpp" />
     <ClCompile Include="events\event.cpp" />
     <ClCompile Include="events\event_drag.cpp" />
@@ -140,7 +138,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="fb2k\mainmenu.cpp" />
     <ClCompile Include="fb2k\mainmenu_dynamic.cpp" />
     <ClCompile Include="fb2k\selection_holder_helper.cpp" />
-    <ClCompile Include="fb2k\stats.cpp" />
     <ClCompile Include="interfaces\active_x_object.cpp" />
     <ClCompile Include="interfaces\active_x_object_iterator.cpp" />
     <ClCompile Include="interfaces\context_menu_manager.cpp" />
@@ -292,7 +289,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="fb2k\advanced_config.h" />
     <ClInclude Include="fb2k\mainmenu_dynamic.h" />
     <ClInclude Include="fb2k\selection_holder_helper.h" />
-    <ClInclude Include="fb2k\stats.h" />
     <ClInclude Include="interfaces\active_x_object.h" />
     <ClInclude Include="interfaces\active_x_object_iterator.h" />
     <ClInclude Include="interfaces\context_menu_manager.h" />
