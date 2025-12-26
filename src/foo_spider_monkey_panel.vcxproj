@@ -122,7 +122,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="config\delayed_package_utils.cpp" />
     <ClCompile Include="config\package_utils.cpp" />
     <ClCompile Include="config\panel_config.cpp" />
-    <ClCompile Include="config\panel_config_json.cpp" />
     <ClCompile Include="config\parsed_panel_config.cpp" />
     <ClCompile Include="fb2k\metadb_display_field_provider_impl.cpp" />
     <ClCompile Include="fb2k\track_property_provider_impl.cpp" />
@@ -280,7 +279,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="config\delayed_package_utils.h" />
     <ClInclude Include="config\package_utils.h" />
     <ClInclude Include="config\panel_config.h" />
-    <ClInclude Include="config\panel_config_json.h" />
     <ClInclude Include="config\parsed_panel_config.h" />
     <ClInclude Include="events\event.h" />
     <ClInclude Include="events\event_drag.h" />

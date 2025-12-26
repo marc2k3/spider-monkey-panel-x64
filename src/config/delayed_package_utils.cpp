@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "delayed_package_utils.h"
 
-#include <2K3/String.hpp>
 #include <2K3/TextFile.hpp>
 #include <config/package_utils.h>
 

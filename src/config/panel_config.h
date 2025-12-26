@@ -66,4 +66,3 @@ namespace smp::config
 		ScriptVariant payload;
 	};
 }
-
