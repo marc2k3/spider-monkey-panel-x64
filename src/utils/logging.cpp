@@ -12,9 +12,4 @@ namespace smp
 	{
 		FB2K_console_formatter() << fmt::format(SMP_UNDERSCORE_NAME ":\nWarning:\n{}\n", message);
 	}
-
-	void LogDebug(const std::string& message)
-	{
-		FB2K_console_formatter() << fmt::format(SMP_UNDERSCORE_NAME ":\nDebug:\n{}\n", message);
-	}
 }

@@ -1,12 +1,8 @@
 #pragma once
-#include <timeout/time_types.h>
 #include <timeout/timer_interface_fwd.h>
 
 namespace smp
 {
-	class PanelTarget;
-	class TimerManager_Native;
-
 	class Timer_Native final : public ITimer, public std::enable_shared_from_this<Timer_Native>
 	{
 	public:

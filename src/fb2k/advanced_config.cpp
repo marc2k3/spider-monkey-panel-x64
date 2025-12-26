@@ -4,15 +4,23 @@
 
 namespace
 {
-	advconfig_branch_factory branch_smp("Spider Monkey Panel", smp::guid::adv_branch, advconfig_branch::guid_branch_tools, 0);
-	advconfig_branch_factory branch_performance("Performance: restart is required", smp::guid::adv_branch_performance, smp::guid::adv_branch, 0);
-	advconfig_branch_factory branch_gc("GC", smp::guid::adv_branch_gc, smp::guid::adv_branch_performance, 0);
-	advconfig_branch_factory branch_debug("Debugging", smp::guid::adv_branch_debug, smp::guid::adv_branch, 99);
-	advconfig_branch_factory branch_log("Logging", smp::guid::adv_branch_log, smp::guid::adv_branch_debug, 0);
+	advconfig_branch_factory branch_smp("Spider Monkey Panel: restart is required", smp::guid::adv_branch, advconfig_branch::guid_branch_tools, 0.0);
+	advconfig_branch_factory branch_gc("Garbage collect", smp::guid::adv_branch_gc, smp::guid::adv_branch, 2.0);
 }
 
 namespace config::advanced
 {
+	advconfig_integer_factory slow_script_limit(
+		"Script execution time limit before triggering a `slow script` warning (in seconds)",
+		smp::guid::adv_var_slow_script_limit,
+		smp::guid::adv_branch,
+		1.0,
+		5,
+		0,
+		60,
+		preferences_state::needs_restart
+	);
+
 	advconfig_integer_factory gc_max_heap(
 		"Maximum heap size (in bytes) (0 - auto configuration)",
 		smp::guid::adv_var_gc_max_heap,
@@ -20,7 +28,8 @@ namespace config::advanced
 		0.0,
 		0,
 		0,
-		std::numeric_limits<uint32_t>::max()
+		std::numeric_limits<uint32_t>::max(),
+		preferences_state::needs_restart
 	);
 
 	advconfig_integer_factory gc_max_heap_growth(
@@ -30,7 +39,8 @@ namespace config::advanced
 		1.0,
 		0,
 		0,
-		256UL * 1024 * 1024
+		256UL * 1024 * 1024,
+		preferences_state::needs_restart
 	);
 
 	advconfig_integer_factory gc_budget(
@@ -40,7 +50,8 @@ namespace config::advanced
 		2.0,
 		5,
 		1,
-		100
+		100,
+		preferences_state::needs_restart
 	);
 
 	advconfig_integer_factory gc_delay(
@@ -50,7 +61,8 @@ namespace config::advanced
 		3.0,
 		50,
 		1,
-		500
+		500,
+		preferences_state::needs_restart
 	);
 
 	advconfig_integer_factory gc_max_alloc_increase(
@@ -60,32 +72,7 @@ namespace config::advanced
 		4.0,
 		1000,
 		1,
-		100000
-	);
-
-	advconfig_integer_factory performance_max_runtime(
-		"Script execution time limit before triggering a `slow script` warning (in seconds)",
-		smp::guid::adv_var_performance_max_runtime,
-		smp::guid::adv_branch_performance,
-		5.0,
-		5,
-		0,
-		60
-	);
-
-	advconfig_checkbox_factory debug_log_extended_include_error(
-		"Log additional information when `include()` fails",
-		smp::guid::adv_var_log_include_search_paths,
-		smp::guid::adv_branch_log,
-		50.0,
-		false
-	);
-
-	advconfig_checkbox_factory debug_use_custom_timer_engine(
-		"Use custom timer engine",
-		smp::guid::adv_var_debug_timer_engine,
-		smp::guid::adv_branch_debug,
-		60.0,
-		false
+		100000,
+		preferences_state::needs_restart
 	);
 }

@@ -1,11 +1,8 @@
 #pragma once
-#include <timeout/time_types.h>
+#include "timer_native.h"
 
 namespace smp
 {
-	class PanelTarget;
-	class Timer_Native;
-
 	class TimerManager_Native
 	{
 	public:

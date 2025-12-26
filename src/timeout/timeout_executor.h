@@ -1,7 +1,7 @@
 #pragma once
+#include "timeout.h"
+
 #include <events/event.h>
-#include <timeout/timeout.h>
-#include <timeout/timer_interface.h>
 
 namespace smp
 {
@@ -60,7 +60,5 @@ namespace smp
 		std::shared_ptr<ITimer> pTimer_;
 		Mode mode_ = Mode::None;
 		std::optional<TimeStamp> deadlineOpt_;
-
-		bool usedCustomTimerEngine_ = false;
 	};
 }

@@ -1,8 +1,5 @@
 #pragma once
-#include <events/event.h>
-#include <timeout/time_types.h>
-
-// TODO: add nesting clamp (<https://searchfox.org/mozilla-central/source/dom/base/TimeoutManager.cpp>)
+#include "timer_interface_fwd.h"
 
 namespace smp
 {

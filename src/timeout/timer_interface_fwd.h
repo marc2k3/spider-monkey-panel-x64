@@ -1,13 +1,13 @@
 #pragma once
-#include <timeout/time_types.h>
 
 namespace smp
 {
+	using TimeStamp = std::chrono::time_point<std::chrono::steady_clock>;
+	using TimeDuration = TimeStamp::duration;
+
 	class PanelTarget;
 	class Timer_Native;
 	class TimerManager_Native;
-	class Timer_Custom;
-	class TimerManager_Custom;
 
 	struct TimerNotifyTask
 	{

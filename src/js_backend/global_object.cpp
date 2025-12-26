@@ -46,14 +46,6 @@ namespace
 					{
 						return;
 					}
-
-					if (config::advanced::debug_log_extended_include_error)
-					{
-						smp::LogDebug(fmt::format(
-							"`include()` failed:\n "
-							"  `{}` is not a regular file\n",
-							pathToVerify.u8string()));
-					}
 					::ThrowInvalidPathError(pathToVerify);
 				};
 
@@ -62,14 +54,6 @@ namespace
 					if (fs::exists(pathToVerify))
 					{
 						return;
-					}
-
-					if (config::advanced::debug_log_extended_include_error)
-					{
-						smp::LogDebug(fmt::format(
-							"`include()` failed:\n "
-							"  `{}` does not exist\n",
-							pathToVerify.u8string()));
 					}
 					::ThrowInvalidPathError(pathToVerify);
 				};
@@ -91,15 +75,6 @@ namespace
 						verifyRegularFile(curPath);
 						return curPath.lexically_normal();
 					}
-				}
-
-				if (config::advanced::debug_log_extended_include_error)
-				{
-					smp::LogDebug(fmt::format(fmt::runtime(
-						"`include()` failed:\n"
-						"  file `{}` coud not be found using the following search paths:\n"
-						"    {}\n"),
-						fmt::join(searchPaths | ranges::views::transform([](const auto& path) { return fmt::format("    `{}`", path.u8string()); }), "\n  ")));
 				}
 				::ThrowInvalidPathError(path);
 			}

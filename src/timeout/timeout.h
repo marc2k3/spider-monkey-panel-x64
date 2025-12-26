@@ -1,5 +1,5 @@
 #pragma once
-#include <timeout/time_types.h>
+#include "timer_interface_fwd.h"
 
 namespace smp
 {

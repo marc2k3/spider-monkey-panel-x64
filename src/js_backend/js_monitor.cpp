@@ -20,8 +20,7 @@ namespace
 
 namespace mozjs
 {
-
-	JsMonitor::JsMonitor() : slowScriptLimit_(config::advanced::performance_max_runtime.get())
+	JsMonitor::JsMonitor() : slowScriptLimit_(config::advanced::slow_script_limit.get())
 	{ // JsMonitor might be created before fb2k is fully initialized
 		fb2k::inMainThread([&hFb2k = hFb2k_] { hFb2k = core_api::get_main_window(); });
 	}

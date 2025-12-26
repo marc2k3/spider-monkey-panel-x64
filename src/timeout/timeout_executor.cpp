@@ -1,20 +1,12 @@
 #include <stdafx.h>
 #include "timeout_executor.h"
 
+#include "timeout_manager.h"
+#include "timer_manager_native.h"
+
 #include <events/event_dispatcher.h>
 #include <fb2k/advanced_config.h>
 #include <panel/js_panel_window.h>
-#include <timeout/timeout_manager.h>
-#include <timeout/timer_interface.h>
-#include <timeout/timer_manager_native.h>
-
-namespace
-{
-	auto GetAllowedEarlyFiringTime()
-	{
-		return (config::advanced::debug_use_custom_timer_engine.get() ? smp::TimerManager_Custom::Get().GetAllowedEarlyFiringTime() : smp::TimerManager_Native::Get().GetAllowedEarlyFiringTime());
-	}
-}
 
 namespace smp
 {
@@ -83,7 +75,7 @@ namespace smp
 	{
 		const auto now = TimeStamp::clock::now();
 
-		if (targetDeadline <= (now + GetAllowedEarlyFiringTime()))
+		if (targetDeadline <= (now + TimerManager_Native::GetAllowedEarlyFiringTime()))
 		{
 			return ScheduleImmediate(targetDeadline, now);
 		}
@@ -120,26 +112,12 @@ namespace smp
 
 	void TimeoutExecutor::ScheduleDelayed(const TimeStamp& targetDeadline, const TimeStamp& now)
 	{
-		const auto useCustomTimerEngine = config::advanced::debug_use_custom_timer_engine.get();
-		if (pTimer_ && usedCustomTimerEngine_ != useCustomTimerEngine)
-		{
-			usedCustomTimerEngine_ = useCustomTimerEngine;
-			pTimer_->Cancel(true);
-			pTimer_.reset();
-		}
-
 		if (!pTimer_)
 		{
-			if (config::advanced::debug_use_custom_timer_engine.get())
-			{
-				pTimer_ = TimerManager_Custom::Get().CreateTimer(pTarget_);
-			}
-			else
-			{
-				pTimer_ = TimerManager_Native::Get().CreateTimer(pTarget_);
-			}
+			pTimer_ = TimerManager_Native::Get().CreateTimer(pTarget_);
+
 			// Re-evaluate if we should have scheduled this immediately
-			if (targetDeadline <= (now + GetAllowedEarlyFiringTime()))
+			if (targetDeadline <= (now + TimerManager_Native::GetAllowedEarlyFiringTime()))
 			{
 				return ScheduleImmediate(targetDeadline, now);
 			}
@@ -177,7 +155,7 @@ namespace smp
 		// and proceed.  If there are no timers ready we will get rescheduled
 		// by TimeoutManager.
 		const auto now = TimeStamp::clock::now();
-		const auto limit = now + GetAllowedEarlyFiringTime();
+		const auto limit = now + TimerManager_Native::GetAllowedEarlyFiringTime();
 		if (deadline > limit)
 		{
 			deadline = limit;

@@ -1,10 +1,11 @@
 #include <stdafx.h>
 #include "timeout_manager.h"
 
+#include "timeout_executor.h"
+
 #include <events/event_js_executor.h>
 #include <js_backend/js_async_task.h>
 #include <panel/js_panel_window.h>
-#include <timeout/timeout_executor.h>
 
 namespace smp
 {
