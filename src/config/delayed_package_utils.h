@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::config
+namespace config
 {
 	enum class PackageDelayStatus
 	{

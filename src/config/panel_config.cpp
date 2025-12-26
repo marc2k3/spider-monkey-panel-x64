@@ -29,7 +29,7 @@ namespace
 	constexpr const char kSettingsJsonConfigVersion[] = "1";
 	constexpr const char kSettingsJsonConfigId[] = "settings";
 
-	JSON SerializePropertiesToObject(const smp::config::PanelProperties& properties)
+	JSON SerializePropertiesToObject(const config::PanelProperties& properties)
 	{
 		auto jsonValues = JSON::object();
 
@@ -51,14 +51,14 @@ namespace
 		});
 	}
 
-	std::string SerializeProperties(const smp::config::PanelProperties& properties)
+	std::string SerializeProperties(const config::PanelProperties& properties)
 	{
 		return SerializePropertiesToObject(properties).dump(2);
 	}
 
-	smp::config::PanelProperties DeserializePropertiesFromObject(const JSON& jsonMain)
+	config::PanelProperties DeserializePropertiesFromObject(const JSON& jsonMain)
 	{
-		smp::config::PanelProperties properties;
+		config::PanelProperties properties;
 
 		if (!jsonMain.is_object())
 		{
@@ -84,7 +84,7 @@ namespace
 				throw QwrException("Corrupted serialized properties: empty key");
 			}
 
-			smp::config::SerializedJsValue serializedValue;
+			config::SerializedJsValue serializedValue;
 
 			if (value.is_boolean())
 			{
@@ -107,22 +107,22 @@ namespace
 				continue;
 			}
 
-			properties.values.emplace(smp::ToWide(key), std::make_shared<smp::config::SerializedJsValue>(serializedValue));
+			properties.values.emplace(smp::ToWide(key), std::make_shared<config::SerializedJsValue>(serializedValue));
 		}
 
 		return properties;
 	}
 
-	smp::config::PanelProperties DeserializeProperties(const std::string& str)
+	config::PanelProperties DeserializeProperties(const std::string& str)
 	{
 		return DeserializePropertiesFromObject(JSON::parse(str, nullptr, false));
 	}
 
-	smp::config::PanelSettings LoadSettings(stream_reader* reader, abort_callback& abort)
+	config::PanelSettings LoadSettings(stream_reader* reader, abort_callback& abort)
 	{
 		try
 		{
-			smp::config::PanelSettings panelSettings;
+			config::PanelSettings panelSettings;
 			const auto jsonMain = JSON::parse(reader->read_string(abort).get_ptr());
 
 			if (jsonMain.at("version").get<std::string>() != kSettingsJsonConfigVersion || jsonMain.at("id").get<std::string>() != kSettingsJsonConfigId)
@@ -143,7 +143,7 @@ namespace
 			{
 			case ScriptType::SimpleInMemory:
 			{
-				panelSettings.payload = smp::config::PanelSettings_InMemory{ jsonPayload.at("script").get<std::string>() };
+				panelSettings.payload = config::PanelSettings_InMemory{ jsonPayload.at("script").get<std::string>() };
 				break;
 			}
 			case ScriptType::SimpleFile:
@@ -175,17 +175,17 @@ namespace
 						}
 					}();
 
-				panelSettings.payload = smp::config::PanelSettings_File{ fullPath.u8string() };
+				panelSettings.payload = config::PanelSettings_File{ fullPath.u8string() };
 				break;
 			}
 			case ScriptType::SimpleSample:
 			{
-				panelSettings.payload = smp::config::PanelSettings_Sample{ jsonPayload.at("sampleName").get<std::string>() };
+				panelSettings.payload = config::PanelSettings_Sample{ jsonPayload.at("sampleName").get<std::string>() };
 				break;
 			}
 			case ScriptType::Package:
 			{
-				panelSettings.payload = smp::config::PanelSettings_Package{
+				panelSettings.payload = config::PanelSettings_Package{
 					jsonPayload.at("id").get<std::string>(),
 					jsonPayload.at("name").get<std::string>(),
 					jsonPayload.at("author").get<std::string>()
@@ -217,7 +217,7 @@ namespace
 		}
 	}
 
-	void SaveSettings(stream_writer* writer, abort_callback& abort, const smp::config::PanelSettings& settings)
+	void SaveSettings(stream_writer* writer, abort_callback& abort, const config::PanelSettings& settings)
 	{
 		try
 		{
@@ -230,12 +230,12 @@ namespace
 			const auto scriptType = std::visit([&jsonPayload](const auto& data)
 				{
 					using T = std::decay_t<decltype(data)>;
-					if constexpr (std::is_same_v<T, smp::config::PanelSettings_InMemory>)
+					if constexpr (std::is_same_v<T, config::PanelSettings_InMemory>)
 					{
 						jsonPayload.push_back({ "script", data.script });
 						return ScriptType::SimpleInMemory;
 					}
-					else if constexpr (std::is_same_v<T, smp::config::PanelSettings_File>)
+					else if constexpr (std::is_same_v<T, config::PanelSettings_File>)
 					{
 						const auto [path, locationType] = [wpath = smp::ToWide(data.path)]
 							{
@@ -272,12 +272,12 @@ namespace
 						jsonPayload.push_back({ "locationType", locationType });
 						return ScriptType::SimpleFile;
 					}
-					else if constexpr (std::is_same_v<T, smp::config::PanelSettings_Sample>)
+					else if constexpr (std::is_same_v<T, config::PanelSettings_Sample>)
 					{
 						jsonPayload.push_back({ "sampleName", data.sampleName });
 						return ScriptType::SimpleSample;
 					}
-					else if constexpr (std::is_same_v<T, smp::config::PanelSettings_Package>)
+					else if constexpr (std::is_same_v<T, config::PanelSettings_Package>)
 					{
 						jsonPayload.push_back({ "id", data.id });
 						jsonPayload.push_back({ "name", data.name });
@@ -312,7 +312,7 @@ namespace
 		}
 	}
 
-	void SaveProperties(stream_writer* writer, abort_callback& abort, const smp::config::PanelProperties& properties)
+	void SaveProperties(stream_writer* writer, abort_callback& abort, const config::PanelProperties& properties)
 	{
 		try
 		{
@@ -325,7 +325,7 @@ namespace
 	}
 }
 
-namespace smp::config
+namespace config
 {
 	PanelProperties PanelProperties::FromJson(const std::string& jsonString)
 	{
@@ -354,7 +354,7 @@ namespace smp::config
 
 	void PanelSettings::ResetToDefault()
 	{
-		const auto guidStr = GuidToStr(GenerateGuid());
+		const auto guidStr = smp::GuidToStr(smp::GenerateGuid());
 
 		payload = PanelSettings_InMemory{};
 		isPseudoTransparent = false;

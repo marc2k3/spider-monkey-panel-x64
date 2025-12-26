@@ -1,7 +1,7 @@
 #pragma once
 #include <config/panel_config.h>
 
-namespace smp::config
+namespace config
 {
 	enum class ScriptSourceType : uint8_t
 	{

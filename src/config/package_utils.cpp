@@ -9,8 +9,6 @@ namespace fs = std::filesystem;
 
 namespace
 {
-	using namespace smp;
-
 	void Parse_PackageFromPath(const fs::path& packageDir, config::ParsedPanelSettings& parsedSettings)
 	{
 		try
@@ -23,7 +21,7 @@ namespace
 			QwrException::ExpectTrue(fs::exists(packageJsonFile), "Corrupted package: can't find `package.json`");
 
 			parsedSettings.scriptPath = (packageDir / config::GetRelativePathToMainFile());
-			parsedSettings.isSample = (packageDir.parent_path() == path::Packages_Sample());
+			parsedSettings.isSample = (packageDir.parent_path() == smp::path::Packages_Sample());
 
 			const auto str = TextFile(packageJsonFile.native()).read();
 			const auto jsonMain = JSON::parse(str);
@@ -101,7 +99,7 @@ namespace
 	}
 }
 
-namespace smp::config
+namespace config
 {
 	const fs::path& GetRelativePathToMainFile()
 	{
@@ -119,9 +117,9 @@ namespace smp::config
 			std::string id;
 			do
 			{
-				const auto guidStr = GuidToStr(GenerateGuid());
+				const auto guidStr = smp::GuidToStr(smp::GenerateGuid());
 				id = smp::ToU8(guidStr);
-				packagePath = path::Packages_Profile() / id;
+				packagePath = smp::path::Packages_Profile() / id;
 			} while (fs::exists(packagePath));
 
 			settings.packageId = id;
@@ -141,7 +139,7 @@ namespace smp::config
 
 		try
 		{
-			for (const auto& path: { path::Packages_Sample(), path::Packages_Profile(), path::Packages_Foobar2000() })
+			for (const auto& path: { smp::path::Packages_Sample(), smp::path::Packages_Profile(), smp::path::Packages_Foobar2000() })
 			{
 				const auto targetPath = path / packageId;
 				if (fs::exists(targetPath) && fs::is_directory(targetPath))
@@ -190,7 +188,7 @@ namespace smp::config
 
 	fs::path GetPackageStorageDir(const ParsedPanelSettings& settings)
 	{
-		return path::Packages_Storage() / *settings.packageId;
+		return smp::path::Packages_Storage() / *settings.packageId;
 	}
 
 	fs::path GetPackagePath(const ParsedPanelSettings& settings)

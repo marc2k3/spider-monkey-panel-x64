@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::config
+namespace config
 {
 	using SerializedJsValue = std::variant<bool, int32_t, double, std::string>;
 

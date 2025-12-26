@@ -19,7 +19,7 @@ namespace
 		{
 			if (stage == init_stages::before_config_read)
 			{
-				smp::config::ProcessDelayedPackages();
+				config::ProcessDelayedPackages();
 			}
 			else if (stage == init_stages::before_ui_init)
 			{

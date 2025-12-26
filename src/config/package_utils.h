@@ -1,7 +1,7 @@
 #pragma once
 #include <config/parsed_panel_config.h>
 
-namespace smp::config
+namespace config
 {
 	// TODO: cleanup methods and their naming
 

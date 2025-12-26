@@ -35,7 +35,7 @@ namespace smp
 
 		void ReloadScript();
 		void LoadSettings(stream_reader* reader, t_size size, abort_callback& abort, bool reloadPanel = true);
-		bool UpdateSettings(const smp::config::PanelSettings& settings, bool reloadPanel = true);
+		bool UpdateSettings(const config::PanelSettings& settings, bool reloadPanel = true);
 		bool SaveSettings(stream_writer* writer, abort_callback& abort) const;
 
 		bool IsPanelIdOverridenByScript() const;

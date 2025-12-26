@@ -12,7 +12,7 @@ namespace
 {
 	auto GetAllowedEarlyFiringTime()
 	{
-		return (smp::config::advanced::debug_use_custom_timer_engine.get() ? smp::TimerManager_Custom::Get().GetAllowedEarlyFiringTime() : smp::TimerManager_Native::Get().GetAllowedEarlyFiringTime());
+		return (config::advanced::debug_use_custom_timer_engine.get() ? smp::TimerManager_Custom::Get().GetAllowedEarlyFiringTime() : smp::TimerManager_Native::Get().GetAllowedEarlyFiringTime());
 	}
 }
 

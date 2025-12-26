@@ -7,8 +7,6 @@ namespace fs = std::filesystem;
 
 namespace
 {
-	using namespace smp;
-
 	void Parse_InMemory(const config::PanelSettings_InMemory& settings, config::ParsedPanelSettings& parsedSettings)
 	{
 		parsedSettings.enableDragDrop = settings.enableDragDrop;
@@ -26,7 +24,7 @@ namespace
 		namespace fs = std::filesystem;
 		try
 		{
-			parsedSettings.scriptPath = (path::ScriptSamples() / settings.sampleName);
+			parsedSettings.scriptPath = (smp::path::ScriptSamples() / settings.sampleName);
 			parsedSettings.isSample = true;
 		}
 		catch (const fs::filesystem_error& e)
@@ -112,7 +110,7 @@ namespace
 	config::PanelSettings_Sample GetPayload_Sample(const config::ParsedPanelSettings& parsedSettings)
 	{
 		config::PanelSettings_Sample payload;
-		payload.sampleName = fs::relative(*parsedSettings.scriptPath, path::ScriptSamples()).u8string();
+		payload.sampleName = fs::relative(*parsedSettings.scriptPath, smp::path::ScriptSamples()).u8string();
 		return payload;
 	}
 
@@ -133,7 +131,7 @@ namespace
 	}
 }
 
-namespace smp::config
+namespace config
 {
 	ParsedPanelSettings ParsedPanelSettings::GetDefault()
 	{
@@ -148,19 +146,19 @@ namespace smp::config
 
 		std::visit([&parsedSettings](const auto& data) {
 			using T = std::decay_t<decltype(data)>;
-			if constexpr (std::is_same_v<T, smp::config::PanelSettings_InMemory>)
+			if constexpr (std::is_same_v<T, PanelSettings_InMemory>)
 			{
 				Parse_InMemory(data, parsedSettings);
 			}
-			else if constexpr (std::is_same_v<T, smp::config::PanelSettings_File>)
+			else if constexpr (std::is_same_v<T, PanelSettings_File>)
 			{
 				Parse_File(data, parsedSettings);
 			}
-			else if constexpr (std::is_same_v<T, smp::config::PanelSettings_Sample>)
+			else if constexpr (std::is_same_v<T, PanelSettings_Sample>)
 			{
 				Parse_Sample(data, parsedSettings);
 			}
-			else if constexpr (std::is_same_v<T, smp::config::PanelSettings_Package>)
+			else if constexpr (std::is_same_v<T, PanelSettings_Package>)
 			{
 				Parse_Package(data, parsedSettings);
 			}

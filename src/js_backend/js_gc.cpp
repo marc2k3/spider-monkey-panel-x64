@@ -29,11 +29,9 @@ namespace mozjs
 {
 	uint32_t JsGc::GetMaxHeap()
 	{
-		namespace smp_advconf = smp::config::advanced;
-
 		UpdateGcConfig();
 
-		return static_cast<uint32_t>(smp_advconf::gc_max_heap.get());
+		return static_cast<uint32_t>(config::advanced::gc_max_heap.get());
 	}
 
 	uint64_t JsGc::GetTotalHeapUsageForGlobal(JSContext*, JS::HandleObject jsGlobal)
@@ -49,17 +47,15 @@ namespace mozjs
 
 	void JsGc::Initialize(JSContext* pJsCtx)
 	{
-		namespace smp_advconf = smp::config::advanced;
-
 		pJsCtx_ = pJsCtx;
 
 		UpdateGcConfig();
 
-		maxHeapSize_ = static_cast<uint32_t>(smp_advconf::gc_max_heap.get());
-		heapGrowthRateTrigger_ = static_cast<uint32_t>(smp_advconf::gc_max_heap_growth.get());
-		gcSliceTimeBudget_ = static_cast<uint32_t>(smp_advconf::gc_budget.get());
-		gcCheckDelay_ = static_cast<uint32_t>(smp_advconf::gc_delay.get());
-		allocCountTrigger_ = static_cast<uint32_t>(smp_advconf::gc_max_alloc_increase.get());
+		maxHeapSize_ = static_cast<uint32_t>(config::advanced::gc_max_heap.get());
+		heapGrowthRateTrigger_ = static_cast<uint32_t>(config::advanced::gc_max_heap_growth.get());
+		gcSliceTimeBudget_ = static_cast<uint32_t>(config::advanced::gc_budget.get());
+		gcCheckDelay_ = static_cast<uint32_t>(config::advanced::gc_delay.get());
+		allocCountTrigger_ = static_cast<uint32_t>(config::advanced::gc_max_alloc_increase.get());
 
 		JS_SetGCParameter(pJsCtx_, JSGC_INCREMENTAL_GC_ENABLED, 1);
 		// The following two parameters are not used, since we are doing everything manually.
@@ -109,29 +105,27 @@ namespace mozjs
 
 	void JsGc::UpdateGcConfig()
 	{
-		namespace smp_advconf = smp::config::advanced;
-
 		MEMORYSTATUSEX statex = { 0 };
 		statex.dwLength = sizeof(statex);
 		BOOL bRet = GlobalMemoryStatusEx(&statex);
 		smp::CheckWinApi(!!bRet, "GlobalMemoryStatusEx");
 
-		if (!smp_advconf::gc_max_heap.get())
+		if (!config::advanced::gc_max_heap.get())
 		{ // detect settings automatically
-			smp_advconf::gc_max_heap = std::min<uint64_t>(statex.ullTotalPhys / 4, kDefaultHeapMaxMb);
+			config::advanced::gc_max_heap = std::min<uint64_t>(statex.ullTotalPhys / 4, kDefaultHeapMaxMb);
 		}
-		else if (smp_advconf::gc_max_heap.get() > statex.ullTotalPhys)
+		else if (config::advanced::gc_max_heap.get() > statex.ullTotalPhys)
 		{
-			smp_advconf::gc_max_heap = statex.ullTotalPhys;
+			config::advanced::gc_max_heap = statex.ullTotalPhys;
 		}
 
-		if (!smp_advconf::gc_max_heap_growth.get())
+		if (!config::advanced::gc_max_heap_growth.get())
 		{ // detect settings automatically
-			smp_advconf::gc_max_heap_growth = std::min<uint64_t>(smp_advconf::gc_max_heap.get() / 8, kDefaultHeapThresholdMb);
+			config::advanced::gc_max_heap_growth = std::min<uint64_t>(config::advanced::gc_max_heap.get() / 8, kDefaultHeapThresholdMb);
 		}
-		else if (smp_advconf::gc_max_heap_growth.get() > smp_advconf::gc_max_heap.get() / 2)
+		else if (config::advanced::gc_max_heap_growth.get() > config::advanced::gc_max_heap.get() / 2)
 		{
-			smp_advconf::gc_max_heap_growth = smp_advconf::gc_max_heap.get() / 2;
+			config::advanced::gc_max_heap_growth = config::advanced::gc_max_heap.get() / 2;
 		}
 	}
 

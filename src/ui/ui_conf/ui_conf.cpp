@@ -10,9 +10,9 @@
 
 namespace
 {
-	bool IsCleanSlate(const smp::config::ParsedPanelSettings& settings)
+	bool IsCleanSlate(const config::ParsedPanelSettings& settings)
 	{
-		return (settings.script == smp::config::PanelSettings_InMemory::GetDefaultScript());
+		return (settings.script == config::PanelSettings_InMemory::GetDefaultScript());
 	}
 
 	WINDOWPLACEMENT g_WindowPlacement{};

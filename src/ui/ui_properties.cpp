@@ -130,7 +130,7 @@ namespace smp::ui
 
 				try
 				{
-					m_property_values = smp::config::PanelProperties::FromJson(str).values;
+					m_property_values = config::PanelProperties::FromJson(str).values;
 					UpdateUiFromData();
 				}
 				catch (const QwrException& e)

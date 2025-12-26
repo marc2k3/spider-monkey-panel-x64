@@ -432,7 +432,7 @@ namespace smp::ui
 				if (it == sampleData_.cend())
 				{
 					smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't find sample `{}`. Your settings will be reset.", smp::ToU8(sampleName)));
-					UpdateOnSrcChange(settings_, smp::config::ParsedPanelSettings::GetDefault());
+					UpdateOnSrcChange(settings_, config::ParsedPanelSettings::GetDefault());
 					return 0;
 				}
 

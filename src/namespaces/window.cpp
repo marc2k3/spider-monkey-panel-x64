@@ -71,9 +71,9 @@ namespace
 		return JS::Call(ctx, jsGlobal, jsFunc, jsVector, &dummyRetVal);
 	}
 
-	static smp::config::SerializedJsValue SerializeJsValue(JSContext* cx, JS::HandleValue jsValue)
+	static config::SerializedJsValue SerializeJsValue(JSContext* cx, JS::HandleValue jsValue)
 	{
-		smp::config::SerializedJsValue serializedValue;
+		config::SerializedJsValue serializedValue;
 
 		if (jsValue.isBoolean())
 		{
@@ -100,7 +100,7 @@ namespace
 		return serializedValue;
 	}
 
-	static void DeserializeJsValue(JSContext* cx, const smp::config::SerializedJsValue& serializedValue, JS::MutableHandleValue jsValue)
+	static void DeserializeJsValue(JSContext* cx, const config::SerializedJsValue& serializedValue, JS::MutableHandleValue jsValue)
 	{
 		auto visitor = [cx, &jsValue](auto&& arg)
 			{
@@ -722,7 +722,7 @@ namespace mozjs
 		else
 		{
 			auto serializedValue = SerializeJsValue(m_ctx, val);
-			properties.values.insert_or_assign(name, std::make_shared<smp::config::SerializedJsValue>(serializedValue));
+			properties.values.insert_or_assign(name, std::make_shared<config::SerializedJsValue>(serializedValue));
 		}
 	}
 

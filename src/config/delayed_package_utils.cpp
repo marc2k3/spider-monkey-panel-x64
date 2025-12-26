@@ -8,8 +8,6 @@ namespace fs = std::filesystem;
 
 namespace
 {
-	using namespace smp;
-
 	void ForceRemoveDirContents(const fs::path& dir) noexcept
 	{
 		std::error_code ec;
@@ -51,7 +49,7 @@ namespace
 	/// @throw QwrException
 	void CheckPackageBackups()
 	{
-		const auto dir = path::TempFolder_PackageBackups();
+		const auto dir = smp::path::TempFolder_PackageBackups();
 
 		if (!fs::exists(dir) || !fs::is_directory(dir))
 		{
@@ -86,15 +84,15 @@ namespace
 	/// @throw QwrException
 	void UpdatePackages()
 	{
-		const auto packagesToProcessDir = path::TempFolder_PackagesToInstall();
+		const auto packagesToProcessDir = smp::path::TempFolder_PackagesToInstall();
 		if (!fs::exists(packagesToProcessDir) || !fs::is_directory(packagesToProcessDir))
 		{
 			fs::remove_all(packagesToProcessDir);
 			return;
 		}
 
-		const auto packagesDir = path::Packages_Profile();
-		const auto packageBackupsDir = path::TempFolder_PackageBackups();
+		const auto packagesDir = smp::path::Packages_Profile();
+		const auto packageBackupsDir = smp::path::TempFolder_PackageBackups();
 
 		for (const auto& newPackageDir: fs::directory_iterator(packagesToProcessDir))
 		{
@@ -145,7 +143,7 @@ namespace
 				fs::remove_all(packageToUpdateDir);
 				fs::create_directories(packageToUpdateDir.parent_path());
 				fs::rename(newPackageDir, packageToUpdateDir);
-				smp::config::ClearPackageDelayStatus(packageId);
+				config::ClearPackageDelayStatus(packageId);
 				ForceRemoveDir(packageBackupDir);
 			}
 			catch (const fs::filesystem_error&)
@@ -186,44 +184,44 @@ namespace
 	/// @throw std::filesystem::filesystem_error
 	void RemovePackages()
 	{
-		const auto packagesToProcessDir = path::TempFolder_PackagesToRemove();
+		const auto packagesToProcessDir = smp::path::TempFolder_PackagesToRemove();
 		if (!fs::exists(packagesToProcessDir) || !fs::is_directory(packagesToProcessDir))
 		{
 			fs::remove_all(packagesToProcessDir);
 			return;
 		}
 
-		const auto packagesDir = path::Packages_Profile();
+		const auto packagesDir = smp::path::Packages_Profile();
 
 		for (const auto& packageContent: fs::directory_iterator(packagesToProcessDir))
 		{
 			const auto packageId = packageContent.path().filename().u8string();
 			fs::remove_all(packagesDir / packageId);
 
-			smp::config::ClearPackageDelayStatus(packageId);
+			config::ClearPackageDelayStatus(packageId);
 		}
 
 		fs::remove_all(packagesToProcessDir);
 	}
 }
 
-namespace smp::config
+namespace config
 {
 	bool IsPackageInUse(const std::string& packageId) noexcept
 	{
 		std::error_code ec;
-		return fs::exists(path::TempFolder_PackagesInUse() / packageId, ec);
+		return fs::exists(smp::path::TempFolder_PackagesInUse() / packageId, ec);
 	}
 
 	PackageDelayStatus GetPackageDelayStatus(const std::string& packageId)
 	{
 		try
 		{
-			if (fs::exists(path::TempFolder_PackagesToRemove() / packageId))
+			if (fs::exists(smp::path::TempFolder_PackagesToRemove() / packageId))
 			{
 				return PackageDelayStatus::ToBeRemoved;
 			}
-			else if (const auto packagePath = path::TempFolder_PackagesToInstall() / packageId; fs::exists(packagePath) && fs::is_directory(packagePath))
+			else if (const auto packagePath = smp::path::TempFolder_PackagesToInstall() / packageId; fs::exists(packagePath) && fs::is_directory(packagePath))
 			{
 				return PackageDelayStatus::ToBeUpdated;
 			}
@@ -242,7 +240,7 @@ namespace smp::config
 	{
 		try
 		{
-			for (const auto& path: { path::TempFolder_PackagesToRemove() / packageId, path::TempFolder_PackagesToInstall() / packageId })
+			for (const auto& path: { smp::path::TempFolder_PackagesToRemove() / packageId, smp::path::TempFolder_PackagesToInstall() / packageId })
 			{
 				fs::remove_all(path);
 			}
@@ -258,7 +256,7 @@ namespace smp::config
 		ClearPackageDelayStatus(packageId);
 		try
 		{
-			const auto path = path::TempFolder_PackagesToRemove() / packageId;
+			const auto path = smp::path::TempFolder_PackagesToRemove() / packageId;
 
 			fs::create_directories(path.parent_path());
 			std::ofstream f(path);
@@ -275,7 +273,7 @@ namespace smp::config
 		ClearPackageDelayStatus(packageId);
 		try
 		{
-			const auto path = path::TempFolder_PackagesToInstall() / packageId;
+			const auto path = smp::path::TempFolder_PackagesToInstall() / packageId;
 
 			fs::create_directories(path);
 			fs::copy(packageContent, path, fs::copy_options::recursive);
@@ -290,7 +288,7 @@ namespace smp::config
 	{
 		try
 		{
-			const auto path = path::TempFolder_PackagesInUse() / packageId;
+			const auto path = smp::path::TempFolder_PackagesInUse() / packageId;
 
 			fs::create_directories(path.parent_path());
 			std::ofstream f(path);
@@ -306,8 +304,8 @@ namespace smp::config
 	{
 		try
 		{
-			fs::remove_all(path::TempFolder_PackagesInUse());
-			fs::remove_all(path::TempFolder_PackageUnpack());
+			fs::remove_all(smp::path::TempFolder_PackagesInUse());
+			fs::remove_all(smp::path::TempFolder_PackageUnpack());
 			::RemovePackages();
 			::CheckPackageBackups();
 			::UpdatePackages();
