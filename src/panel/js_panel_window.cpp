@@ -18,7 +18,6 @@
 #include <ui/ui_properties.h>
 #include <utils/gdi_helpers.h>
 #include <utils/image_helpers.h>
-#include <utils/logging.h>
 
 namespace smp
 {
@@ -1346,8 +1345,9 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			LogWarning(e.what());
+			FB2K_console_formatter() << fmt::format("{} warning: {}", SMP_NAME, e.what());
 		}
+
 		DynamicMainMenuManager::Get().RegisterPanel(wnd_, settings_.panelId);
 
 		wnd_.SetWindowPos(nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);

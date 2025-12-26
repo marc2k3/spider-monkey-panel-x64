@@ -5,7 +5,6 @@
 #include <events/event_timer.h>
 #include <panel/js_panel_window.h>
 #include <timeout/timer_native.h>
-#include <utils/logging.h>
 
 namespace smp
 {
@@ -58,7 +57,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			LogError(e.what());
+			FB2K_console_formatter() << fmt::format("{} error: {}", SMP_NAME, e.what());
 			return nullptr;
 		}
 

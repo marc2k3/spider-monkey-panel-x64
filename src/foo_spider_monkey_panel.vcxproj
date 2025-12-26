@@ -220,7 +220,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="utils\image_helpers.cpp" />
     <ClCompile Include="utils\kmeans.cpp" />
     <ClCompile Include="utils\location_processor.cpp" />
-    <ClCompile Include="utils\logging.cpp" />
     <ClCompile Include="utils\menu_helpers.cpp" />
     <ClCompile Include="utils\text_helpers.cpp" />
     <ClCompile Include="utils\thread_pool.cpp" />
@@ -380,7 +379,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="utils\js_exception.h" />
     <ClInclude Include="utils\kmeans.h" />
     <ClInclude Include="utils\location_processor.h" />
-    <ClInclude Include="utils\logging.h" />
     <ClInclude Include="utils\menu_helpers.h" />
     <ClInclude Include="utils\qwr_exception.h" />
     <ClInclude Include="utils\text_helpers.h" />

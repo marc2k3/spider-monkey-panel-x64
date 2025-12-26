@@ -1,8 +1,6 @@
 #include <stdafx.h>
 #include "drop_target_impl.h"
 
-#include <utils/logging.h>
-
 _COM_SMARTPTR_TYPEDEF(IDropTargetHelper, IID_IDropTargetHelper);
 
 namespace
@@ -20,6 +18,11 @@ namespace
 			}();
 
 		return dth;
+	}
+
+	void log_dnd_error(std::string_view what)
+	{
+		FB2K_console_formatter() << fmt::format("{}: DnD initialization failed:\n {}", SMP_NAME, what);
 	}
 }
 
@@ -54,15 +57,14 @@ namespace smp::com
 		}
 
 		POINT point{ pt.x, pt.y };
+
 		try
 		{
 			GetDropTargetHelper()->DragEnter(hWnd_, pDataObj, &point, *pdwEffect);
 		}
 		catch (const QwrException& e)
 		{
-			smp::LogWarning(fmt::format("DnD initialization failed:\n"
-												"  {}",
-												e.what()));
+			log_dnd_error(e.what());
 			return E_FAIL;
 		}
 
@@ -85,9 +87,7 @@ namespace smp::com
 		}
 		catch (const QwrException& e)
 		{
-			smp::LogWarning(fmt::format("DnD initialization failed:\n"
-												"  {}",
-												e.what()));
+			log_dnd_error(e.what());
 			return E_FAIL;
 		}
 
@@ -104,9 +104,7 @@ namespace smp::com
 		}
 		catch (const QwrException& e)
 		{
-			smp::LogWarning(fmt::format("DnD initialization failed:\n"
-												"  {}",
-												e.what()));
+			log_dnd_error(e.what());
 			return E_FAIL;
 		}
 
@@ -133,7 +131,7 @@ namespace smp::com
 		}
 		catch (const QwrException& e)
 		{
-			smp::LogWarning(fmt::format("DnD initialization failed:\n  {}", e.what()));
+			log_dnd_error(e.what());
 			return E_FAIL;
 		}
 
@@ -141,5 +139,4 @@ namespace smp::com
 
 		return S_OK;
 	}
-
 }

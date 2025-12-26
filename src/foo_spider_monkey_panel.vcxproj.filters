@@ -130,9 +130,6 @@
     <ClCompile Include="timeout\timer_native.cpp">
       <Filter>timeout</Filter>
     </ClCompile>
-    <ClCompile Include="utils\logging.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="namespaces\console.cpp">
       <Filter>namespaces</Filter>
     </ClCompile>
@@ -565,9 +562,6 @@
     </ClInclude>
     <ClInclude Include="timeout\timer_interface_fwd.h">
       <Filter>timeout</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\logging.h">
-      <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="namespaces\console.h">
       <Filter>namespaces</Filter>

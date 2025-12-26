@@ -21,7 +21,6 @@
 #include <namespaces/utils.h>
 #include <namespaces/window.h>
 #include <panel/js_panel_window.h>
-#include <utils/logging.h>
 
 namespace fs = std::filesystem;
 using namespace mozjs;
