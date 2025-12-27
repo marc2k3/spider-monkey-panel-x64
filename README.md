@@ -15,6 +15,11 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.27
+- Remove `Spider Monkey` built in `Playback Statistics`. Do not update if you make use of this.
+- Rework advanced preferences removing an option that caused a crash if enabled. This bug was present in the last official `1.6.1` release.
+- The default max heap size has been doubled to 2GB. You may need to right click and reset the advanced preference node to see this.
+
 ## 1.7.25.12.22
 - Fix various properties dialog bugs.
 
