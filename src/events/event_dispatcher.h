@@ -17,7 +17,7 @@ public:
 	EventDispatcher(const EventDispatcher&) = delete;
 	EventDispatcher& operator=(const EventDispatcher&) = delete;
 
-	static [[nodiscard]] EventDispatcher& Get() noexcept;
+	[[nodiscard]] static EventDispatcher& Get() noexcept;
 
 public:
 	void AddWindow(HWND hWnd, std::shared_ptr<PanelTarget> pTarget) noexcept;
@@ -26,7 +26,7 @@ public:
 	void NotifyAllAboutExit() noexcept;
 
 public:
-	static [[nodiscard]] bool IsRequestEventMessage(UINT msg) noexcept;
+	[[nodiscard]] static bool IsRequestEventMessage(UINT msg) noexcept;
 	bool ProcessNextEvent(HWND hWnd) noexcept;
 	void RequestNextEvent(HWND hWnd) noexcept;
 	void OnRequestEventMessageReceived(HWND hWnd) noexcept;

@@ -7,8 +7,6 @@
 #include <com_utils/drop_source_impl.h>
 #include <events/event_dispatcher.h>
 #include <events/event_js_callback.h>
-#include <fb2k/mainmenu_dynamic.h>
-#include <fb2k/selection_holder_helper.h>
 #include <interfaces/context_menu_manager.h>
 #include <interfaces/fb_audio_chunk.h>
 #include <interfaces/fb_metadb_handle.h>
@@ -20,6 +18,7 @@
 #include <interfaces/main_menu_manager.h>
 #include <panel/modal_blocking_scope.h>
 #include <panel/user_message.h>
+#include <utils/mainmenu_dynamic.h>
 #include <utils/menu_helpers.h>
 
 namespace
@@ -629,10 +628,13 @@ namespace
 
 		uint32_t Fb::GetSelectionType()
 		{
-			const GUID type = ui_selection_manager_v2::get()->get_selection_type(0);
-			const auto holderIdOpt = GetSelectionHolderTypeFromGuid(type);
+			const auto type = ui_selection_manager_v2::get()->get_selection_type(0u);
+			const auto it = std::ranges::find_if(JsFbUiSelectionHolder::selection_ids, [type](const GUID* g)
+				{
+					return *g == type;
+				});
 
-			return holderIdOpt.value_or(0);
+			return static_cast<uint32_t>(std::ranges::distance(JsFbUiSelectionHolder::selection_ids.begin(), it));
 		}
 
 		bool Fb::IsLibraryEnabled()

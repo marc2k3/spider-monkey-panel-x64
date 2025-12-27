@@ -19,7 +19,7 @@ namespace mozjs
 		GlobalHeapManager(const GlobalHeapManager&) = delete;
 		GlobalHeapManager& operator=(const GlobalHeapManager&) = delete;
 
-		static [[nodiscard]] std::unique_ptr<GlobalHeapManager> Create(JSContext* cx);
+		[[nodiscard]] static std::unique_ptr<GlobalHeapManager> Create(JSContext* cx);
 
 	public:
 		void RegisterUser(IHeapUser* heapUser);

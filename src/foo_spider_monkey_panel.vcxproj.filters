@@ -28,9 +28,6 @@
     <ClCompile Include="ui\ui_slow_script.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="fb2k\mainmenu.cpp">
-      <Filter>fb2k</Filter>
-    </ClCompile>
     <ClCompile Include="panel\modal_blocking_scope.cpp">
       <Filter>panel</Filter>
     </ClCompile>
@@ -45,9 +42,6 @@
     </ClCompile>
     <ClCompile Include="initquit.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="fb2k\advanced_config.cpp">
-      <Filter>fb2k</Filter>
-    </ClCompile>
     <ClCompile Include="config\panel_config.cpp">
       <Filter>config</Filter>
     </ClCompile>
@@ -72,18 +66,12 @@
     <ClCompile Include="ui\ui_package_manager.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="fb2k\selection_holder_helper.cpp">
-      <Filter>fb2k</Filter>
-    </ClCompile>
     <ClCompile Include="component_paths.cpp" />
     <ClCompile Include="utils\guid_helpers.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="config\delayed_package_utils.cpp">
       <Filter>config</Filter>
-    </ClCompile>
-    <ClCompile Include="fb2k\mainmenu_dynamic.cpp">
-      <Filter>fb2k</Filter>
     </ClCompile>
     <ClCompile Include="events\event_js_task.cpp">
       <Filter>events</Filter>
@@ -416,6 +404,15 @@
     <ClCompile Include="ui\ui_properties.cpp">
       <Filter>ui</Filter>
     </ClCompile>
+    <ClCompile Include="config\advanced_config.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\mainmenu.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\mainmenu_dynamic.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\kmeans.h">
@@ -468,9 +465,6 @@
     </ClInclude>
     <ClInclude Include="component_guids.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="fb2k\advanced_config.h">
-      <Filter>fb2k</Filter>
-    </ClInclude>
     <ClInclude Include="component_defines.h" />
     <ClInclude Include="config\panel_config.h">
       <Filter>config</Filter>
@@ -496,9 +490,6 @@
     <ClInclude Include="ui\ui_package_manager.h">
       <Filter>ui</Filter>
     </ClInclude>
-    <ClInclude Include="fb2k\selection_holder_helper.h">
-      <Filter>fb2k</Filter>
-    </ClInclude>
     <ClInclude Include="resources\resource.h">
       <Filter>resources</Filter>
     </ClInclude>
@@ -508,9 +499,6 @@
     </ClInclude>
     <ClInclude Include="config\delayed_package_utils.h">
       <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="fb2k\mainmenu_dynamic.h">
-      <Filter>fb2k</Filter>
     </ClInclude>
     <ClInclude Include="events\event_js_task.h">
       <Filter>events</Filter>
@@ -891,6 +879,12 @@
     <ClInclude Include="2K3\FontHelper.hpp">
       <Filter>2K3</Filter>
     </ClInclude>
+    <ClInclude Include="config\advanced_config.h">
+      <Filter>config</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\mainmenu_dynamic.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">
@@ -901,9 +895,6 @@
     </Filter>
     <Filter Include="panel">
       <UniqueIdentifier>{2f9c6262-875a-41df-aa19-160e57b518a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="fb2k">
-      <UniqueIdentifier>{ac5224df-edd3-4867-9751-947b7d18cf80}</UniqueIdentifier>
     </Filter>
     <Filter Include="resources">
       <UniqueIdentifier>{c5622339-902d-4569-9e43-3a9dab7b21a7}</UniqueIdentifier>

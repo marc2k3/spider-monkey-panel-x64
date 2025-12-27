@@ -2,12 +2,12 @@
 
 namespace smp::colour
 {
-	constexpr [[nodiscard]] COLORREF ArgbToColorref(DWORD argb)
+	[[nodiscard]] constexpr COLORREF ArgbToColorref(DWORD argb)
 	{
 		return RGB(argb >> RED_SHIFT, argb >> GREEN_SHIFT, argb >> BLUE_SHIFT);
 	}
 
-	constexpr [[nodiscard]] DWORD ColorrefToArgb(COLORREF color)
+	[[nodiscard]] constexpr DWORD ColorrefToArgb(COLORREF color)
 	{
 		// COLORREF : 0x00bbggrr
 		// ARGB : 0xaarrggbb

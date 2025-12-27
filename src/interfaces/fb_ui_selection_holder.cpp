@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "fb_ui_selection_holder.h"
 
-#include <fb2k/selection_holder_helper.h>
 #include <interfaces/fb_metadb_handle_list.h>
 
 namespace
@@ -67,11 +66,9 @@ namespace mozjs
 	void JsFbUiSelectionHolder::SetSelection(JsFbMetadbHandleList* handles, uint8_t type)
 	{
 		QwrException::ExpectTrue(handles, "handles argument is null");
+		QwrException::ExpectTrue(type < selection_ids.size(), "Unknown selection holder type: {}", type);
 
-		const auto holderGuidOpt = smp::GetSelectionHolderGuidFromType(type);
-		QwrException::ExpectTrue(holderGuidOpt.has_value(), "Unknown selection holder type: {}", type);
-
-		holder_->set_selection_ex(handles->GetHandleList(), *holderGuidOpt);
+		holder_->set_selection_ex(handles->GetHandleList(), *selection_ids[type]);
 	}
 
 	void JsFbUiSelectionHolder::SetSelectionWithOpt(size_t optArgCount, JsFbMetadbHandleList* handles, uint8_t type)

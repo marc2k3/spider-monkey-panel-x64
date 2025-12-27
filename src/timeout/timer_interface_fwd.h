@@ -25,8 +25,8 @@ namespace smp
 
 		virtual void Fire(uint64_t generation) = 0;
 
-		virtual [[nodiscard]] PanelTarget& Target() const = 0;
-		virtual [[nodiscard]] const TimeStamp& When() const = 0;
-		virtual [[nodiscard]] uint64_t Generation() const = 0;
+		[[nodiscard]] virtual PanelTarget& Target() const = 0;
+		[[nodiscard]] virtual const TimeStamp& When() const = 0;
+		[[nodiscard]] virtual uint64_t Generation() const = 0;
 	};
 }

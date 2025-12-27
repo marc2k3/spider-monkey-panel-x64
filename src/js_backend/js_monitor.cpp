@@ -3,7 +3,7 @@
 #include <stdafx.h>
 #include "js_monitor.h"
 
-#include <fb2k/advanced_config.h>
+#include <config/advanced_config.h>
 #include <panel/js_panel_window.h>
 #include <panel/modal_blocking_scope.h>
 #include <ui/ui_slow_script.h>

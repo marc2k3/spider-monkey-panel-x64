@@ -6,7 +6,7 @@ namespace smp
 	class TimerManager_Native
 	{
 	public:
-		static [[nodiscard]] TimerManager_Native& Get();
+		[[nodiscard]] static TimerManager_Native& Get();
 
 		void Finalize();
 

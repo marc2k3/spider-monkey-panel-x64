@@ -1,5 +1,4 @@
 #pragma once
-#include <fb2k/advanced_config.h>
 
 namespace mozjs
 {
@@ -33,7 +32,7 @@ namespace mozjs
 	class AutoJsReport
 	{
 	public:
-		explicit [[nodiscard]] AutoJsReport(JSContext* cx);
+		[[nodiscard]] explicit AutoJsReport(JSContext* cx);
 		~AutoJsReport() noexcept;
 
 		void Disable();

@@ -10,7 +10,7 @@ namespace smp
 		HeartbeatWindow& operator=(HeartbeatWindow&) = delete;
 
 		/// @throw QwrException
-		static [[nodiscard]] std::unique_ptr<HeartbeatWindow> Create();
+		[[nodiscard]] static std::unique_ptr<HeartbeatWindow> Create();
 
 		[[nodiscard]] HWND GetHwnd() const;
 

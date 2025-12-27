@@ -10,7 +10,6 @@
 #include <events/event_drag.h>
 #include <events/event_js_callback.h>
 #include <events/event_mouse.h>
-#include <fb2k/mainmenu_dynamic.h>
 #include <panel/drag_action_params.h>
 #include <panel/edit_script.h>
 #include <panel/modal_blocking_scope.h>
@@ -18,6 +17,7 @@
 #include <ui/ui_properties.h>
 #include <utils/gdi_helpers.h>
 #include <utils/image_helpers.h>
+#include <utils/mainmenu_dynamic.h>
 
 namespace smp
 {

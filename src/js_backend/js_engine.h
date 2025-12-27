@@ -13,7 +13,7 @@ namespace mozjs
 		JsEngine(const JsEngine&) = delete;
 		JsEngine& operator=(const JsEngine&) = delete;
 
-		static [[nodiscard]] JsEngine& GetInstance() noexcept;
+		[[nodiscard]] static JsEngine& GetInstance() noexcept;
 		void PrepareForExit() noexcept;
 
 	public: // methods accessed by JsContainer
