@@ -3,8 +3,6 @@
 #include <events/event_dispatcher.h>
 #include <events/event_js_callback.h>
 
-using namespace smp;
-
 namespace
 {
 	class MainMenuCommands_Predefined : public mainmenu_commands
@@ -62,10 +60,7 @@ namespace
 	GUID MainMenuCommands_Predefined::get_command(uint32_t p_index)
 	{
 		if (p_index >= menuObjects_.size())
-		{
-			uBugCheck();
-			return pfc::guid_null;
-		}
+			FB2K_BugCheck();
 
 		return menuObjects_[p_index];
 	}
@@ -73,12 +68,9 @@ namespace
 	void MainMenuCommands_Predefined::get_name(uint32_t p_index, pfc::string_base& p_out)
 	{
 		if (p_index >= menuObjects_.size())
-		{
-			uBugCheck();
-		}
+			FB2K_BugCheck();
 
-		p_out.reset();
-		p_out << (p_index + 1);
+		p_out = pfc::format_uint(p_index + 1);
 	}
 
 	bool MainMenuCommands_Predefined::get_description(uint32_t /* p_index */, pfc::string_base& p_out)
@@ -89,12 +81,12 @@ namespace
 
 	GUID MainMenuCommands_Predefined::get_parent()
 	{
-		return guid::mainmenu_group_predefined;
+		return smp::guid::mainmenu_group_predefined;
 	}
 
 	void MainMenuCommands_Predefined::execute(uint32_t p_index, service_ptr_t<service_base>)
 	{
-		EventDispatcher::Get().PutEventToAll(GenerateEvent_JsCallback(EventId::kStaticMainMenu, p_index + 1), EventPriority::kInput);
+		smp::EventDispatcher::Get().PutEventToAll(smp::GenerateEvent_JsCallback(smp::EventId::kStaticMainMenu, p_index + 1), smp::EventPriority::kInput);
 	}
 
 	bool MainMenuCommands_Predefined::get_display(uint32_t p_index, pfc::string_base& p_out, uint32_t& p_flags)
@@ -112,33 +104,23 @@ namespace
 	GUID MainMenuCommands_Help::get_command(uint32_t p_index)
 	{
 		if (p_index != 0)
-		{
-			uBugCheck();
-			return pfc::guid_null;
-		}
+			FB2K_BugCheck();
 
-		return guid::mainmenu_node_help_docs;
+		return smp::guid::mainmenu_node_help_docs;
 	}
 
 	void MainMenuCommands_Help::get_name(uint32_t p_index, pfc::string_base& p_out)
 	{
 		if (p_index != 0)
-		{
-			uBugCheck();
-			return;
-		}
+			FB2K_BugCheck();
 
-		p_out.reset();
-		p_out << "Spider Monkey Panel help";
+		p_out = "Spider Monkey Panel help";
 	}
 
 	bool MainMenuCommands_Help::get_description(uint32_t p_index, pfc::string_base& p_out)
 	{
 		if (p_index != 0)
-		{
-			uBugCheck();
-			return false;
-		}
+			FB2K_BugCheck();
 
 		p_out = "View Spider Monkey Panel documentation files";
 		return true;
@@ -152,26 +134,20 @@ namespace
 	void MainMenuCommands_Help::execute(uint32_t p_index, service_ptr_t<service_base>)
 	{
 		if (p_index != 0)
-		{
-			uBugCheck();
-			return;
-		}
-		ShellExecute(nullptr, L"open", path::JsDocsIndex().c_str(), nullptr, nullptr, SW_SHOW);
+			FB2K_BugCheck();
+
+		ShellExecuteW(nullptr, L"open", smp::path::JsDocsIndex().c_str(), nullptr, nullptr, SW_SHOW);
 	}
 
 	bool MainMenuCommands_Help::get_display(uint32_t p_index, pfc::string_base& p_out, uint32_t& p_flags)
 	{
 		if (p_index != 0)
-		{
-			uBugCheck();
-			return false;
-		}
+			FB2K_BugCheck();
 
 		get_name(p_index, p_out);
 		p_flags = mainmenu_commands::sort_priority_dontcare;
 		return true;
 	}
-
 
 	mainmenu_group_popup_factory g_mainmenu_group_predefined(
 		smp::guid::mainmenu_group_predefined,

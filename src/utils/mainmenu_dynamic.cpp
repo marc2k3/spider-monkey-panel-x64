@@ -4,8 +4,6 @@
 #include <events/event_dispatcher.h>
 #include <events/event_js_callback.h>
 
-using namespace smp;
-
 namespace
 {
 	class MainMenuNodeCommand_PanelCommand : public mainmenu_node_command
@@ -37,7 +35,7 @@ namespace
 	public:
 		MainMenuNodeGroup_PanelCommands(HWND panelHwnd,
 			const std::string& panelName,
-			const std::unordered_map<uint32_t, DynamicMainMenuManager::CommandData>& idToCommand);
+			const std::unordered_map<uint32_t, smp::DynamicMainMenuManager::CommandData>& idToCommand);
 		void get_display(pfc::string_base& text, uint32_t& flags) override;
 		t_size get_children_count() override;
 		mainmenu_node::ptr get_child(t_size index) override;
@@ -94,14 +92,13 @@ namespace
 
 	void MainMenuNodeCommand_PanelCommand::get_display(pfc::string_base& text, uint32_t& flags)
 	{
-		text.clear();
-		text << commandName_;
+		text = commandName_.c_str();
 		flags = 0;
 	}
 
 	void MainMenuNodeCommand_PanelCommand::execute(service_ptr_t<service_base> callback)
 	{
-		EventDispatcher::Get().PutEvent(panelHwnd_, GenerateEvent_JsCallback(EventId::kDynamicMainMenu, commandId_));
+		smp::EventDispatcher::Get().PutEvent(panelHwnd_, smp::GenerateEvent_JsCallback(smp::EventId::kDynamicMainMenu, commandId_));
 	}
 
 	GUID MainMenuNodeCommand_PanelCommand::get_guid()
@@ -123,16 +120,15 @@ namespace
 			return false;
 		}
 
-		out.clear();
-		out << *commandDescriptionOpt_;
+		out = commandDescriptionOpt_->c_str();
 		return true;
 	}
 
 	MainMenuNodeGroup_PanelCommands::MainMenuNodeGroup_PanelCommands(
 		HWND panelHwnd,
 		const std::string& panelName,
-		const std::unordered_map<uint32_t, DynamicMainMenuManager::CommandData>& idToCommand)
-		: panelName_(panelName)
+		const std::unordered_map<uint32_t,
+		smp::DynamicMainMenuManager::CommandData>& idToCommand) : panelName_(panelName)
 	{
 		// use map to sort commands by their name
 		const auto commandNameToId =
@@ -148,8 +144,7 @@ namespace
 
 	void MainMenuNodeGroup_PanelCommands::get_display(pfc::string_base& text, uint32_t& flags)
 	{
-		text.clear();
-		text << panelName_;
+		text = panelName_.c_str();
 		flags = mainmenu_commands::flag_defaulthidden | mainmenu_commands::sort_priority_base;
 	}
 
