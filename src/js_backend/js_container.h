@@ -13,6 +13,8 @@ namespace smp
 
 namespace mozjs
 {
+	class JsAsyncTask;
+
 	// Must not leak exceptions!
 	class JsContainer final : public std::enable_shared_from_this<JsContainer>
 	{

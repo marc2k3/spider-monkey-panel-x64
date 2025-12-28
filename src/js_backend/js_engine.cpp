@@ -1,6 +1,5 @@
 #include <stdafx.h>
 #include "js_engine.h"
-#include "js_error_helper.h"
 
 #include <com_utils/com_destruction_handler.h>
 #include <config/advanced_config.h>

@@ -2,9 +2,6 @@
 #include "global_object.h"
 
 #include "cached_utf8_paths_hack.h"
-#include "js_error_helper.h"
-#include "js_object_helper.h"
-#include "js_property_helper.h"
 
 #include <config/package_utils.h>
 #include <interfaces/active_x_object.h>

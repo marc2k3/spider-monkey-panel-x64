@@ -1,6 +1,5 @@
 #include <stdafx.h>
 #include "js_gc.h"
-#include "js_error_helper.h"
 
 #include <config/advanced_config.h>
 

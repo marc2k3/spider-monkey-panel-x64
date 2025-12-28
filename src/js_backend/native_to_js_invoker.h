@@ -1,5 +1,4 @@
 #pragma once
-#include "js_error_helper.h"
 #include "js_to_native.h"
 #include "native_to_js.h"
 #include "scope_helper.h"
@@ -10,9 +9,7 @@ namespace mozjs::internal
 	void NativeToJsArguments(
 		[[maybe_unused]] JSContext* cx,
 		[[maybe_unused]] JS::RootedValueArray<ArgArraySize>& wrappedArgs,
-		[[maybe_unused]] uint8_t argIndex)
-	{
-	}
+		[[maybe_unused]] uint8_t argIndex) {}
 
 	template <size_t ArgArraySize, typename ArgType, typename... ArgTypes>
 	void NativeToJsArguments(

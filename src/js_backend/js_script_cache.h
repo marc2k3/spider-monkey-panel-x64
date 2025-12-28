@@ -1,5 +1,15 @@
 #pragma once
 
+namespace js::frontend
+{
+	struct CompilationStencil;
+};
+
+namespace JS
+{
+	using Stencil = js::frontend::CompilationStencil;
+}
+
 namespace mozjs
 {
 	class JsScriptCache

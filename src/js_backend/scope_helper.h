@@ -17,7 +17,7 @@ namespace mozjs
 		}
 
 	private:
+		AutoJsReport are_;
 		JSAutoRealm ac_;
-		mozjs::AutoJsReport are_;
 	};
 }

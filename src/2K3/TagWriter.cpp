@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "TagWriter.hpp"
 #include "FileInfoFilter.hpp"
-#include "String.hpp"
 
 TagWriter::TagWriter(metadb_handle_list_cref handles) : m_handles(handles) {}
 

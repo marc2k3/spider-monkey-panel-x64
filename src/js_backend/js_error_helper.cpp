@@ -1,7 +1,7 @@
 #include <stdafx.h>
 #include "js_error_helper.h"
+
 #include "cached_utf8_paths_hack.h"
-#include "js_property_helper.h"
 
 namespace
 {

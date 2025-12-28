@@ -1,6 +1,4 @@
 #pragma once
-#include "js_error_helper.h"
-#include "js_object_helper.h"
 
 namespace mozjs::internal
 {
