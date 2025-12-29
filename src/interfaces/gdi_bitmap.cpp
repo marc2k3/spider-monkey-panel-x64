@@ -333,13 +333,13 @@ namespace mozjs
 				const uint8_t g = (colour >> 8) & 0xff;
 				const uint8_t b = (colour & 0xff);
 
-				return smp::kmeans::PointData{ std::vector<uint8_t>{ r, g, b }, pixelCount };
+				return kmeans::PointData{ std::vector<uint8_t>{ r, g, b }, pixelCount };
 			}) | ranges::to_vector;
 
 		constexpr uint32_t kKmeansIterationCount = 12;
-		std::vector<smp::kmeans::ClusterData> clusters = smp::kmeans::run(points, count, kKmeansIterationCount);
+		std::vector<kmeans::ClusterData> clusters = kmeans::run(points, count, kKmeansIterationCount);
 
-		const auto getTotalPixelCount = [](const smp::kmeans::ClusterData& cluster) -> size_t
+		const auto getTotalPixelCount = [](const kmeans::ClusterData& cluster) -> size_t
 			{
 				return ranges::accumulate(cluster.points, 0uz, [](auto sum, const auto pData)
 					{

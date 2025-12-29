@@ -126,7 +126,7 @@ std::unique_ptr<Gdiplus::Bitmap> AlbumArtStatic::to_bitmap(const album_art_data_
 	if FAILED(to_istream(data, stream))
 		return nullptr;
 
-	return smp::image::Load(stream.get());
+	return FileHelper::stream_to_bitmap(stream.get());
 }
 
 void AlbumArtStatic::show_viewer(const album_art_data_ptr& data) noexcept

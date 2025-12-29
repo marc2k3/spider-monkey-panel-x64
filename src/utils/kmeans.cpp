@@ -3,13 +3,11 @@
 
 namespace
 {
-	using namespace smp::kmeans;
-
 	struct Point
 	{
-		explicit Point(const PointData* pData) : pData(pData) {}
+		explicit Point(const kmeans::PointData* pData) : pData(pData) {}
 
-		const PointData* pData;
+		const kmeans::PointData* pData;
 		size_t id_cluster = SIZE_MAX;
 	};
 
@@ -17,9 +15,11 @@ namespace
 	{
 		Cluster(size_t id_cluster, const Point* pPoint) : id_cluster(id_cluster)
 		{
-			central_values =
-				ranges::views::transform(pPoint->pData->values, [](const auto& elem) { return static_cast<double>(elem); })
-				| ranges::to_vector;
+			central_values = ranges::views::transform(pPoint->pData->values, [](const auto& elem)
+				{
+					return static_cast<double>(elem);
+				}) | ranges::to_vector;
+
 			points.push_back(pPoint);
 		}
 
@@ -70,7 +70,7 @@ namespace
 	}
 }
 
-namespace smp::kmeans
+namespace kmeans
 {
 	PointData::PointData(const std::vector<uint8_t>& values, size_t pixel_count) : values(values), pixel_count(pixel_count) {}
 
@@ -78,9 +78,11 @@ namespace smp::kmeans
 	{
 		const size_t clusterCount = std::min(std::max(K, 14uz), pointsData.size());
 
-		auto points =
-			ranges::views::transform(pointsData, [](const auto& data) { return Point{ &data }; })
-			| ranges::to_vector;
+		auto points = ranges::views::transform(pointsData, [](const auto& data)
+			{
+				return Point{ &data };
+			}) | ranges::to_vector;
+
 		std::vector<Cluster> clusters;
 		clusters.reserve(clusterCount);
 
@@ -92,9 +94,8 @@ namespace smp::kmeans
 			clusters.emplace_back(i, &centerPoint);
 		}
 
-		for (auto i: ranges::views::indices(max_iterations))
+		for ([[maybe_unused]] auto i : ranges::views::indices(max_iterations))
 		{
-			(void)i;
 			bool done = true;
 
 			// associate each point to its nearest center
@@ -142,7 +143,8 @@ namespace smp::kmeans
 			}
 		}
 
-		return ranges::views::transform(clusters, [](const auto& cluster) {
+		return ranges::views::transform(clusters, [](const auto& cluster)
+			{
 				ClusterData clusterData;
 				clusterData.central_values = ranges::views::transform(cluster.central_values, [](const auto& value) { return static_cast<uint8_t>(value); }) | ranges::to_vector;
 				clusterData.points = ranges::views::transform(cluster.points, [](const auto& point) { return point->pData; }) | ranges::to_vector;

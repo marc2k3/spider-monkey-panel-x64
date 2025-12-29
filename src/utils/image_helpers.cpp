@@ -1,9 +1,34 @@
 #include <stdafx.h>
 #include "image_helpers.h"
-#include <utils/gdi_helpers.h>
 
-namespace
+namespace smp
 {
+	Size GetResizedImageSize(const Size& currentDimension, const Size& maxDimensions) noexcept
+	{
+		const auto& [maxWidth, maxHeight] = maxDimensions;
+		const auto& [imgWidth, imgHeight] = currentDimension;
+
+		if (imgWidth <= maxWidth && imgHeight <= maxHeight)
+			return std::make_tuple(imgWidth, imgHeight);
+
+		uint32_t newWidth{}, newHeight{};
+		const double imgRatio = static_cast<double>(imgHeight) / imgWidth;
+		const double constraintsRatio = static_cast<double>(maxHeight) / maxWidth;
+
+		if (imgRatio > constraintsRatio)
+		{
+			newHeight = maxHeight;
+			newWidth = lround(newHeight / imgRatio);
+		}
+		else
+		{
+			newWidth = maxWidth;
+			newHeight = lround(newWidth * imgRatio);
+		}
+
+		return std::make_tuple(newWidth, newHeight);
+	}
+
 	std::unique_ptr<Gdiplus::Bitmap> LoadWithWIC(IStream* stream)
 	{
 		auto factory = wil::CoCreateInstance<IWICImagingFactory>(CLSID_WICImagingFactory);
@@ -44,44 +69,5 @@ namespace
 			return nullptr;
 
 		return bitmap;
-	}
-}
-
-namespace smp::image
-{
-	Size GetResizedImageSize(const Size& currentDimension, const Size& maxDimensions) noexcept
-	{
-		const auto& [maxWidth, maxHeight] = maxDimensions;
-		const auto& [imgWidth, imgHeight] = currentDimension;
-
-		if (imgWidth <= maxWidth && imgHeight <= maxHeight)
-			return std::make_tuple(imgWidth, imgHeight);
-
-		uint32_t newWidth{}, newHeight{};
-		const double imgRatio = static_cast<double>(imgHeight) / imgWidth;
-		const double constraintsRatio = static_cast<double>(maxHeight) / maxWidth;
-
-		if (imgRatio > constraintsRatio)
-		{
-			newHeight = maxHeight;
-			newWidth = lround(newHeight / imgRatio);
-		}
-		else
-		{
-			newWidth = maxWidth;
-			newHeight = lround(newWidth * imgRatio);
-		}
-
-		return std::make_tuple(newWidth, newHeight);
-	}
-
-	std::unique_ptr<Gdiplus::Bitmap> Load(IStream* stream)
-	{
-		auto bitmap = std::make_unique<Gdiplus::Bitmap>(stream, TRUE);
-
-		if (smp::gdi::IsGdiPlusObjectValid(bitmap.get()))
-			return bitmap;
-
-		return LoadWithWIC(stream);
 	}
 }

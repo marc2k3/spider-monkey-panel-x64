@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::colour
+namespace smp
 {
 	[[nodiscard]] constexpr COLORREF ArgbToColorref(DWORD argb)
 	{

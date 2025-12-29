@@ -180,9 +180,9 @@ namespace mozjs
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 
-		auto colour = smp::colour::ArgbToColorref(default_colour);
+		auto colour = smp::ArgbToColorref(default_colour);
 		uChooseColor(&colour, wnd, colours.data());
-		return smp::colour::ColorrefToArgb(colour);
+		return smp::ColorrefToArgb(colour);
 	}
 
 	uint32_t Utils::DetectCharset(const std::wstring& path) const
@@ -427,7 +427,7 @@ namespace mozjs
 		const auto hBrush = ::GetSysColorBrush(index); ///< no need to call DeleteObject here
 		QwrException::ExpectTrue(hBrush, "Invalid color index: {}", index);
 
-		return smp::colour::ColorrefToArgb(::GetSysColor(index));
+		return smp::ColorrefToArgb(::GetSysColor(index));
 	}
 
 	uint32_t Utils::GetSystemMetrics(uint32_t index) const

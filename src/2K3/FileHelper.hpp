@@ -7,6 +7,7 @@ public:
 
 	static bool rename(std::wstring_view from, std::wstring_view to) noexcept;
 	static std::filesystem::copy_options create_options(bool overwrite, bool recur = false) noexcept;
+	static std::unique_ptr<Gdiplus::Bitmap> stream_to_bitmap(IStream* stream) noexcept;
 	static uint32_t get_stream_size(IStream* stream) noexcept;
 
 	HRESULT read(wil::com_ptr<IStream>& stream) noexcept;

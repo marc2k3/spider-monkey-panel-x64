@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::gdi
+namespace smp
 {
 	/// @details Resets last status!
 	template <typename T>

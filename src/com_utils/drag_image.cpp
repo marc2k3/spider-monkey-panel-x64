@@ -116,11 +116,7 @@ namespace uih
 	{
 		const int imgWidth = static_cast<int>(customImage.GetWidth());
 		const int imgHeight = static_cast<int>(customImage.GetHeight());
-
-		const auto [newWidth, newHeight] = [imgWidth, imgHeight, &rc]
-			{
-				return smp::image::GetResizedImageSize(std::make_tuple(imgWidth, imgHeight), std::make_tuple(rc.right, rc.bottom));
-			}();
+		const auto [newWidth, newHeight] = smp::GetResizedImageSize(std::make_tuple(imgWidth, imgHeight), std::make_tuple(rc.right, rc.bottom));
 
 		auto gdiGraphics = Gdiplus::Graphics(dc);
 
@@ -139,7 +135,7 @@ namespace uih
 			Gdiplus::UnitPixel
 		);
 
-		return (Gdiplus::Ok == status);
+		return Gdiplus::Ok == status;
 	}
 
 	void draw_drag_image_icon(HDC dc, const RECT& rc, HICON icon)

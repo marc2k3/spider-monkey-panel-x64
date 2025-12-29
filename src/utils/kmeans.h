@@ -1,6 +1,6 @@
 #pragma once
 
-namespace smp::kmeans
+namespace kmeans
 {
 	struct PointData
 	{

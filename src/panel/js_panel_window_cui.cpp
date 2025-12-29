@@ -12,7 +12,7 @@ namespace smp
 		DWORD GetColour(const GUID& guid, uint32_t type) final
 		{
 			const auto colour = cui::colours::helper(guid).get_colour(static_cast<cui::colours::colour_identifier_t>(type));
-			return smp::colour::ColorrefToArgb(colour);
+			return smp::ColorrefToArgb(colour);
 		}
 
 		JSObject* GetFont(JSContext* cx, const GUID& guid, uint32_t type) final

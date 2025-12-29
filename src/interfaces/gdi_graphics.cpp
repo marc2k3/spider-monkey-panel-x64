@@ -492,7 +492,7 @@ namespace mozjs
 		RECT rc{ x, y, static_cast<LONG>(x + w), static_cast<LONG>(y + h) };
 		DRAWTEXTPARAMS dpt = { sizeof(DRAWTEXTPARAMS), 4, 0, 0, 0 };
 
-		SetTextColor(hDc, smp::colour::ArgbToColorref(colour));
+		SetTextColor(hDc, smp::ArgbToColorref(colour));
 
 		int iRet = SetBkMode(hDc, TRANSPARENT);
 		smp::CheckWinApi(CLR_INVALID != iRet, "SetBkMode");
