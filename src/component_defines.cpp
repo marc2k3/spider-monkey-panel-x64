@@ -9,7 +9,9 @@ namespace
 		const auto msvc = fmt::to_string(_MSC_FULL_VER);
 
 		return fmt::format(
-			"{} by TheQwertiest and marc2003\n"
+			"{}\n"
+			"Copyright (c) 2018 - 2022 TheQwertiest\n"
+			"Copyright (c) 2025 - 2026 marc2003\n\n"
 			"Based on JScript Panel by marc2003\n"
 			"Based on WSH Panel Mod by T.P. Wang\n\n"
 			"Build: {}, {}\n\n"

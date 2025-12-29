@@ -1,8 +1,8 @@
 MIT License
 
-Copyright (c) 2018-2021 Yuri Shutenko
+Copyright (c) 2018 - 2022 Yuri Shutenko
 
-Copyright (c) 2025 marc2003
+Copyright (c) 2025 - 2026 marc2003
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
