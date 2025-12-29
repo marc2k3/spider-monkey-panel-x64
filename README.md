@@ -15,6 +15,9 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.29
+- Various bug fixes.
+
 ## 1.7.25.12.27
 - Remove `Spider Monkey` built in `Playback Statistics`. Do not update if you make use of this.
 - Rework advanced preferences removing an option that caused a crash if enabled. This bug was present in the last official `1.6.1` release.
