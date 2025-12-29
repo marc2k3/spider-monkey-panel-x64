@@ -175,7 +175,7 @@ namespace mozjs
 				continue;
 			}
 
-			smp::ui::CDialogSlowScript::Data dlgData;
+			CDialogSlowScript::Data dlgData;
 			{
 				std::string panelName;
 				HWND parentHwnd;
@@ -221,7 +221,7 @@ namespace mozjs
 					}
 				}
 
-				smp::ui::CDialogSlowScript dlg(panelName, scriptInfo, dlgData);
+				CDialogSlowScript dlg(panelName, scriptInfo, dlgData);
 				// TODO: fix dialog centering (that is lack of thereof)
 				(void)dlg.DoModal(parentHwnd);
 			}

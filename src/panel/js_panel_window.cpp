@@ -1036,7 +1036,7 @@ namespace smp
 		}
 		case config::ScriptSourceType::Package:
 		{
-			ShowConfigure(wnd_, ui::CDialogConf::Tab::package);
+			ShowConfigure(wnd_, CDialogConf::Tab::package);
 			break;
 		}
 		default:
@@ -1046,7 +1046,7 @@ namespace smp
 		}
 	}
 
-	void js_panel_window::ShowConfigure(HWND parent, ui::CDialogConf::Tab tab)
+	void js_panel_window::ShowConfigure(HWND parent, CDialogConf::Tab tab)
 	{
 		if (!modal_dialog_scope::can_create())
 		{
@@ -1055,7 +1055,7 @@ namespace smp
 
 		modal::ModalBlockingScope scope(parent, true);
 
-		ui::CDialogConf dlg(this, tab);
+		CDialogConf dlg(this, tab);
 		dlg.DoModal(parent);
 	}
 
@@ -1068,7 +1068,7 @@ namespace smp
 
 		modal::ModalBlockingScope scope(parent, true);
 
-		auto dlg = ui::CDialogProperties(*this);
+		auto dlg = CDialogProperties(*this);
 		dlg.DoModal(parent);
 	}
 

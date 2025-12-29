@@ -18,475 +18,472 @@ namespace
 	WINDOWPLACEMENT g_WindowPlacement{};
 }
 
-namespace smp::ui
+CDialogConf::CDialogConf(smp::js_panel_window* pParent, Tab tabId)
+	: pParent_(pParent)
+	, isCleanSlate_(::IsCleanSlate(pParent->GetSettings()))
+	, panelNameDdx_(smp::CreateUiDdx<smp::UiDdx_TextEdit>(localSettings_.panelId, IDC_EDIT_PANEL_NAME))
+	, startingTabId_(tabId)
 {
-	CDialogConf::CDialogConf(smp::js_panel_window* pParent, Tab tabId)
-		: pParent_(pParent)
-		, isCleanSlate_(::IsCleanSlate(pParent->GetSettings()))
-		, panelNameDdx_(smp::CreateUiDdx<smp::UiDdx_TextEdit>(localSettings_.panelId, IDC_EDIT_PANEL_NAME))
-		, startingTabId_(tabId)
+	InitializeLocalData();
+}
+
+bool CDialogConf::IsCleanSlate() const
+{
+	return isCleanSlate_;
+}
+
+void CDialogConf::OnDataChanged()
+{
+	OnDataChangedImpl(true);
+}
+
+void CDialogConf::OnWholeScriptChange()
+{
+	const auto tabLayoutChanged =
+		(oldSettings_.GetSourceType() != localSettings_.GetSourceType() &&
+			(oldSettings_.GetSourceType() == config::ScriptSourceType::Package || localSettings_.GetSourceType() == config::ScriptSourceType::Package));
+
+	OnDataChangedImpl(true);
+
+	auto& properties = pParent_->GetPanelProperties();
+	properties.values.clear();
+	// package data is saved by the caller
+	Apply(false);
+
+	if (tabLayoutChanged)
 	{
-		InitializeLocalData();
+		ReinitializeTabData();
+		ReinitializeTabControls();
 	}
 
-	bool CDialogConf::IsCleanSlate() const
+	isCleanSlate_ = true;
+}
+
+bool CDialogConf::HasChanged()
+{
+	return (hasChanged_ || ranges::any_of(tabs_, [](const auto& pTab) { return pTab->HasChanged(); }));
+}
+
+void CDialogConf::Apply(bool savePackageData)
+{
+	if (!hasChanged_)
 	{
-		return isCleanSlate_;
+		return;
 	}
 
-	void CDialogConf::OnDataChanged()
+	oldSettings_ = localSettings_;
+
+	for (auto& pTab : tabs_)
 	{
-		OnDataChangedImpl(true);
+		pTab->Apply();
 	}
 
-	void CDialogConf::OnWholeScriptChange()
+	OnDataChangedImpl(false);
+	DisablePanelNameControls();
+
+	if (savePackageData)
 	{
-		const auto tabLayoutChanged =
-			(oldSettings_.GetSourceType() != localSettings_.GetSourceType() &&
-				(oldSettings_.GetSourceType() == config::ScriptSourceType::Package || localSettings_.GetSourceType() == config::ScriptSourceType::Package));
-
-		OnDataChangedImpl(true);
-
-		auto& properties = pParent_->GetPanelProperties();
-		properties.values.clear();
-		// package data is saved by the caller
-		Apply(false);
-
-		if (tabLayoutChanged)
+		try
 		{
-			ReinitializeTabData();
-			ReinitializeTabControls();
+			config::MaybeSavePackageData(oldSettings_);
 		}
-
-		isCleanSlate_ = true;
+		catch (const QwrException& e)
+		{
+			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		}
 	}
 
-	bool CDialogConf::HasChanged()
+	auto updatedSettings = oldSettings_.GeneratePanelSettings();
+	pParent_->UpdateSettings(updatedSettings);
+
+	// setting might've been modified by the script
+	InitializeLocalData();
+
+	suppressDdxFromUi_ = true;
+	auto ddxSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });
+	DoFullDdxToUi();
+	RefreshTabData();
+}
+
+void CDialogConf::Revert()
+{
+	localSettings_ = oldSettings_;
+
+	for (auto& pTab : tabs_)
 	{
-		return (hasChanged_ || ranges::any_of(tabs_, [](const auto& pTab) { return pTab->HasChanged(); }));
+		pTab->Revert();
 	}
 
-	void CDialogConf::Apply(bool savePackageData)
+	OnDataChangedImpl(false);
+}
+
+void CDialogConf::SwitchTab(CDialogConf::Tab tabId)
+{
+	SetActiveTabIdx(tabId);
+	cTabs_.SetCurSel(activeTabIdx_);
+	CreateChildTab();
+}
+
+BOOL CDialogConf::OnInitDialog(HWND hwndFocus, LPARAM lParam)
+{
+	DlgResize_Init(false);
+
+	cTabs_ = GetDlgItem(IDC_TAB_CONF);
+
+	InitializeTabData(startingTabId_);
+	InitializeTabControls();
+
+	DisablePanelNameControls();
+	if (pParent_->IsPanelIdOverridenByScript())
 	{
-		if (!hasChanged_)
-		{
-			return;
-		}
-
-		oldSettings_ = localSettings_;
-
-		for (auto& pTab : tabs_)
-		{
-			pTab->Apply();
-		}
-
-		OnDataChangedImpl(false);
-		DisablePanelNameControls();
-
-		if (savePackageData)
-		{
-			try
-			{
-				config::MaybeSavePackageData(oldSettings_);
-			}
-			catch (const QwrException& e)
-			{
-				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
-			}
-		}
-
-		auto updatedSettings = oldSettings_.GeneratePanelSettings();
-		pParent_->UpdateSettings(updatedSettings);
-
-		// setting might've been modified by the script
-		InitializeLocalData();
-
-		suppressDdxFromUi_ = true;
-		auto ddxSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });
-		DoFullDdxToUi();
-		RefreshTabData();
+		CButton{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) }.EnableWindow(false);
 	}
 
-	void CDialogConf::Revert()
+	CButton{ GetDlgItem(IDAPPLY) }.EnableWindow(false);
+
+	panelNameDdx_->SetHwnd(m_hWnd);
+
+	DoFullDdxToUi();
+
+	suppressDdxFromUi_ = false;
+	m_hooks.AddDialogWithControls(m_hWnd);
+
+	return TRUE; // set focus to default control
+}
+
+LRESULT CDialogConf::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	CDialogResize<CDialogConf>::OnSize(uMsg, wParam, lParam, bHandled);
+
+	if (!cTabs_ || !pcCurTab_)
 	{
-		localSettings_ = oldSettings_;
-
-		for (auto& pTab : tabs_)
-		{
-			pTab->Revert();
-		}
-
-		OnDataChangedImpl(false);
-	}
-
-	void CDialogConf::SwitchTab(CDialogConf::Tab tabId)
-	{
-		SetActiveTabIdx(tabId);
-		cTabs_.SetCurSel(activeTabIdx_);
-		CreateChildTab();
-	}
-
-	BOOL CDialogConf::OnInitDialog(HWND hwndFocus, LPARAM lParam)
-	{
-		DlgResize_Init(false);
-
-		cTabs_ = GetDlgItem(IDC_TAB_CONF);
-
-		InitializeTabData(startingTabId_);
-		InitializeTabControls();
-
-		DisablePanelNameControls();
-		if (pParent_->IsPanelIdOverridenByScript())
-		{
-			CButton{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) }.EnableWindow(false);
-		}
-
-		CButton{ GetDlgItem(IDAPPLY) }.EnableWindow(false);
-
-		panelNameDdx_->SetHwnd(m_hWnd);
-
-		DoFullDdxToUi();
-
-		suppressDdxFromUi_ = false;
-		m_hooks.AddDialogWithControls(m_hWnd);
-
-		return TRUE; // set focus to default control
-	}
-
-	LRESULT CDialogConf::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-	{
-		CDialogResize<CDialogConf>::OnSize(uMsg, wParam, lParam, bHandled);
-
-		if (!cTabs_ || !pcCurTab_)
-		{
-			bHandled = TRUE;
-			return 0;
-		}
-
-		RECT tabRc;
-
-		cTabs_.GetWindowRect(&tabRc);
-		::MapWindowPoints(HWND_DESKTOP, m_hWnd, (LPPOINT)&tabRc, 2);
-
-		cTabs_.AdjustRect(FALSE, &tabRc);
-
-		pcCurTab_->SetWindowPos(nullptr, tabRc.left, tabRc.top, tabRc.right - tabRc.left, tabRc.bottom - tabRc.top, SWP_NOZORDER);
-
 		bHandled = TRUE;
 		return 0;
 	}
 
-	void CDialogConf::OnDdxUiChange(UINT uNotifyCode, int nID, CWindow wndCtl)
-	{
-		if (suppressDdxFromUi_)
-		{
-			return;
-		}
+	RECT tabRc;
 
-		if (nID == IDC_EDIT_PANEL_NAME)
-		{
-			panelNameDdx_->ReadFromUi();
-		}
-		OnDataChanged();
+	cTabs_.GetWindowRect(&tabRc);
+	::MapWindowPoints(HWND_DESKTOP, m_hWnd, (LPPOINT)&tabRc, 2);
+
+	cTabs_.AdjustRect(FALSE, &tabRc);
+
+	pcCurTab_->SetWindowPos(nullptr, tabRc.left, tabRc.top, tabRc.right - tabRc.left, tabRc.bottom - tabRc.top, SWP_NOZORDER);
+
+	bHandled = TRUE;
+	return 0;
+}
+
+void CDialogConf::OnDdxUiChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+{
+	if (suppressDdxFromUi_)
+	{
+		return;
 	}
 
-	LRESULT CDialogConf::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/)
+	if (nID == IDC_EDIT_PANEL_NAME)
 	{
-		{ // Window position
-			WINDOWPLACEMENT tmpPlacement{};
-			tmpPlacement.length = sizeof(WINDOWPLACEMENT);
-			if (GetWindowPlacement(&tmpPlacement))
+		panelNameDdx_->ReadFromUi();
+	}
+	OnDataChanged();
+}
+
+LRESULT CDialogConf::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /*hWndCtl*/)
+{
+	{ // Window position
+		WINDOWPLACEMENT tmpPlacement{};
+		tmpPlacement.length = sizeof(WINDOWPLACEMENT);
+		if (GetWindowPlacement(&tmpPlacement))
+		{
+			g_WindowPlacement = tmpPlacement;
+		}
+	}
+
+	switch (wID)
+	{
+	case IDOK:
+	{
+		OnDataChangedImpl(); ///< mark as changed to reload the panel
+		Apply();
+		EndDialog(IDOK);
+		break;
+	}
+	case IDAPPLY:
+	{
+		Apply();
+		break;
+	}
+	case IDCANCEL:
+	{
+		if (HasChanged())
+		{
+			const int ret = popup_message_v3::get()->messageBox(m_hWnd, "Do you want to apply your changes?", "Panel configuration", MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
+			switch (ret)
 			{
-				g_WindowPlacement = tmpPlacement;
+			case IDYES:
+			{
+				Apply();
+				EndDialog(IDOK);
+				break;
+			}
+			case IDCANCEL:
+			{
+				return 0;
+			}
 			}
 		}
 
-		switch (wID)
-		{
-		case IDOK:
-		{
-			OnDataChangedImpl(); ///< mark as changed to reload the panel
-			Apply();
-			EndDialog(IDOK);
-			break;
-		}
-		case IDAPPLY:
-		{
-			Apply();
-			break;
-		}
-		case IDCANCEL:
-		{
-			if (HasChanged())
-			{
-				const int ret = popup_message_v3::get()->messageBox(m_hWnd, "Do you want to apply your changes?", "Panel configuration", MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
-				switch (ret)
-				{
-				case IDYES:
-				{
-					Apply();
-					EndDialog(IDOK);
-					break;
-				}
-				case IDCANCEL:
-				{
-					return 0;
-				}
-				}
-			}
-
-			EndDialog(IDCANCEL);
-			break;
-		}
-		default:
-		{
-		}
-		}
-
-		return 0;
+		EndDialog(IDCANCEL);
+		break;
 	}
-
-	void CDialogConf::OnParentNotify(UINT message, UINT /*nChildID*/, LPARAM lParam)
+	default:
 	{
-		if (WM_DESTROY == message && pcCurTab_ && reinterpret_cast<HWND>(lParam) == static_cast<HWND>(*pcCurTab_))
-		{
-			pcCurTab_ = nullptr;
-		}
+	}
 	}
 
-	LRESULT CDialogConf::OnSelectionChanged(LPNMHDR /*pNmhdr*/)
+	return 0;
+}
+
+void CDialogConf::OnParentNotify(UINT message, UINT /*nChildID*/, LPARAM lParam)
+{
+	if (WM_DESTROY == message && pcCurTab_ && reinterpret_cast<HWND>(lParam) == static_cast<HWND>(*pcCurTab_))
 	{
-		activeTabIdx_ = cTabs_.GetCurSel();
-		CreateChildTab();
-
-		return 0;
+		pcCurTab_ = nullptr;
 	}
+}
 
-	LRESULT CDialogConf::OnWindowPosChanged(UINT, WPARAM, LPARAM lp, BOOL& bHandled)
-	{
-		auto lpwp = reinterpret_cast<LPWINDOWPOS>(lp);
-		if (lpwp->flags & SWP_HIDEWINDOW)
-		{
-			DestroyChildTab();
-		}
-		else if (lpwp->flags & SWP_SHOWWINDOW && !pcCurTab_)
-		{
-			CreateChildTab();
-		}
+LRESULT CDialogConf::OnSelectionChanged(LPNMHDR /*pNmhdr*/)
+{
+	activeTabIdx_ = cTabs_.GetCurSel();
+	CreateChildTab();
 
-		bHandled = FALSE;
+	return 0;
+}
 
-		return 0;
-	}
-
-	void CDialogConf::OnStartEditPanelName(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
-	{
-		CButton edit{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) };
-		edit.EnableWindow(false);
-		edit.ShowWindow(SW_HIDE);
-
-		CButton commit{ GetDlgItem(IDC_BUTTON_COMMIT_PANEL_NAME) };
-		commit.EnableWindow(true);
-		commit.ShowWindow(SW_SHOWNOACTIVATE);
-
-		CEdit panelName{ GetDlgItem(IDC_EDIT_PANEL_NAME) };
-		panelName.ModifyStyle(0, WS_TABSTOP, 0);
-		panelName.SetReadOnly(FALSE);
-		panelName.SetFocus();
-	}
-
-	void CDialogConf::OnCommitPanelName(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
-	{
-		DisablePanelNameControls();
-		if (localSettings_.panelId.empty())
-		{
-			localSettings_.panelId = ToU8(GuidToStr(GenerateGuid()));
-
-			suppressDdxFromUi_ = true;
-			auto ddxSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });
-			panelNameDdx_->WriteToUi();
-		}
-	}
-
-	LRESULT CDialogConf::OnHelp(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/)
-	{
-		ShellExecute(nullptr, L"open", path::JsDocsIndex().c_str(), nullptr, nullptr, SW_SHOW);
-		return 0;
-	}
-
-	void CDialogConf::DisablePanelNameControls()
-	{
-		CButton edit{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) };
-		edit.EnableWindow(true);
-		edit.ShowWindow(SW_SHOWNOACTIVATE);
-
-		CButton commit{ GetDlgItem(IDC_BUTTON_COMMIT_PANEL_NAME) };
-		commit.EnableWindow(false);
-		commit.ShowWindow(SW_HIDE);
-
-		CEdit panelName{ GetDlgItem(IDC_EDIT_PANEL_NAME) };
-		panelName.ModifyStyle(WS_TABSTOP, 0, 0);
-		panelName.SetReadOnly(TRUE);
-	}
-
-	void CDialogConf::DoFullDdxToUi()
-	{
-		if (!this->m_hWnd)
-		{
-			return;
-		}
-
-		panelNameDdx_->WriteToUi();
-	}
-
-	void CDialogConf::OnDataChangedImpl(bool hasChanged)
-	{
-		hasChanged_ = hasChanged;
-		CButton{ GetDlgItem(IDAPPLY) }.EnableWindow(hasChanged);
-	}
-
-	void CDialogConf::InitializeLocalData()
-	{
-		oldSettings_ = pParent_->GetSettings();
-		localSettings_ = oldSettings_;
-
-		constexpr std::string_view kOverridenSuffix = " (overriden by script)";
-		if (pParent_->IsPanelIdOverridenByScript())
-		{
-			localSettings_.panelId += kOverridenSuffix;
-
-			if (m_hWnd)
-			{
-				DisablePanelNameControls();
-				CButton{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) }.EnableWindow(false);
-			}
-		}
-		else
-		{
-			if (static_cast<std::string_view>(localSettings_.panelId).ends_with(kOverridenSuffix))
-			{
-				localSettings_.panelId.resize(localSettings_.panelId.size() - kOverridenSuffix.size());
-			}
-		}
-	}
-
-	void CDialogConf::InitializeTabData(smp::ui::CDialogConf::Tab tabId)
-	{
-		tabs_.clear();
-		tabs_.emplace_back(std::make_unique<CConfigTabScriptSource>(*this, localSettings_));
-
-		if (localSettings_.GetSourceType() == config::ScriptSourceType::Package)
-		{
-			tabs_.emplace_back(std::make_unique<CConfigTabPackage>(*this, localSettings_));
-		}
-
-		SetActiveTabIdx(tabId);
-	}
-
-	void CDialogConf::ReinitializeTabData()
-	{
-		if (localSettings_.GetSourceType() == config::ScriptSourceType::Package)
-		{
-			tabs_.insert(tabs_.cbegin() + GetTabIdx(Tab::package), std::make_unique<CConfigTabPackage>(*this, localSettings_));
-		}
-		else
-		{
-			tabs_.erase(tabs_.cbegin() + GetTabIdx(Tab::package));
-		}
-	}
-
-	void CDialogConf::RefreshTabData()
-	{
-		for (auto& pTab : tabs_)
-		{
-			pTab->Refresh();
-		}
-	}
-
-	void CDialogConf::InitializeTabControls()
-	{
-		cTabs_.DeleteAllItems();
-
-		for (const auto& pTab : tabs_)
-		{
-			cTabs_.AddItem(pTab->Name());
-		}
-
-		cTabs_.SetCurSel(activeTabIdx_);
-		CreateChildTab();
-	}
-
-	void CDialogConf::ReinitializeTabControls()
-	{
-		// do not recreate the first tab
-
-		for (const auto i : ranges::views::ints(1, cTabs_.GetItemCount()))
-		{
-			(void)i;
-			cTabs_.DeleteItem(1);
-		}
-
-		for (const auto& pTab : tabs_ | ranges::views::drop(1))
-		{
-			cTabs_.AddItem(pTab->Name());
-		}
-	}
-
-	void CDialogConf::CreateChildTab()
+LRESULT CDialogConf::OnWindowPosChanged(UINT, WPARAM, LPARAM lp, BOOL& bHandled)
+{
+	auto lpwp = reinterpret_cast<LPWINDOWPOS>(lp);
+	if (lpwp->flags & SWP_HIDEWINDOW)
 	{
 		DestroyChildTab();
-
-		RECT tabRc;
-
-		cTabs_.GetWindowRect(&tabRc);
-		::MapWindowPoints(HWND_DESKTOP, m_hWnd, (LPPOINT)&tabRc, 2);
-
-		cTabs_.AdjustRect(FALSE, &tabRc);
-
-		if (activeTabIdx_ >= tabs_.size())
-		{
-			activeTabIdx_ = 0;
-		}
-
-		auto& pCurTab = tabs_[activeTabIdx_];
-		pcCurTab_ = &pCurTab->Dialog();
-		pCurTab->CreateTab(m_hWnd);
-
-		EnableThemeDialogTexture(static_cast<HWND>(*pcCurTab_), ETDT_ENABLETAB);
-
-		pcCurTab_->SetWindowPos(nullptr, tabRc.left, tabRc.top, tabRc.right - tabRc.left, tabRc.bottom - tabRc.top, SWP_NOZORDER);
-		cTabs_.SetWindowPos(HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-		pcCurTab_->ShowWindow(SW_SHOWNORMAL);
 	}
-
-	void CDialogConf::DestroyChildTab()
+	else if (lpwp->flags & SWP_SHOWWINDOW && !pcCurTab_)
 	{
-		if (pcCurTab_ && static_cast<HWND>(*pcCurTab_))
-		{
-			pcCurTab_->ShowWindow(SW_HIDE);
-			pcCurTab_->DestroyWindow();
-			pcCurTab_ = nullptr;
-		}
+		CreateChildTab();
 	}
 
-	int CDialogConf::GetTabIdx(CDialogConf::Tab tabId) const
+	bHandled = FALSE;
+
+	return 0;
+}
+
+void CDialogConf::OnStartEditPanelName(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
+{
+	CButton edit{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) };
+	edit.EnableWindow(false);
+	edit.ShowWindow(SW_HIDE);
+
+	CButton commit{ GetDlgItem(IDC_BUTTON_COMMIT_PANEL_NAME) };
+	commit.EnableWindow(true);
+	commit.ShowWindow(SW_SHOWNOACTIVATE);
+
+	CEdit panelName{ GetDlgItem(IDC_EDIT_PANEL_NAME) };
+	panelName.ModifyStyle(0, WS_TABSTOP, 0);
+	panelName.SetReadOnly(FALSE);
+	panelName.SetFocus();
+}
+
+void CDialogConf::OnCommitPanelName(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
+{
+	DisablePanelNameControls();
+	if (localSettings_.panelId.empty())
 	{
-		switch (tabId)
-		{
-		case Tab::script:
-			return 0;
-		case Tab::package:
-			return 1;
-		case Tab::properties:
-			return static_cast<int>(tabs_.size()) - 1;
-		default:
-			return 0;
-		}
+		localSettings_.panelId = smp::ToU8(smp::GuidToStr(smp::GenerateGuid()));
+
+		suppressDdxFromUi_ = true;
+		auto ddxSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });
+		panelNameDdx_->WriteToUi();
+	}
+}
+
+LRESULT CDialogConf::OnHelp(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/)
+{
+	ShellExecute(nullptr, L"open", smp::path::JsDocsIndex().c_str(), nullptr, nullptr, SW_SHOW);
+	return 0;
+}
+
+void CDialogConf::DisablePanelNameControls()
+{
+	CButton edit{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) };
+	edit.EnableWindow(true);
+	edit.ShowWindow(SW_SHOWNOACTIVATE);
+
+	CButton commit{ GetDlgItem(IDC_BUTTON_COMMIT_PANEL_NAME) };
+	commit.EnableWindow(false);
+	commit.ShowWindow(SW_HIDE);
+
+	CEdit panelName{ GetDlgItem(IDC_EDIT_PANEL_NAME) };
+	panelName.ModifyStyle(WS_TABSTOP, 0, 0);
+	panelName.SetReadOnly(TRUE);
+}
+
+void CDialogConf::DoFullDdxToUi()
+{
+	if (!this->m_hWnd)
+	{
+		return;
 	}
 
-	void CDialogConf::SetActiveTabIdx(CDialogConf::Tab tabId)
+	panelNameDdx_->WriteToUi();
+}
+
+void CDialogConf::OnDataChangedImpl(bool hasChanged)
+{
+	hasChanged_ = hasChanged;
+	CButton{ GetDlgItem(IDAPPLY) }.EnableWindow(hasChanged);
+}
+
+void CDialogConf::InitializeLocalData()
+{
+	oldSettings_ = pParent_->GetSettings();
+	localSettings_ = oldSettings_;
+
+	constexpr std::string_view kOverridenSuffix = " (overriden by script)";
+	if (pParent_->IsPanelIdOverridenByScript())
 	{
-		activeTabIdx_ = GetTabIdx(tabId);
+		localSettings_.panelId += kOverridenSuffix;
+
+		if (m_hWnd)
+		{
+			DisablePanelNameControls();
+			CButton{ GetDlgItem(IDC_BUTTON_EDIT_PANEL_NAME) }.EnableWindow(false);
+		}
 	}
+	else
+	{
+		if (static_cast<std::string_view>(localSettings_.panelId).ends_with(kOverridenSuffix))
+		{
+			localSettings_.panelId.resize(localSettings_.panelId.size() - kOverridenSuffix.size());
+		}
+	}
+}
+
+void CDialogConf::InitializeTabData(CDialogConf::Tab tabId)
+{
+	tabs_.clear();
+	tabs_.emplace_back(std::make_unique<CConfigTabScriptSource>(*this, localSettings_));
+
+	if (localSettings_.GetSourceType() == config::ScriptSourceType::Package)
+	{
+		tabs_.emplace_back(std::make_unique<CConfigTabPackage>(*this, localSettings_));
+	}
+
+	SetActiveTabIdx(tabId);
+}
+
+void CDialogConf::ReinitializeTabData()
+{
+	if (localSettings_.GetSourceType() == config::ScriptSourceType::Package)
+	{
+		tabs_.insert(tabs_.cbegin() + GetTabIdx(Tab::package), std::make_unique<CConfigTabPackage>(*this, localSettings_));
+	}
+	else
+	{
+		tabs_.erase(tabs_.cbegin() + GetTabIdx(Tab::package));
+	}
+}
+
+void CDialogConf::RefreshTabData()
+{
+	for (auto& pTab : tabs_)
+	{
+		pTab->Refresh();
+	}
+}
+
+void CDialogConf::InitializeTabControls()
+{
+	cTabs_.DeleteAllItems();
+
+	for (const auto& pTab : tabs_)
+	{
+		cTabs_.AddItem(pTab->Name());
+	}
+
+	cTabs_.SetCurSel(activeTabIdx_);
+	CreateChildTab();
+}
+
+void CDialogConf::ReinitializeTabControls()
+{
+	// do not recreate the first tab
+
+	for (const auto i : ranges::views::ints(1, cTabs_.GetItemCount()))
+	{
+		(void)i;
+		cTabs_.DeleteItem(1);
+	}
+
+	for (const auto& pTab : tabs_ | ranges::views::drop(1))
+	{
+		cTabs_.AddItem(pTab->Name());
+	}
+}
+
+void CDialogConf::CreateChildTab()
+{
+	DestroyChildTab();
+
+	RECT tabRc;
+
+	cTabs_.GetWindowRect(&tabRc);
+	::MapWindowPoints(HWND_DESKTOP, m_hWnd, (LPPOINT)&tabRc, 2);
+
+	cTabs_.AdjustRect(FALSE, &tabRc);
+
+	if (activeTabIdx_ >= tabs_.size())
+	{
+		activeTabIdx_ = 0;
+	}
+
+	auto& pCurTab = tabs_[activeTabIdx_];
+	pcCurTab_ = &pCurTab->Dialog();
+	pCurTab->CreateTab(m_hWnd);
+
+	EnableThemeDialogTexture(static_cast<HWND>(*pcCurTab_), ETDT_ENABLETAB);
+
+	pcCurTab_->SetWindowPos(nullptr, tabRc.left, tabRc.top, tabRc.right - tabRc.left, tabRc.bottom - tabRc.top, SWP_NOZORDER);
+	cTabs_.SetWindowPos(HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+	pcCurTab_->ShowWindow(SW_SHOWNORMAL);
+}
+
+void CDialogConf::DestroyChildTab()
+{
+	if (pcCurTab_ && static_cast<HWND>(*pcCurTab_))
+	{
+		pcCurTab_->ShowWindow(SW_HIDE);
+		pcCurTab_->DestroyWindow();
+		pcCurTab_ = nullptr;
+	}
+}
+
+int CDialogConf::GetTabIdx(CDialogConf::Tab tabId) const
+{
+	switch (tabId)
+	{
+	case Tab::script:
+		return 0;
+	case Tab::package:
+		return 1;
+	case Tab::properties:
+		return static_cast<int>(tabs_.size()) - 1;
+	default:
+		return 0;
+	}
+}
+
+void CDialogConf::SetActiveTabIdx(CDialogConf::Tab tabId)
+{
+	activeTabIdx_ = GetTabIdx(tabId);
 }

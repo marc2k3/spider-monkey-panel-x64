@@ -520,7 +520,7 @@ namespace mozjs
 		{
 			modal_dialog_scope scope(wnd);
 
-			smp::ui::CInputBox dlg(prompt.c_str(), caption.c_str(), def.c_str());
+			CInputBox dlg(prompt.c_str(), caption.c_str(), def.c_str());
 			auto status = dlg.DoModal(wnd);
 			if (status == IDCANCEL && error_on_cancel)
 			{
@@ -677,7 +677,7 @@ namespace mozjs
 		{
 			modal_dialog_scope scope(wnd);
 
-			smp::ui::CDialogHtml dlg(m_ctx, htmlCode, options);
+			CDialogHtml dlg(m_ctx, htmlCode, options);
 			auto iRet = dlg.DoModal(wnd);
 			if (-1 == iRet || IDABORT == iRet)
 			{

@@ -52,7 +52,7 @@ namespace
 		if (isModal)
 		{
 			modal::ConditionalModalScope scope(hParent, isPanelScript);
-			auto dlg = ui::CEditInProgress(pathToEditor, file);
+			auto dlg = CEditInProgress(pathToEditor, file);
 			return dlg.DoModal(hParent) == IDOK;
 		}
 

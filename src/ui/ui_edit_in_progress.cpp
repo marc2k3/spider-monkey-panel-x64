@@ -55,149 +55,146 @@ namespace
 	}
 }
 
-namespace smp::ui
+CEditInProgress::CEditInProgress(const std::filesystem::path& editor, const std::filesystem::path& file)
+	: editor_(editor)
+	, file_(file) {}
+
+LRESULT CEditInProgress::OnInitDialog(HWND, LPARAM)
 {
-	CEditInProgress::CEditInProgress(const std::filesystem::path& editor, const std::filesystem::path& file)
-		: editor_(editor)
-		, file_(file) {}
+	(void)CenterWindow();
 
-	LRESULT CEditInProgress::OnInitDialog(HWND, LPARAM)
+	editorThread_ = std::thread([&] { EditorHandler(); });
+
+	return FALSE; // set focus to default control
+}
+
+LRESULT CEditInProgress::OnEditorFocusCmd(WORD, WORD, HWND)
+{
+	// We can just call ShowWindow & SetForegroundWindow to bring hwnd to front.
+	// But that would also take maximized window out of maximized state.
+	// Using GetWindowPlacement preserves maximized state
+	WINDOWPLACEMENT place{};
+	place.length = sizeof(place);
+	::GetWindowPlacement(hEditorWnd_, &place);
+
+	switch (place.showCmd)
 	{
-		(void)CenterWindow();
-
-		editorThread_ = std::thread([&] { EditorHandler(); });
-
-		return FALSE; // set focus to default control
+	case SW_SHOWMAXIMIZED:
+		::ShowWindow(hEditorWnd_, SW_SHOWMAXIMIZED);
+		break;
+	case SW_SHOWMINIMIZED:
+		::ShowWindow(hEditorWnd_, SW_RESTORE);
+		break;
+	default:
+		::ShowWindow(hEditorWnd_, SW_NORMAL);
+		break;
 	}
 
-	LRESULT CEditInProgress::OnEditorFocusCmd(WORD, WORD, HWND)
+	SetForegroundWindow(hEditorWnd_);
+
+	::MessageBeep(MB_OK);
+
+	FLASHWINFO fi{};
+	fi.hwnd = hEditorWnd_;
+	fi.cbSize = sizeof(fi);
+	fi.dwFlags = FLASHW_CAPTION;
+	fi.uCount = 7;
+	fi.dwTimeout = 60;
+	::FlashWindowEx(&fi);
+
+	return 0;
+}
+
+LRESULT CEditInProgress::OnCloseCmd(WORD, WORD wID, HWND)
+{
 	{
-		// We can just call ShowWindow & SetForegroundWindow to bring hwnd to front.
-		// But that would also take maximized window out of maximized state.
-		// Using GetWindowPlacement preserves maximized state
-		WINDOWPLACEMENT place{};
-		place.length = sizeof(place);
-		::GetWindowPlacement(hEditorWnd_, &place);
-
-		switch (place.showCmd)
+		std::scoped_lock sl{ mutex_ };
+		if (!hasEditorLaunched_)
 		{
-		case SW_SHOWMAXIMIZED:
-			::ShowWindow(hEditorWnd_, SW_SHOWMAXIMIZED);
-			break;
-		case SW_SHOWMINIMIZED:
-			::ShowWindow(hEditorWnd_, SW_RESTORE);
-			break;
-		default:
-			::ShowWindow(hEditorWnd_, SW_NORMAL);
-			break;
+			return 0;
 		}
-
-		SetForegroundWindow(hEditorWnd_);
-
-		::MessageBeep(MB_OK);
-
-		FLASHWINFO fi{};
-		fi.hwnd = hEditorWnd_;
-		fi.cbSize = sizeof(fi);
-		fi.dwFlags = FLASHW_CAPTION;
-		fi.uCount = 7;
-		fi.dwTimeout = 60;
-		::FlashWindowEx(&fi);
-
-		return 0;
 	}
 
-	LRESULT CEditInProgress::OnCloseCmd(WORD, WORD wID, HWND)
-	{
+	const auto hEditorProcess = [&] {
+		std::scoped_lock sl{ mutex_ };
+		return hEditorProcess_;
+		}();
+
+	if (!hEditorProcess)
+	{ // process was closed
+		if (wID == IDCANCEL)
 		{
-			std::scoped_lock sl{ mutex_ };
-			if (!hasEditorLaunched_)
-			{
-				return 0;
-			}
+			const auto errorMsg = (errorMessage_.empty() ? std::string{ "Unknown error caused by editor" } : errorMessage_);
+			popup_message_v3::get()->messageBox(
+				*this,
+				errorMsg.c_str(),
+				"Editor error",
+				MB_ICONWARNING | MB_SETFOREGROUND | MB_OK
+			);
 		}
 
-		const auto hEditorProcess = [&] {
-			std::scoped_lock sl{ mutex_ };
-			return hEditorProcess_;
-			}();
-
-		if (!hEditorProcess)
-		{ // process was closed
-			if (wID == IDCANCEL)
-			{
-				const auto errorMsg = (errorMessage_.empty() ? std::string{ "Unknown error caused by editor" } : errorMessage_);
-				popup_message_v3::get()->messageBox(
-					*this,
-					errorMsg.c_str(),
-					"Editor error",
-					MB_ICONWARNING | MB_SETFOREGROUND | MB_OK
-				);
-			}
-
-			if (editorThread_.joinable())
-			{
-				editorThread_.join();
-			}
-
-			EndDialog(wID);
-		}
-		else
-		{ // requested by user
-			::SendMessage(hEditorWnd_, WM_CLOSE, 0, 0);
+		if (editorThread_.joinable())
+		{
+			editorThread_.join();
 		}
 
-		return 0;
+		EndDialog(wID);
+	}
+	else
+	{ // requested by user
+		::SendMessage(hEditorWnd_, WM_CLOSE, 0, 0);
 	}
 
-	void CEditInProgress::EditorHandler()
+	return 0;
+}
+
+void CEditInProgress::EditorHandler()
+{
+	try
 	{
-		try
-		{
-			const auto qPath = L"\"" + file_.wstring() + L"\"";
-			const auto editorParams = GetExternalEditorParams(editor_.filename().wstring()) + L" " + qPath;
+		const auto qPath = L"\"" + file_.wstring() + L"\"";
+		const auto editorParams = GetExternalEditorParams(editor_.filename().wstring()) + L" " + qPath;
 
-			SHELLEXECUTEINFO ShExecInfo{};
-			ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
-			ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
-			ShExecInfo.lpFile = editor_.c_str();
-			ShExecInfo.lpParameters = editorParams.c_str();
-			ShExecInfo.nShow = SW_SHOW;
+		SHELLEXECUTEINFO ShExecInfo{};
+		ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+		ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+		ShExecInfo.lpFile = editor_.c_str();
+		ShExecInfo.lpParameters = editorParams.c_str();
+		ShExecInfo.nShow = SW_SHOW;
 
-			BOOL bRet = ShellExecuteEx(&ShExecInfo);
-			smp::CheckWinApi(bRet, "ShellExecuteEx");
-			QwrException::ExpectTrue(!!ShExecInfo.hProcess, "Failed to get editor handle");
+		BOOL bRet = ShellExecuteEx(&ShExecInfo);
+		smp::CheckWinApi(bRet, "ShellExecuteEx");
+		QwrException::ExpectTrue(!!ShExecInfo.hProcess, "Failed to get editor handle");
 
-			WaitForInputIdle(ShExecInfo.hProcess, INFINITE);
+		WaitForInputIdle(ShExecInfo.hProcess, INFINITE);
 
-			{
-				std::scoped_lock sl{ mutex_ };
-				hEditorProcess_ = ShExecInfo.hProcess;
-				hEditorWnd_ = GetMainWndFromProcId(GetProcessId(ShExecInfo.hProcess));
-				hasEditorLaunched_ = true;
-			}
-
-			WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
-
-			{
-				std::scoped_lock sl{ mutex_ };
-				hEditorProcess_ = nullptr;
-				if (!isClosing_)
-				{
-					PostMessage(WM_COMMAND, IDOK);
-				}
-			}
-		}
-		catch (const std::exception& e)
 		{
 			std::scoped_lock sl{ mutex_ };
+			hEditorProcess_ = ShExecInfo.hProcess;
+			hEditorWnd_ = GetMainWndFromProcId(GetProcessId(ShExecInfo.hProcess));
+			hasEditorLaunched_ = true;
+		}
 
+		WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+
+		{
+			std::scoped_lock sl{ mutex_ };
 			hEditorProcess_ = nullptr;
-			errorMessage_ = e.what();
 			if (!isClosing_)
 			{
-				PostMessage(WM_COMMAND, IDCANCEL);
+				PostMessage(WM_COMMAND, IDOK);
 			}
+		}
+	}
+	catch (const std::exception& e)
+	{
+		std::scoped_lock sl{ mutex_ };
+
+		hEditorProcess_ = nullptr;
+		errorMessage_ = e.what();
+		if (!isClosing_)
+		{
+			PostMessage(WM_COMMAND, IDCANCEL);
 		}
 	}
 }

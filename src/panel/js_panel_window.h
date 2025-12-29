@@ -83,7 +83,7 @@ namespace smp
 		LRESULT OnMessage(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 
 		void EditScript();
-		void ShowConfigure(HWND parent, ui::CDialogConf::Tab tab = ui::CDialogConf::Tab::def);
+		void ShowConfigure(HWND parent, CDialogConf::Tab tab = CDialogConf::Tab::def);
 		void ShowProperties(HWND parent);
 
 		void GenerateContextMenu(HMENU hMenu, int x, int y, size_t id_base);
