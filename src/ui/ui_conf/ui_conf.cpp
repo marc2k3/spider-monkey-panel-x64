@@ -94,6 +94,7 @@ void CDialogConf::Apply(bool savePackageData)
 	}
 
 	auto updatedSettings = oldSettings_.GeneratePanelSettings();
+	updatedSettings.properties = pParent_->GetPanelProperties();
 	pParent_->UpdateSettings(updatedSettings);
 
 	// setting might've been modified by the script
