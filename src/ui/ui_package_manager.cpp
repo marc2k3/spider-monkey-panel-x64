@@ -35,6 +35,8 @@ namespace smp::ui
 
 		packagesListBox_ = GetDlgItem(IDC_LIST_PACKAGES);
 		m_edit_package = GetDlgItem(IDC_PACKAGE_INFO);
+		m_edit_package.SetWindowLongPtrW(GWL_EXSTYLE, 0L);
+
 		pPackagesListBoxDrop_.Attach(new ComPtrImpl<com::FileDropTarget>(packagesListBox_, *this));
 
 		try
@@ -455,44 +457,40 @@ namespace smp::ui
 		{
 			const auto& parsedSettings = *packageData.parsedSettings;
 
-			const auto valueOrEmpty = [](const std::string& str) -> std::wstring
+			const auto appendText = [&](std::string_view field, std::string_view value)
 				{
-					return (str.empty() ? L"<empty>" : smp::ToWide(str));
+					if (value.empty())
+						return;
+
+					const auto str = fmt::format("{}: {}\r\n", field, value);
+					m_edit_package.AppendText(smp::ToWide(str).data());
 				};
 
-			const auto appendText = [&](const wchar_t* field, const wchar_t* value)
-				{
-					m_edit_package.AppendText(field, FALSE);
-					m_edit_package.AppendText(L": ", FALSE);
-					m_edit_package.AppendText(value, FALSE);
-				};
+			appendText("Name", parsedSettings.scriptName);
+			appendText("Version", parsedSettings.scriptVersion);
+			appendText("Author", parsedSettings.scriptAuthor);
 
-			appendText(L"Name", valueOrEmpty(parsedSettings.scriptName).c_str());
-			m_edit_package.AppendText(L"\r\n", FALSE);
-
-			appendText(L"Version", valueOrEmpty(parsedSettings.scriptVersion).c_str());
-			m_edit_package.AppendText(L"\r\n", FALSE);
-
-			appendText(L"Author", valueOrEmpty(parsedSettings.scriptAuthor).c_str());
-			m_edit_package.AppendText(L"\r\n", FALSE);
-
-			appendText(L"Description", (L"\r\n" + valueOrEmpty(parsedSettings.scriptDescription)).c_str());
+			if (parsedSettings.scriptDescription.length())
+			{
+				const auto str = fmt::format("\r\n{}", parsedSettings.scriptDescription);
+				m_edit_package.AppendText(smp::ToWide(str).data());
+			}
 		}
 		else
 		{
-			m_edit_package.AppendText(L"Error:\r\n", FALSE);
-			m_edit_package.AppendText(packages_[focusedPackageIdx_].errorText.c_str(), FALSE);
+			const auto str = fmt::format(L"Error:\r\n{}", packages_[focusedPackageIdx_].errorText);
+			m_edit_package.AppendText(str.data());
 		}
 	}
 
 	CDialogPackageManager::PackageData CDialogPackageManager::GeneratePackageData(const config::ParsedPanelSettings& parsedSettings)
 	{
-		const auto displayedName = [&parsedSettings]
-			{
-				return (parsedSettings.scriptAuthor.empty()
-					? parsedSettings.scriptName
-					: fmt::format("{} (by {})", parsedSettings.scriptName, parsedSettings.scriptAuthor));
-			}();
+		std::string displayedName;
+
+		if (parsedSettings.scriptAuthor.empty())
+			displayedName = parsedSettings.scriptName;
+		else
+			displayedName = fmt::format("{} (by {})", parsedSettings.scriptName, parsedSettings.scriptAuthor);
 
 		return PackageData{
 			smp::ToWide(displayedName),
