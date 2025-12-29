@@ -21,7 +21,6 @@ namespace
 
 	void Parse_Sample(const config::PanelSettings_Sample& settings, config::ParsedPanelSettings& parsedSettings)
 	{
-		namespace fs = std::filesystem;
 		try
 		{
 			parsedSettings.scriptPath = (smp::path::ScriptSamples() / settings.sampleName);
@@ -40,8 +39,9 @@ namespace
 		try
 		{
 			const auto packageDirRet = config::FindPackage(settings.id);
-			const auto valueOrEmpty = [](const std::string& str) -> std::string {
-				return (str.empty() ? "<empty>" : str);
+			const auto valueOrEmpty = [](const std::string& str) -> std::string
+				{
+					return (str.empty() ? "<empty>" : str);
 				};
 
 			QwrException::ExpectTrue(
@@ -72,9 +72,11 @@ namespace
 		try
 		{
 			const auto packageDirRet = config::FindPackage(packageId);
-			const auto valueOrEmpty = [](const std::string& str) -> std::string {
-				return (str.empty() ? "<empty>" : str);
+			const auto valueOrEmpty = [](const std::string& str) -> std::string
+				{
+					return (str.empty() ? "<empty>" : str);
 				};
+
 			QwrException::ExpectTrue(
 				packageDirRet.has_value(),
 				"Can't find the required package: `{} ({} by {})`",
@@ -144,30 +146,30 @@ namespace config
 		parsedSettings.panelId = settings.id;
 		parsedSettings.isPseudoTransparent = settings.isPseudoTransparent;
 
-		std::visit([&parsedSettings](const auto& data) {
-			using T = std::decay_t<decltype(data)>;
-			if constexpr (std::is_same_v<T, PanelSettings_InMemory>)
+		std::visit([&parsedSettings](const auto& data)
 			{
-				Parse_InMemory(data, parsedSettings);
-			}
-			else if constexpr (std::is_same_v<T, PanelSettings_File>)
-			{
-				Parse_File(data, parsedSettings);
-			}
-			else if constexpr (std::is_same_v<T, PanelSettings_Sample>)
-			{
-				Parse_Sample(data, parsedSettings);
-			}
-			else if constexpr (std::is_same_v<T, PanelSettings_Package>)
-			{
-				Parse_Package(data, parsedSettings);
-			}
-			else
-			{
-				static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
-			}
-			},
-			settings.payload);
+				using T = std::decay_t<decltype(data)>;
+				if constexpr (std::is_same_v<T, PanelSettings_InMemory>)
+				{
+					Parse_InMemory(data, parsedSettings);
+				}
+				else if constexpr (std::is_same_v<T, PanelSettings_File>)
+				{
+					Parse_File(data, parsedSettings);
+				}
+				else if constexpr (std::is_same_v<T, PanelSettings_Sample>)
+				{
+					Parse_Sample(data, parsedSettings);
+				}
+				else if constexpr (std::is_same_v<T, PanelSettings_Package>)
+				{
+					Parse_Package(data, parsedSettings);
+				}
+				else
+				{
+					static_assert(smp::always_false_v<T>, "non-exhaustive visitor!");
+				}
+			}, settings.payload);
 
 		return parsedSettings;
 	}
@@ -175,12 +177,14 @@ namespace config
 	config::ParsedPanelSettings ParsedPanelSettings::Reparse(const ParsedPanelSettings& parsedSettings)
 	{
 		auto reparsedSettings = parsedSettings;
+
 		if (parsedSettings.packageId)
 		{
 			Reparse_Package(reparsedSettings);
 		}
 		else
-		{ // these are set dynamically in script
+		{
+			// these are set dynamically in script
 			reparsedSettings.scriptName.clear();
 			reparsedSettings.scriptVersion.clear();
 			reparsedSettings.scriptAuthor.clear();
@@ -193,7 +197,7 @@ namespace config
 
 	PanelSettings ParsedPanelSettings::GeneratePanelSettings() const
 	{
-		config::PanelSettings settings;
+		PanelSettings settings;
 
 		settings.id = panelId;
 		settings.isPseudoTransparent = isPseudoTransparent;
