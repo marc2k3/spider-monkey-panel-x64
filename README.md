@@ -15,6 +15,9 @@ Many included samples require the installation of [FontAwesome](https://github.c
 
 # Changelog
 
+## 1.7.25.12.30
+- Fix stupid(!) crash in yesterday's release.
+
 ## 1.7.25.12.29
 - Various bug fixes.
 
