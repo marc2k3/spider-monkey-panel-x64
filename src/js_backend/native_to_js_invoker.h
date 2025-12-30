@@ -1,7 +1,8 @@
 #pragma once
+#include "js_error_helper.h"
+#include "js_error_scope.h"
 #include "js_to_native.h"
 #include "native_to_js.h"
-#include "scope_helper.h"
 
 namespace mozjs::internal
 {
@@ -22,60 +23,75 @@ namespace mozjs::internal
 		NativeToJsArguments(cx, wrappedArgs, argIndex + 1, std::forward<ArgTypes>(args)...);
 	}
 
-	bool InvokeJsCallback_Impl(JSContext* cx,
+	inline bool InvokeJsCallback_Impl(
+		JSContext* cx,
 		JS::HandleObject globalObject,
 		JS::HandleValue functionValue,
 		const JS::HandleValueArray& args,
-		JS::MutableHandleValue rval);
+		JS::MutableHandleValue rval)
+	{
+		JS::RootedFunction func(cx, JS_ValueToFunction(cx, functionValue));
+
+		if (func)
+		{
+			return JS::Call(cx, globalObject, func, args, rval);
+		}
+
+		return false;
+	}
 }
 
 namespace mozjs
 {
 	template <typename ReturnType = std::nullptr_t, typename... ArgTypes>
-	std::optional<ReturnType> InvokeJsCallback(JSContext* cx,
+	std::optional<ReturnType> InvokeJsCallback(
+		JSContext* cx,
 		JS::HandleObject globalObject,
 		std::string functionName,
 		ArgTypes&&... args)
 	{
 		JsAutoRealmWithErrorReport autoScope(cx, globalObject);
-
 		JS::RootedValue funcValue(cx);
+		
 		if (!JS_GetProperty(cx, globalObject, functionName.c_str(), &funcValue))
-		{ // Reports
+		{
+			// Reports
 			return std::nullopt;
 		}
 
 		if (funcValue.isUndefined())
-		{ // Not an error: user didn't define a callback
+		{
+			// Not an error: user didn't define a callback
 			return std::nullopt;
 		}
 
 		try
 		{
 			JS::RootedValue retVal(cx);
+
 			if constexpr (sizeof...(ArgTypes) > 0)
 			{
 				JS::RootedValueArray<sizeof...(ArgTypes)> wrappedArgs(cx);
-				mozjs::internal::NativeToJsArguments(cx, wrappedArgs, 0, std::forward<ArgTypes>(args)...);
+				internal::NativeToJsArguments(cx, wrappedArgs, 0, std::forward<ArgTypes>(args)...);
 
-				if (!mozjs::internal::InvokeJsCallback_Impl(cx, globalObject, funcValue, wrappedArgs, &retVal))
+				if (internal::InvokeJsCallback_Impl(cx, globalObject, funcValue, wrappedArgs, &retVal))
 				{
-					return std::nullopt;
+					return convert::to_native::ToValue<ReturnType>(cx, retVal);
 				}
 			}
 			else
 			{
-				if (!mozjs::internal::InvokeJsCallback_Impl(cx, globalObject, funcValue, JS::HandleValueArray::empty(), &retVal))
+				if (internal::InvokeJsCallback_Impl(cx, globalObject, funcValue, JS::HandleValueArray::empty(), &retVal))
 				{
-					return std::nullopt;
+					return convert::to_native::ToValue<ReturnType>(cx, retVal);
 				}
 			}
 
-			return convert::to_native::ToValue<ReturnType>(cx, retVal);
+			return std::nullopt;
 		}
 		catch (...)
 		{
-			mozjs::ExceptionToJsError(cx);
+			ExceptionToJsError(cx);
 			return std::nullopt;
 		}
 	}

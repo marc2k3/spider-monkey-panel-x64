@@ -362,9 +362,6 @@
     <ClCompile Include="js_backend\js_realm_inner.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\native_to_js_invoker.cpp">
-      <Filter>js_backend</Filter>
-    </ClCompile>
     <ClCompile Include="js_backend\js_to_native.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
@@ -412,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="utils\mainmenu_dynamic.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="js_backend\js_error_scope.cpp">
+      <Filter>js_backend</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -822,9 +822,6 @@
     <ClInclude Include="js_backend\prototype_ids.h">
       <Filter>js_backend</Filter>
     </ClInclude>
-    <ClInclude Include="js_backend\scope_helper.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
     <ClInclude Include="js_backend\js_to_native.h">
       <Filter>js_backend</Filter>
     </ClInclude>
@@ -884,6 +881,9 @@
     </ClInclude>
     <ClInclude Include="utils\mainmenu_dynamic.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="js_backend\js_error_scope.h">
+      <Filter>js_backend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -173,6 +173,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="js_backend\js_container.cpp" />
     <ClCompile Include="js_backend\js_engine.cpp" />
     <ClCompile Include="js_backend\js_error_helper.cpp" />
+    <ClCompile Include="js_backend\js_error_scope.cpp" />
     <ClCompile Include="js_backend\js_gc.cpp" />
     <ClCompile Include="js_backend\js_image_helpers.cpp" />
     <ClCompile Include="js_backend\js_monitor.cpp" />
@@ -181,7 +182,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="js_backend\js_script_cache.cpp" />
     <ClCompile Include="js_backend\js_to_native.cpp" />
     <ClCompile Include="js_backend\native_to_js.cpp" />
-    <ClCompile Include="js_backend\native_to_js_invoker.cpp" />
     <ClCompile Include="namespaces\console.cpp" />
     <ClCompile Include="namespaces\fb.cpp" />
     <ClCompile Include="namespaces\gdi.cpp" />
@@ -324,6 +324,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="js_backend\js_container.h" />
     <ClInclude Include="js_backend\js_engine.h" />
     <ClInclude Include="js_backend\js_error_helper.h" />
+    <ClInclude Include="js_backend\js_error_scope.h" />
     <ClInclude Include="js_backend\js_gc.h" />
     <ClInclude Include="js_backend\js_heap_helper.h" />
     <ClInclude Include="js_backend\js_image_helpers.h" />
@@ -339,7 +340,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="js_backend\native_to_js_invoker.h" />
     <ClInclude Include="js_backend\object_base.h" />
     <ClInclude Include="js_backend\prototype_ids.h" />
-    <ClInclude Include="js_backend\scope_helper.h" />
     <ClInclude Include="mozjs.hpp" />
     <ClInclude Include="namespaces\console.h" />
     <ClInclude Include="namespaces\fb.h" />

@@ -2,11 +2,11 @@
 
 namespace mozjs
 {
+	[[nodiscard]] std::string ExceptionToText(JSContext* cx);
 	[[nodiscard]] std::string JsErrorToText(JSContext* cx);
 	void ExceptionToJsError(JSContext* cx);
-	[[nodiscard]] std::string ExceptionToText(JSContext* cx);
-	void SuppressException(JSContext* cx);
 	void PrependTextToJsError(JSContext* cx, const std::string& text);
+	void SuppressException(JSContext* cx);
 
 	template <typename F, typename... Args>
 	[[nodiscard]] bool Execute_JsSafe(JSContext* cx, std::string_view functionName, F&& func, Args&&... args)
@@ -28,17 +28,4 @@ namespace mozjs
 
 		return true;
 	}
-
-	class AutoJsReport
-	{
-	public:
-		[[nodiscard]] explicit AutoJsReport(JSContext* cx);
-		~AutoJsReport() noexcept;
-
-		void Disable();
-
-	private:
-		JSContext* cx{};
-		bool isDisabled_ = false;
-	};
 }

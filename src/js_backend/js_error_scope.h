@@ -1,21 +1,30 @@
 #pragma once
-#include "js_error_helper.h"
 
 namespace mozjs
 {
+	class AutoJsReport
+	{
+	public:
+		[[nodiscard]] explicit AutoJsReport(JSContext* cx);
+		~AutoJsReport() noexcept;
+
+		void Disable();
+
+	private:
+		JSContext* cx{};
+		bool isDisabled_{};
+	};
+
 	// DO NOT TOUCH
 	class JsAutoRealmWithErrorReport
 	{
 	public:
-		[[nodiscard]] JsAutoRealmWithErrorReport(JSContext* cx, JS::HandleObject global) : ac_(cx, global), are_(cx) {}
+		[[nodiscard]] JsAutoRealmWithErrorReport(JSContext* cx, JS::HandleObject global);
 
 		JsAutoRealmWithErrorReport(const JsAutoRealmWithErrorReport&) = delete;
 		JsAutoRealmWithErrorReport& operator=(const JsAutoRealmWithErrorReport&) = delete;
 
-		void DisableReport()
-		{
-			are_.Disable();
-		}
+		void DisableReport();
 
 	private:
 		JSAutoRealm ac_;
