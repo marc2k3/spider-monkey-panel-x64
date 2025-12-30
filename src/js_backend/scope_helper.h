@@ -3,6 +3,7 @@
 
 namespace mozjs
 {
+	// DO NOT TOUCH
 	class JsAutoRealmWithErrorReport
 	{
 	public:
@@ -17,7 +18,7 @@ namespace mozjs
 		}
 
 	private:
-		AutoJsReport are_;
 		JSAutoRealm ac_;
+		AutoJsReport are_;
 	};
 }
