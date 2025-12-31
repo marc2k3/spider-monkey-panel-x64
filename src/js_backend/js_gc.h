@@ -14,6 +14,11 @@ namespace mozjs
 		/// @throw QwrException
 		[[nodiscard]] static uint32_t GetMaxHeap();
 		[[nodiscard]] static uint64_t GetTotalHeapUsageForGlobal(JSContext* cx, JS::HandleObject jsGlobal);
+		
+		bool MaybeGc();
+		// @brief Force gc trigger (e.g. on panel unload)
+		bool TriggerGc();
+
 		/// @details Returns last heap size instead of the current size,
 		/// but this should be good enough for users
 		[[nodiscard]] uint64_t GetTotalHeapUsage() const;
@@ -21,10 +26,6 @@ namespace mozjs
 		/// @throw QwrException
 		void Initialize(JSContext* pJsCtx);
 		void Finalize();
-
-		bool MaybeGc();
-		// @brief Force gc trigger (e.g. on panel unload)
-		bool TriggerGc();
 
 	private:
 		enum class GcLevel : uint8_t
@@ -54,9 +55,6 @@ namespace mozjs
 		void PrepareRealmsForGc(GcLevel gcLevel);
 		void NotifyRealmsOnGcEnd();
 
-	private:
-		static constexpr auto ZERO = uint64_t{};
-
 		JSContext* pJsCtx_{};
 
 		bool isManuallyTriggered_{};
@@ -67,12 +65,10 @@ namespace mozjs
 		uint64_t lastTotalAllocCount_{};
 		uint64_t lastGlobalHeapSize_{};
 
-		// These values are overwritten by config.
-		// Remain here mostly as a reference.
-		uint32_t maxHeapSize_ = 1024u * 1024u * 1024u * 2u;
-		uint32_t heapGrowthRateTrigger_ = 50u * 1024u * 1024u;
-		uint32_t gcSliceTimeBudget_ = 10u;
-		uint32_t gcCheckDelay_ = 50u;
-		uint32_t allocCountTrigger_ = 50u;
+		uint32_t maxHeapSize_{};
+		uint32_t heapGrowthRateTrigger_{};
+		uint32_t gcSliceTimeBudget_{};
+		uint32_t gcCheckDelay_{};
+		uint32_t allocCountTrigger_{};
 	};
 }

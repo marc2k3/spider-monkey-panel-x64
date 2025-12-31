@@ -10,6 +10,7 @@ namespace
 	constexpr uint32_t kHighFreqTimeLimitMs = 1000u;
 	constexpr uint32_t kHighFreqBudgetMultiplier = 2u;
 	constexpr uint32_t kHighFreqHeapGrowthMultiplier = 2u;
+	constexpr uint64_t kZero{};
 
 	enum class CustomGcReason
 	{
@@ -26,6 +27,7 @@ namespace
 
 namespace mozjs
 {
+#pragma region static
 	uint32_t JsGc::GetMaxHeap()
 	{
 		UpdateGcConfig();
@@ -38,6 +40,35 @@ namespace mozjs
 		auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetNonCCWObjectRealm(jsGlobal)));
 		return pJsRealm->GetCurrentHeapBytes();
 	}
+
+	void JsGc::UpdateGcConfig()
+	{
+		MEMORYSTATUSEX statex{};
+		statex.dwLength = sizeof(statex);
+		const auto bRet = GlobalMemoryStatusEx(&statex);
+		smp::CheckWinApi(bRet == TRUE, "GlobalMemoryStatusEx");
+
+		if (config::advanced::gc_max_heap.get() == kZero)
+		{
+			// detect settings automatically
+			config::advanced::gc_max_heap = std::min<uint64_t>(statex.ullTotalPhys / 4, kDefaultHeapMaxMb);
+		}
+		else if (config::advanced::gc_max_heap.get() > statex.ullTotalPhys)
+		{
+			config::advanced::gc_max_heap = statex.ullTotalPhys;
+		}
+
+		if (config::advanced::gc_max_heap_growth.get() == kZero)
+		{
+			// detect settings automatically
+			config::advanced::gc_max_heap_growth = std::min<uint64_t>(config::advanced::gc_max_heap.get() / 8, kDefaultHeapThresholdMb);
+		}
+		else if (config::advanced::gc_max_heap_growth.get() > config::advanced::gc_max_heap.get() / 2)
+		{
+			config::advanced::gc_max_heap_growth = config::advanced::gc_max_heap.get() / 2;
+		}
+	}
+#pragma endregion
 
 	uint64_t JsGc::GetTotalHeapUsage() const
 	{
@@ -102,35 +133,6 @@ namespace mozjs
 		return MaybeGc();
 	}
 
-	void JsGc::UpdateGcConfig()
-	{
-		MEMORYSTATUSEX statex{};
-		statex.dwLength = sizeof(statex);
-		const auto bRet = GlobalMemoryStatusEx(&statex);
-		smp::CheckWinApi(bRet == TRUE, "GlobalMemoryStatusEx");
-
-
-		if (config::advanced::gc_max_heap.get() == ZERO)
-		{
-			// detect settings automatically
-			config::advanced::gc_max_heap = std::min<uint64_t>(statex.ullTotalPhys / 4, kDefaultHeapMaxMb);
-		}
-		else if (config::advanced::gc_max_heap.get() > statex.ullTotalPhys)
-		{
-			config::advanced::gc_max_heap = statex.ullTotalPhys;
-		}
-
-		if (config::advanced::gc_max_heap_growth.get() == ZERO)
-		{
-			// detect settings automatically
-			config::advanced::gc_max_heap_growth = std::min<uint64_t>(config::advanced::gc_max_heap.get() / 8, kDefaultHeapThresholdMb);
-		}
-		else if (config::advanced::gc_max_heap_growth.get() > config::advanced::gc_max_heap.get() / 2)
-		{
-			config::advanced::gc_max_heap_growth = config::advanced::gc_max_heap.get() / 2;
-		}
-	}
-
 	bool JsGc::IsTimeToGc()
 	{
 		const auto curTime = timeGetTime();
@@ -166,7 +168,7 @@ namespace mozjs
 	{
 		auto curTotalHeapSize = GetCurrentTotalHeapSize();
 
-		if (lastTotalHeapSize_ == ZERO || lastTotalHeapSize_ > curTotalHeapSize)
+		if (lastTotalHeapSize_ == kZero || lastTotalHeapSize_ > curTotalHeapSize)
 		{
 			lastTotalHeapSize_ = curTotalHeapSize;
 		}
@@ -196,7 +198,7 @@ namespace mozjs
 	JsGc::GcLevel JsGc::GetGcLevelFromAllocCount()
 	{
 		uint64_t curTotalAllocCount = GetCurrentTotalAllocCount();
-		if (lastTotalAllocCount_ == ZERO || lastTotalAllocCount_ > curTotalAllocCount)
+		if (lastTotalAllocCount_ == kZero || lastTotalAllocCount_ > curTotalAllocCount)
 		{
 			lastTotalAllocCount_ = curTotalAllocCount;
 		}
@@ -320,9 +322,10 @@ namespace mozjs
 				uint32_t heapGrowthRateTrigger;
 				uint32_t allocCountTrigger;
 			};
-			TriggerData triggers{
-				(isHighFrequency_ ? kHighFreqHeapGrowthMultiplier * heapGrowthRateTrigger_ : heapGrowthRateTrigger_) / 2,
-				allocCountTrigger_ / 2
+
+			auto triggers = TriggerData{
+				.heapGrowthRateTrigger = (isHighFrequency_ ? kHighFreqHeapGrowthMultiplier * heapGrowthRateTrigger_ : heapGrowthRateTrigger_) / 2,
+				.allocCountTrigger = allocCountTrigger_ / 2
 			};
 
 			if (uint64_t curGlobalHeapSize = JS_GetGCParameter(pJsCtx_, JSGC_BYTES); curGlobalHeapSize > (lastGlobalHeapSize_ + triggers.heapGrowthRateTrigger))
@@ -366,10 +369,9 @@ namespace mozjs
 
 	void JsGc::PerformIncrementalGc()
 	{
-		const js::SliceBudget sliceBudget{
-			js::TimeBudget{
-				static_cast<int64_t>(isHighFrequency_ ? kHighFreqBudgetMultiplier * gcSliceTimeBudget_ : gcSliceTimeBudget_) }
-		};
+		const auto ms = static_cast<int64_t>(isHighFrequency_ ? kHighFreqBudgetMultiplier * gcSliceTimeBudget_ : gcSliceTimeBudget_);
+		const auto timeBudget = js::TimeBudget(ms);
+		const auto sliceBudget = js::SliceBudget(timeBudget);
 
 		if (!JS::IsIncrementalGCInProgress(pJsCtx_))
 		{
