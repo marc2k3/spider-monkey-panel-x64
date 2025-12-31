@@ -130,11 +130,14 @@ namespace
 		const std::unordered_map<uint32_t,
 		smp::DynamicMainMenuManager::CommandData>& idToCommand) : panelName_(panelName)
 	{
+		auto view = idToCommand | std::views::transform([](const auto& elem)
+			{
+				return std::make_pair(elem.second.name, elem.first);
+			});
+
 		// use map to sort commands by their name
-		const auto commandNameToId =
-			idToCommand
-			| ranges::views::transform([](const auto& elem) { return std::make_pair(elem.second.name, elem.first); })
-			| ranges::to<std::multimap>;
+		std::multimap commandNameToId = { std::from_range, view };
+
 		for (const auto& [name, id] : commandNameToId)
 		{
 			const auto& command = idToCommand.at(id);
@@ -160,15 +163,19 @@ namespace
 
 	MainMenuNodeGroup_Panels::MainMenuNodeGroup_Panels()
 	{
-		const auto panels = smp::DynamicMainMenuManager::Get().GetAllCommandData();
-		// use map to sort panels by their name
-		const auto panelNameToHWnd =
-			panels
-			| ranges::views::transform([](const auto& elem) { return std::make_pair(elem.second.name, elem.first); })
-			| ranges::to<std::map>;
-		for (const auto& [name, hWnd] : panelNameToHWnd)
+		const auto& panels = smp::DynamicMainMenuManager::Get().GetAllCommandData();
+
+		std::map<std::string, HWND> panel_name_map;
+
+		for (auto&& panel : panels)
+		{
+			panel_name_map.emplace(panel.second.name, panel.first);
+		}
+
+		for (const auto& [name, hWnd] : panel_name_map)
 		{
 			const auto& panelData = panels.at(hWnd);
+
 			if (panelData.commands.empty())
 			{
 				continue;

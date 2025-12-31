@@ -276,7 +276,7 @@ namespace mozjs
 		pBitmap->UnlockBits(&bmpdata);
 
 		std::vector<std::pair<uint32_t, uint32_t>> sort_vec(color_counters.cbegin(), color_counters.cend());
-		ranges::sort(sort_vec, [](const auto& a, const auto& b)
+		std::ranges::sort(sort_vec, [](const auto& a, const auto& b)
 			{
 				return a.second > b.second;
 			});

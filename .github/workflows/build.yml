@@ -16,7 +16,7 @@ jobs:
       working-directory: C:\vcpkg
       run: |
         git pull && bootstrap-vcpkg && vcpkg integrate install
-        vcpkg install cpr fmt miniz nlohmann-json range-v3 wil wtl --triplet x64-windows-static
+        vcpkg install cpr fmt miniz nlohmann-json wil wtl --triplet x64-windows-static
 
     - name: Build
       run: msbuild workspace\foo_spider_monkey_panel.slnx /p:PlatformToolset=v143

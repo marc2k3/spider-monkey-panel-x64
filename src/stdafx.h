@@ -71,9 +71,6 @@
 #include <fmt/format.h>
 #include <fmt/xchar.h>
 
-// range v3
-#include <range/v3/all.hpp>
-
 // json
 #define JSON_DIAGNOSTICS 1
 #define JSON_USE_IMPLICIT_CONVERSIONS 0

@@ -198,24 +198,30 @@ namespace config
 
 	WStrings GetPackageFiles(const ParsedPanelSettings& settings)
 	{
-		auto files = GetPackageScriptFiles(settings);
 		const auto packagePath = GetPackagePath(settings);
 		const auto assetsDir = packagePath / "assets";
 		auto assetFiles = DirectoryIterator(assetsDir).list_files(true);
-		ranges::actions::push_back(files, std::move(assetFiles));
+
+		auto files = GetPackageScriptFiles(settings);
+		files.append_range(assetFiles);
 		return files;
 	}
 
 	WStrings GetPackageScriptFiles(const ParsedPanelSettings& settings)
 	{
+		const auto mainScript = *settings.scriptPath;
 		const auto packagePath = GetPackagePath(settings);
 		const auto scriptsDir = packagePath / "scripts";
-		auto files = DirectoryIterator(scriptsDir).list_files(true);
 
-		const auto mainScript = *settings.scriptPath;
-		ranges::actions::remove_if(files, [&mainScript](const auto& path) { return (fs::path(path).extension() != ".js" || path == mainScript); });
+		WStrings scripts;
+		scripts.emplace_back(mainScript);
 
-		files.insert(files.begin(), mainScript);
-		return files;
+		for (auto&& script : DirectoryIterator(scriptsDir).list_files(true))
+		{
+			if (fs::path(script).extension() == ".js" && script != mainScript)
+				scripts.emplace_back(script);
+		}
+
+		return scripts;
 	}
 }

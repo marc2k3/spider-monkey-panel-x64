@@ -439,7 +439,7 @@ namespace smp
 		// valid FiringId since those timers are currently being processed by
 		// RunTimeout.  This optimizes for the common case of insertion at the end.
 
-		auto reverseIt = ranges::find_if_not(schedule_ | ranges::views::reverse, [&](const auto& pLocalTimeout)
+		auto reverseIt = std::ranges::find_if_not(schedule_ | std::views::reverse, [&](const auto& pLocalTimeout)
 			{
 				return (pLocalTimeout->When() > pTimeout->When()
 					// Check the firing ID last since it will be invalid in the vast majority of cases.
