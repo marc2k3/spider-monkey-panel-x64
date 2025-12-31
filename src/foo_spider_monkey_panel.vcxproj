@@ -218,7 +218,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="utils\guid_helpers.cpp" />
     <ClCompile Include="utils\hook_handler.cpp" />
     <ClCompile Include="utils\image_helpers.cpp" />
-    <ClCompile Include="utils\kmeans.cpp" />
     <ClCompile Include="utils\location_processor.cpp" />
     <ClCompile Include="utils\mainmenu.cpp" />
     <ClCompile Include="utils\mainmenu_dynamic.cpp" />
@@ -243,6 +242,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\GetAlbumArtAsync.hpp" />
     <ClInclude Include="2K3\Helpers.hpp" />
     <ClInclude Include="2K3\HTTPRequestAsync.hpp" />
+    <ClInclude Include="2K3\KMeans.hpp" />
     <ClInclude Include="2K3\LoadImageAsync.hpp" />
     <ClInclude Include="2K3\MainMenuCommand.hpp" />
     <ClInclude Include="2K3\PlaylistLock.hpp" />
@@ -376,7 +376,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="utils\hook_handler.h" />
     <ClInclude Include="utils\image_helpers.h" />
     <ClInclude Include="utils\js_exception.h" />
-    <ClInclude Include="utils\kmeans.h" />
     <ClInclude Include="utils\location_processor.h" />
     <ClInclude Include="utils\mainmenu_dynamic.h" />
     <ClInclude Include="utils\menu_helpers.h" />

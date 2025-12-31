@@ -1,11 +1,11 @@
 #include <stdafx.h>
 #include "gdi_bitmap.h"
 
+#include <2K3/KMeans.hpp>
 #include <2K3/StackBlur.hpp>
 #include <interfaces/gdi_raw_bitmap.h>
 #include <utils/gdi_error_helpers.h>
 #include <utils/image_helpers.h>
-#include <utils/kmeans.h>
 
 namespace
 {
@@ -297,86 +297,52 @@ namespace mozjs
 
 	std::string JsGdiBitmap::GetColourSchemeJSON(uint32_t count)
 	{
-		// rescaled image will have max of ~48k pixels
-		constexpr uint32_t kMaxPixelCount = 220 * 220;
-		auto pBitmap = CreateDownsizedImage(*pGdi_, kMaxPixelCount);
-		const Gdiplus::Rect rect{ 0, 0, static_cast<int>(pBitmap->GetWidth()), static_cast<int>(pBitmap->GetHeight()) };
-		Gdiplus::BitmapData bmpdata{};
+		const int width = std::min<int>(pGdi_->GetWidth(), 220);
+		const int height = std::min<int>(pGdi_->GetHeight(), 220);
+		const Gdiplus::Rect rect(0, 0, width, height);
+		Gdiplus::BitmapData bmpdata;
 
-		const auto status = pBitmap->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
+		auto resized = CreateDownsizedImage(*pGdi_, 220 * 220);
+		auto status = resized->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
 		smp::CheckGdi(status, "LockBits");
 
-		std::map<uint32_t, uint32_t> colour_counters;
-		const auto colourRange = std::ranges::subrange(
-			reinterpret_cast<const uint32_t*>(bmpdata.Scan0),
-			reinterpret_cast<const uint32_t*>(bmpdata.Scan0) + bmpdata.Width * bmpdata.Height
-		);
+		const uint32_t colours_length = bmpdata.Width * bmpdata.Height;
+		const uint32_t* colours = static_cast<const uint32_t*>(bmpdata.Scan0);
+		static constexpr std::array shifts = { RED_SHIFT, GREEN_SHIFT, BLUE_SHIFT };
+		std::map<ColourValues, uint32_t> colour_counters;
 
-		for (auto colour : colourRange)
-		{ // reduce color set to pass to k-means by rounding colour components to multiples of 8
-			uint32_t r = (colour >> 16) & 0xff;
-			uint32_t g = (colour >> 8) & 0xff;
-			uint32_t b = (colour & 0xff);
-
-			// We're reducing total colors from 2^24 to 2^15 by rounding each color component value to multiples of 8.
-			// First we need to check if the byte will overflow, and if so pin to 0xff, otherwise add 4 and round down.
-			r = (r > 0xfb) ? 0xff : (r + 4) & 0xf8;
-			g = (g > 0xfb) ? 0xff : (g + 4) & 0xf8;
-			b = (b > 0xfb) ? 0xff : (b + 4) & 0xf8;
-
-			++colour_counters[r << 16 | g << 8 | b];
-		}
-		pBitmap->UnlockBits(&bmpdata);
-
-		const auto points = ranges::views::transform(colour_counters, [](const auto& colourCounter)
-			{
-				const auto [colour, pixelCount] = colourCounter;
-
-				const uint8_t r = (colour >> 16) & 0xff;
-				const uint8_t g = (colour >> 8) & 0xff;
-				const uint8_t b = (colour & 0xff);
-
-				return kmeans::PointData{ std::vector<uint8_t>{ r, g, b }, pixelCount };
-			}) | ranges::to_vector;
-
-		constexpr uint32_t kKmeansIterationCount = 12;
-		std::vector<kmeans::ClusterData> clusters = kmeans::run(points, count, kKmeansIterationCount);
-
-		const auto getTotalPixelCount = [](const kmeans::ClusterData& cluster) -> size_t
-			{
-				return ranges::accumulate(cluster.points, 0uz, [](auto sum, const auto pData)
-					{
-						return sum + pData->pixel_count;
-					});
-			};
-
-		// sort by largest clusters
-		ranges::sort(clusters, [&getTotalPixelCount](const auto& a, const auto& b)
-			{
-				return getTotalPixelCount(a) > getTotalPixelCount(b);
-			});
-
-		if (clusters.size() > count)
+		for (const auto i : indices(colours_length))
 		{
-			clusters.resize(count);
+			ColourValues values{};
+
+			std::ranges::transform(shifts, values.begin(), [colour = colours[i]](const auto& shift)
+				{
+					const uint8_t value = (colour >> shift) & UINT8_MAX;
+					return static_cast<double>(value > 251 ? UINT8_MAX : (value + 4) & 0xf8);
+				});
+
+			++colour_counters[values];
 		}
 
+		status = resized->UnlockBits(&bmpdata);
+		smp::CheckGdi(status, "UnlockBits");
+
+		KPoints points;
+		for (auto&& [index, value] : std::views::enumerate(colour_counters))
+		{
+			points.emplace_back(index, value.first, value.second);
+		}
+
+		auto kmeans = KMeans(points, count);
+		auto clusters = kmeans.run();
 		auto j = JSON::array();
 
-		for (const auto& cluster : clusters)
+		for (auto&& cluster : clusters)
 		{
-			const auto& centralValues = cluster.central_values;
-
-			const uint32_t colour = 0xff000000
-				| static_cast<uint32_t>(centralValues[0]) << 16
-				| static_cast<uint32_t>(centralValues[1]) << 8
-				| static_cast<uint32_t>(centralValues[2]);
-			const double frequency = static_cast<double>(getTotalPixelCount(cluster)) / colourRange.size();
-
 			j.push_back({
-				{ "col", colour },
-				{ "freq", frequency }
-				});
+				{ "col", cluster.get_colour() },
+				{ "freq", cluster.get_frequency(colours_length) },
+			});
 		}
 
 		return j.dump(2);

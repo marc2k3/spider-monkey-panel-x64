@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="utils\kmeans.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="ui\ui_input_box.cpp">
       <Filter>ui</Filter>
     </ClCompile>
@@ -412,9 +409,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils\kmeans.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="ui\ui_input_box.h">
       <Filter>ui</Filter>
     </ClInclude>
@@ -878,6 +872,9 @@
     </ClInclude>
     <ClInclude Include="js_backend\js_error_scope.h">
       <Filter>js_backend</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\KMeans.hpp">
+      <Filter>2K3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
