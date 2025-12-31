@@ -20,7 +20,7 @@ cd vcpkg
 
 Run this command to install the required packages:
 ```
-./vcpkg install cpr fmt miniz nlohmann-json range-v3 wil wtl --triplet x64-windows-static
+./vcpkg install cpr fmt miniz nlohmann-json wil wtl --triplet x64-windows-static
 ```
 
 Now browse inside the `foo_spider_monkey_panel` folder and open `workspace/foo_spider_monkey_panel.slnx` in
