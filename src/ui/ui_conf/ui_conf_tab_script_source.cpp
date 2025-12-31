@@ -146,56 +146,61 @@ void CConfigTabScriptSource::OnScriptSrcChange(UINT /*uNotifyCode*/, int nID, CW
 		return;
 	}
 
-	auto it = ranges::find_if(ddx_, [nID](auto& ddx) { return ddx->IsMatchingId(nID); });
+	auto it = std::ranges::find_if(ddx_, [nID](auto& ddx)
+		{
+			return ddx->IsMatchingId(nID);
+		});
+
 	if (ddx_.end() != it)
 	{
 		(*it)->ReadFromUi();
 	}
 
-	const auto newPayloadOpt = [&]() -> std::optional<config::PanelSettings::ScriptVariant> {
-		switch (sourceTypeId_)
+	const auto newPayloadOpt = [&]() -> std::optional<config::PanelSettings::ScriptVariant>
 		{
-		case IDC_RADIO_SRC_SAMPLE:
-		{
-			return sampleData_.empty()
-				? config::PanelSettings_Sample{}
-			: config::PanelSettings_Sample{ smp::ToU8(sampleData_[sampleIdx_].displayedName) };
-		}
-		case IDC_RADIO_SRC_MEMORY:
-		{
-			return config::PanelSettings_InMemory{};
-		}
-		case IDC_RADIO_SRC_FILE:
-		{
-			const auto parsedSettingsOpt = OnBrowseFileImpl();
-			if (parsedSettingsOpt)
+			switch (sourceTypeId_)
 			{
-				path_ = parsedSettingsOpt->u8string();
-				return config::PanelSettings_File{ path_ };
+			case IDC_RADIO_SRC_SAMPLE:
+			{
+				return sampleData_.empty()
+					? config::PanelSettings_Sample{}
+					: config::PanelSettings_Sample{ smp::ToU8(sampleData_[sampleIdx_].displayedName) };
 			}
-			else
+			case IDC_RADIO_SRC_MEMORY:
+			{
+				return config::PanelSettings_InMemory{};
+			}
+			case IDC_RADIO_SRC_FILE:
+			{
+				const auto parsedSettingsOpt = OnBrowseFileImpl();
+				if (parsedSettingsOpt)
+				{
+					path_ = parsedSettingsOpt->u8string();
+					return config::PanelSettings_File{ path_ };
+				}
+				else
+				{
+					return std::nullopt;
+				}
+			}
+			case IDC_RADIO_SRC_PACKAGE:
+			{
+				const auto parsedSettingsOpt = OnOpenPackageManagerImpl(settings_.packageId.value_or(""));
+				if (parsedSettingsOpt)
+				{
+					packageName_ = parsedSettingsOpt->scriptName;
+					return parsedSettingsOpt->GeneratePanelSettings().payload;
+				}
+				else
+				{
+					return std::nullopt;
+				}
+			}
+			default:
 			{
 				return std::nullopt;
 			}
-		}
-		case IDC_RADIO_SRC_PACKAGE:
-		{
-			const auto parsedSettingsOpt = OnOpenPackageManagerImpl(settings_.packageId.value_or(""));
-			if (parsedSettingsOpt)
-			{
-				packageName_ = parsedSettingsOpt->scriptName;
-				return parsedSettingsOpt->GeneratePanelSettings().payload;
 			}
-			else
-			{
-				return std::nullopt;
-			}
-		}
-		default:
-		{
-			return std::nullopt;
-		}
-		}
 		}();
 
 	if (newPayloadOpt)
@@ -422,8 +427,9 @@ void CConfigTabScriptSource::InitializeLocalOptions()
 				return 0;
 			}
 
-			const auto it = ranges::find_if(sampleData_, [&sampleName](const auto& elem) {
-				return (sampleName == elem.displayedName);
+			const auto it = std::ranges::find_if(sampleData_, [&sampleName](const auto& elem)
+				{
+					return (sampleName == elem.displayedName);
 				});
 
 			if (it == sampleData_.cend())
@@ -433,7 +439,7 @@ void CConfigTabScriptSource::InitializeLocalOptions()
 				return 0;
 			}
 
-			return static_cast<int>(ranges::distance(sampleData_.cbegin(), it));
+			return static_cast<int>(std::ranges::distance(sampleData_.cbegin(), it));
 		}();
 
 	// Source is checked last, because it can be changed in the code above

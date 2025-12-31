@@ -8,7 +8,7 @@ void TagWriter::from_json_array(JSON& arr) noexcept
 {
 	std::vector<file_info_impl> infos(m_handles.get_count());
 
-	for (auto&& [info, obj, handle] : ranges::views::zip(infos, arr, m_handles))
+	for (auto&& [info, obj, handle] : std::views::zip(infos, arr, m_handles))
 	{
 		QwrException::ExpectTrue(obj.is_object() && !obj.empty(), "Invalid JSON info: array element not a JSON object");
 

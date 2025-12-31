@@ -402,35 +402,28 @@ namespace smp
 			return false;
 		}
 
-		const auto reverseRange = ranges::views::reverse(activeFiringIds_);
-		return ranges::find(reverseRange, id) != ranges::end(reverseRange);
+		const auto reverseRange = std::views::reverse(activeFiringIds_);
+		return std::ranges::find(reverseRange, id) != reverseRange.end();
 	}
 
-	TimeoutManager::TimeoutStorage::TimeoutStorage(TimeoutManager& pParent)
-		: pParent_(pParent)
-	{
-	}
+	TimeoutManager::TimeoutStorage::TimeoutStorage(TimeoutManager& pParent) : pParent_(pParent) {}
 
-	TimeoutManager::TimeoutStorage::TimeoutIterator
-	TimeoutManager::TimeoutStorage::Get(uint32_t id)
+	TimeoutManager::TimeoutStorage::TimeoutIterator TimeoutManager::TimeoutStorage::Get(uint32_t id)
 	{
 		return (idToIterator.contains(id) ? idToIterator.at(id) : schedule_.end());
 	}
 
-	TimeoutManager::TimeoutStorage::TimeoutIterator
-	TimeoutManager::TimeoutStorage::GetFirst()
+	TimeoutManager::TimeoutStorage::TimeoutIterator TimeoutManager::TimeoutStorage::GetFirst()
 	{
 		return schedule_.begin();
 	}
 
-	smp::TimeoutManager::TimeoutStorage::TimeoutIterator
-	TimeoutManager::TimeoutStorage::GetLast()
+	smp::TimeoutManager::TimeoutStorage::TimeoutIterator TimeoutManager::TimeoutStorage::GetLast()
 	{
 		return (schedule_.empty() ? schedule_.end() : --schedule_.end());
 	}
 
-	TimeoutManager::TimeoutStorage::TimeoutIterator
-	TimeoutManager::TimeoutStorage::GetNext(const TimeoutIterator& it)
+	TimeoutManager::TimeoutStorage::TimeoutIterator TimeoutManager::TimeoutStorage::GetNext(const TimeoutIterator& it)
 	{
 		return (it == schedule_.end() ? it : std::next(it));
 	}

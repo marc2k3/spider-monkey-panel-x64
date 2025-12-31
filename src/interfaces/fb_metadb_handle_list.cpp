@@ -322,7 +322,7 @@ namespace mozjs
 		auto api = library_manager::get();
 		auto values = pfc_array<pfc::string8>(count);
 
-		for (auto&& [handle, value] : ranges::views::zip(metadbHandleList_, values))
+		for (auto&& [handle, value] : std::views::zip(metadbHandleList_, values))
 		{
 			api->get_relative_path(handle, value);
 		}
@@ -444,7 +444,7 @@ namespace mozjs
 		pfc::string8 temp;
 		temp.prealloc(512);
 
-		for (auto&& [index, handle] : ranges::views::enumerate(metadbHandleList_))
+		for (auto&& [index, handle] : std::views::enumerate(metadbHandleList_))
 		{
 			temp.reset();
 			api->get_relative_path(handle, temp);

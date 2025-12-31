@@ -459,7 +459,7 @@ namespace mozjs
 			}
 		}
 
-		ranges::sort(files, CmpW());
+		std::ranges::sort(files, CmpW());
 
 		JS::RootedValue jsValue(m_ctx);
 		convert::to_js::ToArrayValue(m_ctx, files, &jsValue);

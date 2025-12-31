@@ -746,13 +746,13 @@ namespace mozjs
 		metadb_handle_list handles;
 		m_api->playlist_get_all_items(playlistIndex, handles);
 
-		auto order = ranges::views::indices(handles.get_count()) | ranges::to_vector;
+		auto sort_order = CustomSort::order(handles.get_count());
 
 		titleformat_object::ptr script;
 		titleformat_compiler::get()->compile_safe(script, pattern.c_str());
 
-		metadb_handle_list_helper::sort_by_format_get_order(handles, order.data(), script, nullptr, direction);
-		return m_api->playlist_reorder_items(playlistIndex, order.data(), order.size());
+		metadb_handle_list_helper::sort_by_format_get_order(handles, sort_order.get_ptr(), script, nullptr, direction);
+		return m_api->playlist_reorder_items(playlistIndex, sort_order.get_ptr(), sort_order.get_count());
 	}
 
 	bool Plman::SortByFormatV2WithOpt(size_t optArgCount, uint32_t playlistIndex, const std::string& pattern, int8_t direction)
@@ -776,7 +776,7 @@ namespace mozjs
 		pfc::string8 name;
 		name.prealloc(512);
 
-		for (auto&& [index, item] : ranges::views::enumerate(items))
+		for (auto&& [index, item] : std::views::enumerate(items))
 		{
 			m_api->playlist_get_name(index, name);
 			item.index = index;

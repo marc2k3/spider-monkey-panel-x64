@@ -38,7 +38,7 @@ namespace
 				curPath += '/';
 			}
 
-			for (auto i: ranges::views::indices(node->get_children_count()))
+			for (auto i : indices(node->get_children_count()))
 			{
 				auto pChild = node->get_child(i);
 				if (auto retVal = FindMainmenuCommandV2NodeRecur(pChild, curPath, name); retVal.is_valid())
@@ -68,7 +68,7 @@ namespace
 
 			const auto parent_path = MainMenuCommand::build_parent_path(ptr->get_parent());
 
-			for (const auto idx: ranges::views::indices(ptr->get_command_count()))
+			for (const auto idx: indices(ptr->get_command_count()))
 			{
 				if (v2_ptr.is_valid() && v2_ptr->is_command_dynamic(idx))
 				{

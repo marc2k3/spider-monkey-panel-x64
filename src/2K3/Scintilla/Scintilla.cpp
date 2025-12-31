@@ -962,7 +962,7 @@ void CScintilla::TrackWidth()
 			return PointXFromPosition(GetLineEndPosition(line));
 		};
 
-	auto view = std::views::iota(0, GetLineCount()) | std::views::transform(transform);
+	auto view = indices(GetLineCount()) | std::views::transform(transform);
 	SetScrollWidth(std::ranges::max(view));
 }
 

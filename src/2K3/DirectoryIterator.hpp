@@ -48,7 +48,7 @@ private:
 				}
 			}
 
-			ranges::sort(paths, CmpW());
+			std::ranges::sort(paths, CmpW());
 		}
 
 		return paths;

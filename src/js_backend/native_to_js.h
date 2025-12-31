@@ -121,7 +121,7 @@ namespace mozjs::convert::to_js
 		JS::RootedValue jsValue(cx);
 		const auto size = sizeu(inContainer);
 
-		for (const auto i: ranges::views::indices(size))
+		for (const auto i : indices(size))
 		{
 			ToValue(cx, accessorFunc(inContainer, i), &jsValue);
 			if (!JS_SetElement(cx, jsArray, i, jsValue))
@@ -140,7 +140,7 @@ namespace mozjs::convert::to_js
 		JsException::ExpectTrue(jsArray);
 
 		JS::RootedValue jsValue(cx);
-		for (const auto& [i, elem]: ranges::views::enumerate(inContainer))
+		for (const auto& [i, elem]: std::views::enumerate(inContainer))
 		{
 			ToValue(cx, elem, &jsValue);
 

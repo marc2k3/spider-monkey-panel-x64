@@ -20,7 +20,7 @@ namespace smp
 
 		void on_watched_object_changed(const config_object::ptr& object) noexcept final
 		{
-			const auto it = ranges::find_if(watched_objects, [g = object->get_guid()](const auto& item)
+			const auto it = std::ranges::find_if(watched_objects, [g = object->get_guid()](const auto& item)
 				{
 					return g == *item.first;
 				});

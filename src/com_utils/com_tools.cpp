@@ -39,7 +39,7 @@ namespace internal
 		std::span<LPOLESTR> names(rgszNames, cNames);
 		std::span<MEMBERID> memIds(pMemId, cNames);
 
-		for (auto&& [name, memId]: ranges::views::zip(names, memIds))
+		for (auto&& [name, memId]: std::views::zip(names, memIds))
 		{
 			const auto hash = LHashValOfName(LANG_NEUTRAL, name);
 			if (const auto it = cache_.find(hash);

@@ -39,7 +39,7 @@ namespace smp::com
 				return 0;
 			}
 
-			for (const auto i: ranges::views::indices(static_cast<int>(fileCount)))
+			for (const auto i : indices(static_cast<int>(fileCount)))
 			{
 				const auto pathLength = DragQueryFile(hDrop, i, nullptr, 0);
 				std::wstring path;

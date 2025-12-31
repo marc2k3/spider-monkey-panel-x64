@@ -68,8 +68,9 @@ void CDialogPackageManager::OnDestroy()
 
 void CDialogPackageManager::OnDdxUiChange(UINT /*uNotifyCode*/, int nID, CWindow /*wndCtl*/)
 {
-	auto it = ranges::find_if(ddx_, [nID](auto& ddx) {
-		return ddx->IsMatchingId(nID);
+	auto it = std::ranges::find_if(ddx_, [nID](auto& ddx)
+		{
+			return ddx->IsMatchingId(nID);
 		});
 
 	if (ddx_.end() != it)
@@ -150,7 +151,7 @@ void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, C
 			{
 				config::MarkPackageAsToBeRemoved(packageId);
 
-				auto it = ranges::find_if(packages_, [&](const auto& elem)
+				auto it = std::ranges::find_if(packages_, [&](const auto& elem)
 					{
 						return (packageId == elem.id);
 					});
@@ -390,7 +391,7 @@ void CDialogPackageManager::LoadPackages()
 
 void CDialogPackageManager::SortPackages()
 {
-	ranges::sort(packages_, [](const auto& a, const auto& b)
+	std::ranges::sort(packages_, [](const auto& a, const auto& b)
 		{
 			return (StrCmpLogicalW(a.displayedName.c_str(), b.displayedName.c_str()) < 0);
 		});
@@ -400,7 +401,11 @@ void CDialogPackageManager::UpdateListBoxFromData()
 {
 	SortPackages();
 
-	const auto it = ranges::find_if(packages_, [&](const auto& package) { return (focusedPackageId_ == package.id); });
+	const auto it = std::ranges::find_if(packages_, [&](const auto& package)
+		{
+			return (focusedPackageId_ == package.id);
+		});
+
 	if (it == packages_.cend())
 	{
 		if (packages_.empty())
@@ -416,7 +421,7 @@ void CDialogPackageManager::UpdateListBoxFromData()
 	}
 	else
 	{
-		focusedPackageIdx_ = static_cast<int>(ranges::distance(packages_.cbegin(), it));
+		focusedPackageIdx_ = static_cast<int>(std::ranges::distance(packages_.cbegin(), it));
 	}
 
 	packagesListBox_.ResetContent();
@@ -531,7 +536,7 @@ bool CDialogPackageManager::ImportPackage(const std::filesystem::path& path)
 			{
 				config::MarkPackageAsToBeInstalled(packageId, tmpPath);
 
-				auto it = ranges::find_if(packages_, [&](const auto& elem)
+				auto it = std::ranges::find_if(packages_, [&](const auto& elem)
 					{
 						return (packageId == elem.id);
 					});
@@ -556,7 +561,7 @@ bool CDialogPackageManager::ImportPackage(const std::filesystem::path& path)
 
 		newSettings.scriptPath = newPackagePath / config::GetRelativePathToMainFile();
 
-		auto it = ranges::find_if(packages_, [&](const auto& elem)
+		auto it = std::ranges::find_if(packages_, [&](const auto& elem)
 			{
 				return (packageId == elem.id);
 			});

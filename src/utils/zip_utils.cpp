@@ -132,7 +132,7 @@ namespace smp
 				return;
 			}
 
-			for (const auto i: ranges::views::indices(fileCount))
+			for (const auto i : indices(fileCount))
 			{
 				mz_zip_archive_file_stat zFileStat;
 				zRet = mz_zip_reader_file_stat(&mzZip, i, &zFileStat);

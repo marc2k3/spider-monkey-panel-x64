@@ -190,7 +190,7 @@ namespace smp
 
 		bool IsMatchingId(int controlId) const override
 		{
-			return (controlIdList_.cend() != ranges::find(controlIdList_, controlId));
+			return controlIdList_.cend() != std::ranges::find(controlIdList_, controlId);
 		}
 
 		void SetHwnd(HWND hWnd) override

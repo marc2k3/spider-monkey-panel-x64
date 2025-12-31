@@ -1,5 +1,11 @@
 #pragma once
 
+template <std::integral T>
+static auto indices(T to)
+{
+	return std::views::iota(T{}, to);
+}
+
 template <typename T>
 static auto pfc_array(size_t count) noexcept
 {

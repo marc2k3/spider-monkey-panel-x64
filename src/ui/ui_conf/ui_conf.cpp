@@ -61,7 +61,10 @@ void CDialogConf::OnWholeScriptChange()
 
 bool CDialogConf::HasChanged()
 {
-	return (hasChanged_ || ranges::any_of(tabs_, [](const auto& pTab) { return pTab->HasChanged(); }));
+	return hasChanged_ || std::ranges::any_of(tabs_, [](const auto& pTab)
+		{
+			return pTab->HasChanged();
+		});
 }
 
 void CDialogConf::Apply(bool savePackageData)
@@ -419,13 +422,12 @@ void CDialogConf::ReinitializeTabControls()
 {
 	// do not recreate the first tab
 
-	for (const auto i : ranges::views::ints(1, cTabs_.GetItemCount()))
+	for (const auto i : std::views::iota(1, cTabs_.GetItemCount()))
 	{
-		(void)i;
 		cTabs_.DeleteItem(1);
 	}
 
-	for (const auto& pTab : tabs_ | ranges::views::drop(1))
+	for (const auto& pTab : tabs_ | std::views::drop(1))
 	{
 		cTabs_.AddItem(pTab->Name());
 	}

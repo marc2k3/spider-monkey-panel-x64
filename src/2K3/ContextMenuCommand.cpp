@@ -31,7 +31,7 @@ bool ContextMenuCommand::execute() noexcept
 
 bool ContextMenuCommand::execute_recur(contextmenu_node* parent, std::string_view parent_path) noexcept
 {
-	for (const auto i : ranges::views::indices(parent->get_num_children()))
+	for (const auto i : indices(parent->get_num_children()))
 	{
 		const auto child = parent->get_child(i);
 		const auto type = child->get_type();

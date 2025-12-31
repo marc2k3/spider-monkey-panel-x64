@@ -24,16 +24,16 @@ namespace CustomSort
 	static Order order(size_t count) noexcept
 	{
 		auto sort_order = pfc_array<size_t>(count);
-		ranges::iota(sort_order, 0uz);
+		std::ranges::iota(sort_order, 0uz);
 		return sort_order;
 	}
 
 	static Order sort(pfc::array_t<Item>& items, int32_t direction = 1) noexcept
 	{
-		ranges::sort(items, direction > 0 ? sort_compare<1> : sort_compare<-1>);
+		std::ranges::sort(items, direction > 0 ? sort_compare<1> : sort_compare<-1>);
 
 		auto sort_order = order(items.get_count());
-		ranges::transform(items, sort_order.begin(), [](const Item& item) { return item.index; });
+		std::ranges::transform(items, sort_order.begin(), [](const Item& item) { return item.index; });
 		return sort_order;
 	}
 }

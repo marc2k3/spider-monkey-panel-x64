@@ -135,21 +135,25 @@ namespace mozjs
 			}
 		}
 
-		auto containerDataToProcess = [&]() {
-			std::unique_lock<std::mutex> lock(watcherDataMutex_);
-			std::vector<std::pair<JsContainer*, ContainerData*>> dataToProcess;
-			for (auto& [pContainer, containerData] : monitoredContainers_)
+		auto containerDataToProcess = [&]()
 			{
-				const auto it = ranges::find_if(activeContainers_, [pContainer = pContainer](auto& elem) {
-					return (elem.first == pContainer);
-					});
-				if (activeContainers_.cend() != it)
+				std::unique_lock<std::mutex> lock(watcherDataMutex_);
+				std::vector<std::pair<JsContainer*, ContainerData*>> dataToProcess;
+				for (auto& [pContainer, containerData] : monitoredContainers_)
 				{
-					dataToProcess.emplace_back(pContainer, &containerData);
+					const auto it = std::ranges::find_if(activeContainers_, [pContainer = pContainer](auto& elem) 
+						{
+							return (elem.first == pContainer);
+						});
+
+					if (activeContainers_.cend() != it)
+					{
+						dataToProcess.emplace_back(pContainer, &containerData);
+					}
 				}
-			}
-			return dataToProcess;
+				return dataToProcess;
 			}();
+
 		for (auto [pContainer, pContainerData] : containerDataToProcess)
 		{
 			auto& containerData = *pContainerData;
@@ -246,62 +250,65 @@ namespace mozjs
 	void JsMonitor::StartMonitorThread()
 	{
 		shouldStopThread_ = false;
-		watcherThread_ = std::thread([&] {
-			while (!shouldStopThread_)
+		watcherThread_ = std::thread([&]
 			{
-				// We want to avoid showing the slow script dialog if the user's laptop
-				// goes to sleep in the middle of running a script. To ensure this, we
-				// invoke the interrupt callback after only half the timeout has
-				// elapsed. The callback simply records the fact that it was called in
-				// the mSlowScriptSecondHalf flag. Then we wait another (timeout/2)
-				// seconds and invoke the callback again. This time around it sees
-				// mSlowScriptSecondHalf is set and so it shows the slow script
-				// dialog. If the computer is put to sleep during one of the (timeout/2)
-				// periods, the script still has the other (timeout/2) seconds to
-				// finish.
-
-				std::this_thread::sleep_for(kMonitorRate);
-				bool hasPotentiallySlowScripts = false;
+				while (!shouldStopThread_)
 				{
-					std::unique_lock<std::mutex> lock(watcherDataMutex_);
+					// We want to avoid showing the slow script dialog if the user's laptop
+					// goes to sleep in the middle of running a script. To ensure this, we
+					// invoke the interrupt callback after only half the timeout has
+					// elapsed. The callback simply records the fact that it was called in
+					// the mSlowScriptSecondHalf flag. Then we wait another (timeout/2)
+					// seconds and invoke the callback again. This time around it sees
+					// mSlowScriptSecondHalf is set and so it shows the slow script
+					// dialog. If the computer is put to sleep during one of the (timeout/2)
+					// periods, the script still has the other (timeout/2) seconds to
+					// finish.
 
-					if (activeContainers_.empty())
+					std::this_thread::sleep_for(kMonitorRate);
+					bool hasPotentiallySlowScripts = false;
 					{
-						hasAction_.wait(lock, [&] { return (shouldStopThread_ || (!activeContainers_.empty() && !isInInterrupt_)); });
-					}
-					else if (isInInterrupt_)
-					{ // Can't interrupt
-						continue;
-					}
+						std::unique_lock<std::mutex> lock(watcherDataMutex_);
 
-					if (shouldStopThread_)
-					{
-						break;
-					}
-
-					hasPotentiallySlowScripts = [&] {
-						if (HasActivePopup(false))
-						{ // popup detected, delay monitoring
-							wasInModal_ = true;
-							return false;
+						if (activeContainers_.empty())
+						{
+							hasAction_.wait(lock, [&] { return (shouldStopThread_ || (!activeContainers_.empty() && !isInInterrupt_)); });
+						}
+						else if (isInInterrupt_)
+						{ // Can't interrupt
+							continue;
 						}
 
-						const auto curTime = GetLowResTime();
+						if (shouldStopThread_)
+						{
+							break;
+						}
 
-						const auto it = ranges::find_if(activeContainers_, [&curTime, &slowScriptLimit = slowScriptLimit_](auto& elem) {
-							auto& [pContainer, startTime] = elem;
-							return ((curTime - startTime) > slowScriptLimit / 2.0);
-							});
+						hasPotentiallySlowScripts = [&]
+							{
+								if (HasActivePopup(false))
+								{ // popup detected, delay monitoring
+									wasInModal_ = true;
+									return false;
+								}
 
-						return (it != activeContainers_.cend());
-						}();
+								const auto curTime = GetLowResTime();
+
+								const auto it = std::ranges::find_if(activeContainers_, [&curTime, &slowScriptLimit = slowScriptLimit_](auto& elem)
+									{
+										auto& [pContainer, startTime] = elem;
+										return ((curTime - startTime) > slowScriptLimit / 2.0);
+									});
+
+								return it != activeContainers_.cend();
+							}();
+					}
+
+					if (hasPotentiallySlowScripts)
+					{
+						JS_RequestInterruptCallback(pJsCtx_);
+					}
 				}
-
-				if (hasPotentiallySlowScripts)
-				{
-					JS_RequestInterruptCallback(pJsCtx_);
-				}
-			}
 			});
 	}
 

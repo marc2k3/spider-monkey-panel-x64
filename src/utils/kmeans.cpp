@@ -48,7 +48,7 @@ namespace
 		size_t id_cluster_center{};
 		double min_dist = calculateDistance(clusters[0]);
 
-		for (auto i: ranges::views::indices(clusters.size()))
+		for (auto i : indices(clusters.size()))
 		{
 			double dist = calculateDistance(clusters[i]);
 			if (dist < min_dist)
@@ -87,14 +87,14 @@ namespace kmeans
 		clusters.reserve(clusterCount);
 
 		// choose K distinct values for the centers of the clusters
-		for (auto i: ranges::views::indices(clusterCount))
+		for (auto i : indices(clusterCount))
 		{ // colours are already distinct so we can't have duplicate centers
 			auto& centerPoint = points[static_cast<size_t>(i * points.size() / clusterCount)];
 			centerPoint.id_cluster = i;
 			clusters.emplace_back(i, &centerPoint);
 		}
 
-		for ([[maybe_unused]] auto i : ranges::views::indices(max_iterations))
+		for ([[maybe_unused]] auto i : indices(max_iterations))
 		{
 			bool done = true;
 

@@ -92,7 +92,7 @@ bool TaskController::ExecuteNextTask()
 	// in case we destroy ourself during task run
 	auto selfSaver = shared_from_this();
 
-	auto it = ranges::find_if(tasks_, [](const auto pTask) { return !pTask->isInProgress_; });
+	auto it = std::ranges::find_if(tasks_, [](const auto pTask) { return !pTask->isInProgress_; });
 	if (it == tasks_.end())
 	{
 		return false;

@@ -45,7 +45,7 @@ void PlaylistLock::before_ui_init() noexcept
 	auto api = playlist_manager_v5::get();
 	const auto count = api->get_playlist_count();
 
-	for (const auto playlistIndex : ranges::views::indices(count))
+	for (const auto playlistIndex : indices(count))
 	{
 		uint32_t mask{};
 

@@ -369,25 +369,27 @@ STDMETHODIMP CDialogHtml::TranslateAccelerator(LPMSG lpMsg, const GUID* pguidCmd
 		return S_OK;
 	}
 
-	auto isSupportedHotKey = [](UINT wm, UINT vk) -> bool {
-		if (wm != WM_KEYDOWN && wm != WM_KEYUP && wm != WM_SYSKEYDOWN && wm != WM_SYSKEYUP)
+	auto isSupportedHotKey = [](UINT wm, UINT vk) -> bool
 		{
-			return false;
-		}
+			if (wm != WM_KEYDOWN && wm != WM_KEYUP && wm != WM_SYSKEYDOWN && wm != WM_SYSKEYUP)
+			{
+				return false;
+			}
 
-		const bool isCtrlPressed = HIBYTE(GetKeyState(VK_CONTROL));
-		const bool isShiftPressed = HIBYTE(GetKeyState(VK_SHIFT));
-		const bool isAltPressed = HIBYTE(GetKeyState(VK_MENU));
+			const bool isCtrlPressed = HIBYTE(GetKeyState(VK_CONTROL));
+			const bool isShiftPressed = HIBYTE(GetKeyState(VK_SHIFT));
+			const bool isAltPressed = HIBYTE(GetKeyState(VK_MENU));
 
-		constexpr std::array allowedCtrlKeys{
-			0x41, // A
-			0x43, // C
-			0x56, // V
-			0x58, // X
-			0x59, // Y
-			0x5A  // Z
-		};
-		return (isCtrlPressed && !isShiftPressed && !isAltPressed && std::cend(allowedCtrlKeys) != ranges::find(allowedCtrlKeys, vk));
+			constexpr std::array allowedCtrlKeys{
+				0x41, // A
+				0x43, // C
+				0x56, // V
+				0x58, // X
+				0x59, // Y
+				0x5A  // Z
+			};
+
+			return (isCtrlPressed && !isShiftPressed && !isAltPressed && allowedCtrlKeys.end() != std::ranges::find(allowedCtrlKeys, vk));
 		};
 
 	if (isSupportedHotKey(lpMsg->message, to_uint(lpMsg->wParam)))

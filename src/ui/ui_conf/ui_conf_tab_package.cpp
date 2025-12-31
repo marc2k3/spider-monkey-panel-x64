@@ -113,8 +113,9 @@ void CConfigTabPackage::OnDdxUiChange(UINT uNotifyCode, int nID, CWindow wndCtl)
 		return;
 
 	{
-		auto it = ranges::find_if(ddx_, [nID](auto& ddx) {
-			return ddx->IsMatchingId(nID);
+		auto it = std::ranges::find_if(ddx_, [nID](auto& ddx)
+			{
+				return ddx->IsMatchingId(nID);
 			});
 
 		if (ddx_.end() != it)
@@ -445,7 +446,7 @@ void CConfigTabPackage::InitializeFilesListBox()
 		}
 
 		files_ = config::GetPackageFiles(settings_);
-		if (const auto it = ranges::find(files_, focusedFile_.native()); it == files_.cend())
+		if (const auto it = std::ranges::find(files_, focusedFile_.native()); it == files_.cend())
 		{ // in case file was deleted
 			focusedFile_ = mainScriptPath_;
 		}
@@ -493,8 +494,8 @@ void CConfigTabPackage::UpdateListBoxFromData()
 	{
 		SortFiles();
 
-		const auto it = ranges::find(files_, focusedFile_.native());
-		focusedFileIdx_ = static_cast<int>(ranges::distance(files_.cbegin(), it));
+		const auto it = std::ranges::find(files_, focusedFile_.native());
+		focusedFileIdx_ = static_cast<int>(std::ranges::distance(files_.cbegin(), it));
 
 		filesListBox_.ResetContent();
 		for (const auto& file : files_)

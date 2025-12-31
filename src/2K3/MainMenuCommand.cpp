@@ -63,7 +63,7 @@ bool MainMenuCommand::execute() noexcept
 
 		const auto parent_path = build_parent_path(ptr->get_parent());
 
-		for (const auto i : ranges::views::indices(ptr->get_command_count()))
+		for (const auto i : indices(ptr->get_command_count()))
 		{
 			if (v2_ptr.is_valid() && v2_ptr->is_command_dynamic(i))
 			{
@@ -112,7 +112,7 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, std::string_view pa
 			path.append("/");
 		}
 
-		for (const auto i : ranges::views::indices(node->get_children_count()))
+		for (const auto i : indices(node->get_children_count()))
 		{
 			const auto child = node->get_child(i);
 

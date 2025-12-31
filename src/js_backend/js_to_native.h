@@ -107,7 +107,7 @@ namespace mozjs::convert::to_native
 				return;
 
 			JS::RootedValue arrayElement(cx);
-			for (const auto i : ranges::views::indices(arraySize))
+			for (const auto i : indices(arraySize))
 			{
 				const bool ok = JS_GetElement(cx, jsObject, i, &arrayElement);
 				QwrException::ExpectTrue(ok, "Internal error: JS_GetElement failed");

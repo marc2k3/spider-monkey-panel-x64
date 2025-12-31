@@ -64,19 +64,20 @@ namespace
 {
 	std::unique_ptr<Gdiplus::Bitmap> CreateDownsizedImage(Gdiplus::Bitmap& srcImg, uint32_t maxPixelCount)
 	{
-		const auto [imgWidth, imgHeight] = [&srcImg, maxPixelCount] {
-			if (srcImg.GetWidth() * srcImg.GetHeight() > maxPixelCount)
+		const auto [imgWidth, imgHeight] = [&srcImg, maxPixelCount]
 			{
-				const double ratio = static_cast<double>(srcImg.GetWidth()) / srcImg.GetHeight();
-				const auto imgHeight = static_cast<uint32_t>(std::round(std::sqrt(maxPixelCount / ratio)));
-				const auto imgWidth = static_cast<uint32_t>(std::round(imgHeight * ratio));
+				if (srcImg.GetWidth() * srcImg.GetHeight() > maxPixelCount)
+				{
+					const double ratio = static_cast<double>(srcImg.GetWidth()) / srcImg.GetHeight();
+					const auto imgHeight = static_cast<uint32_t>(std::round(std::sqrt(maxPixelCount / ratio)));
+					const auto imgWidth = static_cast<uint32_t>(std::round(imgHeight * ratio));
 
-				return std::make_tuple(imgWidth, imgHeight);
-			}
-			else
-			{
-				return std::make_tuple(srcImg.GetWidth(), srcImg.GetHeight());
-			}
+					return std::make_tuple(imgWidth, imgHeight);
+				}
+				else
+				{
+					return std::make_tuple(srcImg.GetWidth(), srcImg.GetHeight());
+				}
 			}();
 
 		auto pBitmap = std::make_unique<Gdiplus::Bitmap>(imgWidth, imgHeight, PixelFormat32bppPARGB);
@@ -172,7 +173,6 @@ namespace mozjs
 		);
 
 		smp::CheckGdi(status, "DrawImage");
-
 		return JsGdiBitmap::CreateJs(pJsCtx_, std::move(out));
 	}
 
@@ -193,19 +193,21 @@ namespace mozjs
 		auto status = pBitmapMask->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &maskBmpData);
 		smp::CheckGdi(status, "mask::LockBits");
 
-		auto autoMaskBits = wil::scope_exit([pBitmapMask, &maskBmpData] {
-			pBitmapMask->UnlockBits(&maskBmpData);
+		auto autoMaskBits = wil::scope_exit([pBitmapMask, &maskBmpData]
+			{
+				pBitmapMask->UnlockBits(&maskBmpData);
 			});
 
 		Gdiplus::BitmapData dstBmpData = { 0 };
 		status = pGdi_->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &dstBmpData);
 		smp::CheckGdi(status, "dst::LockBits");
 
-		auto autoDstBits = wil::scope_exit([&pGdi = pGdi_, &dstBmpData] {
-			pGdi->UnlockBits(&dstBmpData);
+		auto autoDstBits = wil::scope_exit([&pGdi = pGdi_, &dstBmpData]
+			{
+				pGdi->UnlockBits(&dstBmpData);
 			});
 
-		const auto maskRange = ranges::make_subrange(
+		const auto maskRange = std::ranges::subrange(
 			reinterpret_cast<uint32_t*>(maskBmpData.Scan0),
 			reinterpret_cast<uint32_t*>(maskBmpData.Scan0) + rect.Width * rect.Height
 		);
@@ -246,7 +248,7 @@ namespace mozjs
 		smp::CheckGdi(status, "LockBits");
 
 		std::map<uint32_t, uint32_t> color_counters;
-		const auto colourRange = ranges::make_subrange(
+		const auto colourRange = std::ranges::subrange(
 			reinterpret_cast<const uint32_t*>(bmpdata.Scan0),
 			reinterpret_cast<const uint32_t*>(bmpdata.Scan0) + bmpdata.Width * bmpdata.Height
 		);
@@ -289,6 +291,7 @@ namespace mozjs
 				return vec[index].first;
 			},
 			&jsValue);
+
 		return jsValue;
 	}
 
@@ -304,7 +307,7 @@ namespace mozjs
 		smp::CheckGdi(status, "LockBits");
 
 		std::map<uint32_t, uint32_t> colour_counters;
-		const auto colourRange = ranges::make_subrange(
+		const auto colourRange = std::ranges::subrange(
 			reinterpret_cast<const uint32_t*>(bmpdata.Scan0),
 			reinterpret_cast<const uint32_t*>(bmpdata.Scan0) + bmpdata.Width * bmpdata.Height
 		);
@@ -476,32 +479,33 @@ namespace mozjs
 
 	bool JsGdiBitmap::SaveAs(const std::wstring& path, const std::wstring& format)
 	{
-		const auto clsIdRet = [&format]() -> std::optional<CLSID> {
-			UINT num = 0;
-			UINT size = 0;
-			Gdiplus::Status status = Gdiplus::GetImageEncodersSize(&num, &size);
-			if (status != Gdiplus::Ok || !size)
+		const auto clsIdRet = [&format]() -> std::optional<CLSID>
 			{
-				return std::nullopt;
-			}
+				UINT num = 0;
+				UINT size = 0;
+				Gdiplus::Status status = Gdiplus::GetImageEncodersSize(&num, &size);
+				if (status != Gdiplus::Ok || !size)
+				{
+					return std::nullopt;
+				}
 
-			std::vector<uint8_t> imageCodeInfoBuf(size);
-			auto* pImageCodecInfo = reinterpret_cast<Gdiplus::ImageCodecInfo*>(imageCodeInfoBuf.data());
+				std::vector<uint8_t> imageCodeInfoBuf(size);
+				auto* pImageCodecInfo = reinterpret_cast<Gdiplus::ImageCodecInfo*>(imageCodeInfoBuf.data());
 
-			status = Gdiplus::GetImageEncoders(num, size, pImageCodecInfo);
-			if (status != Gdiplus::Ok)
-			{
-				return std::nullopt;
-			}
+				status = Gdiplus::GetImageEncoders(num, size, pImageCodecInfo);
+				if (status != Gdiplus::Ok)
+				{
+					return std::nullopt;
+				}
 
-			std::span<Gdiplus::ImageCodecInfo> codecSpan{ pImageCodecInfo, num };
-			const auto it = ranges::find_if(codecSpan, [&format](const auto& codec) { return (format == codec.MimeType); });
-			if (it == codecSpan.end())
-			{
-				return std::nullopt;
-			}
+				std::span<Gdiplus::ImageCodecInfo> codecSpan{ pImageCodecInfo, num };
+				const auto it = ranges::find_if(codecSpan, [&format](const auto& codec) { return (format == codec.MimeType); });
+				if (it == codecSpan.end())
+				{
+					return std::nullopt;
+				}
 
-			return it->Clsid;
+				return it->Clsid;
 			}();
 
 		if (!clsIdRet)

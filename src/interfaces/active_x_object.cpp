@@ -589,7 +589,7 @@ namespace mozjs
 		const uint32_t argc = callArgs.length() - 1;
 		std::vector<_variant_t> args(argc);
 
-		for (auto&& [i, arg] : ranges::views::enumerate(args))
+		for (auto&& [i, arg] : std::views::enumerate(args))
 		{
 			const auto idx = to_uint(argc - i);
 			JsToVariantSafe(pJsCtx_, callArgs[idx], arg);
@@ -597,7 +597,7 @@ namespace mozjs
 
 		const auto refreshValues = [&] {
 			// in case any empty ActiveXObject objects were filled in by Invoke()
-			for (auto i : ranges::views::indices(callArgs.length() - 1))
+			for (auto i : indices(callArgs.length() - 1))
 			{
 				RefreshValue(pJsCtx_, callArgs[1 + i]);
 			}
@@ -659,7 +659,7 @@ namespace mozjs
 		const uint32_t argc = callArgs.length() - 1;
 		std::vector<_variant_t> args(argc);
 
-		for (auto&& [i, arg] : ranges::views::enumerate(args))
+		for (auto&& [i, arg] : std::views::enumerate(args))
 		{
 			const auto idx = to_uint(argc - i);
 			JsToVariantSafe(pJsCtx_, callArgs[idx], arg);
@@ -694,7 +694,7 @@ namespace mozjs
 			&argerr
 		);
 
-		for (auto i : ranges::views::indices(callArgs.length() - 1))
+		for (auto i : indices(callArgs.length() - 1))
 		{
 			RefreshValue(pJsCtx_, callArgs[1 + i]); //in case any empty ActiveXObject objects were filled in by Invoke()
 		}
@@ -715,7 +715,7 @@ namespace mozjs
 		const uint32_t argc = callArgs.length();
 		std::vector<_variant_t> args(argc);
 
-		for (auto&& [i, arg] : ranges::views::enumerate(args))
+		for (auto&& [i, arg] : std::views::enumerate(args))
 		{
 			const auto idx = to_uint(argc - 1u - i);
 			JsToVariantSafe(pJsCtx_, callArgs[idx], arg);
@@ -744,7 +744,7 @@ namespace mozjs
 			&argerr
 		);
 
-		for (auto i : ranges::views::indices(callArgs.length()))
+		for (auto i : indices(callArgs.length()))
 		{
 			RefreshValue(pJsCtx_, callArgs[i]); //in case any empty ActiveXObject objects were filled in by Invoke()
 		}
@@ -807,7 +807,7 @@ namespace mozjs
 
 		if (!(pAttr->wTypeFlags & TYPEFLAG_FRESTRICTED) && (TKIND_DISPATCH == pAttr->typekind || TKIND_INTERFACE == pAttr->typekind) && pAttr->cImplTypes)
 		{
-			for (auto i : ranges::views::indices(pAttr->cImplTypes))
+			for (auto i : indices(pAttr->cImplTypes))
 			{
 				HREFTYPE hRef = 0;
 				hr = pTypeInfo->GetRefTypeOfImplType(i, &hRef);
