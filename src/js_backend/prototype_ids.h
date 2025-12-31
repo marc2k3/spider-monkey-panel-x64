@@ -15,7 +15,6 @@ namespace mozjs
 		FbMetadbHandleList,
 		FbMetadbHandleList_Iterator,
 		FbPlaybackQueueItem,
-		FbPlayingItemLocation,
 		FbProfiler,
 		FbTitleFormat,
 		FbTooltip,

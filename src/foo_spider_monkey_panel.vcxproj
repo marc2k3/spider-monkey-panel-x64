@@ -150,7 +150,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="interfaces\fb_metadb_handle_list.cpp" />
     <ClCompile Include="interfaces\fb_metadb_handle_list_iterator.cpp" />
     <ClCompile Include="interfaces\fb_playback_queue_item.cpp" />
-    <ClCompile Include="interfaces\fb_playing_item_location.cpp" />
     <ClCompile Include="interfaces\fb_playlist_recycler.cpp" />
     <ClCompile Include="interfaces\fb_profiler.cpp" />
     <ClCompile Include="interfaces\fb_title_format.cpp" />
@@ -300,7 +299,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="interfaces\fb_metadb_handle_list.h" />
     <ClInclude Include="interfaces\fb_metadb_handle_list_iterator.h" />
     <ClInclude Include="interfaces\fb_playback_queue_item.h" />
-    <ClInclude Include="interfaces\fb_playing_item_location.h" />
     <ClInclude Include="interfaces\fb_playlist_recycler.h" />
     <ClInclude Include="interfaces\fb_profiler.h" />
     <ClInclude Include="interfaces\fb_title_format.h" />

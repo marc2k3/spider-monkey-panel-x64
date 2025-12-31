@@ -254,9 +254,6 @@
     <ClCompile Include="interfaces\fb_playback_queue_item.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_playing_item_location.cpp">
-      <Filter>interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="interfaces\fb_playlist_recycler.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
@@ -679,9 +676,6 @@
       <Filter>interfaces</Filter>
     </ClInclude>
     <ClInclude Include="interfaces\fb_playback_queue_item.h">
-      <Filter>interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="interfaces\fb_playing_item_location.h">
       <Filter>interfaces</Filter>
     </ClInclude>
     <ClInclude Include="interfaces\fb_playlist_recycler.h">

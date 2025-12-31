@@ -6,7 +6,6 @@
 #include <interfaces/fb_metadb_handle.h>
 #include <interfaces/fb_metadb_handle_list.h>
 #include <interfaces/fb_playback_queue_item.h>
-#include <interfaces/fb_playing_item_location.h>
 #include <interfaces/fb_playlist_recycler.h>
 #include <utils/location_processor.h>
 
@@ -409,7 +408,11 @@ namespace mozjs
 		size_t playlistItemIndex{};
 		bool isValid = m_api->get_playing_item_location(&playlistIndex, &playlistItemIndex);
 
-		return JsFbPlayingItemLocation::CreateJs(m_ctx, isValid, playlistIndex, playlistItemIndex);
+		JS::RootedObject jsObject(m_ctx, JS_NewPlainObject(m_ctx));
+		AddProperty(m_ctx, jsObject, "IsValid", isValid);
+		AddProperty(m_ctx, jsObject, "PlaylistIndex", isValid ? to_int(playlistIndex) : -1);
+		AddProperty(m_ctx, jsObject, "PlaylistItemIndex", isValid ? to_int(playlistItemIndex) : -1);
+		return jsObject;
 	}
 
 	int32_t Plman::GetPlaylistFocusItemIndex(uint32_t playlistIndex)
