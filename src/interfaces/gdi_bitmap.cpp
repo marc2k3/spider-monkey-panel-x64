@@ -445,42 +445,27 @@ namespace mozjs
 
 	bool JsGdiBitmap::SaveAs(const std::wstring& path, const std::wstring& format)
 	{
-		const auto clsIdRet = [&format]() -> std::optional<CLSID>
-			{
-				UINT num = 0;
-				UINT size = 0;
-				Gdiplus::Status status = Gdiplus::GetImageEncodersSize(&num, &size);
-				if (status != Gdiplus::Ok || !size)
-				{
-					return std::nullopt;
-				}
-
-				std::vector<uint8_t> imageCodeInfoBuf(size);
-				auto* pImageCodecInfo = reinterpret_cast<Gdiplus::ImageCodecInfo*>(imageCodeInfoBuf.data());
-
-				status = Gdiplus::GetImageEncoders(num, size, pImageCodecInfo);
-				if (status != Gdiplus::Ok)
-				{
-					return std::nullopt;
-				}
-
-				std::span<Gdiplus::ImageCodecInfo> codecSpan{ pImageCodecInfo, num };
-				const auto it = ranges::find_if(codecSpan, [&format](const auto& codec) { return (format == codec.MimeType); });
-				if (it == codecSpan.end())
-				{
-					return std::nullopt;
-				}
-
-				return it->Clsid;
-			}();
-
-		if (!clsIdRet)
-		{
+		uint32_t num{}, size{};
+		if (Gdiplus::Ok != Gdiplus::GetImageEncodersSize(&num, &size))
 			return false;
-		}
 
-		const auto status = pGdi_->Save(path.c_str(), &(*clsIdRet));
-		return (Gdiplus::Ok == status);
+		std::vector<uint8_t> imageCodeInfoBuf(size);
+		auto* pImageCodecInfo = reinterpret_cast<Gdiplus::ImageCodecInfo*>(imageCodeInfoBuf.data());
+
+		if (Gdiplus::Ok != Gdiplus::GetImageEncoders(num, size, pImageCodecInfo))
+			return false;
+
+		std::span<Gdiplus::ImageCodecInfo> codecSpan{ pImageCodecInfo, num };
+
+		const auto it = std::ranges::find_if(codecSpan, [&format](const auto& codec)
+			{
+				return (format == codec.MimeType);
+			});
+
+		if (it == codecSpan.end())
+			return false;
+
+		return Gdiplus::Ok == pGdi_->Save(path.c_str(), &it->Clsid);
 	}
 
 	bool JsGdiBitmap::SaveAsWithOpt(size_t optArgCount, const std::wstring& path, const std::wstring& format /* ='image/png' */)
