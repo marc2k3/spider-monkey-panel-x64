@@ -31,19 +31,9 @@ namespace smp::path
 		return Component() / "samples";
 	}
 
-	std::filesystem::path Packages_Sample()
-	{
-		return ScriptSamples() / "packages";
-	}
-
 	std::filesystem::path Packages_Profile()
 	{
 		return Profile() / SMP_UNDERSCORE_NAME / "packages";
-	}
-
-	std::filesystem::path Packages_Foobar2000()
-	{
-		return Foobar2000() / SMP_UNDERSCORE_NAME / "packages";
 	}
 
 	std::filesystem::path Packages_Storage()

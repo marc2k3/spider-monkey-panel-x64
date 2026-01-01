@@ -393,19 +393,19 @@ namespace mozjs
 
 	JSObject* Utils::GetPackageInfo(const std::string& packageId) const
 	{
-		const auto packagePathOpt = config::FindPackage(packageId);
+		const auto packagePathOpt = PackageUtils::Find(packageId);
 		if (!packagePathOpt)
 		{
 			return nullptr;
 		}
 
-		const auto settings = config::GetPackageSettingsFromPath(*packagePathOpt);
+		const auto settings = PackageUtils::GetSettingsFromPath(*packagePathOpt);
 
 		JS::RootedObject jsDirs(m_ctx, JS_NewPlainObject(m_ctx));
-		AddProperty(m_ctx, jsDirs, "Root", config::GetPackagePath(settings).wstring());
-		AddProperty(m_ctx, jsDirs, "Assets", config::GetPackageAssetsDir(settings).wstring());
-		AddProperty(m_ctx, jsDirs, "Scripts", config::GetPackageScriptsDir(settings).wstring());
-		AddProperty(m_ctx, jsDirs, "Storage", config::GetPackageStorageDir(settings).wstring());
+		AddProperty(m_ctx, jsDirs, "Root", PackageUtils::GetPath(settings).wstring());
+		AddProperty(m_ctx, jsDirs, "Assets", PackageUtils::GetAssetsDir(settings).wstring());
+		AddProperty(m_ctx, jsDirs, "Scripts", PackageUtils::GetScriptsDir(settings).wstring());
+		AddProperty(m_ctx, jsDirs, "Storage", PackageUtils::GetStorageDir(settings).wstring());
 
 		JS::RootedObject jsObject(m_ctx, JS_NewPlainObject(m_ctx));
 		AddProperty(m_ctx, jsObject, "Directories", static_cast<JS::HandleObject>(jsDirs));
@@ -416,7 +416,7 @@ namespace mozjs
 
 	std::string Utils::GetPackagePath(const std::string& packageId) const
 	{
-		const auto packagePathOpt = config::FindPackage(packageId);
+		const auto packagePathOpt = PackageUtils::Find(packageId);
 		QwrException::ExpectTrue(packagePathOpt.has_value(), "Unknown package: {}", packageId);
 
 		return packagePathOpt->u8string();

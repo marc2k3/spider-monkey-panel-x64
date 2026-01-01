@@ -10,10 +10,7 @@ namespace smp::path
 
 	std::filesystem::path ScriptSamples();
 
-	std::filesystem::path Packages_Sample();
 	std::filesystem::path Packages_Profile();
-	std::filesystem::path Packages_Foobar2000();
-
 	std::filesystem::path Packages_Storage();
 
 	std::filesystem::path TempFolder();

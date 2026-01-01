@@ -38,7 +38,7 @@ namespace
 
 		try
 		{
-			const auto packageDirRet = config::FindPackage(settings.id);
+			const auto packageDirRet = PackageUtils::Find(settings.id);
 			const auto valueOrEmpty = [](const std::string& str) -> std::string
 				{
 					return (str.empty() ? "<empty>" : str);
@@ -52,7 +52,7 @@ namespace
 				valueOrEmpty(settings.author)
 			);
 
-			config::FillPackageSettingsFromPath(*packageDirRet, parsedSettings);
+			PackageUtils::FillSettingsFromPath(*packageDirRet, parsedSettings);
 			QwrException::ExpectTrue(settings.id == parsedSettings.packageId, "Corrupted package: `id` is mismatched with parent folder");
 		}
 		catch (const fs::filesystem_error& e)
@@ -71,7 +71,7 @@ namespace
 
 		try
 		{
-			const auto packageDirRet = config::FindPackage(packageId);
+			const auto packageDirRet = PackageUtils::Find(packageId);
 			const auto valueOrEmpty = [](const std::string& str) -> std::string
 				{
 					return (str.empty() ? "<empty>" : str);
@@ -85,7 +85,7 @@ namespace
 				valueOrEmpty(parsedSettings.scriptAuthor)
 			);
 
-			config::FillPackageSettingsFromPath(*packageDirRet, parsedSettings);
+			PackageUtils::FillSettingsFromPath(*packageDirRet, parsedSettings);
 			QwrException::ExpectTrue(packageId == parsedSettings.packageId, "Corrupted package: `id` is mismatched with parent folder");
 		}
 		catch (const fs::filesystem_error& e)

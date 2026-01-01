@@ -158,7 +158,7 @@ namespace
 				auto j = JSON::parse(restorationJson);
 				j["id"] = packageId;
 
-				const auto main_file = packageToUpdateDir / config::GetRelativePathToMainFile();
+				const auto main_file = packageToUpdateDir / PackageUtils::GetRelativePathToMainFile();
 				const auto package_json = packageToUpdateDir / "package.json";
 
 				TextFile(main_file.native()).write(restorationScript);

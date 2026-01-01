@@ -77,7 +77,7 @@ void CConfigTabPackage::Revert()
 
 void CConfigTabPackage::Refresh()
 {
-	if (settings_.GetSourceType() == config::ScriptSourceType::Package && packagePath_ != config::GetPackagePath(settings_))
+	if (settings_.GetSourceType() == config::ScriptSourceType::Package && packagePath_ != PackageUtils::GetPath(settings_))
 	{
 		InitializeLocalData();
 	}
@@ -141,7 +141,7 @@ void CConfigTabPackage::OnNewScript(UINT uNotifyCode, int nID, CWindow wndCtl)
 {
 	try
 	{
-		const auto scriptsDir = config::GetPackageScriptsDir(settings_);
+		const auto scriptsDir = PackageUtils::GetScriptsDir(settings_);
 		const auto newFilenameOpt = [&]() -> std::optional<fs::path>
 			{
 				while (true)
@@ -415,7 +415,7 @@ void CConfigTabPackage::UpdateUiButtons()
 
 void CConfigTabPackage::InitializeLocalData()
 {
-	packagePath_ = config::GetPackagePath(settings_);
+	packagePath_ = PackageUtils::GetPath(settings_);
 	isSample_ = settings_.isSample;
 	mainScriptPath_ = *settings_.scriptPath;
 	focusedFile_ = mainScriptPath_;
@@ -445,7 +445,7 @@ void CConfigTabPackage::InitializeFilesListBox()
 			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
 		}
 
-		files_ = config::GetPackageFiles(settings_);
+		files_ = PackageUtils::GetFiles(settings_);
 		if (const auto it = std::ranges::find(files_, focusedFile_.native()); it == files_.cend())
 		{ // in case file was deleted
 			focusedFile_ = mainScriptPath_;

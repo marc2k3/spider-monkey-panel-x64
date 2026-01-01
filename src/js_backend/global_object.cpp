@@ -256,7 +256,7 @@ namespace mozjs
 
 				if (const auto& setting = parentContainer_.GetParentPanel().GetSettings(); setting.packageId)
 				{
-					paths.emplace_back(config::GetPackageScriptsDir(setting));
+					paths.emplace_back(PackageUtils::GetScriptsDir(setting));
 				}
 
 				paths.emplace_back(smp::path::Component());

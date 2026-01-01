@@ -13,15 +13,12 @@ namespace
 	{
 		try
 		{
-			QwrException::ExpectTrue(fs::exists(packageDir),
-										"Can't find the required package: `{}`",
-										packageDir.u8string());
+			QwrException::ExpectTrue(fs::exists(packageDir), "Can't find the required package: `{}`", packageDir.u8string());
 
 			const auto packageJsonFile = packageDir / "package.json";
 			QwrException::ExpectTrue(fs::exists(packageJsonFile), "Corrupted package: can't find `package.json`");
 
-			parsedSettings.scriptPath = (packageDir / config::GetRelativePathToMainFile());
-			parsedSettings.isSample = (packageDir.parent_path() == smp::path::Packages_Sample());
+			parsedSettings.scriptPath = (packageDir / PackageUtils::GetRelativePathToMainFile());
 
 			const auto str = TextFile(packageJsonFile.native()).read();
 			const auto jsonMain = JSON::parse(str);
@@ -62,7 +59,7 @@ namespace
 			jsonMain.push_back({ "enableDragDrop", parsedSettings.enableDragDrop });
 			jsonMain.push_back({ "shouldGrabFocus", parsedSettings.shouldGrabFocus });
 
-			const auto packageDirRet = config::FindPackage(*parsedSettings.packageId);
+			const auto packageDirRet = PackageUtils::Find(*parsedSettings.packageId);
 			const auto packagePath = [&] {
 				if (packageDirRet)
 				{
@@ -70,7 +67,7 @@ namespace
 				}
 				else
 				{
-					return GetPackagePath(parsedSettings);
+					return PackageUtils::GetPath(parsedSettings);
 				}
 			}();
 
@@ -82,7 +79,7 @@ namespace
 			const auto packageJsonFile = packagePath / L"package.json";
 			TextFile(packageJsonFile.native()).write(jsonMain.dump(2));
 
-			const auto mainScriptPath = packagePath / config::GetRelativePathToMainFile();
+			const auto mainScriptPath = packagePath / PackageUtils::GetRelativePathToMainFile();
 			if (!fs::exists(mainScriptPath))
 			{
 				TextFile(mainScriptPath.native()).write(config::PanelSettings_InMemory::GetDefaultScript());
@@ -99,129 +96,114 @@ namespace
 	}
 }
 
-namespace config
+WStrings PackageUtils::GetFiles(const config::ParsedPanelSettings& settings)
 {
-	const fs::path& GetRelativePathToMainFile()
+	auto files = GetScriptFiles(settings);
+
+	const auto assetsDir = GetAssetsDir(settings);
+	auto assetFiles = DirectoryIterator(assetsDir).list_files(true);
+	files.append_range(assetFiles);
+
+	return files;
+}
+
+WStrings PackageUtils::GetScriptFiles(const config::ParsedPanelSettings& settings)
+{
+	const auto mainScript = *settings.scriptPath;
+	const auto scriptsDir = GetScriptsDir(settings);
+
+	WStrings scripts;
+	scripts.emplace_back(mainScript);
+
+	for (auto&& script : DirectoryIterator(scriptsDir).list_files(true))
 	{
-		static const fs::path main{ "main.js" };
-		return main;
+		if (fs::path(script).extension() == ".js" && script != mainScript)
+			scripts.emplace_back(script);
 	}
 
-	ParsedPanelSettings GetNewPackageSettings(const std::string& name)
-	{
-		ParsedPanelSettings settings;
+	return scripts;
+}
 
-		try
+const fs::path& PackageUtils::GetRelativePathToMainFile()
+{
+	static const fs::path main{ "main.js" };
+	return main;
+}
+
+config::ParsedPanelSettings PackageUtils::GetNewSettings(const std::string& name)
+{
+	config::ParsedPanelSettings settings;
+
+	try
+	{
+		fs::path packagePath;
+		std::string id;
+		do
 		{
-			fs::path packagePath;
-			std::string id;
-			do
-			{
-				const auto guidStr = smp::GuidToStr(smp::GenerateGuid());
-				id = smp::ToU8(guidStr);
-				packagePath = smp::path::Packages_Profile() / id;
-			} while (fs::exists(packagePath));
+			const auto guidStr = smp::GuidToStr(smp::GenerateGuid());
+			id = smp::ToU8(guidStr);
+			packagePath = smp::path::Packages_Profile() / id;
+		} while (fs::exists(packagePath));
 
-			settings.packageId = id;
-			settings.scriptName = name;
-			settings.scriptPath = (packagePath / GetRelativePathToMainFile());
-		}
-		catch (const fs::filesystem_error& e)
-		{
-			throw QwrException(e);
-		}
-
-		return settings;
+		settings.packageId = id;
+		settings.scriptName = name;
+		settings.scriptPath = (packagePath / GetRelativePathToMainFile());
+	}
+	catch (const fs::filesystem_error& e)
+	{
+		throw QwrException(e);
 	}
 
-	std::optional<fs::path> FindPackage(const std::string& packageId)
+	return settings;
+}
+
+config::ParsedPanelSettings PackageUtils::GetSettingsFromPath(const fs::path& packagePath)
+{
+	config::ParsedPanelSettings settings{};
+	Parse_PackageFromPath(packagePath, settings);
+	return settings;
+}
+
+std::optional<fs::path> PackageUtils::Find(const std::string& packageId)
+{
+	std::error_code ec;
+	const auto targetPath = smp::path::Packages_Profile() / packageId;
+
+	if (fs::is_directory(targetPath, ec))
+		return targetPath;
+
+	return std::nullopt;
+}
+
+fs::path PackageUtils::GetAssetsDir(const config::ParsedPanelSettings& settings)
+{
+	return GetPath(settings) / "assets";
+}
+
+fs::path PackageUtils::GetPath(const config::ParsedPanelSettings& settings)
+{
+	return settings.scriptPath->parent_path();
+}
+
+fs::path PackageUtils::GetScriptsDir(const config::ParsedPanelSettings& settings)
+{
+	return GetPath(settings) / "scripts";
+}
+
+fs::path PackageUtils::GetStorageDir(const config::ParsedPanelSettings& settings)
+{
+	return smp::path::Packages_Storage() / *settings.packageId;
+}
+
+void PackageUtils::FillSettingsFromPath(const fs::path& packagePath, config::ParsedPanelSettings& settings)
+{
+	Parse_PackageFromPath(packagePath, settings);
+}
+
+void PackageUtils::MaybeSaveData(const config::ParsedPanelSettings& settings)
+{
+	if (settings.GetSourceType() == config::ScriptSourceType::Package)
 	{
-
-		try
-		{
-			for (const auto& path: { smp::path::Packages_Sample(), smp::path::Packages_Profile(), smp::path::Packages_Foobar2000() })
-			{
-				const auto targetPath = path / packageId;
-				if (fs::exists(targetPath) && fs::is_directory(targetPath))
-				{
-					return targetPath;
-				}
-			}
-		}
-		catch (const fs::filesystem_error& e)
-		{
-			throw QwrException(e);
-		}
-
-		return std::nullopt;
-	}
-
-	ParsedPanelSettings GetPackageSettingsFromPath(const fs::path& packagePath)
-	{
-		ParsedPanelSettings settings{};
-		Parse_PackageFromPath(packagePath, settings);
-		return settings;
-	}
-
-	void FillPackageSettingsFromPath(const fs::path& packagePath, ParsedPanelSettings& settings)
-	{
-		Parse_PackageFromPath(packagePath, settings);
-	}
-
-	void MaybeSavePackageData(const ParsedPanelSettings& settings)
-	{
-		if (settings.GetSourceType() == ScriptSourceType::Package)
-		{
-			Save_PackageData(settings);
-		}
-	}
-
-	fs::path GetPackageScriptsDir(const ParsedPanelSettings& settings)
-	{
-		return GetPackagePath(settings) / "scripts";
-	}
-
-	fs::path GetPackageAssetsDir(const ParsedPanelSettings& settings)
-	{
-		return GetPackagePath(settings) / "assets";
-	}
-
-	fs::path GetPackageStorageDir(const ParsedPanelSettings& settings)
-	{
-		return smp::path::Packages_Storage() / *settings.packageId;
-	}
-
-	fs::path GetPackagePath(const ParsedPanelSettings& settings)
-	{
-		return settings.scriptPath->parent_path();
-	}
-
-	WStrings GetPackageFiles(const ParsedPanelSettings& settings)
-	{
-		const auto packagePath = GetPackagePath(settings);
-		const auto assetsDir = packagePath / "assets";
-		auto assetFiles = DirectoryIterator(assetsDir).list_files(true);
-
-		auto files = GetPackageScriptFiles(settings);
-		files.append_range(assetFiles);
-		return files;
-	}
-
-	WStrings GetPackageScriptFiles(const ParsedPanelSettings& settings)
-	{
-		const auto mainScript = *settings.scriptPath;
-		const auto packagePath = GetPackagePath(settings);
-		const auto scriptsDir = packagePath / "scripts";
-
-		WStrings scripts;
-		scripts.emplace_back(mainScript);
-
-		for (auto&& script : DirectoryIterator(scriptsDir).list_files(true))
-		{
-			if (fs::path(script).extension() == ".js" && script != mainScript)
-				scripts.emplace_back(script);
-		}
-
-		return scripts;
+		Save_PackageData(settings);
 	}
 }

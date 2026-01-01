@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "window.h"
 
-#include <config/package_utils.h>
 #include <events/event_basic.h>
 #include <events/event_dispatcher.h>
 #include <events/event_notify_others.h>

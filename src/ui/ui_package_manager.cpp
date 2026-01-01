@@ -112,8 +112,8 @@ void CDialogPackageManager::OnNewPackage(UINT /*uNotifyCode*/, int /*nID*/, CWin
 
 	try
 	{
-		const auto newSettings = config::GetNewPackageSettings(curName);
-		config::MaybeSavePackageData(newSettings);
+		const auto newSettings = PackageUtils::GetNewSettings(curName);
+		PackageUtils::MaybeSaveData(newSettings);
 
 		packages_.emplace_back(GeneratePackageData(newSettings));
 		focusedPackageId_ = *newSettings.packageId;
@@ -144,7 +144,8 @@ void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, C
 	try
 	{
 		const auto packageId = packages_[focusedPackageIdx_].id;
-		const auto packagePathOpt = config::FindPackage(packages_[focusedPackageIdx_].id);
+		const auto packagePathOpt = PackageUtils::Find(packages_[focusedPackageIdx_].id);
+
 		if (packagePathOpt)
 		{
 			if (config::IsPackageInUse(packageId))
@@ -218,7 +219,7 @@ void CDialogPackageManager::OnExportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 			try
 			{
 				auto zp = smp::ZipPacker(wpath);
-				zp.AddFolder(config::GetPackagePath(*currentPackageData.parsedSettings));
+				zp.AddFolder(PackageUtils::GetPath(*currentPackageData.parsedSettings));
 				zp.Finish();
 			}
 			catch (const fs::filesystem_error& e)
@@ -241,7 +242,7 @@ void CDialogPackageManager::OnOpenFolder(UINT /*uNotifyCode*/, int /*nID*/, CWin
 		ShellExecuteW(
 			nullptr,
 			L"explore",
-			config::GetPackagePath(*packages_[focusedPackageIdx_].parsedSettings).c_str(),
+			PackageUtils::GetPath(*packages_[focusedPackageIdx_].parsedSettings).c_str(),
 			nullptr,
 			nullptr,
 			SW_SHOWNORMAL
@@ -313,87 +314,70 @@ void CDialogPackageManager::UpdateUiButtons()
 	}
 
 	const auto& currentPackageData = packages_[focusedPackageIdx_];
-	const auto isSample = (currentPackageData.parsedSettings && currentPackageData.parsedSettings->isSample);
+	const BOOL enable = currentPackageData.parsedSettings ? TRUE : FALSE;
 
-	CButton{ GetDlgItem(IDOK) }.EnableWindow(!!currentPackageData.parsedSettings);
-	CButton{ GetDlgItem(IDC_BUTTON_DELETE_PACKAGE) }.EnableWindow(currentPackageData.status != config::PackageDelayStatus::ToBeRemoved && !isSample);
-	CButton{ GetDlgItem(IDC_BUTTON_EXPORT_PACKAGE) }.EnableWindow(!isSample);
-	CButton{ GetDlgItem(IDC_BUTTON_OPEN_FOLDER) }.EnableWindow(!!currentPackageData.parsedSettings);
+	CButton{ GetDlgItem(IDOK) }.EnableWindow(enable);
+	CButton{ GetDlgItem(IDC_BUTTON_DELETE_PACKAGE) }.EnableWindow(currentPackageData.status != config::PackageDelayStatus::ToBeRemoved);
+	CButton{ GetDlgItem(IDC_BUTTON_EXPORT_PACKAGE) }.EnableWindow(enable);
+	CButton{ GetDlgItem(IDC_BUTTON_OPEN_FOLDER) }.EnableWindow(enable);
 }
 
 void CDialogPackageManager::LoadPackages()
 {
 	packages_.clear();
 
-	try
+	Strings packageIds;
+	std::error_code ec;
+	const auto packageDir = smp::path::Packages_Profile();
+
+	if (fs::is_directory(packageDir, ec))
 	{
-		// TODO: consider extracting this code
-		std::vector<fs::path> packagesDirs{ smp::path::Packages_Profile(),
-											smp::path::Packages_Sample() };
-		if (smp::path::Profile() != smp::path::Foobar2000())
-		{ // these paths might be the same when fb2k is in portable mode
-			packagesDirs.emplace_back(smp::path::Packages_Foobar2000());
-		}
-
-		Strings packageIds;
-		for (const auto& packagesDir : packagesDirs)
+		for (const auto& dirIt : fs::directory_iterator(packageDir))
 		{
-			if (!fs::exists(packagesDir))
-			{
-				continue;
-			}
+			const auto packageJson = dirIt.path() / L"package.json";
 
-			for (const auto& dirIt : fs::directory_iterator(packagesDir))
+			if (fs::is_regular_file(packageJson, ec))
 			{
-				const auto packageJson = dirIt.path() / L"package.json";
-				if (!fs::exists(packageJson) || !fs::is_regular_file(packageJson))
-				{
-					continue;
-				}
-
 				packageIds.emplace_back(dirIt.path().filename().u8string());
 			}
 		}
+	}
 
-		std::vector<PackageData> parsedPackages;
-		for (const auto& packageId : packageIds)
+	std::vector<PackageData> parsedPackages;
+
+	for (const auto& packageId : packageIds)
+	{
+		try
 		{
-			try
-			{
-				const auto packagePathOpt = config::FindPackage(packageId);
-				QwrException::ExpectTrue(packagePathOpt.has_value(), "Could not find package with id: {}", packageId);
+			const auto packagePathOpt = PackageUtils::Find(packageId);
+			QwrException::ExpectTrue(packagePathOpt.has_value(), "Could not find package with id: {}", packageId);
 
-				const auto settings = config::GetPackageSettingsFromPath(*packagePathOpt);
-				parsedPackages.emplace_back(GeneratePackageData(settings));
-			}
-			catch (const QwrException& e)
-			{
-				PackageData packageData{
-					smp::ToWide(fmt::format("{} (ERROR)", packageId)),
-					packageId,
-					std::nullopt,
-					smp::ToWide(fmt::format("Package parsing failed:\r\n{}", e.what()))
-				};
+			const auto settings = PackageUtils::GetSettingsFromPath(*packagePathOpt);
+			parsedPackages.emplace_back(GeneratePackageData(settings));
+		}
+		catch (const QwrException& e)
+		{
+			const auto packageData = PackageData{
+				smp::ToWide(fmt::format("{} (ERROR)", packageId)),
+				packageId,
+				std::nullopt,
+				smp::ToWide(fmt::format("Package parsing failed:\r\n{}", e.what()))
+			};
 
-				parsedPackages.emplace_back(packageData);
-			}
-
-			parsedPackages.back().status = config::GetPackageDelayStatus(packageId);
+			parsedPackages.emplace_back(packageData);
 		}
 
-		packages_ = std::move(parsedPackages);
+		parsedPackages.back().status = config::GetPackageDelayStatus(packageId);
 	}
-	catch (const fs::filesystem_error& e)
-	{
-		smp::ReportFSErrorWithPopup(e);
-	}
+
+	packages_ = parsedPackages;
 }
 
 void CDialogPackageManager::SortPackages()
 {
 	std::ranges::sort(packages_, [](const auto& a, const auto& b)
 		{
-			return (StrCmpLogicalW(a.displayedName.c_str(), b.displayedName.c_str()) < 0);
+			return StrCmpLogicalW(a.displayedName.c_str(), b.displayedName.c_str()) < 0;
 		});
 }
 
@@ -403,7 +387,7 @@ void CDialogPackageManager::UpdateListBoxFromData()
 
 	const auto it = std::ranges::find_if(packages_, [&](const auto& package)
 		{
-			return (focusedPackageId_ == package.id);
+			return focusedPackageId_ == package.id;
 		});
 
 	if (it == packages_.cend())
@@ -522,10 +506,10 @@ bool CDialogPackageManager::ImportPackage(const std::filesystem::path& path)
 
 		smp::UnpackZip(path, tmpPath);
 
-		auto newSettings = config::GetPackageSettingsFromPath(tmpPath);
+		auto newSettings = PackageUtils::GetSettingsFromPath(tmpPath);
 		const auto& packageId = *newSettings.packageId;
 
-		if (const auto oldPackagePathOpt = config::FindPackage(packageId); oldPackagePathOpt)
+		if (const auto oldPackagePathOpt = PackageUtils::Find(packageId); oldPackagePathOpt)
 		{
 			if (!ConfirmPackageOverwrite(*oldPackagePathOpt, newSettings))
 			{
@@ -559,7 +543,7 @@ bool CDialogPackageManager::ImportPackage(const std::filesystem::path& path)
 		fs::create_directories(newPackagePath);
 		fs::copy(tmpPath, newPackagePath, fs::copy_options::recursive);
 
-		newSettings.scriptPath = newPackagePath / config::GetRelativePathToMainFile();
+		newSettings.scriptPath = newPackagePath / PackageUtils::GetRelativePathToMainFile();
 
 		auto it = std::ranges::find_if(packages_, [&](const auto& elem)
 			{
@@ -595,7 +579,7 @@ bool CDialogPackageManager::ConfirmPackageOverwrite(const std::filesystem::path&
 {
 	try
 	{
-		const auto oldSettings = config::GetPackageSettingsFromPath(oldPackagePath);
+		const auto oldSettings = PackageUtils::GetSettingsFromPath(oldPackagePath);
 
 		const int iRet = popup_message_v3::get()->messageBox(
 			*this,

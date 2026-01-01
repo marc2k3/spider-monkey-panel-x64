@@ -1094,8 +1094,8 @@ namespace smp
 			{
 				++curIdx;
 
-				const auto scriptFiles = config::GetPackageScriptFiles(settings_);
-				const auto scriptsDir = config::GetPackageScriptsDir(settings_);
+				const auto scriptFiles = PackageUtils::GetScriptFiles(settings_);
+				const auto scriptsDir = PackageUtils::GetScriptsDir(settings_);
 
 				CMenu cSubMenu;
 				cSubMenu.CreatePopupMenu();
@@ -1103,16 +1103,18 @@ namespace smp
 				auto scriptIdx = id_base + 100;
 				for (const auto& file: scriptFiles)
 				{
-					const auto relativePath = [&] {
-						if (fs::path(file).filename() == "main.js")
+					const auto relativePath = [&]
 						{
-							return fs::path("main.js");
-						}
-						else
-						{
-							return fs::relative(file, scriptsDir);
-						}
-					}();
+							if (fs::path(file).filename() == "main.js")
+							{
+								return fs::path("main.js");
+							}
+							else
+							{
+								return fs::relative(file, scriptsDir);
+							}
+						}();
+
 					cSubMenu.AppendMenuW(MF_STRING, ++scriptIdx, relativePath.c_str());
 				}
 
@@ -1182,7 +1184,7 @@ namespace smp
 
 			if (id - id_base > 100)
 			{
-				const auto scriptFiles = config::GetPackageScriptFiles(settings_);
+				const auto scriptFiles = PackageUtils::GetScriptFiles(settings_);
 				const auto fileIdx = std::min(id - id_base - 100uz, scriptFiles.size()) - 1uz;
 
 				EditPackageScript(wnd_, scriptFiles[fileIdx], settings_);

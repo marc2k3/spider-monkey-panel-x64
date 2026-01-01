@@ -88,7 +88,7 @@ void CDialogConf::Apply(bool savePackageData)
 	{
 		try
 		{
-			config::MaybeSavePackageData(oldSettings_);
+			PackageUtils::MaybeSaveData(oldSettings_);
 		}
 		catch (const QwrException& e)
 		{
