@@ -16,9 +16,6 @@
     <ClCompile Include="utils\menu_helpers.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="utils\text_helpers.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="utils\location_processor.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -416,9 +413,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\menu_helpers.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\text_helpers.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\colour_helpers.h">
@@ -860,6 +854,9 @@
     </ClInclude>
     <ClInclude Include="events\event_ids.h">
       <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\EstimateLineWrap.hpp">
+      <Filter>2K3</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

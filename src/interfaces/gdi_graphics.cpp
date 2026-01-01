@@ -1,13 +1,13 @@
 #include <stdafx.h>
 #include "gdi_graphics.h"
 
+#include <2K3/EstimateLineWrap.hpp>
 #include <interfaces/gdi_bitmap.h>
 #include <interfaces/gdi_font.h>
 #include <interfaces/gdi_raw_bitmap.h>
 #include <interfaces/measure_string_info.h>
 #include <utils/colour_helpers.h>
 #include <utils/gdi_error_helpers.h>
-#include <utils/text_helpers.h>
 
 namespace
 {
@@ -102,26 +102,37 @@ namespace mozjs
 		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
-		const auto hDc = pGdi_->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([hDc, pGdi = pGdi_] { pGdi->ReleaseHDC(hDc); });
-		auto _ = wil::SelectObject(hDc, font->GetHFont());
+		auto dc = wil::GetDC(nullptr);
+		auto scope = wil::SelectObject(dc.get(), font->GetHFont());
 
-		return smp::GetTextHeight(hDc, str);
+		SIZE size{};
+		GetTextExtentPoint32W(dc.get(), str.data(), to_int(str.size()), &size);
+		return size.cy;
 	}
 
-	uint32_t JsGdiGraphics::CalcTextWidth(const std::wstring& str, JsGdiFont* font, boolean use_exact)
+	uint32_t JsGdiGraphics::CalcTextWidth(const std::wstring& str, JsGdiFont* font, bool use_exact)
 	{
 		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
-		const auto hDc = pGdi_->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([hDc, pGdi = pGdi_] { pGdi->ReleaseHDC(hDc); });
-		auto _ = wil::SelectObject(hDc, font->GetHFont());
+		auto dc = wil::GetDC(nullptr);
+		auto scope = wil::SelectObject(dc.get(), font->GetHFont());
 
-		return smp::GetTextWidth(hDc, str, use_exact);
+		// If font has kerning pairs then GetTextExtentPoint32 will return an inaccurate width if those pairs exist in text.
+		// DrawText returns a completely accurate value, but is slower and should not be called from inside estimate_line_wrap
+		if (use_exact && str.length() > 1 && GetKerningPairsW(dc.get(), 0, 0) > 0)
+		{
+			auto rect = CRect(0, 0, 0, 0);
+			DrawTextW(dc.get(), str.data(), -1, &rect, DT_CALCRECT | DT_NOPREFIX | DT_SINGLELINE);
+			return rect.Width();
+		}
+
+		SIZE size{};
+		GetTextExtentPoint32W(dc.get(), str.data(), to_int(str.length()), &size);
+		return size.cx;
 	}
 
-	uint32_t JsGdiGraphics::CalcTextWidthWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font, boolean use_exact)
+	uint32_t JsGdiGraphics::CalcTextWidthWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font, bool use_exact)
 	{
 		switch (optArgCount)
 		{
@@ -313,14 +324,9 @@ namespace mozjs
 		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
-		std::vector<smp::WrappedTextLine> result;
-		{
-			const auto hDc = pGdi_->GetHDC();
-			auto autoHdcReleaser = wil::scope_exit([hDc, pGdi = pGdi_] { pGdi->ReleaseHDC(hDc); });
-			auto _ = wil::SelectObject(hDc, font->GetHFont());
-
-			result = smp::WrapText(hDc, str, max_width);
-		}
+		auto dc = wil::GetDC(nullptr);
+		auto scope = wil::SelectObject(dc.get(), font->GetHFont());
+		auto result = ::EstimateLineWrap(dc.get(), max_width).wrap(str);
 
 		JS::RootedObject jsArray(pJsCtx_, JS::NewArrayObject(pJsCtx_, result.size() * 2));
 		JsException::ExpectTrue(jsArray);
@@ -337,7 +343,7 @@ namespace mozjs
 				throw JsException();
 			}
 
-			jsValue.setNumber((uint32_t)width);
+			jsValue.setNumber(to_uint(width));
 			if (!JS_SetElement(pJsCtx_, jsArray, i++, jsValue))
 			{
 				throw JsException();
