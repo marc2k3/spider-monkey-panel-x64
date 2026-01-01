@@ -72,36 +72,37 @@ namespace smp
 	void js_panel_window::ReloadScript()
 	{
 		if (pJsContainer_)
-		{ // Panel might be not loaded at all, if settings are changed from Preferences.
+		{
 			UnloadScript();
-			if (!ReloadSettings())
+
+			if (ReloadSettings())
 			{
-				return;
+				LoadScript(false);
 			}
-			LoadScript(false);
 		}
 	}
 
 	void js_panel_window::LoadSettings(stream_reader* reader, t_size size, abort_callback& abort, bool reloadPanel)
 	{
-		const auto settings = [&] {
-			try
+		const auto settings = [&]
 			{
-				return config::PanelSettings::Load(reader, size, abort);
-			}
-			catch (const QwrException& e)
-			{
-				smp::ReportErrorWithPopup(
-					SMP_UNDERSCORE_NAME,
-					fmt::format(
-						"Can't load panel settings. Your panel will be completely reset!\nError: {}",
-						e.what()
-					)
-				);
+				try
+				{
+					return config::PanelSettings::Load(reader, size, abort);
+				}
+				catch (const QwrException& e)
+				{
+					smp::ReportErrorWithPopup(
+						SMP_UNDERSCORE_NAME,
+						fmt::format(
+							"Can't load panel settings. Your panel will be completely reset!\nError: {}",
+							e.what()
+						)
+					);
 
-				return config::PanelSettings{};
-			}
-		}();
+					return config::PanelSettings{};
+				}
+			}();
 
 		if (!UpdateSettings(settings, reloadPanel))
 		{
@@ -128,6 +129,7 @@ namespace smp
 		{
 			ReloadScript();
 		}
+
 		return true;
 	}
 
@@ -183,29 +185,27 @@ namespace smp
 
 		static uint32_t msgNestedCounter = 0;
 		++msgNestedCounter;
-		auto autoComObjectDeleter = wil::scope_exit([&] {
-			// delete only on exit as to avoid delaying processing of the current message due to reentrancy
-			--msgNestedCounter;
-			if (!msgNestedCounter)
+
+		auto autoComObjectDeleter = wil::scope_exit([&]
 			{
-				com::DeleteMarkedObjects();
-			}
-		});
+				// delete only on exit as to avoid delaying processing of the current message due to reentrancy
+				--msgNestedCounter;
+				if (!msgNestedCounter)
+				{
+					com::DeleteMarkedObjects();
+				}
+			});
 
 		if (EventDispatcher::IsRequestEventMessage(msg))
 		{
 			EventDispatcher::Get().OnRequestEventMessageReceived(wnd_);
 			if (auto retVal = ProcessEvent(); retVal.has_value())
-			{
 				return *retVal;
-			}
 		}
 		else
 		{
 			if (auto retVal = ProcessSyncMessage(MSG{ hwnd, msg, wp, lp }); retVal.has_value())
-			{
 				return *retVal;
-			}
 		}
 
 		return DefWindowProc(hwnd, msg, wp, lp);
@@ -258,6 +258,7 @@ namespace smp
 			{
 				break;
 			}
+
 			isPaintInProgress_ = true;
 
 			{
@@ -266,20 +267,16 @@ namespace smp
 			}
 
 			isPaintInProgress_ = false;
-
 			break;
 		}
 		case EventId::kWndResize:
 		{
-			if (!pJsContainer_)
+			if (pJsContainer_)
 			{
-				break;
+				CRect rc;
+				wnd_.GetClientRect(&rc);
+				OnSizeUser(rc.Width(), rc.Height());
 			}
-
-			CRect rc;
-			wnd_.GetClientRect(&rc);
-			OnSizeUser(rc.Width(), rc.Height());
-
 			break;
 		}
 		default:
@@ -289,16 +286,13 @@ namespace smp
 
 	void js_panel_window::ExecuteEvent_JsTask(EventId id, Event_JsExecutor& task)
 	{
-		const auto execJs = [&](auto& jsTask) -> std::optional<bool> {
-			if (!pJsContainer_)
+		const auto execJs = [this](auto& jsTask) -> std::optional<bool>
 			{
-				return false;
-			}
-			else
-			{
-				return jsTask.JsExecute(*pJsContainer_);
-			}
-		};
+				if (pJsContainer_)
+					return jsTask.JsExecute(*pJsContainer_);
+				else
+					return false;
+			};
 
 		switch (id)
 		{
@@ -306,33 +300,23 @@ namespace smp
 		{
 			const auto pEvent = task.AsMouseEvent();
 
-			// Bypass the user code.
-			const auto useDefaultContextMenu = [&] {
-				if (pEvent->IsShiftPressed() && pEvent->IsWinPressed())
-				{
-					return true;
-				}
-				else
-				{
-					return !execJs(*pEvent).value_or(false);
-				}
-			}();
+			if (pEvent->IsShiftPressed() && pEvent->IsWinPressed())
+				break;
+			
+			if (execJs(*pEvent))
+				break;
 
-			if (useDefaultContextMenu)
-			{
-				EventDispatcher::Get().PutEvent(
-					wnd_,
-					std::make_unique<Event_Mouse>(
-						EventId::kMouseContextMenu,
-						pEvent->GetX(),
-						pEvent->GetY(),
-						0,
-						pEvent->GetModifiers()
-					),
-					EventPriority::kInput
-				);
-			}
-
+			EventDispatcher::Get().PutEvent(
+				wnd_,
+				std::make_unique<Event_Mouse>(
+					EventId::kMouseContextMenu,
+					pEvent->GetX(),
+					pEvent->GetY(),
+					0,
+					pEvent->GetModifiers()
+				),
+				EventPriority::kInput
+			);
 			break;
 		}
 		case EventId::kMouseContextMenu:
@@ -376,7 +360,6 @@ namespace smp
 			{
 				pJsContainer_->InvokeJsCallback("on_drag_leave");
 			}
-
 			break;
 		}
 		case EventId::kMouseDragOver:
@@ -400,7 +383,6 @@ namespace smp
 			}
 
 			pDragEvent->DisposeStoredData();
-
 			break;
 		}
 		case EventId::kMouseDragDrop:
@@ -425,14 +407,11 @@ namespace smp
 
 			lastDragParams_.reset();
 			pDragEvent->DisposeStoredData();
-
 			break;
 		}
 		case EventId::kInputFocus:
 		{
 			selectionHolder_ = ui_selection_manager::get()->acquire();
-			// Note: selection holder is released in WM_KILLFOCUS processing
-
 			execJs(task);
 			break;
 		}
@@ -445,12 +424,12 @@ namespace smp
 
 	bool js_panel_window::ExecuteEvent_JsCode(mozjs::JsAsyncTask& jsTask)
 	{
-		if (!pJsContainer_)
+		if (pJsContainer_)
 		{
-			return false;
+			return pJsContainer_->InvokeJsAsyncTask(jsTask);
 		}
 
-		return pJsContainer_->InvokeJsAsyncTask(jsTask);
+		return false;
 	}
 
 	void js_panel_window::OnProcessingEventStart()
@@ -477,12 +456,14 @@ namespace smp
 	std::optional<LRESULT> js_panel_window::ProcessEvent()
 	{
 		OnProcessingEventStart();
-		auto onEventProcessed = wil::scope_exit([&] {
-			OnProcessingEventFinish();
-		});
+		auto onEventProcessed = wil::scope_exit([&]
+			{
+				OnProcessingEventFinish();
+			});
 
 		if (const auto stalledMsgOpt = GetStalledMessage(); stalledMsgOpt)
-		{ // stalled messages always have a higher priority
+		{
+			// stalled messages always have a higher priority
 			if (auto retVal = ProcessStalledMessage(*stalledMsgOpt); retVal.has_value())
 			{
 				return *retVal;
@@ -504,9 +485,10 @@ namespace smp
 	void js_panel_window::ProcessEventManually(Runnable& runnable)
 	{
 		OnProcessingEventStart();
-		auto onEventProcessed = wil::scope_exit([&] {
-			OnProcessingEventFinish();
-		});
+		auto onEventProcessed = wil::scope_exit([&]
+			{
+				OnProcessingEventFinish();
+			});
 
 		runnable.Run();
 	}
@@ -514,20 +496,21 @@ namespace smp
 	std::optional<MSG> js_panel_window::GetStalledMessage()
 	{
 		MSG msg;
-		bool hasMessage = PeekMessage(&msg, wnd_, WM_TIMER, WM_TIMER, PM_REMOVE);
+		bool hasMessage = PeekMessageW(&msg, wnd_, WM_TIMER, WM_TIMER, PM_REMOVE);
+
 		if (!hasMessage)
 		{
 			return std::nullopt;
 		}
 
 		if (!hRepaintTimer_)
-		{ // means that WM_PAINT was invoked properly
+		{
+			// means that WM_PAINT was invoked properly
 			return std::nullopt;
 		}
 
 		KillTimer(wnd_, hRepaintTimer_);
 		hRepaintTimer_ = NULL;
-
 		return msg;
 	}
 
@@ -594,9 +577,7 @@ namespace smp
 	std::optional<LRESULT> js_panel_window::ProcessWindowMessage(const MSG& msg)
 	{
 		if (!pJsContainer_)
-		{
 			return std::nullopt;
-		}
 
 		switch (msg.message)
 		{
@@ -942,9 +923,7 @@ namespace smp
 	std::optional<LRESULT> js_panel_window::ProcessInternalSyncMessage(InternalSyncMessage msg, WPARAM wp, LPARAM lp)
 	{
 		if (!pJsContainer_)
-		{
 			return std::nullopt;
-		}
 
 		switch (msg)
 		{
@@ -1047,28 +1026,24 @@ namespace smp
 
 	void js_panel_window::ShowConfigure(HWND parent, CDialogConf::Tab tab)
 	{
-		if (!modal_dialog_scope::can_create())
+		if (modal_dialog_scope::can_create())
 		{
-			return;
+			modal::ModalBlockingScope scope(parent, true);
+
+			CDialogConf dlg(this, tab);
+			dlg.DoModal(parent);
 		}
-
-		modal::ModalBlockingScope scope(parent, true);
-
-		CDialogConf dlg(this, tab);
-		dlg.DoModal(parent);
 	}
 
 	void js_panel_window::ShowProperties(HWND parent)
 	{
-		if (!modal_dialog_scope::can_create())
+		if (modal_dialog_scope::can_create())
 		{
-			return;
+			modal::ModalBlockingScope scope(parent, true);
+
+			auto dlg = CDialogProperties(*this);
+			dlg.DoModal(parent);
 		}
-
-		modal::ModalBlockingScope scope(parent, true);
-
-		auto dlg = CDialogProperties(*this);
-		dlg.DoModal(parent);
 	}
 
 	void js_panel_window::GenerateContextMenu(HMENU hMenu, int x, int y, size_t id_base)
@@ -1098,8 +1073,8 @@ namespace smp
 
 				CMenu cSubMenu;
 				cSubMenu.CreatePopupMenu();
-
 				auto scriptIdx = id_base + 100;
+
 				for (const auto& file: scriptFiles)
 				{
 					const auto relativePath = [&]
@@ -1334,8 +1309,7 @@ namespace smp
 
 	bool js_panel_window::LoadScript(bool isFirstLoad)
 	{
-		pfc::hires_timer timer;
-		timer.start();
+		auto timer = pfc::hires_timer::create_and_start();
 
 		hasFailed_ = false;
 		isPanelIdOverridenByScript_ = false;
@@ -1358,9 +1332,7 @@ namespace smp
 		NotifySizeLimitChanged();
 
 		if (!pJsContainer_->Initialize())
-		{ // error reporting handled inside
 			return false;
-		}
 
 		pTimeoutManager_->SetLoadingStatus(true);
 
@@ -1368,9 +1340,7 @@ namespace smp
 		{
 			modal::WhitelistedScope scope; // Initial script execution must always be whitelisted
 			if (!pJsContainer_->ExecuteScript(*settings_.script))
-			{ // error reporting handled inside
 				return false;
-			}
 		}
 		else
 		{
@@ -1381,9 +1351,7 @@ namespace smp
 
 			modal::WhitelistedScope scope; // Initial script execution must always be whitelisted
 			if (!pJsContainer_->ExecuteScriptFile(*settings_.scriptPath))
-			{ // error reporting handled inside
 				return false;
-			}
 		}
 
 		pTimeoutManager_->SetLoadingStatus(false);
@@ -1469,7 +1437,6 @@ namespace smp
 		constexpr uint32_t base_id = 0;
 		GenerateContextMenu(menu, p.x, p.y, base_id);
 
-		// yup, WinAPI at it's best: BOOL is used as an integer index here
 		const uint32_t ret = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, p.x, p.y, wnd_, nullptr);
 		ExecuteContextMenu(ret, base_id);
 	}
@@ -1638,11 +1605,11 @@ namespace smp
 	{
 		if (shouldCapture)
 		{
-			::SetCapture(wnd_);
+			SetCapture(wnd_);
 		}
 		else
 		{
-			::ReleaseCapture();
+			ReleaseCapture();
 		}
 		isMouseCaptured_ = shouldCapture;
 	}
