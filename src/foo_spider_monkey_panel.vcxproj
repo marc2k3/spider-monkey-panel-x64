@@ -131,7 +131,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="initquit.cpp" />
     <ClCompile Include="events\event.cpp" />
     <ClCompile Include="events\event_drag.cpp" />
-    <ClCompile Include="events\event_js_task.cpp" />
     <ClCompile Include="events\event_dispatcher.cpp" />
     <ClCompile Include="events\event_mouse.cpp" />
     <ClCompile Include="events\event_notify_others.cpp" />
@@ -278,7 +277,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="events\event_drag.h" />
     <ClInclude Include="events\event_ids.h" />
     <ClInclude Include="events\event_js_callback.h" />
-    <ClInclude Include="events\event_js_task.h" />
     <ClInclude Include="events\event_dispatcher.h" />
     <ClInclude Include="events\event_mouse.h" />
     <ClInclude Include="events\event_notify_others.h" />

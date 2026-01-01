@@ -14,7 +14,7 @@ namespace smp
 
 	std::optional<bool> Event_Mouse::JsExecute(mozjs::JsContainer& jsContainer)
 	{
-		const auto callbackName = fmt::format("on_{}", kCallbackIdToName.at(id_));
+		const auto callbackName = kCallbackIdToName.at(id_);
 		return jsContainer.InvokeJsCallback<bool>(callbackName, x_, y_, mask_);
 	}
 

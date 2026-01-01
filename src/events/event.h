@@ -88,4 +88,15 @@ namespace smp
 		std::shared_ptr<ITimer> pTimer_;
 		uint64_t generation_;
 	};
+
+	class Event_JsTask : public Event_JsExecutor
+	{
+	public:
+		Event_JsTask(EventId id, std::shared_ptr<mozjs::JsAsyncTask> pTask);
+
+		std::optional<bool> JsExecute(mozjs::JsContainer& jsContainer) override;
+
+	private:
+		std::shared_ptr<mozjs::JsAsyncTask> pTask_;
+	};
 }

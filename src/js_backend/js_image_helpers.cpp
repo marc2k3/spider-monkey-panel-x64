@@ -5,7 +5,6 @@
 
 #include <2K3/FileHelper.hpp>
 #include <events/event_dispatcher.h>
-#include <events/event_js_task.h>
 #include <interfaces/gdi_bitmap.h>
 #include <utils/gdi_helpers.h>
 #include <utils/thread_pool.h>

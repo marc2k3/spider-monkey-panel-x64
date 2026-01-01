@@ -32,7 +32,7 @@ namespace smp
 
 		std::optional<bool> JsExecute(mozjs::JsContainer& jsContainer) override
 		{
-			const auto callbackName = fmt::format("on_{}", kCallbackIdToName.at(id_));
+			const auto callbackName = kCallbackIdToName.at(id_);
 			std::apply(
 				[&](auto&&... args)
 				{
