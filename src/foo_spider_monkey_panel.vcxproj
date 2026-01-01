@@ -134,10 +134,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="events\event_js_task.cpp" />
     <ClCompile Include="events\event_dispatcher.cpp" />
     <ClCompile Include="events\event_mouse.cpp" />
-    <ClCompile Include="events\event_basic.cpp" />
-    <ClCompile Include="events\event_js_executor.cpp" />
     <ClCompile Include="events\event_notify_others.cpp" />
-    <ClCompile Include="events\event_timer.cpp" />
     <ClCompile Include="events\task_controller.cpp" />
     <ClCompile Include="interfaces\active_x_object.cpp" />
     <ClCompile Include="interfaces\active_x_object_iterator.cpp" />
@@ -283,11 +280,9 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="events\event_js_task.h" />
     <ClInclude Include="events\event_dispatcher.h" />
     <ClInclude Include="events\event_mouse.h" />
-    <ClInclude Include="events\event_basic.h" />
-    <ClInclude Include="events\event_js_executor.h" />
     <ClInclude Include="events\event_notify_others.h" />
-    <ClInclude Include="events\event_timer.h" />
     <ClInclude Include="events\task_controller.h" />
+    <ClInclude Include="event_ids.h" />
     <ClInclude Include="interfaces\active_x_object.h" />
     <ClInclude Include="interfaces\active_x_object_iterator.h" />
     <ClInclude Include="interfaces\context_menu_manager.h" />

@@ -1,14 +1,11 @@
 #pragma once
-
-#include <events/event.h>
-#include <events/event_js_executor.h>
+#include "event.h"
 
 namespace smp
 {
 	class js_panel_window;
 
-	class Event_JsTask
-		: public Event_JsExecutor
+	class Event_JsTask : public Event_JsExecutor
 	{
 	public:
 		Event_JsTask(EventId id, std::shared_ptr<mozjs::JsAsyncTask> pTask);

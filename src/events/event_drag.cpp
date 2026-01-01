@@ -4,8 +4,6 @@
 #include <com_utils/com_destruction_handler.h>
 #include <panel/js_panel_window.h>
 
-// TODO: store IDataObjectPtr in some panel object instead
-
 namespace smp
 {
 	Event_Drag::Event_Drag(EventId id, int32_t x, int32_t y, uint32_t mask, uint32_t modifiers, const DragActionParams& dragParams, IDataObjectPtr pData)

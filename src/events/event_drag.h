@@ -1,16 +1,15 @@
 #pragma once
+#include "event_mouse.h"
 
-#include <events/event_js_executor.h>
-#include <events/event_mouse.h>
 #include <panel/drag_action_params.h>
-
-namespace smp::com
-{
-	struct StorageObject;
-}
 
 namespace smp
 {
+	namespace com
+	{
+		struct StorageObject;
+	}
+
 	class js_panel_window;
 
 	class Event_Drag : public Event_Mouse

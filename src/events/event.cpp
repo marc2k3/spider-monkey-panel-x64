@@ -1,11 +1,28 @@
 #include <stdafx.h>
-
 #include "event.h"
 
 #include <panel/js_panel_window.h>
 
 namespace smp
 {
+	PanelTarget::PanelTarget(js_panel_window& panel) : pPanel_(&panel), hWnd_(panel.GetHWND()) {}
+
+	HWND PanelTarget::GetHwnd()
+	{
+		return hWnd_;
+	}
+
+	js_panel_window* PanelTarget::GetPanel()
+	{
+		return pPanel_;
+	}
+
+	void PanelTarget::UnlinkPanel()
+	{
+		pPanel_ = nullptr;
+		hWnd_ = nullptr;
+	}
+
 	EventBase::EventBase(EventId id) : id_(id) {}
 
 	std::unique_ptr<EventBase> EventBase::Clone()
@@ -33,21 +50,43 @@ namespace smp
 		return nullptr;
 	}
 
-	PanelTarget::PanelTarget(js_panel_window& panel) : pPanel_(&panel), hWnd_(panel.GetHWND()) {}
+	Event_Basic::Event_Basic(EventId id) : EventBase(id) {}
 
-	HWND PanelTarget::GetHwnd()
+	void Event_Basic::Run()
 	{
-		return hWnd_;
+		if (pTarget_)
+		{
+			auto pPanel = pTarget_->GetPanel();
+
+			if (pPanel)
+			{
+				pPanel->ExecuteEvent_Basic(id_);
+			}
+		}
 	}
 
-	js_panel_window* PanelTarget::GetPanel()
+	Event_JsExecutor::Event_JsExecutor(EventId id) : EventBase(id) {}
+
+	void Event_JsExecutor::Run()
 	{
-		return pPanel_;
+		if (pTarget_)
+		{
+			auto pPanel = pTarget_->GetPanel();
+
+			if (pPanel)
+			{
+				pPanel->ExecuteEvent_JsTask(id_, *this);
+			}
+		}
 	}
 
-	void PanelTarget::UnlinkPanel()
+	Event_Timer::Event_Timer(std::shared_ptr<ITimer> pTimer, uint64_t generation)
+		: EventBase(EventId::kTimer)
+		, pTimer_(pTimer)
+		, generation_(generation) {}
+
+	void Event_Timer::Run()
 	{
-		pPanel_ = nullptr;
-		hWnd_ = nullptr;
+		pTimer_->Fire(generation_);
 	}
 }

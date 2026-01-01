@@ -1,6 +1,6 @@
 #pragma once
-#include <events/event.h>
-#include <events/event_js_executor.h>
+#include "event.h"
+
 #include <panel/js_panel_window.h>
 
 namespace smp::impl

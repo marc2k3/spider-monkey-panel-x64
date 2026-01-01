@@ -5,7 +5,6 @@
 #include <com_utils/com_destruction_handler.h>
 #include <config/delayed_package_utils.h>
 #include <config/package_utils.h>
-#include <events/event_basic.h>
 #include <events/event_dispatcher.h>
 #include <events/event_drag.h>
 #include <events/event_js_callback.h>

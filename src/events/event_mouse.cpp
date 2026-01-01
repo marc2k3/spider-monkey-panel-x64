@@ -45,21 +45,21 @@ namespace smp
 
 	bool Event_Mouse::IsAltPressed() const
 	{
-		return (modifiers_ & MOD_ALT);
+		return WI_IsFlagSet(modifiers_, MOD_ALT);
 	}
 
 	bool Event_Mouse::IsCtrlPressed() const
 	{
-		return (modifiers_ & MOD_CONTROL);
+		return WI_IsFlagSet(modifiers_, MOD_CONTROL);
 	}
 
 	bool Event_Mouse::IsShiftPressed() const
 	{
-		return (modifiers_ & MOD_SHIFT);
+		return WI_IsFlagSet(modifiers_, MOD_SHIFT);
 	}
 
 	bool Event_Mouse::IsWinPressed() const
 	{
-		return (modifiers_ & MOD_WIN);
+		return WI_IsFlagSet(modifiers_, MOD_WIN);
 	}
 }

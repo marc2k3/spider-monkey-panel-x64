@@ -1,6 +1,5 @@
 #pragma once
-#include <events/event.h>
-#include <events/event_js_executor.h>
+#include "event.h"
 
 namespace smp
 {

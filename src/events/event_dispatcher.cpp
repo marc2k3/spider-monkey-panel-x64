@@ -1,211 +1,182 @@
 #include <stdafx.h>
-
 #include "event_dispatcher.h"
+#include "task_controller.h"
 
-#include <events/task_controller.h>
 #include <panel/user_message.h>
 
 namespace smp
 {
-
-EventDispatcher& EventDispatcher::Get() noexcept
-{
-	static EventDispatcher em;
-	return em;
-}
-
-void EventDispatcher::AddWindow(HWND hWnd, std::shared_ptr<PanelTarget> pTarget) noexcept
-{
-	std::unique_lock ul(taskControllerMapMutex_);
-	taskControllerMap_.try_emplace(hWnd, std::make_shared<TaskController>(pTarget));
-	nextEventMsgStatusMap_.try_emplace(hWnd, true);
-}
-
-void EventDispatcher::RemoveWindow(HWND hWnd) noexcept
-{
-	std::unique_lock ul(taskControllerMapMutex_);
-	taskControllerMap_.erase(hWnd);
-	nextEventMsgStatusMap_.erase(hWnd);
-}
-
-void EventDispatcher::NotifyAllAboutExit() noexcept
-{
-	std::vector<HWND> hWnds;
-	hWnds.reserve(taskControllerMap_.size());
-
+	EventDispatcher& EventDispatcher::Get() noexcept
 	{
-		std::scoped_lock sl(taskControllerMapMutex_);
-		for (auto& [hLocalWnd, pTaskController]: taskControllerMap_)
+		static EventDispatcher em;
+		return em;
+	}
+
+	void EventDispatcher::AddWindow(HWND hWnd, std::shared_ptr<PanelTarget> pTarget) noexcept
+	{
+		std::unique_lock ul(taskControllerMapMutex_);
+		taskControllerMap_.try_emplace(hWnd, std::make_shared<TaskController>(pTarget));
+		nextEventMsgStatusMap_.try_emplace(hWnd, true);
+	}
+
+	void EventDispatcher::RemoveWindow(HWND hWnd) noexcept
+	{
+		std::unique_lock ul(taskControllerMapMutex_);
+		taskControllerMap_.erase(hWnd);
+		nextEventMsgStatusMap_.erase(hWnd);
+	}
+
+	void EventDispatcher::NotifyAllAboutExit() noexcept
+	{
+		std::vector<HWND> hWnds;
+		hWnds.reserve(taskControllerMap_.size());
+
 		{
-			hWnds.emplace_back(hLocalWnd);
+			std::scoped_lock sl(taskControllerMapMutex_);
+			for (auto& [hLocalWnd, pTaskController] : taskControllerMap_)
+			{
+				hWnds.emplace_back(hLocalWnd);
+			}
+		}
+
+		for (const auto& hWnd : hWnds)
+		{
+			SendMessage(hWnd, static_cast<UINT>(smp::InternalSyncMessage::prepare_for_exit), 0, 0);
 		}
 	}
 
-	for (const auto& hWnd: hWnds)
+	bool EventDispatcher::IsRequestEventMessage(UINT msg) noexcept
 	{
-		SendMessage(hWnd, static_cast<UINT>(smp::InternalSyncMessage::prepare_for_exit), 0, 0);
-	}
-}
-
-bool EventDispatcher::IsRequestEventMessage(UINT msg) noexcept
-{
-	return (msg == static_cast<UINT>(InternalSyncMessage::run_next_event));
-}
-
-bool EventDispatcher::ProcessNextEvent(HWND hWnd) noexcept
-{
-	auto pTaskController = [&]
-		{
-			std::unique_lock ul(taskControllerMapMutex_);
-			return taskControllerMap_.at(hWnd);
-		}();
-
-	if (!pTaskController)
-	{
-		return false;
-	}
-	return pTaskController->ExecuteNextTask();
-}
-
-void EventDispatcher::RequestNextEvent(HWND hWnd) noexcept
-{
-	std::scoped_lock sl(taskControllerMapMutex_);
-
-	auto taskControllerIt = taskControllerMap_.find(hWnd);
-	if (taskControllerIt == taskControllerMap_.end() || !taskControllerIt->second)
-	{ // task controller might be missing when invoked before window initialization
-		return;
+		return (msg == static_cast<UINT>(InternalSyncMessage::run_next_event));
 	}
 
-	RequestNextEventImpl(hWnd, *taskControllerIt->second, sl);
-}
-
-void EventDispatcher::RequestNextEventImpl(HWND hWnd, TaskController& taskController, std::scoped_lock<std::mutex>& proof) noexcept
-{
-	if (!taskController.HasTasks())
+	bool EventDispatcher::ProcessNextEvent(HWND hWnd) noexcept
 	{
-		return;
-	}
+		auto pTaskController = [&]
+			{
+				std::unique_lock ul(taskControllerMapMutex_);
+				return taskControllerMap_.at(hWnd);
+			}();
 
-	const auto isWaitingForMsgIt = nextEventMsgStatusMap_.find(hWnd);
-	if (isWaitingForMsgIt == nextEventMsgStatusMap_.end())
-	{
-		return;
-	}
-
-	if (isWaitingForMsgIt->second)
-	{
-		isWaitingForMsgIt->second = false;
-		PostMessage(hWnd, static_cast<UINT>(InternalSyncMessage::run_next_event), 0, 0);
-	}
-	else
-	{
-		isWaitingForMsgIt->second = false;
-	}
-}
-
-void EventDispatcher::OnRequestEventMessageReceived(HWND hWnd) noexcept
-{
-	std::scoped_lock sl(taskControllerMapMutex_);
-
-	auto isWaitingForMsgIt = nextEventMsgStatusMap_.find(hWnd);
-	if (isWaitingForMsgIt == nextEventMsgStatusMap_.end())
-	{
-		return;
-	}
-
-	isWaitingForMsgIt->second = true;
-}
-
-void EventDispatcher::PutRunnable(HWND hWnd, std::shared_ptr<Runnable> pRunnable, EventPriority priority) noexcept
-{
-	std::scoped_lock sl(taskControllerMapMutex_);
-
-	auto taskControllerIt = taskControllerMap_.find(hWnd);
-	if (taskControllerIt == taskControllerMap_.end() || !taskControllerIt->second)
-	{
-		return;
-	}
-
-	auto pTaskController = taskControllerIt->second;
-	pTaskController->AddRunnable(std::move(pRunnable), priority);
-
-	RequestNextEventImpl(hWnd, *pTaskController, sl);
-}
-
-void EventDispatcher::PutEvent(HWND hWnd, std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
-{
-	std::scoped_lock sl(taskControllerMapMutex_);
-
-	auto taskControllerIt = taskControllerMap_.find(hWnd);
-	if (taskControllerIt == taskControllerMap_.end() || !taskControllerIt->second)
-	{
-		return;
-	}
-
-	auto pTaskController = taskControllerIt->second;
-	pEvent->SetTarget(pTaskController->GetTarget());
-	pTaskController->AddRunnable(std::move(pEvent), priority);
-
-	RequestNextEventImpl(hWnd, *pTaskController, sl);
-}
-
-void EventDispatcher::PutEventToAll(std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
-{
-	std::scoped_lock sl(taskControllerMapMutex_);
-
-	for (auto& [hLocalWnd, pTaskController]: taskControllerMap_)
-	{
 		if (!pTaskController)
 		{
-			continue;
+			return false;
 		}
-
-		auto pClonedEvent = pEvent->Clone();
-		if (!pClonedEvent)
-		{
-			return;
-		}
-
-		pClonedEvent->SetTarget(pTaskController->GetTarget());
-		pTaskController->AddRunnable(std::move(pClonedEvent), priority);
-
-		RequestNextEventImpl(hLocalWnd, *pTaskController, sl);
+		return pTaskController->ExecuteNextTask();
 	}
-}
 
-void EventDispatcher::PutEventToOthers(HWND hWnd, std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
-{
-	std::scoped_lock sl(taskControllerMapMutex_);
-
-	for (auto& [hLocalWnd, pTaskController]: taskControllerMap_)
-	{
-		if (!pTaskController || hLocalWnd == hWnd)
-		{
-			continue;
-		}
-
-		auto pClonedEvent = pEvent->Clone();
-		if (!pClonedEvent)
-		{
-			return;
-		}
-
-		pClonedEvent->SetTarget(pTaskController->GetTarget());
-		pTaskController->AddRunnable(std::move(pClonedEvent), priority);
-
-		RequestNextEventImpl(hLocalWnd, *pTaskController, sl);
-	}
-}
-
-void EventDispatcher::NotifyOthers(HWND hWnd, std::unique_ptr<EventBase> pEvent) noexcept
-{
-	std::vector<std::pair<HWND, std::unique_ptr<EventBase>>> hWndToEvent;
-	hWndToEvent.reserve(taskControllerMap_.size());
-
+	void EventDispatcher::RequestNextEvent(HWND hWnd) noexcept
 	{
 		std::scoped_lock sl(taskControllerMapMutex_);
-		for (auto& [hLocalWnd, pTaskController]: taskControllerMap_)
+
+		auto taskControllerIt = taskControllerMap_.find(hWnd);
+		if (taskControllerIt == taskControllerMap_.end() || !taskControllerIt->second)
+		{ // task controller might be missing when invoked before window initialization
+			return;
+		}
+
+		RequestNextEventImpl(hWnd, *taskControllerIt->second, sl);
+	}
+
+	void EventDispatcher::RequestNextEventImpl(HWND hWnd, TaskController& taskController, std::scoped_lock<std::mutex>& proof) noexcept
+	{
+		if (!taskController.HasTasks())
+		{
+			return;
+		}
+
+		const auto isWaitingForMsgIt = nextEventMsgStatusMap_.find(hWnd);
+		if (isWaitingForMsgIt == nextEventMsgStatusMap_.end())
+		{
+			return;
+		}
+
+		if (isWaitingForMsgIt->second)
+		{
+			isWaitingForMsgIt->second = false;
+			PostMessage(hWnd, static_cast<UINT>(InternalSyncMessage::run_next_event), 0, 0);
+		}
+		else
+		{
+			isWaitingForMsgIt->second = false;
+		}
+	}
+
+	void EventDispatcher::OnRequestEventMessageReceived(HWND hWnd) noexcept
+	{
+		std::scoped_lock sl(taskControllerMapMutex_);
+
+		auto isWaitingForMsgIt = nextEventMsgStatusMap_.find(hWnd);
+		if (isWaitingForMsgIt == nextEventMsgStatusMap_.end())
+		{
+			return;
+		}
+
+		isWaitingForMsgIt->second = true;
+	}
+
+	void EventDispatcher::PutRunnable(HWND hWnd, std::shared_ptr<Runnable> pRunnable, EventPriority priority) noexcept
+	{
+		std::scoped_lock sl(taskControllerMapMutex_);
+
+		auto taskControllerIt = taskControllerMap_.find(hWnd);
+		if (taskControllerIt == taskControllerMap_.end() || !taskControllerIt->second)
+		{
+			return;
+		}
+
+		auto pTaskController = taskControllerIt->second;
+		pTaskController->AddRunnable(std::move(pRunnable), priority);
+
+		RequestNextEventImpl(hWnd, *pTaskController, sl);
+	}
+
+	void EventDispatcher::PutEvent(HWND hWnd, std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
+	{
+		std::scoped_lock sl(taskControllerMapMutex_);
+
+		auto taskControllerIt = taskControllerMap_.find(hWnd);
+		if (taskControllerIt == taskControllerMap_.end() || !taskControllerIt->second)
+		{
+			return;
+		}
+
+		auto pTaskController = taskControllerIt->second;
+		pEvent->SetTarget(pTaskController->GetTarget());
+		pTaskController->AddRunnable(std::move(pEvent), priority);
+
+		RequestNextEventImpl(hWnd, *pTaskController, sl);
+	}
+
+	void EventDispatcher::PutEventToAll(std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
+	{
+		std::scoped_lock sl(taskControllerMapMutex_);
+
+		for (auto& [hLocalWnd, pTaskController] : taskControllerMap_)
+		{
+			if (!pTaskController)
+			{
+				continue;
+			}
+
+			auto pClonedEvent = pEvent->Clone();
+			if (!pClonedEvent)
+			{
+				return;
+			}
+
+			pClonedEvent->SetTarget(pTaskController->GetTarget());
+			pTaskController->AddRunnable(std::move(pClonedEvent), priority);
+
+			RequestNextEventImpl(hLocalWnd, *pTaskController, sl);
+		}
+	}
+
+	void EventDispatcher::PutEventToOthers(HWND hWnd, std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
+	{
+		std::scoped_lock sl(taskControllerMapMutex_);
+
+		for (auto& [hLocalWnd, pTaskController] : taskControllerMap_)
 		{
 			if (!pTaskController || hLocalWnd == hWnd)
 			{
@@ -219,15 +190,41 @@ void EventDispatcher::NotifyOthers(HWND hWnd, std::unique_ptr<EventBase> pEvent)
 			}
 
 			pClonedEvent->SetTarget(pTaskController->GetTarget());
+			pTaskController->AddRunnable(std::move(pClonedEvent), priority);
 
-			hWndToEvent.emplace_back(hLocalWnd, std::move(pClonedEvent));
+			RequestNextEventImpl(hLocalWnd, *pTaskController, sl);
 		}
 	}
 
-	for (const auto& [hWnd, pClonedEvent]: hWndToEvent)
+	void EventDispatcher::NotifyOthers(HWND hWnd, std::unique_ptr<EventBase> pEvent) noexcept
 	{
-		SendMessage(hWnd, static_cast<UINT>(smp::InternalSyncMessage::legacy_notify_others), 0, reinterpret_cast<LPARAM>(pClonedEvent.get()));
+		std::vector<std::pair<HWND, std::unique_ptr<EventBase>>> hWndToEvent;
+		hWndToEvent.reserve(taskControllerMap_.size());
+
+		{
+			std::scoped_lock sl(taskControllerMapMutex_);
+			for (auto& [hLocalWnd, pTaskController] : taskControllerMap_)
+			{
+				if (!pTaskController || hLocalWnd == hWnd)
+				{
+					continue;
+				}
+
+				auto pClonedEvent = pEvent->Clone();
+				if (!pClonedEvent)
+				{
+					return;
+				}
+
+				pClonedEvent->SetTarget(pTaskController->GetTarget());
+
+				hWndToEvent.emplace_back(hLocalWnd, std::move(pClonedEvent));
+			}
+		}
+
+		for (const auto& [hWnd, pClonedEvent] : hWndToEvent)
+		{
+			SendMessage(hWnd, static_cast<UINT>(smp::InternalSyncMessage::legacy_notify_others), 0, reinterpret_cast<LPARAM>(pClonedEvent.get()));
+		}
 	}
 }
-
-} // namespace smp

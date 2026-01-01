@@ -82,22 +82,13 @@
     <ClCompile Include="events\task_controller.cpp">
       <Filter>events</Filter>
     </ClCompile>
-    <ClCompile Include="events\event_basic.cpp">
-      <Filter>events</Filter>
-    </ClCompile>
     <ClCompile Include="events\event.cpp">
-      <Filter>events</Filter>
-    </ClCompile>
-    <ClCompile Include="events\event_js_executor.cpp">
       <Filter>events</Filter>
     </ClCompile>
     <ClCompile Include="events\event_drag.cpp">
       <Filter>events</Filter>
     </ClCompile>
     <ClCompile Include="events\event_notify_others.cpp">
-      <Filter>events</Filter>
-    </ClCompile>
-    <ClCompile Include="events\event_timer.cpp">
       <Filter>events</Filter>
     </ClCompile>
     <ClCompile Include="timeout\timeout_executor.cpp">
@@ -500,9 +491,6 @@
     <ClInclude Include="events\event_mouse.h">
       <Filter>events</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_js_executor.h">
-      <Filter>events</Filter>
-    </ClInclude>
     <ClInclude Include="events\task_controller.h">
       <Filter>events</Filter>
     </ClInclude>
@@ -512,16 +500,10 @@
     <ClInclude Include="events\event_js_callback.h">
       <Filter>events</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_basic.h">
-      <Filter>events</Filter>
-    </ClInclude>
     <ClInclude Include="events\event_drag.h">
       <Filter>events</Filter>
     </ClInclude>
     <ClInclude Include="events\event_notify_others.h">
-      <Filter>events</Filter>
-    </ClInclude>
-    <ClInclude Include="events\event_timer.h">
       <Filter>events</Filter>
     </ClInclude>
     <ClInclude Include="timeout\timeout_executor.h">
@@ -875,6 +857,9 @@
     </ClInclude>
     <ClInclude Include="2K3\KMeans.hpp">
       <Filter>2K3</Filter>
+    </ClInclude>
+    <ClInclude Include="event_ids.h">
+      <Filter>events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "window.h"
 
-#include <events/event_basic.h>
 #include <events/event_dispatcher.h>
 #include <events/event_notify_others.h>
 #include <interfaces/gdi_font.h>
