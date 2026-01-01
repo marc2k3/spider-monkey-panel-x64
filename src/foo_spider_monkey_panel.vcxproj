@@ -276,13 +276,13 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="config\parsed_panel_config.h" />
     <ClInclude Include="events\event.h" />
     <ClInclude Include="events\event_drag.h" />
+    <ClInclude Include="events\event_ids.h" />
     <ClInclude Include="events\event_js_callback.h" />
     <ClInclude Include="events\event_js_task.h" />
     <ClInclude Include="events\event_dispatcher.h" />
     <ClInclude Include="events\event_mouse.h" />
     <ClInclude Include="events\event_notify_others.h" />
     <ClInclude Include="events\task_controller.h" />
-    <ClInclude Include="event_ids.h" />
     <ClInclude Include="interfaces\active_x_object.h" />
     <ClInclude Include="interfaces\active_x_object_iterator.h" />
     <ClInclude Include="interfaces\context_menu_manager.h" />

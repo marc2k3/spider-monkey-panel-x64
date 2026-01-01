@@ -858,7 +858,7 @@
     <ClInclude Include="2K3\KMeans.hpp">
       <Filter>2K3</Filter>
     </ClInclude>
-    <ClInclude Include="event_ids.h">
+    <ClInclude Include="events\event_ids.h">
       <Filter>events</Filter>
     </ClInclude>
   </ItemGroup>
