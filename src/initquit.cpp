@@ -15,7 +15,7 @@ namespace
 
 	class InitStageCallback : public init_stage_callback
 	{
-		void on_init_stage(t_uint32 stage) noexcept final
+		void on_init_stage(uint32_t stage) noexcept final
 		{
 			if (stage == init_stages::before_config_read)
 			{

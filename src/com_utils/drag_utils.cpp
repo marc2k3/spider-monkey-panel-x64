@@ -50,7 +50,7 @@ namespace
 		return hr;
 	}
 
-	std::string FormatDragText(t_size selectionCount)
+	std::string FormatDragText(size_t selectionCount)
 	{
 		return fmt::format("{} {}", selectionCount, (selectionCount > 1 ? "tracks" : "track"));
 	}

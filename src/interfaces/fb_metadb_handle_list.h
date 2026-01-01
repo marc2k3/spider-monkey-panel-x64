@@ -40,7 +40,7 @@ namespace mozjs
 		void AttachImage(const std::wstring& image_path, uint32_t art_id);
 		int32_t BSearch(JsFbMetadbHandle* handle);
 		double CalcTotalDuration();
-		std::uint64_t CalcTotalSize();
+		uint64_t CalcTotalSize();
 		JSObject* Clone();
 		// TODO v2: rename to ToArray()
 		JS::Value Convert();

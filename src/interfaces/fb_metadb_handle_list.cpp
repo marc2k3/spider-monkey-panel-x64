@@ -289,7 +289,7 @@ namespace mozjs
 		return std::reduce(lengths.begin(), lengths.end());
 	}
 
-	std::uint64_t JsFbMetadbHandleList::CalcTotalSize()
+	uint64_t JsFbMetadbHandleList::CalcTotalSize()
 	{
 		return metadb_handle_list_helper::calc_total_size(metadbHandleList_, true);
 	}

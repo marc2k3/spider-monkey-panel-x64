@@ -67,7 +67,7 @@ namespace mozjs
 		return chunk_.get_sample_rate();
 	}
 
-	size_t JsFbAudioChunk::get_SampleCount()
+	uint64_t JsFbAudioChunk::get_SampleCount()
 	{
 		return chunk_.get_sample_count();
 	}

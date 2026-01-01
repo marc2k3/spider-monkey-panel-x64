@@ -82,12 +82,12 @@ namespace mozjs
 		return pDc_.get();
 	}
 
-	std::uint32_t JsGdiRawBitmap::get_Height()
+	uint32_t JsGdiRawBitmap::get_Height()
 	{
 		return height_;
 	}
 
-	std::uint32_t JsGdiRawBitmap::get_Width()
+	uint32_t JsGdiRawBitmap::get_Width()
 	{
 		return width_;
 	}

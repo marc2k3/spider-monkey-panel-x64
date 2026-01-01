@@ -301,7 +301,7 @@ namespace mozjs
 		m_api->playlist_get_all_items(from, items);
 
 		const auto pos = m_api->create_playlist(new_name, new_name.get_length(), ++from);
-		m_api->playlist_insert_items(pos, size_t{}, items, pfc::bit_array_false());
+		m_api->playlist_insert_items(pos, 0uz, items, pfc::bit_array_false());
 		return to_uint(pos);
 	}
 
@@ -380,23 +380,24 @@ namespace mozjs
 
 	JS::Value Plman::GetPlaybackQueueContents()
 	{
-		pfc::list_t<t_playback_queue_item> contents;
-		m_api->queue_get_contents(contents);
+		pfc::list_t<t_playback_queue_item> queue_items;
+		m_api->queue_get_contents(queue_items);
 
 		JS::RootedValue jsValue(m_ctx);
-		convert::to_js::ToArrayValue(m_ctx, contents, &jsValue);
+		convert::to_js::ToArrayValue(m_ctx, queue_items, &jsValue);
 		return jsValue;
 	}
 
 	JSObject* Plman::GetPlaybackQueueHandles()
 	{
-		pfc::list_t<t_playback_queue_item> contents;
-		m_api->queue_get_contents(contents);
+		pfc::list_t<t_playback_queue_item> queue_items;
+		m_api->queue_get_contents(queue_items);
 
 		metadb_handle_list items;
-		for (t_size i = 0, count = contents.get_count(); i < count; ++i)
+
+		for (auto&& queue_item : queue_items)
 		{
-			items.add_item(contents[i].m_handle);
+			items.add_item(queue_item.m_handle);
 		}
 
 		return JsFbMetadbHandleList::CreateJs(m_ctx, items);

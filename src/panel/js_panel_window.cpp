@@ -82,7 +82,7 @@ namespace smp
 		}
 	}
 
-	void js_panel_window::LoadSettings(stream_reader* reader, t_size size, abort_callback& abort, bool reloadPanel)
+	void js_panel_window::LoadSettings(stream_reader* reader, size_t size, abort_callback& abort, bool reloadPanel)
 	{
 		const auto settings = [&]
 			{

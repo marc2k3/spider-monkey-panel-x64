@@ -333,7 +333,7 @@ namespace
 			QwrException::ExpectTrue(handles, "handles argument is null");
 
 			const metadb_handle_list& handleList = handles->GetHandleList();
-			const size_t handleCount = handleList.get_count();
+			const auto handleCount = handleList.get_count();
 
 			if (modal::IsModalBlocked() || handleCount == 0uz || okEffects == DROPEFFECT_NONE)
 				return DROPEFFECT_NONE;
@@ -788,7 +788,7 @@ namespace
 		void Fb::SetDSPPreset(uint32_t idx)
 		{
 			auto api = dsp_config_manager_v2::get();
-			t_size count = api->get_preset_count();
+			const auto count = api->get_preset_count();
 
 			QwrException::ExpectTrue(idx < count, "Index is out of bounds");
 

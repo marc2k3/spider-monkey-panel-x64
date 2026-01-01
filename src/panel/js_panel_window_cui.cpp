@@ -87,7 +87,7 @@ namespace smp
 			out = SMP_NAME;
 		}
 
-		void set_config(stream_reader* reader, t_size size, abort_callback& abort) final
+		void set_config(stream_reader* reader, size_t size, abort_callback& abort) final
 		{
 			LoadSettings(reader, size, abort, false);
 		}

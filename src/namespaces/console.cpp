@@ -71,7 +71,9 @@ namespace
 		JS::RootedValue jsIdValue(ctx);
 		JS::RootedValue jsValue(ctx);
 		bool hasFunctions = false;
-		for (size_t i = 0, length = jsVector.length(); i < length; ++i)
+		const auto length = jsVector.length();
+
+		for (const auto i : indices(length))
 		{
 			const auto& jsId = jsVector[i];
 			if (!JS_GetPropertyById(ctx, jsObject, jsId, &jsValue))
@@ -89,7 +91,8 @@ namespace
 				output += convert::to_native::ToValue<std::string>(ctx, jsIdValue);
 				output += "=";
 				output += ParseJsValue(ctx, jsValue, curObjects, logDepth, true);
-				if (i != length - 1 || hasFunctions)
+
+				if (i != length - 1uz || hasFunctions)
 				{
 					output += ", ";
 				}

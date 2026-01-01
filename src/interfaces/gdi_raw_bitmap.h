@@ -17,8 +17,8 @@ namespace mozjs
 		[[nodiscard]] __notnull HDC GetHDC() const;
 
 	public: // props
-		std::uint32_t get_Height();
-		std::uint32_t get_Width();
+		uint32_t get_Height();
+		uint32_t get_Width();
 
 	private:
 		JsGdiRawBitmap(JSContext* cx, wil::unique_hbitmap hBmp, uint32_t width, uint32_t height);

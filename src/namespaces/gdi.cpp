@@ -87,7 +87,7 @@ namespace mozjs
 		return JsGdiBitmap::CreateJs(m_ctx, std::move(bitmap));
 	}
 
-	std::uint32_t Gdi::LoadImageAsync(uint32_t /*window_id*/, const std::wstring& path)
+	uint32_t Gdi::LoadImageAsync(uint32_t /*window_id*/, const std::wstring& path)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");

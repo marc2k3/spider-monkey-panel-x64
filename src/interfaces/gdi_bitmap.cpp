@@ -134,12 +134,12 @@ namespace mozjs
 		return JsGdiBitmap::CreateJs(cx, std::move(img));
 	}
 
-	std::uint32_t JsGdiBitmap::get_Height()
+	uint32_t JsGdiBitmap::get_Height()
 	{
 		return pGdi_->GetHeight();
 	}
 
-	std::uint32_t JsGdiBitmap::get_Width()
+	uint32_t JsGdiBitmap::get_Width()
 	{
 		return pGdi_->GetWidth();
 	}

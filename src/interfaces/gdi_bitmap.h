@@ -36,8 +36,8 @@ namespace mozjs
 		void StackBlur(uint32_t radius);
 
 	public:
-		std::uint32_t get_Height();
-		std::uint32_t get_Width();
+		uint32_t get_Height();
+		uint32_t get_Width();
 
 	private:
 		JsGdiBitmap(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> gdiBitmap);

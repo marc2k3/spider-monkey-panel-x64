@@ -17,7 +17,7 @@ namespace mozjs
 		uint32_t get_ChannelConfig();
 		uint32_t get_ChannelCount();
 		uint32_t get_SampleRate();
-		size_t get_SampleCount();
+		uint64_t get_SampleCount();
 
 	private:
 		JsFbAudioChunk(JSContext* cx, const audio_chunk_impl& chunk);
