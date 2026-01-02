@@ -1,5 +1,4 @@
 'use strict';
-//29/10/24
 
 Array.prototype.srt=function(){for(var z=0,t;t=this[z];z++){this[z]=[];var x=0,y=-1,n=true,i,j;while(i=(j=t.charAt(x++)).charCodeAt(0)){var m=(i==46||(i>=48&&i<=57));if(m!==n){this[z][++y]='';n=m;}
 this[z][y]+=j;}}
@@ -247,14 +246,6 @@ function _formatNumber(number, separator) {
 
 function _gdiFont(name, size, style) {
 	return gdi.Font(name, _scale(size), style);
-}
-
-function _getClipboardData() {
-	try {
-		return doc.parentWindow.clipboardData.getData('Text');
-	} catch (e) {
-		return null;
-	}
 }
 
 function _getElementsByTagName(value, tag) {
@@ -529,14 +520,6 @@ function _sb(t, x, y, w, h, v, fn) {
 	this.v = v;
 	this.fn = fn;
 	this.font = gdi.Font('FontAwesome', this.h);
-}
-
-function _setClipboardData(value) {
-	try {
-		doc.parentWindow.clipboardData.setData('Text', value.toString());
-	} catch(e) {
-		console.log(N, 'Failed to set clipboard text.');
-	}
 }
 
 function _scale(size) {
