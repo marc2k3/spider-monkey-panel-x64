@@ -109,7 +109,7 @@ namespace
 				else
 				{
 					const auto errorMsg = mozjs::ExceptionToText(pJsCtx_);
-					SendMessage(hWnd, static_cast<UINT>(InternalSyncMessage::script_fail), 0, reinterpret_cast<LPARAM>(&errorMsg));
+					SendMessageW(hWnd, std::to_underlying(InternalSyncMessage::script_fail), 0, reinterpret_cast<LPARAM>(&errorMsg));
 				}
 
 				pResult->vt = VT_ERROR;

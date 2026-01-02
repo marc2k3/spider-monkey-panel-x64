@@ -35,7 +35,7 @@ public:
 	BEGIN_MSG_MAP(CConfigTabPackage)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_DESTROY(OnDestroy)
-		MESSAGE_HANDLER_EX(static_cast<int>(smp::InternalSyncMessage::ui_script_editor_saved), OnScriptSaved);
+		MESSAGE_HANDLER_EX(std::to_underlying(smp::InternalSyncMessage::ui_script_editor_saved), OnScriptSaved);
 		COMMAND_HANDLER_EX(IDC_EDIT_PACKAGE_NAME, EN_CHANGE, OnDdxUiChange)
 		COMMAND_HANDLER_EX(IDC_EDIT_PACKAGE_VERSION, EN_CHANGE, OnDdxUiChange)
 		COMMAND_HANDLER_EX(IDC_EDIT_PACKAGE_AUTHOR, EN_CHANGE, OnDdxUiChange)

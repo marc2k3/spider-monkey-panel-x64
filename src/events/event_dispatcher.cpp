@@ -41,13 +41,13 @@ namespace smp
 
 		for (const auto& hWnd : hWnds)
 		{
-			SendMessage(hWnd, static_cast<UINT>(smp::InternalSyncMessage::prepare_for_exit), 0, 0);
+			SendMessageW(hWnd, std::to_underlying(InternalSyncMessage::prepare_for_exit), 0, 0);
 		}
 	}
 
 	bool EventDispatcher::IsRequestEventMessage(UINT msg) noexcept
 	{
-		return (msg == static_cast<UINT>(InternalSyncMessage::run_next_event));
+		return msg == std::to_underlying(InternalSyncMessage::run_next_event);
 	}
 
 	bool EventDispatcher::ProcessNextEvent(HWND hWnd) noexcept
@@ -94,7 +94,7 @@ namespace smp
 		if (isWaitingForMsgIt->second)
 		{
 			isWaitingForMsgIt->second = false;
-			PostMessage(hWnd, static_cast<UINT>(InternalSyncMessage::run_next_event), 0, 0);
+			PostMessageW(hWnd, std::to_underlying(InternalSyncMessage::run_next_event), 0, 0);
 		}
 		else
 		{
@@ -224,7 +224,7 @@ namespace smp
 
 		for (const auto& [hWnd, pClonedEvent] : hWndToEvent)
 		{
-			SendMessage(hWnd, static_cast<UINT>(smp::InternalSyncMessage::legacy_notify_others), 0, reinterpret_cast<LPARAM>(pClonedEvent.get()));
+			SendMessageW(hWnd, std::to_underlying(InternalSyncMessage::legacy_notify_others), 0, reinterpret_cast<LPARAM>(pClonedEvent.get()));
 		}
 	}
 }

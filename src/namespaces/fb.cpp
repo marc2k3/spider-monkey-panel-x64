@@ -370,12 +370,12 @@ namespace
 				parsedOptions.custom_image
 			);
 
-			SendMessageW(wnd, static_cast<UINT>(smp::InternalSyncMessage::wnd_internal_drag_start), 0, 0);
+			SendMessageW(wnd, std::to_underlying(InternalSyncMessage::wnd_internal_drag_start), 0, 0);
 
 			DWORD returnEffect{};
 			const auto hr = SHDoDragDrop(nullptr, pDO.get_ptr(), pIDropSource.get_ptr(), okEffects, &returnEffect);
 
-			SendMessageW(wnd, static_cast<UINT>(smp::InternalSyncMessage::wnd_internal_drag_stop), 0, 0);
+			SendMessageW(wnd, std::to_underlying(InternalSyncMessage::wnd_internal_drag_stop), 0, 0);
 
 			return (DRAGDROP_S_CANCEL == hr ? DROPEFFECT_NONE : returnEffect);
 		}
@@ -887,7 +887,7 @@ namespace
 
 		std::string Fb::get_ComponentPath()
 		{
-			return (smp::path::Component() / "").u8string();
+			return (path::Component() / "").u8string();
 		}
 
 		bool Fb::get_CursorFollowPlayback()
@@ -909,7 +909,7 @@ namespace
 
 		std::string Fb::get_FoobarPath()
 		{
-			return (smp::path::Foobar2000() / "").u8string();
+			return (path::Foobar2000() / "").u8string();
 		}
 
 		bool Fb::get_IsPaused()
@@ -939,7 +939,7 @@ namespace
 
 		std::string Fb::get_ProfilePath()
 		{
-			return (smp::path::Profile() / "").u8string();
+			return (path::Profile() / "").u8string();
 		}
 
 		uint32_t Fb::get_ReplaygainMode()

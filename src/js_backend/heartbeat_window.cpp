@@ -43,14 +43,14 @@ namespace smp
 		{
 			return 0;
 		}
-		case static_cast<UINT>(MiscMessage::heartbeat):
+		case std::to_underlying(MiscMessage::heartbeat):
 		{
 			mozjs::JsEngine::GetInstance().OnHeartbeat();
 			return 0;
 		}
 		default:
 		{
-			return DefWindowProc(hWnd, message, wParam, lParam);
+			return DefWindowProcW(hWnd, message, wParam, lParam);
 		}
 		}
 	}

@@ -26,7 +26,7 @@ namespace
 
 	void NotifyParentPanel(HWND hParent)
 	{
-		SendMessageW(hParent, static_cast<INT>(InternalSyncMessage::ui_script_editor_saved), 0, 0);
+		SendMessageW(hParent, std::to_underlying(InternalSyncMessage::ui_script_editor_saved), 0, 0);
 	}
 
 	void EditTextFileInternal(HWND hParent, const fs::path& file, bool isPanelScript)

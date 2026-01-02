@@ -3,7 +3,7 @@
 namespace smp
 {
 	/// @details These messages are synchronous
-	enum class InternalSyncMessage : UINT
+	enum class InternalSyncMessage : uint32_t
 	{
 		first_message = WM_USER + 100,
 		legacy_notify_others = first_message,
@@ -21,15 +21,14 @@ namespace smp
 	};
 
 	/// @brief Message definitions that are not handled by the main panel window
-	enum class MiscMessage : UINT
+	enum class MiscMessage : uint32_t
 	{
-		heartbeat = static_cast<int>(InternalSyncMessage::last_message) + 1,
+		heartbeat = std::to_underlying(InternalSyncMessage::last_message) + 1u,
 		key_down
 	};
 
-	template <typename T = InternalSyncMessage>
-	bool IsInEnumRange(UINT value)
+	constexpr bool IsInEnumRange(uint32_t value)
 	{
-		return (value >= std::to_underlying(T::first_message) && std::to_underlying(T::last_message));
+		return value >= std::to_underlying(InternalSyncMessage::first_message) && value <= std::to_underlying(InternalSyncMessage::last_message);
 	}
 }

@@ -23,8 +23,8 @@ public:
 
 	BEGIN_MSG_MAP(CConfigTabScriptSource)
 		MSG_WM_INITDIALOG(OnInitDialog)
-		MESSAGE_HANDLER_EX(static_cast<int>(smp::InternalSyncMessage::ui_script_editor_saved), OnScriptSaved);
-	COMMAND_HANDLER_EX(IDC_RADIO_SRC_SAMPLE, BN_CLICKED, OnScriptSrcChange)
+		MESSAGE_HANDLER_EX(std::to_underlying(smp::InternalSyncMessage::ui_script_editor_saved), OnScriptSaved);
+		COMMAND_HANDLER_EX(IDC_RADIO_SRC_SAMPLE, BN_CLICKED, OnScriptSrcChange)
 		COMMAND_HANDLER_EX(IDC_RADIO_SRC_FILE, BN_CLICKED, OnScriptSrcChange)
 		COMMAND_HANDLER_EX(IDC_RADIO_SRC_MEMORY, BN_CLICKED, OnScriptSrcChange)
 		COMMAND_HANDLER_EX(IDC_RADIO_SRC_PACKAGE, BN_CLICKED, OnScriptSrcChange)

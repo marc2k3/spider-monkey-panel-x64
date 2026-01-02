@@ -285,7 +285,7 @@ namespace mozjs
 				while (!parent->shouldStopHeartbeatThread_)
 				{
 					std::this_thread::sleep_for(std::chrono::milliseconds(kHeartbeatRateMs));
-					PostMessageW(parent->heartbeatWindow_->GetHwnd(), static_cast<UINT>(smp::MiscMessage::heartbeat), 0, 0);
+					PostMessageW(parent->heartbeatWindow_->GetHwnd(), std::to_underlying(smp::MiscMessage::heartbeat), 0, 0);
 				}
 			});
 	}

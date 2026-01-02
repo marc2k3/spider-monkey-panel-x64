@@ -163,7 +163,7 @@ namespace smp::com
 		dragParams.isInternal = pPanel_->HasInternalDrag();
 
 		// process system stuff first (e.g. mouse capture)
-		SendMessageW(pPanel_->GetHWND(), static_cast<UINT>(eventToMsg.at(eventId)), 0, 0);
+		SendMessageW(pPanel_->GetHWND(), std::to_underlying(eventToMsg.at(eventId)), 0, 0);
 		EventDispatcher::Get().PutEvent(hWnd_, std::make_unique<Event_Drag>(eventId, pt.x, pt.y, grfKeyState, GetHotkeyModifierFlags(), dragParams, pDataObject_), EventPriority::kInput);
 
 		if (eventId == EventId::kMouseDragEnter)
