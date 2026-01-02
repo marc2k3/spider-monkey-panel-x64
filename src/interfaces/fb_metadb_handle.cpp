@@ -85,9 +85,9 @@ namespace mozjs
 		return JsFbFileInfo::CreateJs(pJsCtx_, containerInfo);
 	}
 
-	int64_t JsFbMetadbHandle::get_FileSize()
+	uint64_t JsFbMetadbHandle::get_FileSize()
 	{
-		return static_cast<int64_t>(metadbHandle_->get_filesize());
+		return metadbHandle_->get_filesize();
 	}
 
 	double JsFbMetadbHandle::get_Length()

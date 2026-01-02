@@ -20,7 +20,7 @@ namespace mozjs
 		JSObject* GetFileInfo();
 
 	public: // props
-		int64_t get_FileSize();
+		uint64_t get_FileSize();
 		double get_Length();
 		std::string get_Path();
 		std::string get_RawPath();

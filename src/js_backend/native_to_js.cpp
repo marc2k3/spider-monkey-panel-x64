@@ -63,12 +63,6 @@ namespace mozjs::convert::to_js
 	}
 
 	template <>
-	void ToValue(JSContext*, const int64_t& inValue, JS::MutableHandleValue wrappedValue)
-	{
-		wrappedValue.setDouble(static_cast<double>(inValue));
-	}
-
-	template <>
 	void ToValue(JSContext*, const uint64_t& inValue, JS::MutableHandleValue wrappedValue)
 	{
 		wrappedValue.setDouble(static_cast<double>(inValue));

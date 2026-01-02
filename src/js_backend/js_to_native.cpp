@@ -64,19 +64,6 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		int64_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
-		{
-			int64_t val{};
-
-			if (JS::ToInt64(cx, jsValue, &val))
-			{
-				return val;
-			}
-
-			throw JsException();
-		}
-
-		template <>
 		uint64_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
 		{
 			uint64_t val{};
