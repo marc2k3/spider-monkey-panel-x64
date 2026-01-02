@@ -1,5 +1,4 @@
 #pragma once
-#include "gdi_helpers.h"
 
 namespace smp
 {

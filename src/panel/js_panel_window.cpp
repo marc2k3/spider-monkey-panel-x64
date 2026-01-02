@@ -13,7 +13,6 @@
 #include <events/event_mouse.h>
 #include <timeout/timeout_manager.h>
 #include <ui/ui_properties.h>
-#include <utils/gdi_helpers.h>
 #include <utils/image_helpers.h>
 #include <utils/mainmenu_dynamic.h>
 

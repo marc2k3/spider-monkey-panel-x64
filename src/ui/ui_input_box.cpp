@@ -1,8 +1,6 @@
 #include <stdafx.h>
 #include "ui_input_box.h"
 
-#include <utils/gdi_helpers.h>
-
 CInputBox::CInputBox(std::string_view prompt, std::string_view caption, std::string_view value)
 	: prompt_(prompt)
 	, caption_(caption)

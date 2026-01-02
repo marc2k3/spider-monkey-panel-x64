@@ -6,7 +6,6 @@
 #include <2K3/AlbumArtStatic.hpp>
 #include <events/event_dispatcher.h>
 #include <interfaces/gdi_bitmap.h>
-#include <utils/gdi_helpers.h>
 #include <utils/thread_pool.h>
 
 using namespace smp;

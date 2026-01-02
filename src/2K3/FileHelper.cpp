@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "FileHelper.hpp"
 
-#include <utils/gdi_helpers.h>
 #include <utils/image_helpers.h>
 
 namespace fs = std::filesystem;
@@ -37,7 +36,7 @@ std::unique_ptr<Gdiplus::Bitmap> FileHelper::stream_to_bitmap(IStream* stream) n
 {
 	auto bitmap = std::make_unique<Gdiplus::Bitmap>(stream, TRUE);
 
-	if (smp::IsGdiPlusObjectValid(bitmap.get()))
+	if (bitmap && Gdiplus::Ok == bitmap->GetLastStatus())
 		return bitmap;
 
 	return smp::LoadWithWIC(stream);

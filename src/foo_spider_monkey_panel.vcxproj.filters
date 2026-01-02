@@ -403,9 +403,6 @@
     <ClInclude Include="utils\gdi_error_helpers.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\gdi_helpers.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="utils\image_helpers.h">
       <Filter>utils</Filter>
     </ClInclude>

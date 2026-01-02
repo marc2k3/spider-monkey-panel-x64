@@ -2,8 +2,6 @@
 #include "drag_utils.h"
 #include "drag_image.h"
 
-#include <utils/gdi_helpers.h>
-
 namespace
 {
 	template <typename T>

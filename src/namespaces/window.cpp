@@ -8,7 +8,6 @@
 #include <interfaces/theme_manager.h>
 #include <js_backend/js_async_task.h>
 #include <timeout/timeout_manager.h>
-#include <utils/gdi_helpers.h>
 
 namespace
 {

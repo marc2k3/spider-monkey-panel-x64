@@ -1,5 +1,4 @@
 #pragma once
-#include <utils/gdi_helpers.h>
 
 namespace mozjs
 {

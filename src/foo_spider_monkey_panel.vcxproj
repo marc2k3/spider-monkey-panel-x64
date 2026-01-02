@@ -364,7 +364,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="utils\edit_text.h" />
     <ClInclude Include="utils\error_popup.h" />
     <ClInclude Include="utils\gdi_error_helpers.h" />
-    <ClInclude Include="utils\gdi_helpers.h" />
     <ClInclude Include="utils\guid_helpers.h" />
     <ClInclude Include="utils\hook_handler.h" />
     <ClInclude Include="utils\image_helpers.h" />

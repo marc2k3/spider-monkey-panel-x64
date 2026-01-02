@@ -2,7 +2,6 @@
 #include "gdi_raw_bitmap.h"
 
 #include <utils/gdi_error_helpers.h>
-#include <utils/gdi_helpers.h>
 
 namespace
 {
