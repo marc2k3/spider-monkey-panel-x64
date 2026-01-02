@@ -14,7 +14,7 @@ namespace
 			const std::string& panelName,
 			uint32_t commandId,
 			const std::string& commandName,
-			const std::optional<std::string>& commandDescription
+			const std::string& commandDescription
 		);
 
 		void get_display(pfc::string_base& text, uint32_t& flags) final;
@@ -27,7 +27,7 @@ namespace
 		const std::string panelName_;
 		const uint32_t commandId_;
 		const std::string commandName_;
-		const std::optional<std::string> commandDescriptionOpt_;
+		const std::string commandDescription_;
 	};
 
 	class MainMenuNodeGroup_PanelCommands : public mainmenu_node_group
@@ -86,12 +86,12 @@ namespace
 		const std::string& panelName,
 		uint32_t commandId,
 		const std::string& commandName,
-		const std::optional<std::string>& commandDescription)
+		const std::string& commandDescription)
 		: panelHwnd_(panelHwnd)
 		, panelName_(panelName)
 		, commandId_(commandId)
 		, commandName_(commandName)
-		, commandDescriptionOpt_(commandDescription) {}
+		, commandDescription_(commandDescription) {}
 
 	void MainMenuNodeCommand_PanelCommand::get_display(pfc::string_base& text, uint32_t& flags)
 	{
@@ -118,13 +118,13 @@ namespace
 
 	bool MainMenuNodeCommand_PanelCommand::get_description(pfc::string_base& out)
 	{
-		if (commandDescriptionOpt_)
+		if (commandDescription_.empty())
 		{
-			out = commandDescriptionOpt_->c_str();
-			return true;
+			return false;
 		}
 
-		return false;
+		out = commandDescription_.c_str();
+		return true;
 	}
 
 	MainMenuNodeGroup_PanelCommands::MainMenuNodeGroup_PanelCommands(
@@ -178,12 +178,10 @@ namespace
 		{
 			const auto& panelData = panels.at(hWnd);
 
-			if (panelData.commands.empty())
+			if (!panelData.commands.empty())
 			{
-				continue;
+				panelNodes_.emplace_back(fb2k::service_new<MainMenuNodeGroup_PanelCommands>(hWnd, panelData.name, panelData.commands));
 			}
-
-			panelNodes_.emplace_back(fb2k::service_new<MainMenuNodeGroup_PanelCommands>(hWnd, panelData.name, panelData.commands));
 		}
 	}
 
@@ -271,12 +269,12 @@ namespace smp
 		panels_.erase(hWnd);
 	}
 
-	void DynamicMainMenuManager::RegisterCommand(HWND hWnd, uint32_t id, const std::string& name, const std::optional<std::string>& description)
+	void DynamicMainMenuManager::RegisterCommand(HWND hWnd, uint32_t id, const std::string& name, const std::string& description)
 	{
 		auto& panelData = panels_.at(hWnd);
 		QwrException::ExpectTrue(!panelData.commands.contains(id), "Command with id `{}` was already registered", id);
 
-		panelData.commands.try_emplace(id, CommandData{ name, description });
+		panelData.commands.try_emplace(id, name, description);
 	}
 
 	void DynamicMainMenuManager::UnregisterCommand(HWND hWnd, uint32_t id)

@@ -59,8 +59,8 @@ namespace mozjs
 		void PlayOrPause();
 		void Prev();
 		void Random();
-		void RegisterMainMenuCommand(uint32_t id, const std::string& name, const std::optional<std::string>& description = std::nullopt);
-		void RegisterMainMenuCommandWithOpt(size_t optArgCount, uint32_t id, const std::string& name, const std::optional<std::string>& description);
+		void RegisterMainMenuCommand(uint32_t id, const std::string& name, const std::string& description = "");
+		void RegisterMainMenuCommandWithOpt(size_t optArgCount, uint32_t id, const std::string& name, const std::string& description);
 		void RequestBacklog(double time);
 		void Restart();
 		bool RunContextCommand(const std::string& command, uint32_t flags = 0);

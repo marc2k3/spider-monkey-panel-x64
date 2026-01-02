@@ -430,7 +430,7 @@ namespace mozjs
 		return JsFbMetadbHandleList::CreateJs(m_ctx, items);
 	}
 
-	std::optional<pfc::string8> Plman::GetPlaylistLockName(uint32_t playlistIndex)
+	pfc::string8 Plman::GetPlaylistLockName(uint32_t playlistIndex)
 	{
 		QwrException::ExpectTrue(playlistIndex < m_api->get_playlist_count(), "Index is out of bounds");
 
@@ -438,7 +438,7 @@ namespace mozjs
 		if (m_api->playlist_lock_query_name(playlistIndex, lockName))
 			return lockName;
 
-		return std::nullopt;
+		return {};
 	}
 
 	JS::Value Plman::GetPlaylistLockedActions(uint32_t playlistIndex)

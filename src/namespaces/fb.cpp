@@ -690,7 +690,7 @@ namespace
 			standard_commands::main_random();
 		}
 
-		void Fb::RegisterMainMenuCommand(uint32_t id, const std::string& name, const std::optional<std::string>& description)
+		void Fb::RegisterMainMenuCommand(uint32_t id, const std::string& name, const std::string& description)
 		{
 			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 			QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
@@ -698,7 +698,7 @@ namespace
 			DynamicMainMenuManager::Get().RegisterCommand(wnd, id, name, description);
 		}
 
-		void Fb::RegisterMainMenuCommandWithOpt(size_t optArgCount, uint32_t id, const std::string& name, const std::optional<std::string>& description)
+		void Fb::RegisterMainMenuCommandWithOpt(size_t optArgCount, uint32_t id, const std::string& name, const std::string& description)
 		{
 			switch (optArgCount)
 			{

@@ -63,17 +63,6 @@ namespace mozjs::convert::to_native
 		std::nullptr_t ToSimpleValue<std::nullptr_t>(JSContext* cx, const JS::HandleValue& jsValue);
 
 		template <typename T>
-		std::optional<T> ToOptional(JSContext* cx, const JS::HandleValue& jsValue)
-		{
-			if (jsValue.isNullOrUndefined())
-			{
-				return std::nullopt;
-			}
-
-			return ToSimpleValue<T>(cx, jsValue);
-		}
-
-		template <typename T>
 		std::vector<T> ToVector(JSContext* cx, JS::HandleObject jsObject)
 		{
 			std::vector<T> nativeValues;
@@ -125,10 +114,6 @@ namespace mozjs::convert::to_native
 		{
 			return internal::ToSimpleValue<T>(cx, jsValue);
 		}
-		else if constexpr (smp::is_specialization_of_v<T, std::optional>)
-		{
-			return internal::ToOptional<typename T::value_type>(cx, jsValue);
-		}
 		else if constexpr (std::is_pointer_v<T>)
 		{
 			if (!jsValue.isObjectOrNull())
@@ -139,7 +124,7 @@ namespace mozjs::convert::to_native
 			if (jsValue.isNull())
 			{
 				// Not an error: null might be a valid argument
-				return static_cast<T>(nullptr);
+				return T{};
 			}
 
 			JS::RootedObject jsObject(cx, &jsValue.toObject());

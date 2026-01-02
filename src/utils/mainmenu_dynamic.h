@@ -7,8 +7,7 @@ namespace smp
 	public:
 		struct CommandData
 		{
-			std::string name;
-			std::optional<std::string> description;
+			std::string name, description;
 		};
 
 		struct PanelData
@@ -24,7 +23,7 @@ namespace smp
 		void UnregisterPanel(HWND hWnd);
 
 		/// @throw QwrException
-		void RegisterCommand(HWND hWnd, uint32_t id, const std::string& name, const std::optional<std::string>& description);
+		void RegisterCommand(HWND hWnd, uint32_t id, const std::string& name, const std::string& description);
 		/// @throw QwrException
 		void UnregisterCommand(HWND hWnd, uint32_t id);
 
