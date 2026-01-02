@@ -67,6 +67,7 @@ private:
 
 	bool ConfirmPackageOverwrite(const std::filesystem::path& oldPackagePath, const config::ParsedPanelSettings& newSettings);
 	bool ConfirmRebootOnPackageInUse();
+	void Restart();
 
 private:
 	fb2k::CCoreDarkModeHooks m_hooks;

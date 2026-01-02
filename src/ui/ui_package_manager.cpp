@@ -14,14 +14,10 @@ CDialogPackageManager::CDialogPackageManager(const std::string& currentPackageId
 
 std::optional<config::ParsedPanelSettings> CDialogPackageManager::GetPackage() const
 {
-	if (focusedPackageIdx_ < 0)
-	{
-		return std::nullopt;
-	}
-	else
-	{
+	if (focusedPackageIdx_ >= 0)
 		return packages_[focusedPackageIdx_].parsedSettings;
-	}
+	
+	return std::nullopt;
 }
 
 LRESULT CDialogPackageManager::OnInitDialog(HWND, LPARAM)
@@ -35,11 +31,11 @@ LRESULT CDialogPackageManager::OnInitDialog(HWND, LPARAM)
 	m_edit_package = GetDlgItem(IDC_PACKAGE_INFO);
 	m_edit_package.SetWindowLongPtrW(GWL_EXSTYLE, 0L);
 
-	pPackagesListBoxDrop_.Attach(new ComPtrImpl<smp::com::FileDropTarget>(packagesListBox_, *this));
+	pPackagesListBoxDrop_.Attach(new ComPtrImpl<smp::com::FileDropTarget>(packagesListBox_, m_hWnd));
 
 	try
 	{
-		HRESULT hr = pPackagesListBoxDrop_->RegisterDragDrop();
+		const auto hr = pPackagesListBoxDrop_->RegisterDragDrop();
 		smp::CheckHR(hr, "RegisterDragDrop");
 	}
 	catch (QwrException& e)
@@ -87,28 +83,15 @@ void CDialogPackageManager::OnDdxUiChange(UINT /*uNotifyCode*/, int nID, CWindow
 
 void CDialogPackageManager::OnNewPackage(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
 {
-	std::string curName;
-	while (true)
-	{
-		CInputBox dlg("Enter new package name", "Creating new package", curName.c_str());
-		if (dlg.DoModal(m_hWnd) != IDOK)
-		{
-			return;
-		}
+	auto dlg = CInputBox("Enter new package name", "Creating new package");
 
-		curName = dlg.GetValue();
-		if (curName.empty())
-		{
-			popup_message_v3::get()->messageBox(
-				*this,
-				"Can't create package with empty name",
-				"Creating new package",
-				MB_OK | MB_ICONWARNING);
-			continue;
-		}
+	if (dlg.DoModal(m_hWnd) != IDOK)
+		return;
 
-		break;
-	};
+	const auto curName = dlg.GetValue();
+
+	if (curName.empty())
+		return;
 
 	try
 	{
@@ -130,16 +113,17 @@ void CDialogPackageManager::OnNewPackage(UINT /*uNotifyCode*/, int /*nID*/, CWin
 void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, CWindow /*wndCtl*/)
 {
 	if (packages_.empty())
-	{
 		return;
-	}
 
-	const int iRet = popup_message_v3::get()->messageBox(
-		*this, "Are you sure you want to delete the package?", "Deleting package", MB_YESNO);
-	if (iRet != IDYES)
-	{
+	const int status = popup_message_v3::get()->messageBox(
+		m_hWnd,
+		"Are you sure you want to delete the package?",
+		"Deleting package",
+		MB_YESNO
+	);
+
+	if (status != IDYES)
 		return;
-	}
 
 	try
 	{
@@ -165,7 +149,7 @@ void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, C
 
 				if (ConfirmRebootOnPackageInUse())
 				{
-					standard_commands::main_restart();
+					Restart();
 				}
 
 				UpdateListBoxFromData();
@@ -202,7 +186,7 @@ void CDialogPackageManager::OnImportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 
 			if (isRestartNeeded && ConfirmRebootOnPackageInUse())
 			{
-				standard_commands::main_restart();
+				Restart();
 			}
 		};
 
@@ -272,6 +256,7 @@ LRESULT CDialogPackageManager::OnCloseCmd(WORD /*wNotifyCode*/, WORD wID, HWND /
 LRESULT CDialogPackageManager::OnDropFiles(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam)
 {
 	bool isRestartNeeded = false;
+
 	const auto result = pPackagesListBoxDrop_->ProcessMessage(
 		packagesListBox_,
 		wParam,
@@ -280,7 +265,7 @@ LRESULT CDialogPackageManager::OnDropFiles(UINT /*uMsg*/, WPARAM wParam, LPARAM 
 
 	if (isRestartNeeded && ConfirmRebootOnPackageInUse())
 	{
-		standard_commands::main_restart();
+		Restart();
 	}
 
 	return result;
@@ -581,34 +566,41 @@ bool CDialogPackageManager::ConfirmPackageOverwrite(const std::filesystem::path&
 	{
 		const auto oldSettings = PackageUtils::GetSettingsFromPath(oldPackagePath);
 
-		const int iRet = popup_message_v3::get()->messageBox(
-			*this,
-			fmt::format("Another version of this package is present:\nold: '{}' vs new: '{}'\n\nDo you want to update?",
-				oldSettings.scriptVersion.empty() ? "<none>" : oldSettings.scriptVersion,
-				newSettings.scriptVersion.empty() ? "<none>" : newSettings.scriptVersion
-			).c_str(),
+		const auto msg = fmt::format("Another version of this package is present:\nold: '{}' vs new: '{}'\n\nDo you want to update?",
+			oldSettings.scriptVersion.empty() ? "<none>" : oldSettings.scriptVersion,
+			newSettings.scriptVersion.empty() ? "<none>" : newSettings.scriptVersion
+		);
+
+		const auto status = popup_message_v3::get()->messageBox(
+			m_hWnd,
+			msg.c_str(),
 			"Importing package",
 			MB_YESNO
 		);
 
-		if (iRet != IDYES)
+		if (status != IDYES)
 		{
 			return false;
 		}
 
 		if (oldSettings.scriptName != newSettings.scriptName)
 		{
-			const int iRet = popup_message_v3::get()->messageBox(
-				*this,
-				fmt::format("Currently installed package has a different name from the new one:\nold: '{}' vs new: '{}'\n\nDo you want to continue?",
-					oldSettings.scriptName.empty() ? "<none>" : oldSettings.scriptName,
-					newSettings.scriptName.empty() ? "<none>" : newSettings.scriptName
-				).c_str(),
+			const auto msg = fmt::format(
+				"Currently installed package has a different name from the new one:\n"
+				"old: '{}' vs new: '{}'\n\n"
+				"Do you want to continue?",
+				oldSettings.scriptName.empty() ? "<none>" : oldSettings.scriptName,
+				newSettings.scriptName.empty() ? "<none>" : newSettings.scriptName
+			);
+
+			const auto status = popup_message_v3::get()->messageBox(
+				m_hWnd,
+				msg.c_str(),
 				"Importing package",
 				MB_YESNO | MB_ICONWARNING
 			);
 
-			if (iRet != IDYES)
+			if (status != IDYES)
 			{
 				return false;
 			}
@@ -618,15 +610,14 @@ bool CDialogPackageManager::ConfirmPackageOverwrite(const std::filesystem::path&
 	{
 		// old package might be broken and unparseable,
 		// but we still need to confirm
-		const int iRet = popup_message_v3::get()->messageBox(
-			*this,
-			"Another version of this package is present.\n"
-			"Do you want to update?",
+		const auto status = popup_message_v3::get()->messageBox(
+			m_hWnd,
+			"Another version of this package is present.\nDo you want to update?",
 			"Importing package",
 			MB_YESNO
 		);
 
-		if (iRet != IDYES)
+		if (status != IDYES)
 		{
 			return false;
 		}
@@ -637,11 +628,17 @@ bool CDialogPackageManager::ConfirmPackageOverwrite(const std::filesystem::path&
 
 bool CDialogPackageManager::ConfirmRebootOnPackageInUse()
 {
-	const int iRet = popup_message_v3::get()->messageBox(
-		*this,
-		"The package is currently in use. Changes will be applied on the next foobar2000 start.\n"
-		"Do you want to restart foobar2000 now?",
+	const auto status = popup_message_v3::get()->messageBox(
+		m_hWnd,
+		"The package is currently in use. Changes will be applied on the next foobar2000 start.\nDo you want to restart foobar2000 now?",
 		"Changing package",
-		MB_YESNO);
-	return (iRet == IDYES);
+		MB_YESNO
+	);
+	
+	return status == IDYES;
+}
+
+void CDialogPackageManager::Restart()
+{
+	fb2k::inMainThread([] { standard_commands::main_restart(); } );
 }
