@@ -1,8 +1,8 @@
 #include <stdafx.h>
 #include "menu_helpers.h"
+#include "guid_helpers.h"
 
 #include <2K3/MainMenuCommand.hpp>
-#include <utils/guid_helpers.h>
 
 namespace
 {

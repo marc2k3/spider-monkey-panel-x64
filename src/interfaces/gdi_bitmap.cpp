@@ -1,9 +1,9 @@
 #include <stdafx.h>
 #include "gdi_bitmap.h"
+#include "gdi_raw_bitmap.h"
 
 #include <2K3/KMeans.hpp>
 #include <2K3/StackBlur.hpp>
-#include <interfaces/gdi_raw_bitmap.h>
 #include <utils/gdi_error_helpers.h>
 #include <utils/image_helpers.h>
 

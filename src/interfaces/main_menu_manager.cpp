@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "main_menu_manager.h"
-
-#include <interfaces/menu_object.h>
+#include "menu_object.h"
 
 namespace
 {

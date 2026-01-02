@@ -1,8 +1,8 @@
 #include <stdafx.h>
 #include "delayed_package_utils.h"
+#include "package_utils.h"
 
 #include <2K3/TextFile.hpp>
-#include <config/package_utils.h>
 
 namespace fs = std::filesystem;
 

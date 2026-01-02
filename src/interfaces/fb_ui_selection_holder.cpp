@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "fb_ui_selection_holder.h"
-
-#include <interfaces/fb_metadb_handle_list.h>
+#include "fb_metadb_handle_list.h"
 
 namespace
 {

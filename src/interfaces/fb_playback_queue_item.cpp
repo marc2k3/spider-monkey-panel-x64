@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "fb_playback_queue_item.h"
-
-#include <interfaces/fb_metadb_handle.h>
+#include "fb_metadb_handle.h"
 
 namespace
 {

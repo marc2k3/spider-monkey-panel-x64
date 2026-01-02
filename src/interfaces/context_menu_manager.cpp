@@ -1,8 +1,7 @@
 #include <stdafx.h>
 #include "context_menu_manager.h"
-
-#include <interfaces/fb_metadb_handle_list.h>
-#include <interfaces/menu_object.h>
+#include "fb_metadb_handle_list.h"
+#include "menu_object.h"
 
 namespace
 {

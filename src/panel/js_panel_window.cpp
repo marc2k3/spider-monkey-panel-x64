@@ -1,5 +1,7 @@
 #include <stdafx.h>
 #include "js_panel_window.h"
+#include "edit_script.h"
+#include "modal_blocking_scope.h"
 
 #include <com_utils/track_drop_target.h>
 #include <com_utils/com_destruction_handler.h>
@@ -9,9 +11,6 @@
 #include <events/event_drag.h>
 #include <events/event_js_callback.h>
 #include <events/event_mouse.h>
-#include <panel/drag_action_params.h>
-#include <panel/edit_script.h>
-#include <panel/modal_blocking_scope.h>
 #include <timeout/timeout_manager.h>
 #include <ui/ui_properties.h>
 #include <utils/gdi_helpers.h>

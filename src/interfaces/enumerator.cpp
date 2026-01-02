@@ -3,7 +3,6 @@
 
 #include <com_utils/dispatch_ptr.h>
 #include <js_backend/com_convert.h>
-#include <interfaces/active_x_object.h>
 
 namespace
 {

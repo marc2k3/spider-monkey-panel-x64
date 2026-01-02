@@ -1,9 +1,10 @@
 #pragma once
+#include "drag_action_params.h"
+#include "user_message.h"
+
 #include <config/parsed_panel_config.h>
 #include <events/event.h>
 #include <interfaces/fb_tooltip.h>
-#include <panel/drag_action_params.h>
-#include <panel/user_message.h>
 #include <ui/ui_conf/ui_conf.h>
 
 namespace smp

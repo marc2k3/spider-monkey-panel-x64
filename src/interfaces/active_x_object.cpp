@@ -1,11 +1,11 @@
 #include <stdafx.h>
 #include "active_x_object.h"
+#include "active_x_object_iterator.h"
 
 #include <com_utils/com_interface_h.h>
 #include <com_utils/com_tools.h>
 #include <com_utils/com_error_helpers.h>
 #include <js_backend/com_convert.h>
-#include <interfaces/active_x_object_iterator.h>
 
 namespace
 {

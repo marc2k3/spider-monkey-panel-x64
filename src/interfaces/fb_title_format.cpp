@@ -1,8 +1,7 @@
 #include <stdafx.h>
 #include "fb_title_format.h"
-
-#include <interfaces/fb_metadb_handle.h>
-#include <interfaces/fb_metadb_handle_list.h>
+#include "fb_metadb_handle.h"
+#include "fb_metadb_handle_list.h"
 
 namespace
 {

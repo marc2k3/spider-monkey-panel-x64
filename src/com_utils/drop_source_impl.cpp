@@ -1,8 +1,7 @@
 #include <stdafx.h>
 #include "drop_source_impl.h"
-
-#include <com_utils/drag_image.h>
-#include <com_utils/drag_utils.h>
+#include "drag_utils.h"
+#include "drag_image.h"
 
 _COM_SMARTPTR_TYPEDEF(IDragSourceHelper2, IID_IDragSourceHelper2);
 

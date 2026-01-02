@@ -1,9 +1,8 @@
 #pragma once
+#include "active_x_object.h"
 
 namespace mozjs
 {
-	class JsActiveXObject;
-
 	class JsEnumerator : public JsObjectBase<JsEnumerator>
 	{
 	public:

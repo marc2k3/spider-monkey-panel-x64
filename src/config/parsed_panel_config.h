@@ -1,5 +1,5 @@
 #pragma once
-#include <config/panel_config.h>
+#include "panel_config.h"
 
 namespace config
 {

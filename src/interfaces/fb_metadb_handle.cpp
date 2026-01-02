@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "fb_metadb_handle.h"
-
-#include <interfaces/fb_file_info.h>
+#include "fb_file_info.h"
 
 namespace
 {

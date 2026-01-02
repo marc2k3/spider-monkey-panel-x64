@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "ScintillaConfig.hpp"
-
-#include <2K3/TextFile.hpp>
+#include "../TextFile.hpp"
 
 ScintillaConfig scintilla_config;
 

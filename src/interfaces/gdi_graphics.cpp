@@ -1,11 +1,11 @@
 #include <stdafx.h>
 #include "gdi_graphics.h"
+#include "gdi_bitmap.h"
+#include "gdi_font.h"
+#include "gdi_raw_bitmap.h"
+#include "measure_string_info.h"
 
 #include <2K3/EstimateLineWrap.hpp>
-#include <interfaces/gdi_bitmap.h>
-#include <interfaces/gdi_font.h>
-#include <interfaces/gdi_raw_bitmap.h>
-#include <interfaces/measure_string_info.h>
 #include <utils/colour_helpers.h>
 #include <utils/gdi_error_helpers.h>
 

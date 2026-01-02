@@ -1,12 +1,12 @@
 #include <stdafx.h>
 #include "fb_metadb_handle_list.h"
+#include "fb_metadb_handle.h"
+#include "fb_metadb_handle_list_iterator.h"
+#include "fb_title_format.h"
 
 #include <2K3/Attach.hpp>
 #include <2K3/CustomSort.hpp>
 #include <2K3/TagWriter.hpp>
-#include <interfaces/fb_metadb_handle.h>
-#include <interfaces/fb_metadb_handle_list_iterator.h>
-#include <interfaces/fb_title_format.h>
 
 namespace
 {
