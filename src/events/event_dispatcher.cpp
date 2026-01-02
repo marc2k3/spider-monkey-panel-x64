@@ -52,17 +52,17 @@ namespace smp
 
 	bool EventDispatcher::ProcessNextEvent(HWND hWnd) noexcept
 	{
-		auto pTaskController = [&]
+		auto it = [&]
 			{
 				std::unique_lock ul(taskControllerMapMutex_);
-				return taskControllerMap_.at(hWnd);
+				return taskControllerMap_.find(hWnd);
 			}();
 
-		if (!pTaskController)
+		if (it == taskControllerMap_.end() || !it->second)
 		{
 			return false;
 		}
-		return pTaskController->ExecuteNextTask();
+		return it->second->ExecuteNextTask();
 	}
 
 	void EventDispatcher::RequestNextEvent(HWND hWnd) noexcept
