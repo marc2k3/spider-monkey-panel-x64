@@ -4,7 +4,7 @@
 
 namespace smp
 {
-	OnProcessLocationsNotify_InsertHandles::OnProcessLocationsNotify_InsertHandles(GUID g, UINT baseIdx, bool shouldSelect)
+	OnProcessLocationsNotify_InsertHandles::OnProcessLocationsNotify_InsertHandles(GUID g, size_t baseIdx, bool shouldSelect)
 		: g_(g)
 		, baseIdx_(baseIdx)
 		, shouldSelect_(shouldSelect) {}
