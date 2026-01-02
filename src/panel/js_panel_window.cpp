@@ -300,11 +300,10 @@ namespace smp
 		{
 			const auto pEvent = task.AsMouseEvent();
 
-			if (pEvent->IsShiftPressed() && pEvent->IsWinPressed())
+			if (!(pEvent->IsShiftPressed() && pEvent->IsWinPressed()) && execJs(*pEvent).value_or(false))
+			{
 				break;
-			
-			if (execJs(*pEvent))
-				break;
+			}
 
 			EventDispatcher::Get().PutEvent(
 				wnd_,
