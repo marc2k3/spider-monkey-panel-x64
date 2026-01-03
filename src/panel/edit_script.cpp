@@ -15,7 +15,7 @@ namespace smp
 			{
 			case config::ScriptSourceType::Sample:
 			{
-				const int iRet = popup_message_v3::get()->messageBox(
+				const auto status = popup_message_v3::get()->messageBox(
 					hParent,
 					"Are you sure?\n\n"
 					"You are trying to edit a sample script.\n"
@@ -24,7 +24,7 @@ namespace smp
 					"Editing script",
 					MB_YESNO | MB_ICONWARNING);
 
-				if (iRet != IDYES)
+				if (status != IDYES)
 				{
 					break;
 				}
@@ -67,7 +67,7 @@ namespace smp
 		{
 			if (settings.isSample)
 			{
-				const int iRet = popup_message_v3::get()->messageBox(
+				const auto status = popup_message_v3::get()->messageBox(
 					hParent,
 					"Are you sure?\n\n"
 					"You are trying to edit a sample script.\n"
@@ -76,7 +76,7 @@ namespace smp
 					"Editing script",
 					MB_YESNO | MB_ICONWARNING);
 
-				if (iRet != IDYES)
+				if (status != IDYES)
 				{
 					return;
 				}

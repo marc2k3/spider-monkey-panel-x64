@@ -126,7 +126,7 @@ LRESULT CEditInProgress::OnCloseCmd(WORD, WORD wID, HWND)
 		{
 			const auto errorMsg = (errorMessage_.empty() ? std::string{ "Unknown error caused by editor" } : errorMessage_);
 			popup_message_v3::get()->messageBox(
-				*this,
+				m_hWnd,
 				errorMsg.c_str(),
 				"Editor error",
 				MB_ICONWARNING | MB_SETFOREGROUND | MB_OK

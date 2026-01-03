@@ -52,7 +52,7 @@ namespace mozjs
 	{
 		JsAutoRealmWithErrorReport autoScope(cx, globalObject);
 		JS::RootedValue funcValue(cx);
-		
+
 		if (!JS_GetProperty(cx, globalObject, functionName.c_str(), &funcValue))
 		{
 			// Reports

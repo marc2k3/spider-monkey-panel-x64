@@ -1176,7 +1176,7 @@ namespace smp
 	std::string js_panel_window::GetPanelDescription(bool includeVersionAndAuthor)
 	{
 		std::string ret;
-		
+
 		if (settings_.scriptName.empty())
 		{
 			ret += settings_.panelId;

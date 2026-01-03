@@ -16,7 +16,7 @@ std::optional<config::ParsedPanelSettings> CDialogPackageManager::GetPackage() c
 {
 	if (focusedPackageIdx_ >= 0)
 		return packages_[focusedPackageIdx_].parsedSettings;
-	
+
 	return std::nullopt;
 }
 
@@ -115,7 +115,7 @@ void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, C
 	if (packages_.empty())
 		return;
 
-	const int status = popup_message_v3::get()->messageBox(
+	const auto status = popup_message_v3::get()->messageBox(
 		m_hWnd,
 		"Are you sure you want to delete the package?",
 		"Deleting package",
@@ -636,7 +636,7 @@ bool CDialogPackageManager::ConfirmRebootOnPackageInUse()
 		"Changing package",
 		MB_YESNO
 	);
-	
+
 	return status == IDYES;
 }
 

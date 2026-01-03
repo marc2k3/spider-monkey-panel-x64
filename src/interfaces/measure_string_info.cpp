@@ -44,8 +44,7 @@ namespace mozjs
 		, lines_(lines)
 		, characters_(characters) {}
 
-	std::unique_ptr<JsMeasureStringInfo>
-		JsMeasureStringInfo::CreateNative(JSContext* cx, float x, float y, float w, float h, uint32_t lines, uint32_t characters)
+	std::unique_ptr<JsMeasureStringInfo> JsMeasureStringInfo::CreateNative(JSContext* cx, float x, float y, float w, float h, uint32_t lines, uint32_t characters)
 	{
 		return std::unique_ptr<JsMeasureStringInfo>(new JsMeasureStringInfo(cx, x, y, w, h, lines, characters));
 	}

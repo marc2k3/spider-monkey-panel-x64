@@ -48,8 +48,7 @@ namespace mozjs
 		heapHelper_.Finalize();
 	}
 
-	std::unique_ptr<JsActiveXObject_Iterator>
-		JsActiveXObject_Iterator::CreateNative(JSContext* cx, JsActiveXObject& activeXObject)
+	std::unique_ptr<JsActiveXObject_Iterator> JsActiveXObject_Iterator::CreateNative(JSContext* cx, JsActiveXObject& activeXObject)
 	{
 		const auto pUnknown = (activeXObject.pStorage_->pUnknown ? activeXObject.pStorage_->pUnknown : activeXObject.pStorage_->pDispatch);
 		QwrException::ExpectTrue(pUnknown, "Object is not iterable");

@@ -604,14 +604,15 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 		}
 		else
 		{
-			const int iRet = popup_message_v3::get()->messageBox(
+			const auto status = popup_message_v3::get()->messageBox(
 				m_hWnd,
 				"!!! Changing script type will reset all panel settings !!!\n"
 				"!!! Your whole script will be unrecoverably lost !!!\n\n"
 				"Are you sure?",
 				"Changing script type",
 				MB_YESNO | MB_ICONWARNING);
-			return (IDYES == iRet);
+
+			return IDYES == status;
 		}
 	}
 	else
@@ -659,7 +660,7 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 bool CConfigTabScriptSource::RequestConfirmationOnPackageChange()
 {
 	{
-		const int status  = popup_message_v3::get()->messageBox(
+		const auto status  = popup_message_v3::get()->messageBox(
 			m_hWnd,
 			"!!! Changing package will reset all panel settings !!!\n\n"
 			"Are you sure?",
@@ -674,8 +675,8 @@ bool CConfigTabScriptSource::RequestConfirmationOnPackageChange()
 
 	if (parent_.HasChanged())
 	{
-		const int status = popup_message_v3::get()->messageBox(m_hWnd, "Do you want to save your changes to package?", SMP_NAME, MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
-		
+		const auto status = popup_message_v3::get()->messageBox(m_hWnd, "Do you want to save your changes to package?", SMP_NAME, MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
+
 		switch (status)
 		{
 		case IDYES:

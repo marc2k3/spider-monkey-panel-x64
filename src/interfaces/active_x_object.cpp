@@ -256,8 +256,7 @@ namespace mozjs
 		hasVariant_ = true;
 	}
 
-	JsActiveXObject::JsActiveXObject(JSContext* cx, IDispatch* pDispatch, bool addref)
-		: pJsCtx_(cx)
+	JsActiveXObject::JsActiveXObject(JSContext* cx, IDispatch* pDispatch, bool addref) : pJsCtx_(cx)
 	{
 		pStorage_->pDispatch = pDispatch;
 		if (!pStorage_->pDispatch)
@@ -373,7 +372,7 @@ namespace mozjs
 	void JsActiveXObject::PostCreate(JSContext*, JS::HandleObject self)
 	{
 		auto pNative = JsActiveXObject::ExtractNativeUnchecked(self);
-		return pNative->SetupMembers(self);
+		pNative->SetupMembers(self);
 	}
 
 	JSObject* JsActiveXObject::Constructor(JSContext* cx, const std::wstring& name)

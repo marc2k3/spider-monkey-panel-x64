@@ -422,7 +422,7 @@ void CDialogConf::ReinitializeTabControls()
 {
 	// do not recreate the first tab
 
-	for ([[maybe_unused]] const auto i : std::views::iota(1, cTabs_.GetItemCount()))
+	if (cTabs_.GetItemCount() > 1)
 	{
 		cTabs_.DeleteItem(1);
 	}

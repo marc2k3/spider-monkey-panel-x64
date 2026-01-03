@@ -161,7 +161,7 @@ void CConfigTabPackage::OnNewScript(UINT, int, CWindow)
 					if (fs::exists(path))
 					{
 						popup_message_v3::get()->messageBox(
-							*this,
+							m_hWnd,
 							"File with this name already exists!",
 							"Creating file",
 							MB_OK | MB_ICONWARNING);
@@ -286,8 +286,8 @@ void CConfigTabPackage::OnEditScript(UINT, int, CWindow)
 	{
 		if (isSample_)
 		{
-			const int iRet = popup_message_v3::get()->messageBox(
-				*this,
+			const auto status = popup_message_v3::get()->messageBox(
+				m_hWnd,
 				"Are you sure?\n\n"
 				"You are trying to edit a sample script.\n"
 				"Any changes performed to the script will be applied to every panel that are using this sample.\n"
@@ -295,7 +295,7 @@ void CConfigTabPackage::OnEditScript(UINT, int, CWindow)
 				"Editing script",
 				MB_YESNO);
 
-			if (iRet != IDYES)
+			if (status != IDYES)
 			{
 				return;
 			}
@@ -304,7 +304,7 @@ void CConfigTabPackage::OnEditScript(UINT, int, CWindow)
 		const auto filePath = fs::path(files_[focusedFileIdx_]);
 		QwrException::ExpectTrue(fs::exists(filePath), "Script is missing: {}", filePath.u8string());
 
-		smp::EditTextFile(*this, filePath, true, true);
+		smp::EditTextFile(m_hWnd, filePath, true, true);
 	}
 	catch (const fs::filesystem_error& e)
 	{
@@ -434,7 +434,7 @@ void CConfigTabPackage::InitializeFilesListBox()
 		// !!! Important !!!
 
 		filesListBox_ = GetDlgItem(IDC_LIST_PACKAGE_FILES);
-		pFilesListBoxDrop_.Attach(new ComPtrImpl<smp::com::FileDropTarget>(filesListBox_, *this));
+		pFilesListBoxDrop_.Attach(new ComPtrImpl<smp::com::FileDropTarget>(filesListBox_, m_hWnd));
 
 		try
 		{
@@ -534,8 +534,8 @@ void CConfigTabPackage::AddFile(const fs::path& path)
 
 			if (fs::exists(newFile))
 			{
-				const int status = popup_message_v3::get()->messageBox(
-					*this,
+				const auto status = popup_message_v3::get()->messageBox(
+					m_hWnd,
 					fmt::format("File already exists:\n{}\n\nDo you want to rewrite it?", newFile.u8string()).c_str(),
 					"Adding file",
 					MB_YESNO | MB_ICONWARNING

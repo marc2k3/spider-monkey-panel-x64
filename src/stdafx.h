@@ -60,8 +60,6 @@
 #include <atlcrack.h>
 #include <atlctrls.h>
 #include <atlddx.h>
-#include <atldlgs.h>
-#include <atlfind.h>
 #include <atlframe.h>
 #include <atltypes.h>
 #include <atlwin.h>

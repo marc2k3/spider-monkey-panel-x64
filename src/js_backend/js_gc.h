@@ -14,7 +14,7 @@ namespace mozjs
 		/// @throw QwrException
 		[[nodiscard]] static uint32_t GetMaxHeap();
 		[[nodiscard]] static uint64_t GetTotalHeapUsageForGlobal(JSContext* cx, JS::HandleObject jsGlobal);
-		
+
 		bool MaybeGc();
 		// @brief Force gc trigger (e.g. on panel unload)
 		bool TriggerGc();
