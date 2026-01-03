@@ -293,15 +293,11 @@ namespace mozjs
 					errorText += tmpBuf;
 				}
 
-				if (excn.isObject())
-				{
-					JS::RootedObject excnObject(cx, &excn.toObject());
-					const auto stackTrace = GetStackTraceString(cx, excnObject);
+				const auto stackTrace = GetStackTraceString(cx, excnObject);
 
-					if (!stackTrace.empty())
-					{
-						errorText += "\nStack trace:\n" + stackTrace;
-					}
+				if (!stackTrace.empty())
+				{
+					errorText += "\nStack trace:\n" + stackTrace;
 				}
 			}
 		}

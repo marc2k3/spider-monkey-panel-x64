@@ -29,7 +29,7 @@ namespace mozjs
 		void StartMonitorThread();
 		void StopMonitorThread();
 
-		[[nodiscard]] bool HasActivePopup(bool isMainThread) const;
+		[[nodiscard]] bool HasActivePopup() const;
 
 	private:
 		JSContext* pJsCtx_ = nullptr;

@@ -16,7 +16,7 @@ public:
 	static void show_viewer(const album_art_data_ptr& data) noexcept;
 
 private:
-	static constexpr std::array types =
+	static constexpr std::array s_types =
 	{
 		&album_art_ids::cover_front,
 		&album_art_ids::cover_back,

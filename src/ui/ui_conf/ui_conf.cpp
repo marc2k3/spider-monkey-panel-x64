@@ -128,7 +128,7 @@ void CDialogConf::SwitchTab(CDialogConf::Tab tabId)
 	CreateChildTab();
 }
 
-BOOL CDialogConf::OnInitDialog(HWND hwndFocus, LPARAM lParam)
+BOOL CDialogConf::OnInitDialog(HWND, LPARAM)
 {
 	DlgResize_Init(false);
 
@@ -178,7 +178,7 @@ LRESULT CDialogConf::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHand
 	return 0;
 }
 
-void CDialogConf::OnDdxUiChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CDialogConf::OnDdxUiChange(UINT, int nID, CWindow)
 {
 	if (suppressDdxFromUi_)
 	{
@@ -422,7 +422,7 @@ void CDialogConf::ReinitializeTabControls()
 {
 	// do not recreate the first tab
 
-	for (const auto i : std::views::iota(1, cTabs_.GetItemCount()))
+	for ([[maybe_unused]] const auto i : std::views::iota(1, cTabs_.GetItemCount()))
 	{
 		cTabs_.DeleteItem(1);
 	}

@@ -566,21 +566,23 @@ bool CDialogPackageManager::ConfirmPackageOverwrite(const std::filesystem::path&
 	{
 		const auto oldSettings = PackageUtils::GetSettingsFromPath(oldPackagePath);
 
-		const auto msg = fmt::format("Another version of this package is present:\nold: '{}' vs new: '{}'\n\nDo you want to update?",
-			oldSettings.scriptVersion.empty() ? "<none>" : oldSettings.scriptVersion,
-			newSettings.scriptVersion.empty() ? "<none>" : newSettings.scriptVersion
-		);
-
-		const auto status = popup_message_v3::get()->messageBox(
-			m_hWnd,
-			msg.c_str(),
-			"Importing package",
-			MB_YESNO
-		);
-
-		if (status != IDYES)
 		{
-			return false;
+			const auto msg = fmt::format("Another version of this package is present:\nold: '{}' vs new: '{}'\n\nDo you want to update?",
+				oldSettings.scriptVersion.empty() ? "<none>" : oldSettings.scriptVersion,
+				newSettings.scriptVersion.empty() ? "<none>" : newSettings.scriptVersion
+			);
+
+			const auto status = popup_message_v3::get()->messageBox(
+				m_hWnd,
+				msg.c_str(),
+				"Importing package",
+				MB_YESNO
+			);
+
+			if (status != IDYES)
+			{
+				return false;
+			}
 		}
 
 		if (oldSettings.scriptName != newSettings.scriptName)

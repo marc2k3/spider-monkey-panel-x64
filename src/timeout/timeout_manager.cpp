@@ -388,7 +388,7 @@ namespace smp
 		return id;
 	}
 
-	void TimeoutManager::DestroyFiringId(uint32_t id)
+	void TimeoutManager::DestroyFiringId(uint32_t)
 	{
 		activeFiringIds_.pop_back();
 	}

@@ -331,7 +331,7 @@ void CConfigTabScriptSource::OnEditScript(UINT /*uNotifyCode*/, int /*nID*/, CWi
 	{
 		try
 		{
-			EditScript(*this, settings_);
+			EditScript(m_hWnd, settings_);
 		}
 		catch (const QwrException& e)
 		{
@@ -605,7 +605,7 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 		else
 		{
 			const int iRet = popup_message_v3::get()->messageBox(
-				*this,
+				m_hWnd,
 				"!!! Changing script type will reset all panel settings !!!\n"
 				"!!! Your whole script will be unrecoverably lost !!!\n\n"
 				"Are you sure?",
@@ -616,25 +616,29 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 	}
 	else
 	{
-		const int iRet = popup_message_v3::get()->messageBox(
-			*this,
-			"!!! Changing script type will reset all panel settings !!!\n\n"
-			"Are you sure?",
-			"Changing script type",
-			MB_YESNO | MB_ICONWARNING);
-		if (iRet != IDYES)
 		{
-			return false;
+			const auto status = popup_message_v3::get()->messageBox(
+				m_hWnd,
+				"!!! Changing script type will reset all panel settings !!!\n\n"
+				"Are you sure?",
+				"Changing script type",
+				MB_YESNO | MB_ICONWARNING);
+
+			if (status != IDYES)
+			{
+				return false;
+			}
 		}
 
 		if (sourceTypeId_ == IDC_RADIO_SRC_PACKAGE && parent_.HasChanged())
 		{
-			const int iRet = popup_message_v3::get()->messageBox(
-				*this,
+			const auto status = popup_message_v3::get()->messageBox(
+				m_hWnd,
 				"Do you want to save your changes to package?",
 				SMP_NAME,
 				MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
-			switch (iRet)
+
+			switch (status)
 			{
 			case IDYES:
 				parent_.Apply();
@@ -654,21 +658,25 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 
 bool CConfigTabScriptSource::RequestConfirmationOnPackageChange()
 {
-	const int iRet = popup_message_v3::get()->messageBox(
-		*this,
-		"!!! Changing package will reset all panel settings !!!\n\n"
-		"Are you sure?",
-		"Changing script type",
-		MB_YESNO | MB_ICONWARNING);
-	if (iRet != IDYES)
 	{
-		return false;
+		const int status  = popup_message_v3::get()->messageBox(
+			m_hWnd,
+			"!!! Changing package will reset all panel settings !!!\n\n"
+			"Are you sure?",
+			"Changing script type",
+			MB_YESNO | MB_ICONWARNING);
+
+		if (status != IDYES)
+		{
+			return false;
+		}
 	}
 
 	if (parent_.HasChanged())
 	{
-		const int iRet = popup_message_v3::get()->messageBox(m_hWnd, "Do you want to save your changes to package?", SMP_NAME, MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
-		switch (iRet)
+		const int status = popup_message_v3::get()->messageBox(m_hWnd, "Do you want to save your changes to package?", SMP_NAME, MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
+		
+		switch (status)
 		{
 		case IDYES:
 			parent_.Apply();

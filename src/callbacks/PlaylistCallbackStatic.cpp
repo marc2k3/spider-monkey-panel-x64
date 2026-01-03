@@ -12,7 +12,7 @@ namespace smp
 		void on_items_modified(size_t, const pfc::bit_array&) noexcept final {}
 		void on_items_modified_fromplayback(size_t, const pfc::bit_array&, playback_control::t_display_level) noexcept final {}
 		void on_items_removing(size_t, const pfc::bit_array&, size_t, size_t) noexcept final {}
-		void on_items_replaced(size_t playlistIndex, const pfc::bit_array&, const pfc::list_base_const_t<t_on_items_replaced_entry>&) noexcept final {}
+		void on_items_replaced(size_t, const pfc::bit_array&, const pfc::list_base_const_t<t_on_items_replaced_entry>&) noexcept final {}
 		void on_playlists_removing(const pfc::bit_array&, size_t, size_t) noexcept final {}
 
 		uint32_t get_flags() noexcept final

@@ -111,7 +111,7 @@ namespace mozjs
 		const auto curTime = GetLowResTime();
 
 		{ // Action might've been blocked by modal window
-			const bool isInModal = HasActivePopup(true);
+			const bool isInModal = HasActivePopup();
 
 			if (wasInModal_ && !isInModal)
 			{
@@ -286,7 +286,7 @@ namespace mozjs
 
 						hasPotentiallySlowScripts = [&]
 							{
-								if (HasActivePopup(false))
+								if (HasActivePopup())
 								{ // popup detected, delay monitoring
 									wasInModal_ = true;
 									return false;
@@ -326,7 +326,7 @@ namespace mozjs
 		}
 	}
 
-	bool JsMonitor::HasActivePopup(bool isMainThread) const
+	bool JsMonitor::HasActivePopup() const
 	{
 		if (smp::modal::IsInWhitelistedModal())
 		{

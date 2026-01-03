@@ -104,7 +104,7 @@ public:
 			m_clusters.emplace_back(cluster);
 		}
 
-		for (const auto i : indices(kMaxIterations))
+		for ([[maybe_unused]] const auto i : indices(kMaxIterations))
 		{
 			bool done = true;
 

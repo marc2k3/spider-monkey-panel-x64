@@ -46,7 +46,7 @@ public:
 		}
 
 		{
-			std::mutex queueMutex_;
+			std::scoped_lock sl(queueMutex_);
 			if (!tasks_.empty() && threads_.size() < maxThreadCount_ && !idleThreadCount_)
 			{
 				AddThread();

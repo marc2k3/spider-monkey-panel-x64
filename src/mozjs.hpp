@@ -4,7 +4,7 @@
 #define XP_WIN 1
 
 __pragma(warning(push))
-__pragma(warning(disable : 4244 4251))
+__pragma(warning(disable : 4100 4244 4251))
 #include <jsapi.h>
 #include <jsfriendapi.h>
 

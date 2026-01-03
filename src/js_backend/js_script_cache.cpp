@@ -21,7 +21,7 @@ namespace mozjs
 		JS::CompileOptions opts(pJsCtx);
 		opts.setFileAndLine(pathId.c_str(), 1);
 
-		auto pStencil = GetCachedStencil(pJsCtx, absolutePath, pathId, opts);
+		auto pStencil = GetCachedStencil(pJsCtx, absolutePath, opts);
 		JS::InstantiateOptions inst(opts);
 		JS::RootedScript jsScript(pJsCtx, JS::InstantiateGlobalStencil(pJsCtx, inst, pStencil));
 		JsException::ExpectTrue(jsScript);
@@ -29,21 +29,19 @@ namespace mozjs
 		return jsScript;
 	}
 
-	RefPtr<JS::Stencil> JsScriptCache::GetCachedStencil(JSContext* pJsCtx, const std::filesystem::path& absolutePath, const std::string& hackedPathId, const JS::CompileOptions& compileOpts)
+	RefPtr<JS::Stencil> JsScriptCache::GetCachedStencil(JSContext* pJsCtx, const std::filesystem::path& absolutePath, const JS::CompileOptions& compileOpts)
 	{
 		const auto cleanPath = absolutePath.lexically_normal();
-		const auto lastWriteTime = [&absolutePath, &cleanPath] {
-			try
+		const auto lastWriteTime = [&absolutePath, &cleanPath]
 			{
-				return std::filesystem::last_write_time(absolutePath);
-			}
-			catch (const std::filesystem::filesystem_error& e)
-			{
-				throw QwrException("Failed to open file `{}`:\n"
-					"  {}",
-					cleanPath.u8string(),
-					smp::FS_Error_ToU8(e));
-			}
+				try
+				{
+					return std::filesystem::last_write_time(absolutePath);
+				}
+				catch (const std::filesystem::filesystem_error& e)
+				{
+					throw QwrException("Failed to open file `{}`:\n  {}", cleanPath.u8string(), smp::FS_Error_ToU8(e));
+				}
 			}();
 
 		if (auto it = scriptCache_.find(cleanPath.u8string()); scriptCache_.cend() != it)

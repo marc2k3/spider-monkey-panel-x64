@@ -112,9 +112,9 @@ namespace smp
 			return builder.finish(g_get_guid());
 		}
 
-		void edit_mode_context_menu_build(const POINT& p_point, bool, HMENU p_menu, unsigned p_id_base) final
+		void edit_mode_context_menu_build(const POINT&, bool, HMENU p_menu, unsigned p_id_base) final
 		{
-			GenerateContextMenu(p_menu, p_point.x, p_point.y, p_id_base);
+			GenerateContextMenu(p_menu, p_id_base);
 		}
 
 		void edit_mode_context_menu_command(const POINT&, bool, unsigned p_id, unsigned p_id_base) final

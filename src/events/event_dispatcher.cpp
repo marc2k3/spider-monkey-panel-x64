@@ -75,10 +75,10 @@ namespace smp
 			return;
 		}
 
-		RequestNextEventImpl(hWnd, *taskControllerIt->second, sl);
+		RequestNextEventImpl(hWnd, *taskControllerIt->second);
 	}
 
-	void EventDispatcher::RequestNextEventImpl(HWND hWnd, TaskController& taskController, std::scoped_lock<std::mutex>& proof) noexcept
+	void EventDispatcher::RequestNextEventImpl(HWND hWnd, TaskController& taskController) noexcept
 	{
 		if (!taskController.HasTasks())
 		{
@@ -128,7 +128,7 @@ namespace smp
 		auto pTaskController = taskControllerIt->second;
 		pTaskController->AddRunnable(std::move(pRunnable), priority);
 
-		RequestNextEventImpl(hWnd, *pTaskController, sl);
+		RequestNextEventImpl(hWnd, *pTaskController);
 	}
 
 	void EventDispatcher::PutEvent(HWND hWnd, std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
@@ -145,7 +145,7 @@ namespace smp
 		pEvent->SetTarget(pTaskController->GetTarget());
 		pTaskController->AddRunnable(std::move(pEvent), priority);
 
-		RequestNextEventImpl(hWnd, *pTaskController, sl);
+		RequestNextEventImpl(hWnd, *pTaskController);
 	}
 
 	void EventDispatcher::PutEventToAll(std::unique_ptr<EventBase> pEvent, EventPriority priority) noexcept
@@ -168,7 +168,7 @@ namespace smp
 			pClonedEvent->SetTarget(pTaskController->GetTarget());
 			pTaskController->AddRunnable(std::move(pClonedEvent), priority);
 
-			RequestNextEventImpl(hLocalWnd, *pTaskController, sl);
+			RequestNextEventImpl(hLocalWnd, *pTaskController);
 		}
 	}
 
@@ -192,7 +192,7 @@ namespace smp
 			pClonedEvent->SetTarget(pTaskController->GetTarget());
 			pTaskController->AddRunnable(std::move(pClonedEvent), priority);
 
-			RequestNextEventImpl(hLocalWnd, *pTaskController, sl);
+			RequestNextEventImpl(hLocalWnd, *pTaskController);
 		}
 	}
 
@@ -222,9 +222,9 @@ namespace smp
 			}
 		}
 
-		for (const auto& [hWnd, pClonedEvent] : hWndToEvent)
+		for (const auto& [wnd, pClonedEvent] : hWndToEvent)
 		{
-			SendMessageW(hWnd, std::to_underlying(InternalSyncMessage::legacy_notify_others), 0, reinterpret_cast<LPARAM>(pClonedEvent.get()));
+			SendMessageW(wnd, std::to_underlying(InternalSyncMessage::legacy_notify_others), 0, reinterpret_cast<LPARAM>(pClonedEvent.get()));
 		}
 	}
 }

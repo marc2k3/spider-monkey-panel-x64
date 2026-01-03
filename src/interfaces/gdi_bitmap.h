@@ -33,7 +33,7 @@ namespace mozjs
 		void RotateFlip(uint32_t mode);
 		bool SaveAs(const std::wstring& path, const std::wstring& format = L"image/png");
 		bool SaveAsWithOpt(size_t optArgCount, const std::wstring& path, const std::wstring& format);
-		void StackBlur(uint32_t radius);
+		void StackBlur(uint8_t radius);
 
 	public:
 		uint32_t get_Height();

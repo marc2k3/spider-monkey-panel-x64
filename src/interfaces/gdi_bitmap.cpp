@@ -481,10 +481,8 @@ namespace mozjs
 		}
 	}
 
-	void JsGdiBitmap::StackBlur(uint32_t radius)
+	void JsGdiBitmap::StackBlur(uint8_t radius)
 	{
-		radius = std::clamp(radius, 2u, 254u);
-
 		Gdiplus::BitmapData bmpdata;
 		const auto size = D2D1_SIZE_U(pGdi_->GetWidth(), pGdi_->GetHeight());
 
@@ -497,7 +495,7 @@ namespace mozjs
 
 		if (Gdiplus::Ok == pGdi_->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, PixelFormat32bppPARGB, &bmpdata))
 		{
-			::StackBlur job(radius, size);
+			auto job = ::StackBlur(radius, size);
 			job.Run(static_cast<uint8_t*>(bmpdata.Scan0));
 
 			pGdi_->UnlockBits(&bmpdata);

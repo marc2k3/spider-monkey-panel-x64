@@ -11,10 +11,10 @@ namespace
 		// delay helper initialization, since it's pretty expensive
 		static IDropTargetHelperPtr dth = []
 			{
-				IDropTargetHelperPtr dth;
-				HRESULT hr = dth.CreateInstance(CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER);
+				IDropTargetHelperPtr tmp;
+				HRESULT hr = tmp.CreateInstance(CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER);
 				smp::CheckHR(hr, "CreateInstance");
-				return dth;
+				return tmp;
 			}();
 
 		return dth;

@@ -28,7 +28,7 @@ namespace smp
 		void Schedule(const TimeStamp& targetDeadline);
 		void MaybeReschedule(const TimeStamp& targetDeadline);
 
-		void ScheduleImmediate(const TimeStamp& targetDeadline, const TimeStamp& now);
+		void ScheduleImmediate(const TimeStamp& targetDeadline);
 		void ScheduleDelayed(const TimeStamp& targetDeadline, const TimeStamp& now);
 
 		void MaybeExecute();

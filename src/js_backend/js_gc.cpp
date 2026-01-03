@@ -303,7 +303,7 @@ namespace mozjs
 	{
 		const auto markAllRealms = [this]
 			{
-				JS::IterateRealms(pJsCtx_, nullptr, [](JSContext*, void*, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc)
+				JS::IterateRealms(pJsCtx_, nullptr, [](JSContext*, void*, JS::Realm* pJsRealm, const JS::AutoRequireNoGC&)
 					{
 						auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
 						if (pNativeRealm)
@@ -335,7 +335,7 @@ namespace mozjs
 			}
 			else
 			{
-				JS::IterateRealms(pJsCtx_, &triggers, [](JSContext*, void* data, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc)
+				JS::IterateRealms(pJsCtx_, &triggers, [](JSContext*, void* data, JS::Realm* pJsRealm, const JS::AutoRequireNoGC&)
 					{
 						auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
 						if (!pNativeRealm)
@@ -377,7 +377,7 @@ namespace mozjs
 		{
 			std::vector<JS::Realm*> realms;
 
-			JS::IterateRealms(pJsCtx_, &realms, [](JSContext*, void* data, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc)
+			JS::IterateRealms(pJsCtx_, &realms, [](JSContext*, void* data, JS::Realm* pJsRealm, const JS::AutoRequireNoGC&)
 				{
 					auto pRealms = static_cast<std::vector<JS::Realm*>*>(data);
 					auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
@@ -436,7 +436,7 @@ namespace mozjs
 
 	void JsGc::NotifyRealmsOnGcEnd()
 	{
-		JS::IterateRealms(pJsCtx_, nullptr, [](JSContext*, void*, JS::Realm* pJsRealm, const JS::AutoRequireNoGC& nogc)
+		JS::IterateRealms(pJsCtx_, nullptr, [](JSContext*, void*, JS::Realm* pJsRealm, const JS::AutoRequireNoGC&)
 			{
 				auto pNativeRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(pJsRealm));
 

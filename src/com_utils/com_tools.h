@@ -29,7 +29,7 @@ template <class T>
 class IDispatchWithCachedTypes : public T
 {
 public:
-	STDMETHOD(GetTypeInfoCount)(unsigned int* n)
+	STDMETHODIMP GetTypeInfoCount(uint32_t* n)
 	{
 		if (!n)
 		{
@@ -39,12 +39,12 @@ public:
 		return S_OK;
 	}
 
-	STDMETHOD(GetTypeInfo)(unsigned int i, LCID lcid, ITypeInfo** pp)
+	STDMETHODIMP GetTypeInfo(uint32_t i, LCID lcid, ITypeInfo** pp)
 	{
 		return g_typeInfoCacheHolder.GetTypeInfo(i, lcid, pp);
 	}
 
-	STDMETHOD(GetIDsOfNames)(REFIID riid, OLECHAR** names, unsigned int cnames, LCID lcid, DISPID* dispids)
+	STDMETHODIMP GetIDsOfNames(REFIID, OLECHAR** names, uint32_t cnames, LCID, DISPID* dispids)
 	{
 		if (g_typeInfoCacheHolder.Empty())
 		{
@@ -53,7 +53,7 @@ public:
 		return g_typeInfoCacheHolder.GetIDsOfNames(names, cnames, dispids);
 	}
 
-	STDMETHOD(Invoke)(DISPID dispid, REFIID riid, LCID lcid, WORD flag, DISPPARAMS* params, VARIANT* result, EXCEPINFO* excep, unsigned int* err)
+	STDMETHODIMP Invoke(DISPID dispid, REFIID, LCID, WORD flag, DISPPARAMS* params, VARIANT* result, EXCEPINFO* excep, uint32_t* err)
 	{
 		if (g_typeInfoCacheHolder.Empty())
 		{
@@ -100,12 +100,12 @@ public:
 	template <typename... Args>
 	ComPtrImpl(Args&&... args) : T(std::forward<Args>(args)...) {}
 
-	STDMETHODIMP_(ULONG) AddRef()
+	ULONG STDMETHODCALLTYPE AddRef()
 	{
 		return ++refCount_;
 	}
 
-	STDMETHODIMP_(ULONG) Release()
+	ULONG STDMETHODCALLTYPE Release()
 	{
 		const ULONG n = --refCount_;
 		if (!n)

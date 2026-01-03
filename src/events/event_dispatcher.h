@@ -47,7 +47,7 @@ namespace smp
 		void NotifyOthers(HWND hWnd, std::unique_ptr<EventBase> pEvent) noexcept;
 
 	private:
-		void RequestNextEventImpl(HWND hWnd, TaskController& taskController, std::scoped_lock<std::mutex>& proof) noexcept;
+		void RequestNextEventImpl(HWND hWnd, TaskController& taskController) noexcept;
 
 	private:
 		std::mutex taskControllerMapMutex_;

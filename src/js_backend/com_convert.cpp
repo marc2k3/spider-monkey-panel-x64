@@ -164,7 +164,6 @@ namespace
 		JS::RootedValue jsVal(cx);
 		for (long i = lbound; i <= ubound; ++i) // NOLINT (google-runtime-int)
 		{
-			HRESULT hr;
 			_variant_t var;
 			if (vartype == VT_VARIANT)
 			{
@@ -463,7 +462,7 @@ namespace mozjs::convert::com
 		}
 	}
 
-	void JsArrayToVariantArray(JSContext* cx, JS::HandleObject obj, int elementVariantType, VARIANT& var)
+	void JsArrayToVariantArray(JSContext* cx, JS::HandleObject obj, VARTYPE elementVariantType, VARIANT& var)
 	{
 		uint32_t len;
 		if (!JS::GetArrayLength(cx, obj, &len))

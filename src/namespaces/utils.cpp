@@ -266,7 +266,7 @@ namespace mozjs
 		return std::string(pfc::format_file_size_short(p));
 	}
 
-	void Utils::GetAlbumArtAsync(uint32_t, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool no_load)
+	void Utils::GetAlbumArtAsync(uint32_t, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
@@ -296,7 +296,7 @@ namespace mozjs
 		}
 	}
 
-	JSObject* Utils::GetAlbumArtAsyncV2(uint32_t /*window_id*/, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool no_load)
+	JSObject* Utils::GetAlbumArtAsyncV2(uint32_t /*window_id*/, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");

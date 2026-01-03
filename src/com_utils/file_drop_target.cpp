@@ -13,24 +13,24 @@ namespace smp::com
 
 	void FileDropTarget::FinalRelease() {}
 
-	DWORD FileDropTarget::OnDragEnter(IDataObject* pDataObj, DWORD /*grfKeyState*/, POINTL /*pt*/, DWORD dwEffect)
+	DWORD FileDropTarget::OnDragEnter(IDataObject* pDataObj, DWORD /*grfKeyState*/, POINTL /*pt*/, DWORD)
 	{
 		isFile_ = IsFile(pDataObj);
 		return GetEffect();
 	}
 
-	DWORD FileDropTarget::OnDragOver(DWORD /*grfKeyState*/, POINTL /*pt*/, DWORD dwEffect)
+	DWORD FileDropTarget::OnDragOver(DWORD /*grfKeyState*/, POINTL /*pt*/, DWORD)
 	{
 		return GetEffect();
 	}
 
-	DWORD FileDropTarget::OnDrop(IDataObject* pDataObj, DWORD /*grfKeyState*/, POINTL /*pt*/, DWORD dwEffect)
+	DWORD FileDropTarget::OnDrop(IDataObject* pDataObj, DWORD /*grfKeyState*/, POINTL /*pt*/, DWORD)
 	{
 		isFile_ = IsFile(pDataObj);
 		const auto newEffect = GetEffect();
 
 		pDataObj->AddRef();
-		if (!PostMessage(hNotifyWnd_, GetOnDropMsg(), reinterpret_cast<WPARAM>(hDropWnd_), reinterpret_cast<LPARAM>(pDataObj)))
+		if (!PostMessageW(hNotifyWnd_, GetOnDropMsg(), reinterpret_cast<WPARAM>(hDropWnd_), reinterpret_cast<LPARAM>(pDataObj)))
 		{
 			pDataObj->Release();
 		}

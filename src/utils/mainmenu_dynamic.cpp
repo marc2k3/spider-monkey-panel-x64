@@ -99,7 +99,7 @@ namespace
 		flags = 0u;
 	}
 
-	void MainMenuNodeCommand_PanelCommand::execute(service_ptr_t<service_base> callback)
+	void MainMenuNodeCommand_PanelCommand::execute(service_ptr_t<service_base>)
 	{
 		smp::EventDispatcher::Get().PutEvent(panelHwnd_, smp::GenerateEvent_JsCallback(smp::EventId::kDynamicMainMenu, commandId_));
 	}

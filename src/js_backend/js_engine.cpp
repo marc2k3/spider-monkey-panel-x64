@@ -309,7 +309,7 @@ namespace mozjs
 		return jsMonitor_.OnInterrupt();
 	}
 
-	void JsEngine::RejectedPromiseHandler(JSContext*, bool mutedErrors, JS::HandleObject promise, JS::PromiseRejectionHandlingState state, void* data) noexcept
+	void JsEngine::RejectedPromiseHandler(JSContext*, bool, JS::HandleObject promise, JS::PromiseRejectionHandlingState state, void* data) noexcept
 	{
 		JsEngine& self = *reinterpret_cast<JsEngine*>(data);
 

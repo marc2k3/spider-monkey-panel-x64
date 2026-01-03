@@ -23,7 +23,7 @@ namespace smp
 		hTimer_ = pParent_.CreateNativeTimer(shared_from_this());
 	}
 
-	void Timer_Native::Fire(uint64_t generation)
+	void Timer_Native::Fire(int64_t generation)
 	{
 		// Save self, since it can be destroyed in `Notify` callback
 		auto selfSaver = shared_from_this();
@@ -72,7 +72,7 @@ namespace smp
 		return executeAt_;
 	}
 
-	uint64_t Timer_Native::Generation() const
+	int64_t Timer_Native::Generation() const
 	{
 		return generation_;
 	}

@@ -7,5 +7,5 @@ namespace mozjs::convert::com
 	void JsToVariant(JSContext* cx, JS::HandleValue rval, VARIANTARG& arg);
 
 	// assumes that obj is an array
-	void JsArrayToVariantArray(JSContext* cx, JS::HandleObject obj, int elementVariantType, VARIANT& var);
+	void JsArrayToVariantArray(JSContext* cx, JS::HandleObject obj, VARTYPE elementVariantType, VARIANT& var);
 }

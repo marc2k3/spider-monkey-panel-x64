@@ -369,7 +369,7 @@ STDMETHODIMP CDialogHtml::TranslateAccelerator(LPMSG lpMsg, const GUID* pguidCmd
 		return S_OK;
 	}
 
-	auto isSupportedHotKey = [](UINT wm, UINT vk) -> bool
+	auto isSupportedHotKey = [](UINT wm, int vk) -> bool
 		{
 			if (wm != WM_KEYDOWN && wm != WM_KEYUP && wm != WM_SYSKEYDOWN && wm != WM_SYSKEYUP)
 			{
@@ -389,10 +389,10 @@ STDMETHODIMP CDialogHtml::TranslateAccelerator(LPMSG lpMsg, const GUID* pguidCmd
 				0x5A  // Z
 			};
 
-			return (isCtrlPressed && !isShiftPressed && !isAltPressed && allowedCtrlKeys.end() != std::ranges::find(allowedCtrlKeys, vk));
+			return isCtrlPressed && !isShiftPressed && !isAltPressed && allowedCtrlKeys.end() != std::ranges::find(allowedCtrlKeys, vk);
 		};
 
-	if (isSupportedHotKey(lpMsg->message, to_uint(lpMsg->wParam)))
+	if (isSupportedHotKey(lpMsg->message, static_cast<int>(lpMsg->wParam)))
 	{
 		return pDefaultUiHandler_->TranslateAccelerator(lpMsg, pguidCmdGroup, nCmdID);
 	}

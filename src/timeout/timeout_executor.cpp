@@ -76,7 +76,7 @@ namespace smp
 
 		if (targetDeadline <= (now + TimerManager_Native::GetAllowedEarlyFiringTime()))
 		{
-			return ScheduleImmediate(targetDeadline, now);
+			return ScheduleImmediate(targetDeadline);
 		}
 
 		return ScheduleDelayed(targetDeadline, now);
@@ -101,7 +101,7 @@ namespace smp
 		Schedule(targetDeadline);
 	}
 
-	void TimeoutExecutor::ScheduleImmediate(const TimeStamp& targetDeadline, const TimeStamp& now)
+	void TimeoutExecutor::ScheduleImmediate(const TimeStamp& targetDeadline)
 	{
 		EventDispatcher::Get().PutRunnable(pTarget_->GetHwnd(), shared_from_this());
 
@@ -118,7 +118,7 @@ namespace smp
 			// Re-evaluate if we should have scheduled this immediately
 			if (targetDeadline <= (now + TimerManager_Native::GetAllowedEarlyFiringTime()))
 			{
-				return ScheduleImmediate(targetDeadline, now);
+				return ScheduleImmediate(targetDeadline);
 			}
 		}
 		else

@@ -83,7 +83,7 @@ void CConfigTabPackage::Refresh()
 	}
 }
 
-BOOL CConfigTabPackage::OnInitDialog(HWND hwndFocus, LPARAM lParam)
+BOOL CConfigTabPackage::OnInitDialog(HWND, LPARAM)
 {
 	DlgResize_Init(false, true, WS_CHILD);
 
@@ -107,7 +107,7 @@ void CConfigTabPackage::OnDestroy()
 	pFilesListBoxDrop_.Release();
 }
 
-void CConfigTabPackage::OnDdxUiChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CConfigTabPackage::OnDdxUiChange(UINT, int nID, CWindow)
 {
 	if (suppressDdxFromUi_)
 		return;
@@ -137,7 +137,7 @@ void CConfigTabPackage::OnDdxUiChange(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 }
 
-void CConfigTabPackage::OnNewScript(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CConfigTabPackage::OnNewScript(UINT, int, CWindow)
 {
 	try
 	{
@@ -193,7 +193,7 @@ void CConfigTabPackage::OnNewScript(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 }
 
-void CConfigTabPackage::OnAddFile(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CConfigTabPackage::OnAddFile(UINT, int, CWindow)
 {
 	auto path_func = [this](fb2k::stringRef path)
 		{
@@ -204,7 +204,7 @@ void CConfigTabPackage::OnAddFile(UINT uNotifyCode, int nID, CWindow wndCtl)
 	FileDialog::open(m_hWnd, "Add file", "All files|*.*", path_func);
 }
 
-void CConfigTabPackage::OnRemoveFile(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CConfigTabPackage::OnRemoveFile(UINT, int, CWindow)
 {
 	if (files_.empty())
 	{
@@ -228,7 +228,7 @@ void CConfigTabPackage::OnRemoveFile(UINT uNotifyCode, int nID, CWindow wndCtl)
 	DoFullDdxToUi();
 }
 
-void CConfigTabPackage::OnRenameFile(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CConfigTabPackage::OnRenameFile(UINT, int, CWindow)
 {
 	auto filepath = fs::path(files_[focusedFileIdx_]);
 
@@ -256,7 +256,7 @@ void CConfigTabPackage::OnRenameFile(UINT uNotifyCode, int nID, CWindow wndCtl)
 	}
 }
 
-void CConfigTabPackage::OnOpenContainingFolder(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CConfigTabPackage::OnOpenContainingFolder(UINT, int, CWindow)
 {
 	const std::wstring arg = [&] -> std::wstring
 		{
@@ -280,7 +280,7 @@ void CConfigTabPackage::OnOpenContainingFolder(UINT uNotifyCode, int nID, CWindo
 	);
 }
 
-void CConfigTabPackage::OnEditScript(UINT uNotifyCode, int nID, CWindow wndCtl)
+void CConfigTabPackage::OnEditScript(UINT, int, CWindow)
 {
 	try
 	{
@@ -317,7 +317,8 @@ void CConfigTabPackage::OnEditScript(UINT uNotifyCode, int nID, CWindow wndCtl)
 }
 
 void CConfigTabPackage::OnEditScriptWith(UINT uNotifyCode, int nID, CWindow wndCtl)
-{ // TODO: extract common code (see tab_script)
+{
+	// TODO: extract common code (see tab_script)
 	switch (nID)
 	{
 	case ID_EDIT_WITH_EXTERNAL:
@@ -368,7 +369,7 @@ LONG CConfigTabPackage::OnEditScriptDropDown(LPNMHDR pnmh)
 	return 0;
 }
 
-LRESULT CConfigTabPackage::OnScriptSaved(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CConfigTabPackage::OnScriptSaved(UINT, WPARAM, LPARAM)
 {
 	parent_.OnDataChanged();
 	parent_.Apply();
@@ -376,7 +377,7 @@ LRESULT CConfigTabPackage::OnScriptSaved(UINT uMsg, WPARAM wParam, LPARAM lParam
 	return 0;
 }
 
-LRESULT CConfigTabPackage::OnDropFiles(UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CConfigTabPackage::OnDropFiles(UINT, WPARAM wParam, LPARAM lParam)
 {
 	return pFilesListBoxDrop_->ProcessMessage(
 		filesListBox_,
@@ -509,19 +510,20 @@ void CConfigTabPackage::UpdateListBoxFromData()
 	}
 }
 
-void CConfigTabPackage::AddFile(const std::filesystem::path& path)
+void CConfigTabPackage::AddFile(const fs::path& path)
 {
 	try
 	{
-		const auto newPath = [&] {
-			if (path.extension() == ".js")
-			{
-				return packagePath_ / "scripts" / path.filename();
-			}
-			else
-			{
-				return packagePath_ / "assets" / path.filename();
-			}
+		const auto newPath = [&]
+				{
+				if (path.extension() == ".js")
+				{
+					return packagePath_ / "scripts" / path.filename();
+				}
+				else
+				{
+					return packagePath_ / "assets" / path.filename();
+				}
 			}();
 
 		auto lastNewFile = focusedFile_;
@@ -532,14 +534,14 @@ void CConfigTabPackage::AddFile(const std::filesystem::path& path)
 
 			if (fs::exists(newFile))
 			{
-				const int iRet = popup_message_v3::get()->messageBox(
+				const int status = popup_message_v3::get()->messageBox(
 					*this,
 					fmt::format("File already exists:\n{}\n\nDo you want to rewrite it?", newFile.u8string()).c_str(),
 					"Adding file",
 					MB_YESNO | MB_ICONWARNING
 				);
 
-				if (IDYES != iRet)
+				if (IDYES != status)
 				{
 					continue;
 				}

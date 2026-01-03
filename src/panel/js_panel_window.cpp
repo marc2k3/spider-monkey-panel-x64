@@ -917,7 +917,7 @@ namespace smp
 		}
 	}
 
-	std::optional<LRESULT> js_panel_window::ProcessInternalSyncMessage(InternalSyncMessage msg, WPARAM wp, LPARAM lp)
+	std::optional<LRESULT> js_panel_window::ProcessInternalSyncMessage(InternalSyncMessage msg, WPARAM, LPARAM lp)
 	{
 		if (!pJsContainer_)
 			return std::nullopt;
@@ -1043,7 +1043,7 @@ namespace smp
 		}
 	}
 
-	void js_panel_window::GenerateContextMenu(HMENU hMenu, int x, int y, size_t id_base)
+	void js_panel_window::GenerateContextMenu(HMENU hMenu, size_t id_base)
 	{
 		namespace fs = std::filesystem;
 
@@ -1432,7 +1432,7 @@ namespace smp
 
 		CMenu menu = CreatePopupMenu();
 		constexpr uint32_t base_id = 0;
-		GenerateContextMenu(menu, p.x, p.y, base_id);
+		GenerateContextMenu(menu, base_id);
 
 		const uint32_t ret = menu.TrackPopupMenu(TPM_RIGHTBUTTON | TPM_NONOTIFY | TPM_RETURNCMD, p.x, p.y, wnd_, nullptr);
 		ExecuteContextMenu(ret, base_id);

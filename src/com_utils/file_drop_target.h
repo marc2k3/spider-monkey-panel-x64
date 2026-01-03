@@ -12,7 +12,7 @@ namespace smp::com
 		static UINT GetOnDropMsg();
 
 		template <typename T>
-		static LRESULT ProcessMessage(HWND hDropWnd, WPARAM wParam, LPARAM lParam, T processor)
+		static LRESULT ProcessMessage(HWND, WPARAM, LPARAM lParam, T processor)
 		{
 			auto pDataObj = reinterpret_cast<IDataObject*>(lParam);
 			const auto autoDrop = wil::scope_exit([pDataObj]

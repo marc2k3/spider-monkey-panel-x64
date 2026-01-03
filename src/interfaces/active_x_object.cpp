@@ -370,7 +370,7 @@ namespace mozjs
 		return 0;
 	}
 
-	void JsActiveXObject::PostCreate(JSContext* cx, JS::HandleObject self)
+	void JsActiveXObject::PostCreate(JSContext*, JS::HandleObject self)
 	{
 		auto pNative = JsActiveXObject::ExtractNativeUnchecked(self);
 		return pNative->SetupMembers(self);
@@ -394,7 +394,7 @@ namespace mozjs
 		QwrException::ExpectTrue(is, "Object is not an array");
 
 		_variant_t var;
-		convert::com::JsArrayToVariantArray(cx, jsObjectIn, elementVariantType, var);
+		convert::com::JsArrayToVariantArray(cx, jsObjectIn, static_cast<VARTYPE>(elementVariantType), var);
 
 		std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(cx, var));
 		JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::move(x)));

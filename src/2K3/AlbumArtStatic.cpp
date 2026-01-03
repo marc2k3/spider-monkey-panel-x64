@@ -20,7 +20,7 @@ HRESULT AlbumArtStatic::to_istream(const album_art_data_ptr& data, wil::com_ptr<
 
 AlbumArtStatic::Type AlbumArtStatic::get_type(size_t type_id) noexcept
 {
-	return *types[type_id];
+	return *s_types[type_id];
 }
 
 album_art_data_ptr AlbumArtStatic::get(const metadb_handle_ptr& handle, size_t type_id, bool want_stub, bool only_embed, std::string& path) noexcept
@@ -117,7 +117,7 @@ album_art_data_ptr AlbumArtStatic::to_data(std::wstring_view path) noexcept
 
 bool AlbumArtStatic::check_type_id(size_t type_id) noexcept
 {
-	return type_id < types.size();
+	return type_id < s_types.size();
 }
 
 std::unique_ptr<Gdiplus::Bitmap> AlbumArtStatic::to_bitmap(const album_art_data_ptr& data) noexcept

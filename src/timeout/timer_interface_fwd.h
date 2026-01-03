@@ -23,10 +23,10 @@ namespace smp
 		virtual void Start(TimerNotifyTask& task, const TimeStamp& when) = 0;
 		virtual void Cancel(bool waitForDestruction) = 0;
 
-		virtual void Fire(uint64_t generation) = 0;
+		virtual void Fire(int64_t generation) = 0;
 
 		[[nodiscard]] virtual PanelTarget& Target() const = 0;
 		[[nodiscard]] virtual const TimeStamp& When() const = 0;
-		[[nodiscard]] virtual uint64_t Generation() const = 0;
+		[[nodiscard]] virtual int64_t Generation() const = 0;
 	};
 }

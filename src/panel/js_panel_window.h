@@ -86,7 +86,7 @@ namespace smp
 		void ShowConfigure(HWND parent, CDialogConf::Tab tab = CDialogConf::Tab::def);
 		void ShowProperties(HWND parent);
 
-		void GenerateContextMenu(HMENU hMenu, int x, int y, size_t id_base);
+		void GenerateContextMenu(HMENU hMenu, size_t id_base);
 		void ExecuteContextMenu(size_t id, size_t id_base);
 
 	private:
