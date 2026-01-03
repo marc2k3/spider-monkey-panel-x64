@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "panel_config.h"
 
 #include <utils/guid_helpers.h>

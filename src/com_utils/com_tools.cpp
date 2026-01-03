@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "com_tools.h"
 
 namespace internal

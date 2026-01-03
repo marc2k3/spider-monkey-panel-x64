@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_realm_inner.h"
 
 namespace mozjs

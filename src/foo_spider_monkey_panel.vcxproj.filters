@@ -34,8 +34,6 @@
     <ClCompile Include="panel\js_panel_window_dui.cpp">
       <Filter>panel</Filter>
     </ClCompile>
-    <ClCompile Include="initquit.cpp" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="config\panel_config.cpp">
       <Filter>config</Filter>
     </ClCompile>
@@ -60,7 +58,6 @@
     <ClCompile Include="ui\ui_package_manager.cpp">
       <Filter>ui</Filter>
     </ClCompile>
-    <ClCompile Include="component_paths.cpp" />
     <ClCompile Include="utils\guid_helpers.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -175,7 +172,6 @@
     <ClCompile Include="2K3\PlaylistLock.cpp">
       <Filter>2K3</Filter>
     </ClCompile>
-    <ClCompile Include="component_defines.cpp" />
     <ClCompile Include="2K3\ContextMenuCommand.cpp">
       <Filter>2K3</Filter>
     </ClCompile>
@@ -392,6 +388,10 @@
     <ClCompile Include="js_backend\js_error_scope.cpp">
       <Filter>js_backend</Filter>
     </ClCompile>
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="InitQuit.cpp" />
+    <ClCompile Include="Paths.cpp" />
+    <ClCompile Include="PCH.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ui\ui_input_box.h">
@@ -433,9 +433,6 @@
     <ClInclude Include="utils\js_exception.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="component_guids.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="component_defines.h" />
     <ClInclude Include="config\panel_config.h">
       <Filter>config</Filter>
     </ClInclude>
@@ -463,7 +460,6 @@
     <ClInclude Include="resources\resource.h">
       <Filter>resources</Filter>
     </ClInclude>
-    <ClInclude Include="component_paths.h" />
     <ClInclude Include="utils\guid_helpers.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -614,7 +610,6 @@
     <ClInclude Include="com_utils\track_drop_target.h">
       <Filter>com_utils</Filter>
     </ClInclude>
-    <ClInclude Include="mozjs.hpp" />
     <ClInclude Include="interfaces\context_menu_manager.h">
       <Filter>interfaces</Filter>
     </ClInclude>
@@ -849,6 +844,11 @@
     <ClInclude Include="2K3\EstimateLineWrap.hpp">
       <Filter>2K3</Filter>
     </ClInclude>
+    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="GUIDS.hpp" />
+    <ClInclude Include="MozJS.hpp" />
+    <ClInclude Include="Paths.hpp" />
+    <ClInclude Include="PCH.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">

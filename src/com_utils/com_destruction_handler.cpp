@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "com_destruction_handler.h"
 
 namespace

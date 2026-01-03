@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "cached_utf8_paths_hack.h"
 
 namespace mozjs::hack

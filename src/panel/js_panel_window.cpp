@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_panel_window.h"
 #include "edit_script.h"
 #include "modal_blocking_scope.h"

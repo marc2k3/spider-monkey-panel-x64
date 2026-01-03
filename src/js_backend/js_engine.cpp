@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_engine.h"
 
 #include "js_error_scope.h"

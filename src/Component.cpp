@@ -1,5 +1,5 @@
-#include <stdafx.h>
-#include "component_defines.h"
+#include "PCH.hpp"
+#include "Component.hpp"
 
 namespace
 {

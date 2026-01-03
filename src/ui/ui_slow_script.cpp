@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "ui_slow_script.h"
 
 CDialogSlowScript::CDialogSlowScript(const std::string& panelName, const std::string& scriptInfo, CDialogSlowScript::Data& data)

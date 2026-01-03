@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "ui_conf_tab_script_source.h"
 #include "../ui_package_manager.h"
 

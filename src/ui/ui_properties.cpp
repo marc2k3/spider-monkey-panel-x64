@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "ui_properties.h"
 
 #include <2K3/Scintilla/DialogEditor.hpp>

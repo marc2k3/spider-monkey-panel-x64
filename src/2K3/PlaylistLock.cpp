@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "PlaylistLock.hpp"
 #include <utils/guid_helpers.h>
 

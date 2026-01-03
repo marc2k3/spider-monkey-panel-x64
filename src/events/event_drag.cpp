@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "event_drag.h"
 
 #include <com_utils/com_destruction_handler.h>

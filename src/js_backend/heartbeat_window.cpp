@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "heartbeat_window.h"
 
 #include <panel/user_message.h>

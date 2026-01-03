@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "gdi_error_helpers.h"
 
 namespace smp

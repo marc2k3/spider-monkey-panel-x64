@@ -1,5 +1,5 @@
-#include <stdafx.h>
-#include "component_paths.h"
+#include "PCH.hpp"
+#include "Paths.hpp"
 
 namespace smp::path
 {

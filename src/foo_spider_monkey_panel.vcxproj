@@ -63,6 +63,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
@@ -112,8 +113,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="callbacks\PlaylistCallbackStatic.cpp" />
     <ClCompile Include="callbacks\ReplaygainCoreSettingsNotify.cpp" />
     <ClCompile Include="callbacks\UISelectionCallback.cpp" />
-    <ClCompile Include="component_defines.cpp" />
-    <ClCompile Include="component_paths.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="com_utils\com_destruction_handler.cpp" />
     <ClCompile Include="com_utils\com_error_helpers.cpp" />
     <ClCompile Include="com_utils\com_tools.cpp" />
@@ -128,13 +128,13 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="config\package_utils.cpp" />
     <ClCompile Include="config\panel_config.cpp" />
     <ClCompile Include="config\parsed_panel_config.cpp" />
-    <ClCompile Include="initquit.cpp" />
     <ClCompile Include="events\event.cpp" />
     <ClCompile Include="events\event_drag.cpp" />
     <ClCompile Include="events\event_dispatcher.cpp" />
     <ClCompile Include="events\event_mouse.cpp" />
     <ClCompile Include="events\event_notify_others.cpp" />
     <ClCompile Include="events\task_controller.cpp" />
+    <ClCompile Include="InitQuit.cpp" />
     <ClCompile Include="interfaces\active_x_object.cpp" />
     <ClCompile Include="interfaces\active_x_object_iterator.cpp" />
     <ClCompile Include="interfaces\context_menu_manager.cpp" />
@@ -188,9 +188,9 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="panel\js_panel_window_cui.cpp" />
     <ClCompile Include="panel\js_panel_window_dui.cpp" />
     <ClCompile Include="panel\modal_blocking_scope.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Paths.cpp" />
+    <ClCompile Include="PCH.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="timeout\timeout.cpp" />
     <ClCompile Include="timeout\timeout_executor.cpp" />
@@ -254,9 +254,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\String.hpp" />
     <ClInclude Include="2K3\TagWriter.hpp" />
     <ClInclude Include="2K3\TextFile.hpp" />
-    <ClInclude Include="component_defines.h" />
-    <ClInclude Include="component_guids.h" />
-    <ClInclude Include="component_paths.h" />
+    <ClInclude Include="Component.hpp" />
     <ClInclude Include="com_utils\com_destruction_handler.h" />
     <ClInclude Include="com_utils\com_error_helpers.h" />
     <ClInclude Include="com_utils\com_tools.h" />
@@ -281,6 +279,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="events\event_mouse.h" />
     <ClInclude Include="events\event_notify_others.h" />
     <ClInclude Include="events\task_controller.h" />
+    <ClInclude Include="GUIDS.hpp" />
     <ClInclude Include="interfaces\active_x_object.h" />
     <ClInclude Include="interfaces\active_x_object_iterator.h" />
     <ClInclude Include="interfaces\context_menu_manager.h" />
@@ -331,7 +330,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="js_backend\native_to_js_invoker.h" />
     <ClInclude Include="js_backend\object_base.h" />
     <ClInclude Include="js_backend\prototype_ids.h" />
-    <ClInclude Include="mozjs.hpp" />
+    <ClInclude Include="MozJS.hpp" />
     <ClInclude Include="namespaces\console.h" />
     <ClInclude Include="namespaces\fb.h" />
     <ClInclude Include="namespaces\gdi.h" />
@@ -343,8 +342,9 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="panel\js_panel_window.h" />
     <ClInclude Include="panel\modal_blocking_scope.h" />
     <ClInclude Include="panel\user_message.h" />
+    <ClInclude Include="Paths.hpp" />
+    <ClInclude Include="PCH.hpp" />
     <ClInclude Include="resources\resource.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="timeout\timeout.h" />
     <ClInclude Include="timeout\timeout_executor.h" />
     <ClInclude Include="timeout\timeout_manager.h" />

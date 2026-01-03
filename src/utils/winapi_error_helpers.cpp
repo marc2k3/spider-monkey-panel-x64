@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "winapi_error_helpers.h"
 
 namespace

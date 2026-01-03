@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "ui_input_box.h"
 
 CInputBox::CInputBox(std::string_view prompt, std::string_view caption, std::string_view value)

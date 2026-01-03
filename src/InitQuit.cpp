@@ -1,4 +1,5 @@
-#include <stdafx.h>
+#include "PCH.hpp"
+
 #include <2K3/PlaylistLock.hpp>
 #include <config/delayed_package_utils.h>
 #include <events/event_dispatcher.h>

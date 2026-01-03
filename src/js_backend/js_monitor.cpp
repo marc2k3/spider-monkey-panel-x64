@@ -1,6 +1,6 @@
 // A lot of logic ripped from <js/xpconnect/src/XPCJSContext.cpp>
 
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_monitor.h"
 
 #include <config/advanced_config.h>

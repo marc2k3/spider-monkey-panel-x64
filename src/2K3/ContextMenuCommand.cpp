@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "ContextMenuCommand.hpp"
 
 #include <utils/menu_helpers.h>

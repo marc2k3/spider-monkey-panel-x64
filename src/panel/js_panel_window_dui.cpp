@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_panel_window.h"
 
 #include <utils/colour_helpers.h>

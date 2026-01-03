@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "drop_target_impl.h"
 
 _COM_SMARTPTR_TYPEDEF(IDropTargetHelper, IID_IDropTargetHelper);

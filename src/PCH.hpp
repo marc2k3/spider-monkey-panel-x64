@@ -114,9 +114,10 @@ using JSON = nlohmann::json;
 
 #include <2K3/Helpers.hpp>
 #include <2K3/String.hpp>
-#include <component_defines.h>
-#include <component_guids.h>
-#include <component_paths.h>
+
+#include "Component.hpp"
+#include "GUIDS.hpp"
+#include "Paths.hpp"
 
 // Mozilla SpiderMonkey
-#include "mozjs.hpp"
+#include "MozJS.hpp"

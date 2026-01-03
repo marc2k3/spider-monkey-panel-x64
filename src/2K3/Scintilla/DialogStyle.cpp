@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "DialogStyle.hpp"
 #include "../FileDialog.hpp"
 

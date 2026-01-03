@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "menu_helpers.h"
 #include "guid_helpers.h"
 

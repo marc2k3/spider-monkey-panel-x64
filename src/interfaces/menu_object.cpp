@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "menu_object.h"
 
 #include <panel/modal_blocking_scope.h>

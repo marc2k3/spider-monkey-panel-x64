@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "modal_blocking_scope.h"
 
 namespace

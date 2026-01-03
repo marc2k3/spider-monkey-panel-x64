@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "fb_profiler.h"
 
 using namespace smp;

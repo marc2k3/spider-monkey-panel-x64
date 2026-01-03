@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_error_helper.h"
 
 #include "cached_utf8_paths_hack.h"

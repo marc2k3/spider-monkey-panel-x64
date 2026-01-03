@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "file_drop_target.h"
 
 namespace smp::com

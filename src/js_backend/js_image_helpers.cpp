@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_image_helpers.h"
 
 #include "js_async_task.h"

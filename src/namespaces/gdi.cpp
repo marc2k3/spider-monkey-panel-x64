@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "gdi.h"
 
 #include <2K3/FileHelper.hpp>

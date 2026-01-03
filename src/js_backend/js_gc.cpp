@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include <PCH.hpp>
 #include "js_gc.h"
 
 #include <config/advanced_config.h>
