@@ -8,19 +8,19 @@ License: https://github.com/marc2k3/spider-monkey-panel-x64/blob/main/LICENSE.md
 
 Third party licenses: https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/component/licenses
 
-# Requirements
+## Requirements
 As per the repository name, only 64bit foobar2000 is supported.
 
 Many included samples require the installation of [FontAwesome](https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/4.x/fonts/fontawesome-webfont.ttf)
 
-# Download
+## Download
 https://github.com/marc2k3/spider-monkey-panel-x64/releases
 
-# Build instructions
+## Build instructions
 See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/BUILDING.md).
 
-# API changes
+## API changes
 See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/api.md).
 
-# Changelog
+## Changelog
 See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/CHANGELOG.md).
