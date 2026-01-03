@@ -97,7 +97,7 @@ Returns the index or `-1` on failure. Only strings returned by `plman.GetGUID` w
 
 Returns a `string` which is a unique persistent property of the playlist.
 
-## `utils.DownloadFileAsync(url, path[, verify_image])`
+## `utils.DownloadFileAsync(url, path)`
 |Arguments|||
 |---|---|---|
 |url|`string`|The remote file you want to download.|
