@@ -27,7 +27,7 @@ See [Web Requests](web-requests.md) for examples.
 ## `on_library_items_changed(handle_list, fromhook)`
 |Arguments|||
 |---|---|---|
-|handle_list|[IMetadbHandleList](../interfaces/IMetadbHandleList.md)|
+|handle_list|[`FbMetadbHandleList`)|
 |fromhook|`boolean`|`true` if changes comes from `Playback Statistics` or other components that utilise the same DB functionality.|
 
 This callback has always existed but the `fromhook` argument is new. May be useful if you want to ignore playback statistics or similar updates in a library viewer.
@@ -41,7 +41,20 @@ This callback has always existed but the `fromhook` argument is new. May be usef
 Called when thread created by `fb.AddLocationsAsync` is done.
 
 # Methods
-// TODO
+## `utils.DownloadFileAsync(window_id, url, path[, verify_image])`
+|Arguments|||
+|---|---|---|
+|url|`string`|The remote file you want to download.|
+|path|`string`|Full path including extension. The parent folder must already exist.|
+
+No return value.
+
+See also: [on_download_image_done](#on_download_image_doneurl-image).
+
+> [!IMPORTANT]  
+> You must ensure none of the folders in the `path` end with a period character.
 
 # Properties
-|window.IsDark|boolean|Should be used with `on_colours_changed`|
+|||||
+|---|---|---|---|
+|window.IsDark|`boolean`|`read`|Should be used with `on_colours_changed`|
