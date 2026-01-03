@@ -19,7 +19,7 @@ https://github.com/marc2k3/spider-monkey-panel-x64/releases
 # Build instructions
 See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/BUILDING.md).
 
-# New / changed features
+# API changes
 See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/api.md).
 
 # Changelog
