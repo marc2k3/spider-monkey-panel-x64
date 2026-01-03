@@ -1,8 +1,6 @@
 #include <PCH.hpp>
 #include "console.h"
 
-using namespace smp;
-
 namespace
 {
 	constexpr uint32_t kMaxLogDepth = 20;
@@ -178,35 +176,27 @@ namespace
 		return output;
 	}
 
-	std::optional<std::string> ParseLogArgs(JSContext* ctx, JS::CallArgs& args)
+	void LogImpl(JSContext* ctx, unsigned argc, JS::Value* vp)
 	{
-		if (!args.length())
-			return std::nullopt;
+		auto args = JS::CallArgsFromVp(argc, vp);
+		const auto count = args.length();
 
-		Strings parts;
-		JS::RootedObjectVector curObjects(ctx);
-		uint32_t logDepth{};
-
-		for (auto i = 0u; i < args.length(); ++i)
+		if (count > 0)
 		{
-			const auto part = ParseJsValue(ctx, args[i], &curObjects, logDepth, false);
-			parts.emplace_back(part);
+			JS::RootedObjectVector curObjects(ctx);
+			Strings parts;
+			uint32_t logDepth{};
+
+			for (const auto i : indices(count))
+			{
+				const auto part = ParseJsValue(ctx, args[i], &curObjects, logDepth, false);
+				parts.emplace_back(part);
+			}
+
+			FB2K_console_formatter() << fmt::format("{}", fmt::join(parts, " ")).c_str();
 		}
 
-		return fmt::format("{}", fmt::join(parts, " "));
-	}
-
-	bool LogImpl(JSContext* ctx, unsigned argc, JS::Value* vp)
-	{
-		JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-
-		auto output = ParseLogArgs(ctx, args);
 		args.rval().setUndefined();
-
-		if (output)
-			console::info(output->c_str());
-
-		return true;
 	}
 
 	MJS_DEFINE_JS_FN(Log, LogImpl)
