@@ -52,20 +52,19 @@ Returns a unique `task_id`.
 Similar to `plman.AddLocations` except rather than specifiying a target playlist, you get a handle list generated
 from the supplied paths/urls which are sent to a new [on_locations_added](#on_locations_addedtask_id-handle_list) callback.
 
-!!! example
-	```js
-	var files = ["z:\\1.mp3", "z:\\2.flac"];
+```js
+var files = ["z:\\1.mp3", "z:\\2.flac"];
 
-	function on_mouse_lbtn_dblclk() {
-		var task_id = fb.AddLocationsAsync(files);
-		console.log("got task_id", task_id);
-	}
+function on_mouse_lbtn_dblclk() {
+	var task_id = fb.AddLocationsAsync(files);
+	console.log("got task_id", task_id);
+}
 
-	function on_locations_added(task_id, handle_list) {
-		console.log("callback task_id", task_id);
-		console.log(handle_list.Count);
-	}
-	```
+function on_locations_added(task_id, handle_list) {
+	console.log("callback task_id", task_id);
+	console.log(handle_list.Count);
+}
+```
 
 ## `fb.GetAudioChunk(requested_length[, offset])`
 |Arguments|||
