@@ -63,8 +63,8 @@ namespace smp
 		[[nodiscard]] uint32_t& DlgCode();
 		[[nodiscard]] PanelType GetPanelType() const;
 
-		virtual DWORD GetColour(const GUID& guid, uint32_t type = 0U) = 0;
-		virtual JSObject* GetFont(JSContext* cx, const GUID& guid, uint32_t type = 0U) = 0;
+		virtual DWORD GetColour(uint32_t type) = 0;
+		virtual LOGFONT GetFont(uint32_t type) = 0;
 		virtual void NotifySizeLimitChanged() = 0;
 
 		void SetSettings_ScriptInfo(const std::string& scriptName, const std::string& scriptAuthor, const std::string& scriptVersion);

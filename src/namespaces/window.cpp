@@ -145,9 +145,9 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(DefinePanel, Window::DefinePanel, Window::DefinePanelWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(DefineScript, Window::DefineScript, Window::DefineScriptWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(EditScript, Window::EditScript)
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetColourCUI, Window::GetColourCUI, Window::GetColourCUIWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetColourCUI, Window::GetColourCUI)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetColourDUI, Window::GetColourDUI)
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetFontCUI, Window::GetFontCUI, Window::GetFontCUIWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFontCUI, Window::GetFontCUI)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFontDUI, Window::GetFontDUI)
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetProperty, Window::GetProperty, Window::GetPropertyWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(NotifyOthers, Window::NotifyOthers)
@@ -442,7 +442,7 @@ namespace mozjs
 		EventDispatcher::Get().PutEvent(m_parent.GetHWND(), std::make_unique<Event_Basic>(EventId::kScriptEdit), EventPriority::kControl);
 	}
 
-	uint32_t Window::GetColourCUI(uint32_t type, const std::wstring& guidstr)
+	uint32_t Window::GetColourCUI(uint32_t type)
 	{
 		if (m_isFinalized)
 		{
@@ -452,52 +452,23 @@ namespace mozjs
 		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelType::CUI, "Can be called only in CUI");
 		QwrException::ExpectTrue(type <= cui::colours::colour_active_item_frame, "Invalid colour type specified");
 
-		GUID guid{};
-
-		if (!guidstr.empty())
-		{
-			HRESULT hr = CLSIDFromString(guidstr.c_str(), &guid);
-			smp::CheckHR(hr, "CLSIDFromString");
-		}
-
-		return m_parent.GetColour(guid, type);
-	}
-
-	uint32_t Window::GetColourCUIWithOpt(size_t optArgCount, uint32_t type, const std::wstring& guidstr)
-	{
-		switch (optArgCount)
-		{
-		case 0:
-			return GetColourCUI(type, guidstr);
-		case 1:
-			return GetColourCUI(type);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
-		}
+		return m_parent.GetColour(type);
 	}
 
 	uint32_t Window::GetColourDUI(uint32_t type)
 	{
-		static constexpr std::array guids =
-		{
-			&ui_color_text,
-			&ui_color_background,
-			&ui_color_highlight,
-			&ui_color_selection,
-		};
-
 		if (m_isFinalized)
 		{
 			return 0;
 		}
 
 		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelType::DUI, "Can be called only in DUI");
-		QwrException::ExpectTrue(type < guids.size(), "Invalid colour type specified");
+		QwrException::ExpectTrue(type < 4u, "Invalid colour type specified");
 
-		return m_parent.GetColour(*guids[type]);
+		return m_parent.GetColour(type);
 	}
 
-	JSObject* Window::GetFontCUI(uint32_t type, const std::wstring& guidstr)
+	JSObject* Window::GetFontCUI(uint32_t type)
 	{
 		if (m_isFinalized)
 		{
@@ -507,51 +478,22 @@ namespace mozjs
 		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelType::CUI, "Can be called only in CUI");
 		QwrException::ExpectTrue(type <= cui::fonts::font_type_labels, "Invalid font type specified");
 
-		GUID guid{};
-
-		if (!guidstr.empty())
-		{
-			HRESULT hr = CLSIDFromString(guidstr.c_str(), &guid);
-			smp::CheckHR(hr, "CLSIDFromString");
-		}
-
-		return m_parent.GetFont(m_ctx, guid, type);
-	}
-
-	JSObject* Window::GetFontCUIWithOpt(size_t optArgCount, uint32_t type, const std::wstring& guidstr)
-	{
-		switch (optArgCount)
-		{
-		case 0:
-			return GetFontCUI(type, guidstr);
-		case 1:
-			return GetFontCUI(type);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
-		}
+		auto lf = m_parent.GetFont(type);
+		return JsGdiFont::CreateJs(m_ctx, lf);
 	}
 
 	JSObject* Window::GetFontDUI(uint32_t type)
 	{
-		static constexpr std::array guids =
-		{
-			&ui_font_default,
-			&ui_font_tabs,
-			&ui_font_lists,
-			&ui_font_playlists,
-			&ui_font_statusbar,
-			&ui_font_console,
-		};
-
 		if (m_isFinalized)
 		{
 			return nullptr;
 		}
 
 		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelType::DUI, "Can be called only in DUI");
-		QwrException::ExpectTrue(type < guids.size(), "Invalid font type specified");
+		QwrException::ExpectTrue(type < 6u, "Invalid font type specified");
 
-		return m_parent.GetFont(m_ctx, *guids[type]);
+		auto lf = m_parent.GetFont(type);
+		return JsGdiFont::CreateJs(m_ctx, lf);
 	}
 
 	JS::Value Window::GetProperty(const std::wstring& name, JS::HandleValue defaultval)

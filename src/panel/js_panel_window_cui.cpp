@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "js_panel_window.h"
 
-#include <interfaces/gdi_font.h>
 #include <utils/colour_helpers.h>
 
 namespace smp
@@ -9,23 +8,19 @@ namespace smp
 	class js_panel_window_cui : public js_panel_window, public uie::container_uie_window_v3
 	{
 	protected:
-		DWORD GetColour(const GUID& guid, uint32_t type) final
+		DWORD GetColour(uint32_t type) final
 		{
-			const auto colour = cui::colours::helper(guid).get_colour(static_cast<cui::colours::colour_identifier_t>(type));
+			const auto type_enum = static_cast<cui::colours::colour_identifier_t>(type);
+			const auto colour = cui::colours::helper().get_colour(type_enum);
 			return smp::ColorrefToArgb(colour);
 		}
 
-		JSObject* GetFont(JSContext* cx, const GUID& guid, uint32_t type) final
+		LOGFONT GetFont(uint32_t type) final
 		{
 			LOGFONT lf{};
-			auto api = fb2k::std_api_get<cui::fonts::manager>();
-
-			if (guid != pfc::guid_null)
-				api->get_font(guid, lf);
-			else
-				api->get_font(static_cast<cui::fonts::font_type_t>(type), lf);
-
-			return mozjs::JsGdiFont::CreateJs(cx, lf);
+			const auto type_enum = static_cast<cui::fonts::font_type_t>(type);
+			fb2k::std_api_get<cui::fonts::manager>()->get_font(type_enum, lf);
+			return lf;
 		}
 
 		void NotifySizeLimitChanged() final

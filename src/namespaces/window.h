@@ -33,11 +33,9 @@ namespace mozjs
 		void DefineScript(const std::string& name, JS::HandleValue options = JS::UndefinedHandleValue);
 		void DefineScriptWithOpt(size_t optArgCount, const std::string& name, JS::HandleValue options = JS::UndefinedHandleValue);
 		void EditScript();
-		uint32_t GetColourCUI(uint32_t type, const std::wstring& guidstr = L"");
-		uint32_t GetColourCUIWithOpt(size_t optArgCount, uint32_t type, const std::wstring& guidstr);
+		uint32_t GetColourCUI(uint32_t type);
 		uint32_t GetColourDUI(uint32_t type);
-		JSObject* GetFontCUI(uint32_t type, const std::wstring& guidstr = L"");
-		JSObject* GetFontCUIWithOpt(size_t optArgCount, uint32_t type, const std::wstring& guidstr);
+		JSObject* GetFontCUI(uint32_t type);
 		JSObject* GetFontDUI(uint32_t type);
 		JS::Value GetProperty(const std::wstring& name, JS::HandleValue defaultval = JS::NullHandleValue);
 		JS::Value GetPropertyWithOpt(size_t optArgCount, const std::wstring& name, JS::HandleValue defaultval);

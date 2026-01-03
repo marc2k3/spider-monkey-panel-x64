@@ -1,7 +1,6 @@
 #include <stdafx.h>
 #include "js_panel_window.h"
 
-#include <interfaces/gdi_font.h>
 #include <utils/colour_helpers.h>
 
 namespace smp
@@ -10,17 +9,37 @@ namespace smp
 	{
 #pragma region js_panel_window
 	protected:
-		DWORD GetColour(const GUID& guid, uint32_t) final
+		DWORD GetColour(uint32_t type) final
 		{
+			static constexpr std::array guids =
+			{
+				&ui_color_text,
+				&ui_color_background,
+				&ui_color_highlight,
+				&ui_color_selection,
+			};
+
+			const auto guid = *guids[type];
 			const auto colour = uiCallback_->query_std_color(guid);
 			return smp::ColorrefToArgb(colour);
 		}
 
-		JSObject* GetFont(JSContext* cx, const GUID& guid, uint32_t) final
+		LOGFONT GetFont(uint32_t type) final
 		{
-			LOGFONT lf;
+			static constexpr std::array guids =
+			{
+				&ui_font_default,
+				&ui_font_tabs,
+				&ui_font_lists,
+				&ui_font_playlists,
+				&ui_font_statusbar,
+				&ui_font_console,
+			};
+
+			LOGFONT lf{};
+			const auto guid = *guids[type];
 			CFontHandle(uiCallback_->query_font_ex(guid)).GetLogFont(&lf);
-			return mozjs::JsGdiFont::CreateJs(cx, lf);
+			return lf;
 		}
 
 		void NotifySizeLimitChanged() final
