@@ -13,6 +13,12 @@ As per the repository name, only 64bit foobar2000 is supported.
 
 Many included samples require the installation of [FontAwesome](https://github.com/FortAwesome/Font-Awesome/raw/refs/heads/4.x/fonts/fontawesome-webfont.ttf)
 
+# Download
+https://github.com/marc2k3/spider-monkey-panel-x64/releases
+
+# Build instructions
+See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/BUILDING.md)
+
 # Changelog
 
 ## 1.7.26.1.2
@@ -124,10 +130,10 @@ window.GetColourDUI
 window.GetFontCUI
 window.GetFontDUI
 ```
-- Add [build](BUILDING.md) instructions.
+- Add [build](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/BUILDING.md) instructions.
 
 ## 1.6.2.25.06.21
-- Add utils.HTTPRequestAsync. See [web requests](web-requests.md).
+- Add utils.HTTPRequestAsync. See [web requests](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/web-requests.md).
 
 ## 1.6.2.25.06.17
 - Various bug fixes.
