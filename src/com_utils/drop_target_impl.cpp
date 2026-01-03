@@ -22,7 +22,7 @@ namespace
 
 	void log_dnd_error(std::string_view what)
 	{
-		FB2K_console_formatter() << fmt::format("{}: DnD initialization failed:\n {}", SMP_NAME, what);
+		Component::log("DnD initialization failed:\n {}", what);
 	}
 }
 

@@ -55,7 +55,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			FB2K_console_formatter() << fmt::format("{} error: {}", SMP_NAME, e.what());
+			Component::log("Error: {}", e.what());
 			return nullptr;
 		}
 

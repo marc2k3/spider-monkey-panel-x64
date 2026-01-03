@@ -1317,7 +1317,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			FB2K_console_formatter() << fmt::format("{} warning: {}", SMP_NAME, e.what());
+			Component::log("Warning: ", e.what());
 		}
 
 		DynamicMainMenuManager::Get().RegisterPanel(wnd_, settings_.panelId);
@@ -1353,10 +1353,8 @@ namespace smp
 
 		pTimeoutManager_->SetLoadingStatus(false);
 
-		FB2K_console_formatter() << fmt::format(
-			SMP_NAME_WITH_VERSION " ({}): initialized in {} ms",
-			GetPanelDescription(),
-			static_cast<uint32_t>(timer.query() * 1000));
+		const auto ms = static_cast<uint32_t>(timer.query() * 1000);
+		Component::log ("{} initialized in {} ms", GetPanelDescription(), ms);
 
 		if (!isFirstLoad)
 		{ // Reloading script won't trigger WM_SIZE, so invoke it explicitly.
