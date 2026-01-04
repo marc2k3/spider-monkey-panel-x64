@@ -49,6 +49,8 @@ namespace smp
 #pragma endregion
 
 	public:
+		DECLARE_WND_CLASS_EX(L"smp_x64_class_dui", CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS, -1);
+
 		js_panel_window_dui(ui_element_config::ptr cfg, ui_element_instance_callback::ptr callback) : js_panel_window(PanelType::DUI), uiCallback_(callback)
 		{
 			set_configuration(cfg);

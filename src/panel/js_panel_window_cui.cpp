@@ -7,6 +7,7 @@ namespace smp
 {
 	class js_panel_window_cui : public js_panel_window, public uie::container_uie_window_v3
 	{
+#pragma region js_panel_window
 	protected:
 		DWORD GetColour(uint32_t type) final
 		{
@@ -27,6 +28,7 @@ namespace smp
 		{
 			get_host()->on_size_limit_change(GetHWND(), uie::size_limit_all);
 		}
+#pragma endregion
 
 	public:
 		js_panel_window_cui() : js_panel_window(PanelType::CUI) {}
@@ -89,7 +91,7 @@ namespace smp
 
 		uie::container_window_v3_config get_window_config() final
 		{
-			return { TEXT(SMP_WINDOW_CLASS_NAME), false, CS_DBLCLKS };
+			return { L"smp_x64_class_cui", false, CS_DBLCLKS };
 		}
 	};
 

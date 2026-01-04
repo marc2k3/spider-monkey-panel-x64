@@ -2,7 +2,6 @@
 
 #define SMP_NAME              "Spider Monkey Panel"
 #define SMP_UNDERSCORE_NAME   "foo_spider_monkey_panel"
-#define SMP_WINDOW_CLASS_NAME SMP_UNDERSCORE_NAME "_class"
 #define SMP_DLL_NAME          SMP_UNDERSCORE_NAME ".dll"
 
 #define SMP_VERSION "1.7.26.1.2"
