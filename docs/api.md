@@ -10,7 +10,7 @@ valid and can still be used as a reference. This page documents new features add
 |success|`boolean`|If `true` it means the web request was succesful and the file was saved correctly.|
 |error_text|`string`|Empty if success is `true`. If success is `false`, it should describe what went wrong.|
 
-Called when thread created by `utils.DownloadFileAsync`.
+Called when thread created by `utils.DownloadFileAsync` is done.
 
 ## `on_http_request_done(task_id, success, response_text, status, response_headers)`
 |Arguments|||
