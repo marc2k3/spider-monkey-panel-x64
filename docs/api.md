@@ -3,13 +3,14 @@ valid and can still be used as a reference. This page documents new features add
 
 # Callbacks
 
-## `on_download_image_done(url, image)`
+## `on_download_file_done(path, success, error_text)`
 |Arguments|||
 |---|---|---|
-|url|`string`|The url that was originally supplied to `utils.DownloadImageAsync`|
-|image|`GdiBitmap` or `null` on failure.|
+|path|`string`|The path that was originally supplied to `utils.DownloadFileAsync`.|
+|success|`boolean`|If `true` it means the web request was succesful and the file was saved correctly.|
+|error_text|`string`|Empty if success is `true`. If success is `false`, it should describe what went wrong.|
 
-Called when thread created by `utils.DownloadImageAsync` is done.
+Called when thread created by `utils.DownloadFileAsync`.
 
 ## `on_http_request_done(task_id, success, response_text, status, response_headers)`
 |Arguments|||
@@ -105,7 +106,7 @@ Returns a `string` which is a unique persistent property of the playlist.
 
 No return value.
 
-See also: [on_download_image_done](#on_download_image_doneurl-image).
+See also: [on_download_file_done](#on_download_file_donepath-success-error_text).
 
 > [!IMPORTANT]  
 > You must ensure none of the folders in the `path` end with a period character.
