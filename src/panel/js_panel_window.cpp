@@ -815,7 +815,7 @@ namespace smp
 				wnd_,
 				GenerateEvent_JsCallback(
 					EventId::kMouseVerticalWheel,
-					static_cast<int8_t>(GET_WHEEL_DELTA_WPARAM(msg.wParam) > 0 ? 1 : -1),
+					static_cast<int32_t>(GET_WHEEL_DELTA_WPARAM(msg.wParam) > 0 ? 1 : -1),
 					static_cast<int32_t>(GET_WHEEL_DELTA_WPARAM(msg.wParam)),
 					static_cast<int32_t>(WHEEL_DELTA)
 				),
@@ -830,7 +830,7 @@ namespace smp
 				wnd_,
 				GenerateEvent_JsCallback(
 					EventId::kMouseHorizontalWheel,
-					static_cast<int8_t>(GET_WHEEL_DELTA_WPARAM(msg.wParam) > 0 ? 1 : -1)
+					static_cast<int32_t>(GET_WHEEL_DELTA_WPARAM(msg.wParam) > 0 ? 1 : -1)
 				),
 				EventPriority::kInput
 			);

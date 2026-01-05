@@ -29,9 +29,6 @@ namespace mozjs::convert::to_native
 		bool ToSimpleValue<bool>(JSContext* cx, const JS::HandleValue& jsValue);
 
 		template <>
-		int8_t ToSimpleValue<int8_t>(JSContext* cx, const JS::HandleValue& jsValue);
-
-		template <>
 		int32_t ToSimpleValue<int32_t>(JSContext* cx, const JS::HandleValue& jsValue);
 
 		template <>

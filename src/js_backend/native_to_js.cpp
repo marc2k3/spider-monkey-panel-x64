@@ -39,12 +39,6 @@ namespace mozjs::convert::to_js
 	}
 
 	template <>
-	void ToValue(JSContext*, const int8_t& inValue, JS::MutableHandleValue wrappedValue)
-	{
-		wrappedValue.setInt32(static_cast<int32_t>(inValue));
-	}
-
-	template <>
 	void ToValue(JSContext*, const uint8_t& inValue, JS::MutableHandleValue wrappedValue)
 	{
 		wrappedValue.setNumber(static_cast<uint32_t>(inValue));

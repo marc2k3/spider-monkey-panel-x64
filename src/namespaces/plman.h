@@ -79,10 +79,10 @@ namespace mozjs
 		bool ShowAutoPlaylistUI(uint32_t playlistIndex);
 		bool SortByFormat(uint32_t playlistIndex, const std::string& pattern, bool selOnly = false);
 		bool SortByFormatWithOpt(size_t optArgCount, uint32_t playlistIndex, const std::string& pattern, bool selOnly);
-		bool SortByFormatV2(uint32_t playlistIndex, const std::string& pattern, int8_t direction = 1);
-		bool SortByFormatV2WithOpt(size_t optArgCount, uint32_t playlistIndex, const std::string& pattern, int8_t direction);
-		void SortPlaylistsByName(int8_t direction = 1);
-		void SortPlaylistsByNameWithOpt(size_t optArgCount, int8_t direction);
+		bool SortByFormatV2(uint32_t playlistIndex, const std::string& pattern, int32_t direction = 1);
+		bool SortByFormatV2WithOpt(size_t optArgCount, uint32_t playlistIndex, const std::string& pattern, int32_t direction);
+		void SortPlaylistsByName(int32_t direction = 1);
+		void SortPlaylistsByNameWithOpt(size_t optArgCount, int32_t direction);
 		void Undo(uint32_t playlistIndex);
 		void UndoBackup(uint32_t playlistIndex);
 

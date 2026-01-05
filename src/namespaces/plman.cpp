@@ -742,7 +742,7 @@ namespace mozjs
 		}
 	}
 
-	bool Plman::SortByFormatV2(uint32_t playlistIndex, const std::string& pattern, int8_t direction)
+	bool Plman::SortByFormatV2(uint32_t playlistIndex, const std::string& pattern, int32_t direction)
 	{
 		metadb_handle_list handles;
 		m_api->playlist_get_all_items(playlistIndex, handles);
@@ -756,7 +756,7 @@ namespace mozjs
 		return m_api->playlist_reorder_items(playlistIndex, sort_order.get_ptr(), sort_order.get_count());
 	}
 
-	bool Plman::SortByFormatV2WithOpt(size_t optArgCount, uint32_t playlistIndex, const std::string& pattern, int8_t direction)
+	bool Plman::SortByFormatV2WithOpt(size_t optArgCount, uint32_t playlistIndex, const std::string& pattern, int32_t direction)
 	{
 		switch (optArgCount)
 		{
@@ -769,7 +769,7 @@ namespace mozjs
 		}
 	}
 
-	void Plman::SortPlaylistsByName(int8_t direction)
+	void Plman::SortPlaylistsByName(int32_t direction)
 	{
 		const auto count = m_api->get_playlist_count();
 		auto items = pfc_array<CustomSort::Item>(count);
@@ -788,7 +788,7 @@ namespace mozjs
 		m_api->reorder(order.get_ptr(), count);
 	}
 
-	void Plman::SortPlaylistsByNameWithOpt(size_t optArgCount, int8_t direction)
+	void Plman::SortPlaylistsByNameWithOpt(size_t optArgCount, int32_t direction)
 	{
 		switch (optArgCount)
 		{

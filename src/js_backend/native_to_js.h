@@ -30,9 +30,6 @@ namespace mozjs::convert::to_js
 	void ToValue(JSContext* cx, const bool& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const int8_t& inValue, JS::MutableHandleValue wrappedValue);
-
-	template <>
 	void ToValue(JSContext* cx, const uint8_t& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>

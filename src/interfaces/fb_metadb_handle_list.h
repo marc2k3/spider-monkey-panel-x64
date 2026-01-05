@@ -52,7 +52,7 @@ namespace mozjs
 		void MakeIntersection(JsFbMetadbHandleList* handles);
 		void MakeUnion(JsFbMetadbHandleList* handles);
 		void OptimiseFileLayout(bool minimise);
-		void OrderByFormat(JsFbTitleFormat* script, int8_t direction);
+		void OrderByFormat(JsFbTitleFormat* script, int32_t direction);
 		void OrderByPath();
 		void OrderByRelativePath();
 		void Remove(JsFbMetadbHandle* handle);

@@ -12,19 +12,6 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		int8_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
-		{
-			int8_t val{};
-
-			if (JS::ToInt8(cx, jsValue, &val))
-			{
-				return val;
-			}
-
-			throw JsException();
-		}
-
-		template <>
 		int32_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
 		{
 			int32_t val{};

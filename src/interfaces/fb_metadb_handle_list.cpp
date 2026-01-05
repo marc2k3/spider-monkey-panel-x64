@@ -423,7 +423,7 @@ namespace mozjs
 		threaded_process::get()->run_modeless(callback, threaded_process::flag_silent, core_api::get_main_window(), "Optimising...");
 	}
 
-	void JsFbMetadbHandleList::OrderByFormat(JsFbTitleFormat* script, int8_t direction)
+	void JsFbMetadbHandleList::OrderByFormat(JsFbTitleFormat* script, int32_t direction)
 	{
 		QwrException::ExpectTrue(script, "script argument is null");
 
