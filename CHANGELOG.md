@@ -47,8 +47,13 @@ have not been made.
 ## 1.7.25.12.8
 - First 64bit build.
 
+## 1.6.2.25.12.15
+- Fix crashing when using certain library iteration methods in WINE.
+- Last 32bit release. It remains available to download but is unsupported.
+
+https://github.com/marc2k3/spider-monkey-panel-x86/releases
+
 ## 1.6.2.25.11.15
-- Last 32bit release. See [here](https://github.com/marc2k3/spider-monkey-panel-x86/releases).
 - Tooltips are now dark mode aware.
 - Update `utils.InputBox` to support dark mode.
 - Update samples to use `window.ShowConfigureV2()`.
