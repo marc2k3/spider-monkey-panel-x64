@@ -1,5 +1,5 @@
 The [original documentation](https://theqwertiest.github.io/foo_spider_monkey_panel/assets/generated_files/docs/html/index.html) remains
-valid and can still be used as a reference. This page documents new features added since the last official release by `TheQwertiest`.
+valid and should still be used as a reference. This page documents new features added since the last official release by `TheQwertiest`.
 
 # Callbacks
 
