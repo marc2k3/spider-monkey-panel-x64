@@ -51,7 +51,7 @@ namespace mozjs
 	JsFbTooltip::JsFbTooltip(JSContext* ctx, HWND parent_wnd)
 		: m_ctx(ctx)
 		, m_parent_wnd(parent_wnd)
-		, m_buffer(TEXT(SMP_NAME))
+		, m_buffer(smp::ToWide(Component::name))
 	{
 		m_ctrl.Create(m_parent_wnd);
 		smp::CheckWinApi(m_ctrl, "tooltip::Create");

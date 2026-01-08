@@ -28,46 +28,46 @@ namespace smp::path
 
 	std::filesystem::path ScriptSamples()
 	{
-		return Component() / "samples";
+		return Component() / L"samples";
 	}
 
 	std::filesystem::path Packages_Profile()
 	{
-		return Profile() / SMP_UNDERSCORE_NAME / "packages";
+		return Profile() / smp::ToWide(Component::underscore_name) / L"packages";
 	}
 
 	std::filesystem::path Packages_Storage()
 	{
-		return Profile() / SMP_UNDERSCORE_NAME / "package_data";
+		return Profile() / smp::ToWide(Component::underscore_name) / L"package_data";
 	}
 
 	std::filesystem::path TempFolder()
 	{
-		return Profile() / SMP_UNDERSCORE_NAME / "tmp";
+		return Profile() / smp::ToWide(Component::underscore_name) / L"tmp";
 	}
 
 	std::filesystem::path TempFolder_PackageUnpack()
 	{
-		return TempFolder() / "unpacked_package";
+		return TempFolder() / L"unpacked_package";
 	}
 
 	std::filesystem::path TempFolder_PackageBackups()
 	{
-		return TempFolder() / "package_backups";
+		return TempFolder() / L"package_backups";
 	}
 
 	std::filesystem::path TempFolder_PackagesToInstall()
 	{
-		return TempFolder() / "packages_to_install";
+		return TempFolder() / L"packages_to_install";
 	}
 
 	std::filesystem::path TempFolder_PackagesToRemove()
 	{
-		return TempFolder() / "packages_to_remove";
+		return TempFolder() / L"packages_to_remove";
 	}
 
 	std::filesystem::path TempFolder_PackagesInUse()
 	{
-		return TempFolder() / "packages_in_use";
+		return TempFolder() / L"packages_in_use";
 	}
 }

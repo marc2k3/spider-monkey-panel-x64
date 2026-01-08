@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "Component.hpp"
 
-namespace
+namespace Component
 {
 	pfc::string8 about_text()
 	{
@@ -19,7 +19,7 @@ namespace
 			"foobar2000 SDK: {}\n"
 			"Columns UI SDK: {}\n"
 			"MSVC: {}.{}.{}",
-			SMP_NAME_WITH_VERSION,
+			name_with_version,
 			__TIME__,
 			date.get_ptr(),
 			MOZJS_MAJOR_VERSION,
@@ -32,6 +32,6 @@ namespace
 		).c_str();
 	}
 
-	DECLARE_COMPONENT_VERSION(SMP_NAME, SMP_VERSION, about_text());
-	VALIDATE_COMPONENT_FILENAME(SMP_DLL_NAME);
+	DECLARE_COMPONENT_VERSION(name.data(), version.data(), about_text());
+	VALIDATE_COMPONENT_FILENAME("foo_spider_monkey_panel.dll");
 }

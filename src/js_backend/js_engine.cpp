@@ -28,14 +28,16 @@ namespace
 	{
 		const std::string errorTextPadded = [&errorText]()
 			{
-				std::string text = "Critical JS engine error: " SMP_NAME_WITH_VERSION;
-				if (!errorText.empty())
-				{
-					text += "\n";
-					text += errorText;
-				}
+				const std::string text = fmt::format("Critical JS engine error: {}", Component::name_with_version);
 
-				return text;
+				if (errorText.empty())
+				{
+					return text;
+				}
+				else
+				{
+					return fmt::format("{}\n{}", text, errorText);
+				}
 			}();
 
 		smp::ReportErrorWithPopup(errorTextPadded);

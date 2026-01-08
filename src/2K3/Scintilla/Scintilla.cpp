@@ -237,7 +237,7 @@ bool CScintilla::Find(bool next)
 	if (pos == -1)
 	{
 		const auto msg = fmt::format("Cannot find \"{}\"", text);
-		popup_message_v3::get()->messageBox(m_dlg_find_replace->m_hWnd, msg.c_str(), SMP_NAME, MB_OK);
+		popup_message_v3::get()->messageBox(m_dlg_find_replace->m_hWnd, msg.c_str(), Component::name.data(), MB_OK);
 		return false;
 	}
 

@@ -117,7 +117,7 @@ namespace mozjs
 
 		const std::string errorTextPadded = [pParentPanel = pParentPanel_, &errorText]()
 			{
-				std::string text = fmt::format("Error: " SMP_NAME_WITH_VERSION " ({})", pParentPanel->GetPanelDescription());
+				std::string text = fmt::format("Error: {} ({})", Component::name_with_version, pParentPanel->GetPanelDescription());
 
 				if (!errorText.empty())
 				{

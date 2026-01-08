@@ -636,7 +636,7 @@ bool CConfigTabScriptSource::RequestConfirmationForReset()
 			const auto status = popup_message_v3::get()->messageBox(
 				m_hWnd,
 				"Do you want to save your changes to package?",
-				SMP_NAME,
+				Component::name.data(),
 				MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
 
 			switch (status)
@@ -675,7 +675,12 @@ bool CConfigTabScriptSource::RequestConfirmationOnPackageChange()
 
 	if (parent_.HasChanged())
 	{
-		const auto status = popup_message_v3::get()->messageBox(m_hWnd, "Do you want to save your changes to package?", SMP_NAME, MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL);
+		const auto status = popup_message_v3::get()->messageBox(
+			m_hWnd,
+			"Do you want to save your changes to package?",
+			Component::name.data(),
+			MB_ICONWARNING | MB_SETFOREGROUND | MB_YESNOCANCEL
+		);
 
 		switch (status)
 		{

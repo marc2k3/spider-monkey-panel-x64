@@ -81,7 +81,7 @@ namespace smp
 
 		void get_name(pfc::string_base& out) const final
 		{
-			out = SMP_NAME;
+			out = Component::name.data();
 		}
 
 		void set_config(stream_reader* reader, size_t size, abort_callback& abort) final

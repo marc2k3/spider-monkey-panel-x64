@@ -5,13 +5,13 @@ namespace smp
 {
 	void ReportErrorWithPopup(const std::string& errorText)
 	{
-		FB2K_console_formatter() << SMP_UNDERSCORE_NAME << ":\n" << errorText;
+		FB2K_console_formatter() << Component::underscore_name.data() << ":\n" << errorText;
 		MessageBeep(MB_ICONASTERISK);
 
 		// errors may happen on fb2k init before popup services are available
 		fb2k::inMainThread([errorText]
 			{
-				popup_message::g_show(errorText.c_str(), SMP_UNDERSCORE_NAME);
+				popup_message::g_show(errorText.c_str(), Component::underscore_name.data());
 			});
 	}
 

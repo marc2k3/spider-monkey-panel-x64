@@ -756,6 +756,6 @@ namespace mozjs
 
 	std::string Utils::get_Version() const
 	{
-		return SMP_VERSION;
+		return Component::version.data();
 	}
 }

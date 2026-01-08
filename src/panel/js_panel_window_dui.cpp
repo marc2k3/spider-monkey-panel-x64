@@ -79,7 +79,7 @@ namespace smp
 
 		static void g_get_name(pfc::string_base& out)
 		{
-			out = SMP_NAME;
+			out = Component::name.data();
 		}
 #pragma endregion
 

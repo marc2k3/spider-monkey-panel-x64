@@ -99,5 +99,5 @@ uint32_t PlaylistLock::get_filter_mask() noexcept
 
 void PlaylistLock::get_lock_name(pfc::string_base& out) noexcept
 {
-	out = SMP_UNDERSCORE_NAME;
+	out = Component::underscore_name.data();
 }

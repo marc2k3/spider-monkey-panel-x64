@@ -91,7 +91,7 @@ void CDialogEditor::OnCancel(uint32_t, int32_t nID, CWindow)
 		const auto result = popup_message_v3::get()->messageBox(
 			m_hWnd,
 			"Unsaved changes will be lost. Are you sure?",
-			SMP_NAME,
+			Component::name.data(),
 			MB_YESNO
 		);
 

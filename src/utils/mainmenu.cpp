@@ -153,14 +153,14 @@ namespace
 		smp::guid::mainmenu_group_predefined,
 		mainmenu_groups::file,
 		static_cast<uint32_t>(mainmenu_commands::sort_priority_dontcare),
-		SMP_NAME
+		Component::name.data()
 	);
 
 	mainmenu_group_popup_factory g_mainmenu_group_help(
 		smp::guid::mainmenu_group_help,
 		mainmenu_groups::help,
 		static_cast<uint32_t>(mainmenu_commands::sort_priority_dontcare),
-		SMP_NAME
+		Component::name.data()
 	);
 
 	FB2K_SERVICE_FACTORY(MainMenuCommands_Predefined);
