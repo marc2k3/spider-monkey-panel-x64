@@ -38,7 +38,7 @@ namespace
 				return text;
 			}();
 
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, errorTextPadded);
+		smp::ReportErrorWithPopup(errorTextPadded);
 	}
 }
 

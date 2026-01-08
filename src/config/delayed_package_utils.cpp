@@ -126,7 +126,6 @@ namespace
 			catch (const fs::filesystem_error& e)
 			{
 				smp::ReportErrorWithPopup(
-					SMP_UNDERSCORE_NAME,
 					fmt::format(
 						"Failed to update package `{}`:\n{}",
 						packageId,
@@ -165,7 +164,6 @@ namespace
 				TextFile(package_json.native()).write(j.dump(2));
 
 				smp::ReportErrorWithPopup(
-					SMP_UNDERSCORE_NAME,
 					fmt::format(
 						"Critical error encountered when updating package `{}`!\n\n"
 						"The panel was replaced with recovery package.\n"
@@ -313,7 +311,6 @@ namespace config
 		catch (const fs::filesystem_error& e)
 		{
 			smp::ReportErrorWithPopup(
-				SMP_UNDERSCORE_NAME,
 				fmt::format(
 					"Failed to process delayed packages:\n{}",
 					smp::FS_Error_ToU8(e)

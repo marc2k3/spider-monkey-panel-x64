@@ -43,7 +43,7 @@ namespace smp
 	void js_panel_window::Fail(const std::string& errorText)
 	{
 		hasFailed_ = true;
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, errorText);
+		smp::ReportErrorWithPopup(errorText);
 
 		if (wnd_)
 		{              // can be null during startup
@@ -91,7 +91,6 @@ namespace smp
 				catch (const QwrException& e)
 				{
 					smp::ReportErrorWithPopup(
-						SMP_UNDERSCORE_NAME,
 						fmt::format(
 							"Can't load panel settings. Your panel will be completely reset!\nError: {}",
 							e.what()
@@ -104,7 +103,7 @@ namespace smp
 
 		if (!UpdateSettings(settings, reloadPanel))
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't load panel settings. Your panel will be completely reset!"));
+			smp::ReportErrorWithPopup(fmt::format("Can't load panel settings. Your panel will be completely reset!"));
 			UpdateSettings(config::PanelSettings{}, reloadPanel);
 		}
 	}
@@ -142,7 +141,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 			return false;
 		}
 	}
@@ -1005,7 +1004,7 @@ namespace smp
 			}
 			catch (const QwrException& e)
 			{
-				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+				smp::ReportErrorWithPopup(e.what());
 			}
 			break;
 		}
@@ -1105,7 +1104,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 		}
 	}
 
@@ -1164,7 +1163,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 		}
 	}
 

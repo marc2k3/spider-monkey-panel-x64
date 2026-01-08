@@ -312,7 +312,7 @@ void CConfigTabPackage::OnEditScript(UINT, int, CWindow)
 	}
 	catch (const QwrException& e)
 	{
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(e.what());
 	}
 }
 
@@ -443,7 +443,7 @@ void CConfigTabPackage::InitializeFilesListBox()
 		}
 		catch (QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 		}
 
 		files_ = PackageUtils::GetFiles(settings_);
@@ -564,6 +564,6 @@ void CConfigTabPackage::AddFile(const fs::path& path)
 	}
 	catch (const QwrException& e)
 	{
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(e.what());
 	}
 }

@@ -92,7 +92,7 @@ void CDialogConf::Apply(bool savePackageData)
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 		}
 	}
 

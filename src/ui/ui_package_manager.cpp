@@ -40,7 +40,7 @@ LRESULT CDialogPackageManager::OnInitDialog(HWND, LPARAM)
 	}
 	catch (QwrException& e)
 	{
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(e.what());
 	}
 
 	SetWindowTextW(L"Script package manager");
@@ -106,7 +106,7 @@ void CDialogPackageManager::OnNewPackage(UINT /*uNotifyCode*/, int /*nID*/, CWin
 	}
 	catch (const QwrException& e)
 	{
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(e.what());
 	}
 }
 
@@ -166,7 +166,7 @@ void CDialogPackageManager::OnDeletePackage(UINT /*uNotifyCode*/, int /*nID*/, C
 	}
 	catch (const QwrException& e)
 	{
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(e.what());
 	}
 
 	packages_.erase(packages_.cbegin() + focusedPackageIdx_);
@@ -212,7 +212,7 @@ void CDialogPackageManager::OnExportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 			}
 			catch (const QwrException& e)
 			{
-				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+				smp::ReportErrorWithPopup(e.what());
 			}
 		};
 
@@ -238,7 +238,7 @@ void CDialogPackageManager::OnOpenFolder(UINT /*uNotifyCode*/, int /*nID*/, CWin
 	}
 	catch (const QwrException& e)
 	{
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(e.what());
 	}
 }
 
@@ -554,7 +554,7 @@ bool CDialogPackageManager::ImportPackage(const std::filesystem::path& path)
 	}
 	catch (const QwrException& e)
 	{
-		smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+		smp::ReportErrorWithPopup(e.what());
 	}
 
 	return false;

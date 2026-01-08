@@ -76,7 +76,7 @@ CConfigTabScriptSource::CConfigTabScriptSource(CDialogConf& parent, config::Pars
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 		}
 	}
 
@@ -219,7 +219,7 @@ void CConfigTabScriptSource::OnScriptSrcChange(UINT /*uNotifyCode*/, int nID, CW
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 		}
 	}
 
@@ -335,7 +335,7 @@ void CConfigTabScriptSource::OnEditScript(UINT /*uNotifyCode*/, int /*nID*/, CWi
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+			smp::ReportErrorWithPopup(e.what());
 		}
 	}
 }
@@ -434,7 +434,7 @@ void CConfigTabScriptSource::InitializeLocalOptions()
 
 			if (it == sampleData_.cend())
 			{
-				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, fmt::format("Can't find sample `{}`. Your settings will be reset.", smp::ToU8(sampleName)));
+				smp::ReportErrorWithPopup(fmt::format("Can't find sample `{}`. Your settings will be reset.", smp::ToU8(sampleName)));
 				UpdateOnSrcChange(settings_, config::ParsedPanelSettings::GetDefault());
 				return 0;
 			}

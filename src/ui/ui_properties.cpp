@@ -133,7 +133,7 @@ void CDialogProperties::OnImportBnClicked(uint32_t, int32_t, CWindow)
 			}
 			catch (const QwrException& e)
 			{
-				smp::ReportErrorWithPopup(SMP_UNDERSCORE_NAME, e.what());
+				smp::ReportErrorWithPopup(e.what());
 			}
 		};
 
