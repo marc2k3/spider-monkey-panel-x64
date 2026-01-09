@@ -26,7 +26,7 @@ namespace
 		{ "style.number", { SCE_C_NUMBER } },
 		{ "style.operator", { SCE_C_OPERATOR } },
 		{ "style.bracelight", { STYLE_BRACELIGHT } },
-		{ "style.bracebad" , { STYLE_BRACEBAD } },
+		{ "style.bracebad", { STYLE_BRACEBAD } },
 	};
 }
 

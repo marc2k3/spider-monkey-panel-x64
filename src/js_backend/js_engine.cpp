@@ -26,9 +26,9 @@ namespace
 
 	void ReportException(const std::string& errorText) noexcept
 	{
-		const std::string errorTextPadded = [&errorText]()
+		const auto errorTextPadded = [&errorText]
 			{
-				const std::string text = fmt::format("Critical JS engine error: {}", Component::name_with_version);
+				const auto text = fmt::format("Critical JS engine error: {}", Component::name_with_version);
 
 				if (errorText.empty())
 				{

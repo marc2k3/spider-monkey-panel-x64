@@ -141,7 +141,7 @@ namespace mozjs
 				std::vector<std::pair<JsContainer*, ContainerData*>> dataToProcess;
 				for (auto& [pContainer, containerData] : monitoredContainers_)
 				{
-					const auto it = std::ranges::find_if(activeContainers_, [pContainer = pContainer](auto& elem) 
+					const auto it = std::ranges::find_if(activeContainers_, [pContainer = pContainer](auto& elem)
 						{
 							return (elem.first == pContainer);
 						});

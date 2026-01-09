@@ -80,7 +80,7 @@ namespace mozjs
 
 		if (printComponentInfo)
 		{
-			msg += fmt::format("{}: " , Component::name_with_version);
+			msg += fmt::format("{}: ", Component::name_with_version);
 		}
 
 		msg += "profiler";

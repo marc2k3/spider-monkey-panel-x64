@@ -115,17 +115,18 @@ namespace mozjs
 			jsStatus_ = JsStatus::Failed;
 		}
 
-		const std::string errorTextPadded = [pParentPanel = pParentPanel_, &errorText]()
+		const auto errorTextPadded = [this, &errorText]
 			{
-				std::string text = fmt::format("Error: {} ({})", Component::name_with_version, pParentPanel->GetPanelDescription());
+				const auto text = fmt::format("Error: {} ({})", Component::name_with_version, pParentPanel_->GetPanelDescription());
 
-				if (!errorText.empty())
+				if (errorText.empty())
 				{
-					text += "\n";
-					text += errorText;
+					return text;
 				}
-
-				return text;
+				else
+				{
+					return fmt::format("{}\n{}", text, errorText);
+				}
 			}();
 
 		pParentPanel_->Fail(errorTextPadded);
