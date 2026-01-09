@@ -17,10 +17,10 @@ Many included samples require the installation of [FontAwesome](https://github.c
 https://github.com/marc2k3/spider-monkey-panel-x64/releases
 
 ## Build instructions
-See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/BUILDING.md).
+https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/BUILDING.md
 
 ## API changes
-See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/api.md).
+https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/docs/api.md
 
 ## Changelog
-See [here](https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/CHANGELOG.md).
+https://github.com/marc2k3/spider-monkey-panel-x64/tree/main/CHANGELOG.md
