@@ -594,13 +594,15 @@ namespace mozjs
 			JsToVariantSafe(pJsCtx_, callArgs[idx], arg);
 		}
 
-		const auto refreshValues = [&] {
-			// in case any empty ActiveXObject objects were filled in by Invoke()
-			for (auto i : indices(callArgs.length() - 1))
+		const auto refreshValues = [&]
 			{
-				RefreshValue(pJsCtx_, callArgs[1 + i]);
-			}
+				// in case any empty ActiveXObject objects were filled in by Invoke()
+				for (auto i : indices(callArgs.length() - 1))
+				{
+					RefreshValue(pJsCtx_, callArgs[1 + i]);
+				}
 			};
+
 		GetImpl(*dispRet, args, callArgs.rval(), refreshValues);
 	}
 
@@ -800,8 +802,9 @@ namespace mozjs
 		HRESULT hr = pTypeInfo->GetTypeAttr(&pAttr);
 		smp::CheckHR(hr, "GetTypeAttr");
 
-		auto autoTypeAttr = wil::scope_exit([pTypeInfo, pAttr] {
-			pTypeInfo->ReleaseTypeAttr(pAttr);
+		auto autoTypeAttr = wil::scope_exit([pTypeInfo, pAttr]
+			{
+				pTypeInfo->ReleaseTypeAttr(pAttr);
 			});
 
 		if (!(pAttr->wTypeFlags & TYPEFLAG_FRESTRICTED) && (TKIND_DISPATCH == pAttr->typekind || TKIND_INTERFACE == pAttr->typekind) && pAttr->cImplTypes)
@@ -816,8 +819,9 @@ namespace mozjs
 				hr = pTypeInfo->GetRefTypeInfo(hRef, &pTypeInfoCur);
 				if (SUCCEEDED(hr) && pTypeInfoCur)
 				{
-					auto autoTypeInfo = wil::scope_exit([pTypeInfoCur] {
-						pTypeInfoCur->Release();
+					auto autoTypeInfo = wil::scope_exit([pTypeInfoCur]
+						{
+							pTypeInfoCur->Release();
 						});
 
 					ParseTypeInfoRecursive(cx, pTypeInfoCur, members);

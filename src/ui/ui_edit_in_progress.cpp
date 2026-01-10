@@ -61,9 +61,12 @@ CEditInProgress::CEditInProgress(const std::filesystem::path& editor, const std:
 
 LRESULT CEditInProgress::OnInitDialog(HWND, LPARAM)
 {
-	(void)CenterWindow();
+	CenterWindow();
 
-	editorThread_ = std::thread([&] { EditorHandler(); });
+	editorThread_ = std::thread([&]
+		{
+			EditorHandler();
+		});
 
 	return FALSE; // set focus to default control
 }
@@ -115,13 +118,15 @@ LRESULT CEditInProgress::OnCloseCmd(WORD, WORD wID, HWND)
 		}
 	}
 
-	const auto hEditorProcess = [&] {
-		std::scoped_lock sl{ mutex_ };
-		return hEditorProcess_;
+	const auto hEditorProcess = [&]
+		{
+			std::scoped_lock sl{ mutex_ };
+			return hEditorProcess_;
 		}();
 
 	if (!hEditorProcess)
-	{ // process was closed
+	{
+		// process was closed
 		if (wID == IDCANCEL)
 		{
 			const auto errorMsg = (errorMessage_.empty() ? std::string{ "Unknown error caused by editor" } : errorMessage_);

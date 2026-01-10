@@ -129,7 +129,10 @@ namespace smp
 		TimeStamp start = nowSnapshot;
 
 		uint32_t firingId = CreateFiringId();
-		auto guard = wil::scope_exit([&] { DestroyFiringId(firingId); });
+		auto guard = wil::scope_exit([&]
+			{
+				DestroyFiringId(firingId);
+			});
 
 		// A native timer has gone off. See which of our timeouts need
 		// servicing
@@ -289,8 +292,7 @@ namespace smp
 
 				// If we have a regular interval timer, we re-schedule the
 				// timeout, accounting for clock drift.
-				const auto needsReinsertion =
-					RescheduleTimeout(*pTimeout, lastCallbackTime, nowSnapshot);
+				const auto needsReinsertion = RescheduleTimeout(*pTimeout, lastCallbackTime, nowSnapshot);
 
 				// Running a timeout can cause another timeout to be deleted, so
 				// we need to reset the pointer to the following timeout.
@@ -321,14 +323,15 @@ namespace smp
 
 	uint32_t TimeoutManager::CreateTimeout(uint32_t interval, bool isRepeated, std::unique_ptr<mozjs::JsAsyncTask> pJsTask)
 	{
-		const auto id = [&] {
-			uint32_t id = curTimerId_++;
-			while (!timeoutStorage_.IsEnd(timeoutStorage_.Get(id)))
+		const auto id = [&]
 			{
-				id = curTimerId_++;
-			}
-			return id;
-		}();
+				uint32_t id = curTimerId_++;
+				while (!timeoutStorage_.IsEnd(timeoutStorage_.Get(id)))
+				{
+					id = curTimerId_++;
+				}
+				return id;
+			}();
 
 		auto pTimer = std::make_shared<Timeout>(id, std::chrono::milliseconds(interval), isRepeated, std::move(pJsTask));
 		pTimer->SetWhen(TimeStamp::clock::now(), pTimer->Interval());

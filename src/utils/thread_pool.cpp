@@ -33,7 +33,10 @@ void QwrThreadPool::Finalize() noexcept
 
 void QwrThreadPool::AddThread() noexcept
 {
-	threads_.emplace_back(std::make_unique<std::thread>([&] { ThreadProc(); }));
+	threads_.emplace_back(std::make_unique<std::thread>([&]
+		{
+			ThreadProc();
+		}));
 }
 
 void QwrThreadPool::ThreadProc() noexcept

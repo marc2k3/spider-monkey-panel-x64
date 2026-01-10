@@ -492,7 +492,11 @@ namespace mozjs
 		QwrException::ExpectTrue(font, "font argument is null");
 
 		const auto hDc = pGdi_->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc] { pGdi->ReleaseHDC(hDc); });
+		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc]
+			{
+				pGdi->ReleaseHDC(hDc);
+			});
+
 		auto _ = wil::SelectObject(hDc, font->GetHFont());
 
 		RECT rc{ x, y, static_cast<LONG>(x + w), static_cast<LONG>(y + h) };

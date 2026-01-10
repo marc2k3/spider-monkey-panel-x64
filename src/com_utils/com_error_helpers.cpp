@@ -13,10 +13,11 @@ namespace smp::com
 		}
 		case DISP_E_EXCEPTION:
 		{
-			auto autoCleaner = wil::scope_exit([&exception] {
-				SysFreeString(exception.bstrSource);
-				SysFreeString(exception.bstrDescription);
-				SysFreeString(exception.bstrHelpFile);
+			auto autoCleaner = wil::scope_exit([&exception]
+				{
+					SysFreeString(exception.bstrSource);
+					SysFreeString(exception.bstrDescription);
+					SysFreeString(exception.bstrHelpFile);
 				});
 
 #pragma warning(push)

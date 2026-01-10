@@ -112,7 +112,10 @@ namespace
 		std::string output;
 
 		++logDepth;
-		auto autoDecrement = wil::scope_exit([&logDepth] { --logDepth; });
+		auto autoDecrement = wil::scope_exit([&logDepth]
+			{
+				--logDepth;
+			});
 
 		if (!jsValue.isObject())
 		{
@@ -154,7 +157,11 @@ namespace
 				}
 
 				std::ignore = curObjects.emplaceBack(jsObject);
-				auto autoPop = wil::scope_exit([&curObjects] { curObjects.popBack(); });
+
+				auto autoPop = wil::scope_exit([&curObjects]
+					{
+						curObjects.popBack();
+					});
 
 				bool is;
 				if (!JS::IsArrayObject(ctx, jsObject, &is))

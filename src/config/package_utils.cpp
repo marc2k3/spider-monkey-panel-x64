@@ -60,16 +60,17 @@ namespace
 			jsonMain.push_back({ "shouldGrabFocus", parsedSettings.shouldGrabFocus });
 
 			const auto packageDirRet = PackageUtils::Find(*parsedSettings.packageId);
-			const auto packagePath = [&] {
-				if (packageDirRet)
+			const auto packagePath = [&]
 				{
-					return *packageDirRet;
-				}
-				else
-				{
-					return PackageUtils::GetPath(parsedSettings);
-				}
-			}();
+					if (packageDirRet)
+					{
+						return *packageDirRet;
+					}
+					else
+					{
+						return PackageUtils::GetPath(parsedSettings);
+					}
+				}();
 
 			if (!fs::exists(packagePath))
 			{

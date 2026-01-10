@@ -54,15 +54,16 @@ namespace mozjs
 		QwrException::ExpectTrue(pUnknown, "Object is not iterable");
 
 		CDispatchPtr pCollection(pUnknown);
-		auto pEnum = [&] {
-			try
+		auto pEnum = [&]
 			{
-				return EnumVARIANTComPtr(pCollection.Get(static_cast<DISPID>(DISPID_NEWENUM)));
-			}
-			catch (const _com_error&)
-			{
-				throw QwrException("Object is not iterable");
-			}
+				try
+				{
+					return EnumVARIANTComPtr(pCollection.Get(static_cast<DISPID>(DISPID_NEWENUM)));
+				}
+				catch (const _com_error&)
+				{
+					throw QwrException("Object is not iterable");
+				}
 			}();
 
 		return std::unique_ptr<JsActiveXObject_Iterator>(new JsActiveXObject_Iterator(cx, pEnum));

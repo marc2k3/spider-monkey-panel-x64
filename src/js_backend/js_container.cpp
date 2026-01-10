@@ -141,7 +141,10 @@ namespace mozjs
 	{
 		auto selfSaver = shared_from_this();
 		isParsingScript_ = true;
-		const auto autoParseState = wil::scope_exit([&] { isParsingScript_ = false; });
+		const auto autoParseState = wil::scope_exit([&]
+			{
+				isParsingScript_ = false;
+			});
 
 		JSAutoRealm ac(pJsCtx_, jsGlobal_);
 		try
@@ -156,7 +159,10 @@ namespace mozjs
 			opts.setFileAndLine("", 1);
 
 			OnJsActionStart();
-			auto autoAction = wil::scope_exit([&] { OnJsActionEnd(); });
+			auto autoAction = wil::scope_exit([&]
+				{
+					OnJsActionEnd();
+				});
 
 			JS::RootedValue dummyRval(pJsCtx_);
 			if (!JS::Evaluate(pJsCtx_, opts, source, &dummyRval))
@@ -177,13 +183,20 @@ namespace mozjs
 	{
 		auto selfSaver = shared_from_this();
 		isParsingScript_ = true;
-		auto autoParseState = wil::scope_exit([&] { isParsingScript_ = false; });
+		auto autoParseState = wil::scope_exit([&]
+			{
+				isParsingScript_ = false;
+			});
 
 		JSAutoRealm ac(pJsCtx_, jsGlobal_);
 		try
 		{
 			OnJsActionStart();
-			auto autoAction = wil::scope_exit([&] { OnJsActionEnd(); });
+			auto autoAction = wil::scope_exit([&]
+				{
+					OnJsActionEnd();
+				});
+
 			pNativeGlobal_->IncludeScript(scriptPath);
 			return true;
 		}
@@ -298,7 +311,10 @@ namespace mozjs
 		JsAutoRealmWithErrorReport autoScope(pJsCtx_, jsGlobal_);
 
 		OnJsActionStart();
-		auto autoAction = wil::scope_exit([&] { OnJsActionEnd(); });
+		auto autoAction = wil::scope_exit([&]
+			{
+				OnJsActionEnd();
+			});
 
 		return jsTask.InvokeJs();
 	}

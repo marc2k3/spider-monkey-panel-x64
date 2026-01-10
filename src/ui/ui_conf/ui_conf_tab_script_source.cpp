@@ -231,7 +231,10 @@ void CConfigTabScriptSource::OnDdxValueChange(int nID)
 {
 	// avoid triggering loopback ddx
 	suppressUiDdx_ = true;
-	auto autoSuppress = wil::scope_exit([&] { suppressUiDdx_ = false; });
+	auto autoSuppress = wil::scope_exit([&]
+		{
+			suppressUiDdx_ = false;
+		});
 
 	auto it = std::find_if(ddx_.begin(), ddx_.end(), [nID](auto& val) {
 		return val->IsMatchingId(nID);
@@ -475,7 +478,10 @@ void CConfigTabScriptSource::DoFullDdxToUi()
 
 	// avoid triggering loopback ddx
 	suppressUiDdx_ = true;
-	auto autoSuppress = wil::scope_exit([&] { suppressUiDdx_ = false; });
+	auto autoSuppress = wil::scope_exit([&]
+		{
+			suppressUiDdx_ = false;
+		});
 
 	for (auto& ddx : ddx_)
 	{

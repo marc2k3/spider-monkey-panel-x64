@@ -104,7 +104,11 @@ void CDialogConf::Apply(bool savePackageData)
 	InitializeLocalData();
 
 	suppressDdxFromUi_ = true;
-	auto ddxSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });
+	auto ddxSuppress = wil::scope_exit([&]
+		{
+			suppressDdxFromUi_ = false;
+		});
+
 	DoFullDdxToUi();
 	RefreshTabData();
 }
@@ -305,7 +309,11 @@ void CDialogConf::OnCommitPanelName(UINT /*uNotifyCode*/, int /*nID*/, CWindow /
 		localSettings_.panelId = smp::ToU8(smp::GuidToStr(smp::GenerateGuid()));
 
 		suppressDdxFromUi_ = true;
-		auto ddxSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });
+		auto ddxSuppress = wil::scope_exit([&]
+			{
+				suppressDdxFromUi_ = false;
+			});
+
 		panelNameDdx_->WriteToUi();
 	}
 }

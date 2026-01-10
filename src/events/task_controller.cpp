@@ -91,8 +91,9 @@ namespace smp
 
 		{ // allow other tasks to be queued
 			ul.unlock();
-			auto autoLock = wil::scope_exit([&] {
-				ul.lock();
+			auto autoLock = wil::scope_exit([&]
+				{
+					ul.lock();
 				});
 
 			pTask->Run();

@@ -101,15 +101,14 @@ namespace
 				continue;
 			}
 
-			auto autoTmp = wil::scope_exit([&] {
-				try
+			auto autoTmp = wil::scope_exit([&]
 				{
-					ForceRemoveDir(newPackageDir);
-				}
-				catch (const fs::filesystem_error&)
-				{
-				}
-			});
+					try
+					{
+						ForceRemoveDir(newPackageDir);
+					}
+					catch (const fs::filesystem_error&) {}
+				});
 
 			const auto packageId = newPackageDir.path().filename().u8string();
 			const auto packageToUpdateDir = packagesDir / packageId;

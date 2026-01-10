@@ -185,15 +185,12 @@ namespace mozjs
 
 		[[nodiscard]] static JSObject* InstallProto(JSContext* cx, JS::HandleObject parentObject)
 		{
-			const JSFunctionSpec* staticFns = [] {
-				if constexpr (T::HasStaticFunctions)
+			const JSFunctionSpec* staticFns = []
 				{
-					return T::JsStaticFunctions;
-				}
-				else
-				{
-					return nullptr;
-				}
+					if constexpr (T::HasStaticFunctions)
+						return T::JsStaticFunctions;
+					else
+						return nullptr;
 				}();
 
 			auto pJsProto = JS_InitClass(

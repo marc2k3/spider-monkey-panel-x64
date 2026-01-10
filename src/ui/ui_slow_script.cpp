@@ -8,32 +8,35 @@ CDialogSlowScript::CDialogSlowScript(const std::string& panelName, const std::st
 
 LRESULT CDialogSlowScript::OnInitDialog(HWND, LPARAM)
 {
-	(void)CenterWindow();
+	CenterWindow();
 
-	const auto text = [&panelName = panelName_, &scriptInfo = scriptInfo_] {
-		std::string tmp;
-		if (!panelName.empty())
+	const auto text = [this]
 		{
-			tmp += fmt::format("Panel: {}", panelName);
-		}
-		if (!scriptInfo.empty())
-		{
-			if (!tmp.empty())
+			std::string tmp;
+
+			if (!panelName_.empty())
 			{
-				tmp += "\n";
+				tmp += fmt::format("Panel: {}", panelName_);
 			}
-			tmp += fmt::format("Script: {}", scriptInfo);
-		}
 
-		if (tmp.empty())
-		{
-			tmp = "<Unable to fetch panel info>";
-		}
+			if (!scriptInfo_.empty())
+			{
+				if (!tmp.empty())
+				{
+					tmp += "\n";
+				}
+				tmp += fmt::format("Script: {}", scriptInfo_);
+			}
 
-		return tmp;
+			if (tmp.empty())
+			{
+				tmp = "<Unable to fetch panel info>";
+			}
+
+			return tmp;
 		}();
 
-	(void)uSetWindowText(GetDlgItem(IDC_SLOWSCRIPT_SCRIPT_NAME), text.c_str());
+	uSetWindowText(GetDlgItem(IDC_SLOWSCRIPT_SCRIPT_NAME), text.c_str());
 	m_hooks.AddDialogWithControls(m_hWnd);
 	return FALSE; // set focus to default control
 }

@@ -101,7 +101,10 @@ namespace
 
 	bool PrependTextToJsObjectException(JSContext* cx, JS::HandleValue excn, const std::string& text)
 	{
-		auto autoClearOnError = wil::scope_exit([cx] { JS_ClearPendingException(cx); });
+		auto autoClearOnError = wil::scope_exit([cx]
+			{
+				JS_ClearPendingException(cx);
+			});
 
 		JS::RootedObject excnObject(cx, &excn.toObject());
 		JS_ClearPendingException(cx); ///< need this for js::ErrorReport::init

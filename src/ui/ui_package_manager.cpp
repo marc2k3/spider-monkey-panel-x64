@@ -642,5 +642,8 @@ bool CDialogPackageManager::ConfirmRebootOnPackageInUse()
 
 void CDialogPackageManager::Restart()
 {
-	fb2k::inMainThread([] { standard_commands::main_restart(); } );
+	fb2k::inMainThread([]
+		{
+			standard_commands::main_restart();
+		});
 }

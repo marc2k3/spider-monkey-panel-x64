@@ -49,11 +49,12 @@ namespace mozjs
 	JSObject* JsFbMetadbHandleList_Iterator::Next()
 	{
 		const bool isAtEnd = (curPosition_ >= handleList_.get_Count());
-		auto autoIncrement = wil::scope_exit([&] {
-			if (!isAtEnd)
+		auto autoIncrement = wil::scope_exit([&]
 			{
-				++curPosition_;
-			}
+				if (!isAtEnd)
+				{
+					++curPosition_;
+				}
 			});
 
 		if (!jsNextId_)

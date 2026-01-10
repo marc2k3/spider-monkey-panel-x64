@@ -62,7 +62,10 @@ namespace mozjs
 			auto selfSaver = shared_from_this();
 
 			OnJsActionStart();
-			auto autoAction = wil::scope_exit([&] { OnJsActionEnd(); });
+			auto autoAction = wil::scope_exit([&]
+				{
+					OnJsActionEnd();
+				});
 
 			return mozjs::InvokeJsCallback<ReturnType>(pJsCtx_, jsGlobal_, functionName, std::forward<ArgTypes>(args)...);
 		}

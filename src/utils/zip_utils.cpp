@@ -124,7 +124,10 @@ namespace smp
 			auto zRet = mz_zip_reader_init_file(&mzZip, zipFile.u8string().c_str(), 0);
 			CheckMZip(zRet, mzZip, "mz_zip_reader_init_file", "Failed to open archive: `{}`\n  ", zipFile.filename().u8string());
 
-			auto autoZip = wil::scope_exit([&] { mz_zip_reader_end(&mzZip); });
+			auto autoZip = wil::scope_exit([&]
+				{
+					mz_zip_reader_end(&mzZip);
+				});
 
 			const auto fileCount = mz_zip_reader_get_num_files(&mzZip);
 			if (!fileCount)

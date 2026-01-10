@@ -397,7 +397,10 @@ void CConfigTabPackage::DoFullDdxToUi()
 
 	// avoid triggering loopback ddx
 	suppressDdxFromUi_ = true;
-	auto autoSuppress = wil::scope_exit([&] { suppressDdxFromUi_ = false; });
+	auto autoSuppress = wil::scope_exit([&]
+		{
+			suppressDdxFromUi_ = false;
+		});
 
 	for (auto& ddx : ddx_)
 	{

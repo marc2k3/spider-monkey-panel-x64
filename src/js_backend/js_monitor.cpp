@@ -21,8 +21,12 @@ namespace
 namespace mozjs
 {
 	JsMonitor::JsMonitor() : slowScriptLimit_(config::advanced::slow_script_limit.get())
-	{ // JsMonitor might be created before fb2k is fully initialized
-		fb2k::inMainThread([&hFb2k = hFb2k_] { hFb2k = core_api::get_main_window(); });
+	{
+		// JsMonitor might be created before fb2k is fully initialized
+		fb2k::inMainThread([this]
+			{
+				hFb2k_ = core_api::get_main_window();
+			});
 	}
 
 	void JsMonitor::Start(JSContext* cx)
@@ -103,9 +107,10 @@ namespace mozjs
 			}
 			isInInterrupt_ = true;
 		}
-		auto autoBool = wil::scope_exit([&] {
-			std::unique_lock<std::mutex> lock(watcherDataMutex_);
-			isInInterrupt_ = false;
+		auto autoBool = wil::scope_exit([&]
+			{
+				std::unique_lock<std::mutex> lock(watcherDataMutex_);
+				isInInterrupt_ = false;
 			});
 
 		const auto curTime = GetLowResTime();
@@ -272,7 +277,10 @@ namespace mozjs
 
 						if (activeContainers_.empty())
 						{
-							hasAction_.wait(lock, [&] { return (shouldStopThread_ || (!activeContainers_.empty() && !isInInterrupt_)); });
+							hasAction_.wait(lock, [&]
+								{
+									return (shouldStopThread_ || (!activeContainers_.empty() && !isInInterrupt_));
+								});
 						}
 						else if (isInInterrupt_)
 						{ // Can't interrupt
