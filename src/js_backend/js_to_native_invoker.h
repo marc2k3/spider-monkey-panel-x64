@@ -191,15 +191,16 @@ namespace mozjs::internal
 		auto callbackArguments = InvokeNativeCallback_ParseArguments<ArgTypes...>(cx, &handleValueVector, jsArgs);
 
 		// May return raw JS pointer! (see below)
-		const auto invokeNative = [&]() {
-			return InvokeNativeCallback_Call_Member<!!OptArgCount, ReturnType>(
-				baseClass,
-				fn,
-				fnWithOpt,
-				callbackArguments,
-				(maxArgCount > jsArgs.length() ? maxArgCount - jsArgs.length() : 0)
-			);
-		};
+		const auto invokeNative = [&]
+			{
+				return InvokeNativeCallback_Call_Member<!!OptArgCount, ReturnType>(
+					baseClass,
+					fn,
+					fnWithOpt,
+					callbackArguments,
+					(maxArgCount > jsArgs.length() ? maxArgCount - jsArgs.length() : 0)
+				);
+			};
 
 		// Return value
 		if constexpr (std::is_same_v<ReturnType, JSObject*>)
@@ -237,15 +238,16 @@ namespace mozjs::internal
 		auto callbackArguments = InvokeNativeCallback_ParseArguments<ArgTypes...>(cx, &handleValueVector, jsArgs);
 
 		// May return raw JS pointer! (see below)
-		const auto invokeNative = [&]() {
-			return InvokeNativeCallback_Call_Static<!!OptArgCount, ReturnType>(
-				cx,
-				fn,
-				fnWithOpt,
-				callbackArguments,
-				(maxArgCount > jsArgs.length() ? maxArgCount - jsArgs.length() : 0)
-			);
-		};
+		const auto invokeNative = [&]
+			{
+				return InvokeNativeCallback_Call_Static<!!OptArgCount, ReturnType>(
+					cx,
+					fn,
+					fnWithOpt,
+					callbackArguments,
+					(maxArgCount > jsArgs.length() ? maxArgCount - jsArgs.length() : 0)
+				);
+			};
 
 		// Return value
 		if constexpr (std::is_same_v<ReturnType, JSObject*>)

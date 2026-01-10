@@ -5,17 +5,19 @@ namespace
 {
 	void ThrowParsedWinapiError(DWORD errorCode, std::string_view functionName)
 	{
-		const auto errorMessage = [errorCode]() -> std::string {
-			if (errorCode == ERROR_SUCCESS)
-			{ // some functions are bugged, e.g. CreateFont (<https://github.com/TheQwertiest/foo_spider_monkey_panel/issues/92>)
-				return "Function failed, but returned a `SUCCESS` error code, which is usually caused by a bugged WinAPI. "
-					"One such case is when process runs out of GDI handles and can't create a new GDI object.";
-			}
-			else
+		const auto errorMessage = [errorCode] -> std::string
 			{
-				return std::system_category().message(errorCode);
-			}
-		}();
+				if (errorCode == ERROR_SUCCESS)
+				{
+					// some functions are bugged, e.g. CreateFont (<https://github.com/TheQwertiest/foo_spider_monkey_panel/issues/92>)
+					return "Function failed, but returned a `SUCCESS` error code, which is usually caused by a bugged WinAPI. "
+						"One such case is when process runs out of GDI handles and can't create a new GDI object.";
+				}
+				else
+				{
+					return std::system_category().message(errorCode);
+				}
+			}();
 
 		throw QwrException(
 			"WinAPI error:\n"

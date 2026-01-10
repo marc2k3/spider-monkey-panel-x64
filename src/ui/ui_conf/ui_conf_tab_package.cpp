@@ -142,7 +142,7 @@ void CConfigTabPackage::OnNewScript(UINT, int, CWindow)
 	try
 	{
 		const auto scriptsDir = PackageUtils::GetScriptsDir(settings_);
-		const auto newFilenameOpt = [&]() -> std::optional<fs::path>
+		const auto newFilenameOpt = [&] -> std::optional<fs::path>
 			{
 				while (true)
 				{

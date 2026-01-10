@@ -229,7 +229,7 @@ namespace mozjs
 		JS_GetPendingException(cx, &excn);
 		JS_ClearPendingException(cx); ///< need this for js::ErrorReport::init
 
-		auto autoErrorClear = wil::scope_exit([cx]()
+		auto autoErrorClear = wil::scope_exit([cx]
 			{
 				// There should be no exceptions on function exit
 				JS_ClearPendingException(cx);

@@ -200,7 +200,7 @@ namespace config
 
 		settings.id = panelId;
 		settings.isPseudoTransparent = isPseudoTransparent;
-		settings.payload = [&]() -> decltype(settings.payload)
+		settings.payload = [&] -> decltype(settings.payload)
 			{
 				switch (GetSourceType())
 				{

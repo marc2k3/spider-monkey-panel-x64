@@ -73,7 +73,11 @@ namespace mozjs
 
 		Gdiplus::Graphics* graphics = gr->GetGraphicsObject();
 		HDC dc = graphics->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([graphics, dc]() { graphics->ReleaseHDC(dc); });
+
+		auto autoHdcReleaser = wil::scope_exit([graphics, dc]
+			{
+				graphics->ReleaseHDC(dc);
+			});
 
 		const RECT rc{ x, y, static_cast<LONG>(x + w), static_cast<LONG>(y + h) };
 		const RECT clip_rc{ clip_x, clip_y, static_cast<LONG>(clip_x + clip_y), static_cast<LONG>(clip_w + clip_h) };

@@ -24,7 +24,7 @@ namespace mozjs
 		void SetFont(const std::wstring& name, uint32_t pxSize = 12, uint32_t style = 0);
 		void SetFontWithOpt(size_t optArgCount, const std::wstring& name, uint32_t pxSize, uint32_t style);
 		void SetMaxWidth(uint32_t width);
-		void TrackPosition(int x, int y);
+		void TrackPosition(int32_t x, int32_t y);
 
 	public:
 		std::wstring get_Text();

@@ -74,7 +74,7 @@ namespace mozjs
 	private:
 		std::optional<DISPID> GetDispId(const std::wstring& name, bool reportError = true);
 
-		void GetImpl(int dispId, std::span<_variant_t> args, JS::MutableHandleValue vp, std::optional<std::function<void()>> refreshFn = {});
+		void GetImpl(DISPID dispId, std::span<_variant_t> args, JS::MutableHandleValue vp, std::optional<std::function<void()>> refreshFn = {});
 
 		void SetupMembers(JS::HandleObject jsObject);
 		static void ParseTypeInfoRecursive(JSContext* cx, ITypeInfo* pTypeInfo, MemberMap& members);

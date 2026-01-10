@@ -173,7 +173,7 @@ namespace mozjs
 		m_ctrl.SetMaxTipWidth(width);
 	}
 
-	void JsFbTooltip::TrackPosition(int x, int y)
+	void JsFbTooltip::TrackPosition(int32_t x, int32_t y)
 	{
 		POINT pt{ x, y };
 		ClientToScreen(m_parent_wnd, &pt);

@@ -297,8 +297,8 @@ namespace mozjs
 
 	std::string JsGdiBitmap::GetColourSchemeJSON(uint32_t count)
 	{
-		const int width = std::min<int>(pGdi_->GetWidth(), 220);
-		const int height = std::min<int>(pGdi_->GetHeight(), 220);
+		const int32_t width = std::min<int32_t >(pGdi_->GetWidth(), 220);
+		const int32_t height = std::min<int32_t >(pGdi_->GetHeight(), 220);
 		const Gdiplus::Rect rect(0, 0, width, height);
 		Gdiplus::BitmapData bmpdata;
 

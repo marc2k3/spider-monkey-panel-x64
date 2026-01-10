@@ -397,7 +397,7 @@ void CDialogPackageManager::UpdateListBoxFromData()
 
 	for (const auto& package : packages_)
 	{
-		const auto prefix = [&]() -> std::wstring
+		const auto prefix = [&] -> std::wstring
 			{
 				switch (package.status)
 				{

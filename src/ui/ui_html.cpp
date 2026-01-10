@@ -79,8 +79,10 @@ LRESULT CDialogHtml::OnInitDialog(HWND, LPARAM)
 			smp::CheckHR(hr, "put_designMode");
 
 			SAFEARRAY* pSaStrings = SafeArrayCreateVector(VT_VARIANT, 0, 1);
-			auto autoPsa = wil::scope_exit([pSaStrings]() {
-				SafeArrayDestroy(pSaStrings);
+
+			auto autoPsa = wil::scope_exit([pSaStrings]
+				{
+					SafeArrayDestroy(pSaStrings);
 				});
 
 			VARIANT* pSaVar = nullptr;

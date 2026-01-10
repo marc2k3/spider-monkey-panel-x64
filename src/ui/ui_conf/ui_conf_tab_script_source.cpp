@@ -156,7 +156,7 @@ void CConfigTabScriptSource::OnScriptSrcChange(UINT /*uNotifyCode*/, int nID, CW
 		(*it)->ReadFromUi();
 	}
 
-	const auto newPayloadOpt = [&]() -> std::optional<config::PanelSettings::ScriptVariant>
+	const auto newPayloadOpt = [&] -> std::optional<config::PanelSettings::ScriptVariant>
 		{
 			switch (sourceTypeId_)
 			{

@@ -434,7 +434,11 @@ namespace mozjs
 
 		const auto srcDc = bitmap->GetHDC();
 		const auto hDc = pGdi_->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc]() { pGdi->ReleaseHDC(hDc); });
+
+		auto autoHdcReleaser = wil::scope_exit([this, hDc]
+			{
+				pGdi_->ReleaseHDC(hDc);
+			});
 
 		BOOL bRet = ::GdiAlphaBlend(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, BLENDFUNCTION{ AC_SRC_OVER, 0, alpha, AC_SRC_ALPHA });
 		smp::CheckWinApi(bRet, "GdiAlphaBlend");
@@ -465,7 +469,11 @@ namespace mozjs
 
 		HDC srcDc = bitmap->GetHDC();
 		HDC hDc = pGdi_->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc]() { pGdi->ReleaseHDC(hDc); });
+
+		auto autoHdcReleaser = wil::scope_exit([this, hDc]
+			{
+				pGdi_->ReleaseHDC(hDc);
+			});
 
 		BOOL bRet;
 		if (dstW == srcW && dstH == srcH)
@@ -504,7 +512,7 @@ namespace mozjs
 
 		SetTextColor(hDc, smp::ArgbToColorref(colour));
 
-		int iRet = SetBkMode(hDc, TRANSPARENT);
+		int32_t iRet = SetBkMode(hDc, TRANSPARENT);
 		smp::CheckWinApi(CLR_INVALID != iRet, "SetBkMode");
 
 		UINT uRet = SetTextAlign(hDc, TA_LEFT | TA_TOP | TA_NOUPDATECP);
@@ -573,8 +581,7 @@ namespace mozjs
 		}
 
 		Gdiplus::RectF bound;
-		int chars;
-		int lines;
+		int32_t  chars{}, lines{};
 		const auto status = pGdi_->MeasureString(str.c_str(), -1, fn, Gdiplus::RectF(x, y, w, h), &fmt, &bound, &chars, &lines);
 		smp::CheckGdi(status, "MeasureString");
 

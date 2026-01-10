@@ -12,7 +12,7 @@ namespace smp
 	void CheckGdiPlusObject(const std::unique_ptr<T>& obj, const T_Parent* pParentObj = nullptr)
 	{
 		// GetLastStatus() resets status, so it needs to be saved here
-		const auto status = [&obj, pParentObj]() -> std::optional<Gdiplus::Status>
+		const auto status = [&obj, pParentObj] -> std::optional<Gdiplus::Status>
 			{
 				if (obj)
 					return obj->GetLastStatus();

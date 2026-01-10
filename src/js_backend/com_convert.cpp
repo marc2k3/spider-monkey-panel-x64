@@ -474,8 +474,9 @@ namespace mozjs::convert::com
 		SAFEARRAY* safeArray = SafeArrayCreateVector(elementVariantType, 0, len);
 		QwrException::ExpectTrue(safeArray, "SafeArrayCreateVector failed");
 
-		auto autoSa = wil::scope_exit([safeArray]() {
-			SafeArrayDestroy(safeArray);
+		auto autoSa = wil::scope_exit([safeArray]
+			{
+				SafeArrayDestroy(safeArray);
 			});
 
 		if (len)
@@ -486,8 +487,9 @@ namespace mozjs::convert::com
 				HRESULT hr = SafeArrayAccessData(safeArray, reinterpret_cast<void**>(&varArray));
 				smp::CheckHR(hr, "SafeArrayAccessData");
 
-				auto autoSaData = wil::scope_exit([safeArray]() {
-					SafeArrayUnaccessData(safeArray);
+				auto autoSaData = wil::scope_exit([safeArray]
+					{
+						SafeArrayUnaccessData(safeArray);
 					});
 
 				for (uint32_t i = 0; i < len; ++i)
@@ -507,8 +509,9 @@ namespace mozjs::convert::com
 				HRESULT hr = SafeArrayAccessData(safeArray, reinterpret_cast<void**>(&dataArray));
 				smp::CheckHR(hr, "SafeArrayAccessData");
 
-				auto autoSaData = wil::scope_exit([safeArray]() {
-					SafeArrayUnaccessData(safeArray);
+				auto autoSaData = wil::scope_exit([safeArray]
+					{
+						SafeArrayUnaccessData(safeArray);
 					});
 
 				for (uint32_t i = 0; i < len; ++i)

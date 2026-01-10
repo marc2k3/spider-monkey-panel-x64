@@ -140,10 +140,11 @@ namespace mozjs
 			}
 		}
 
-		auto containerDataToProcess = [&]()
+		auto containerDataToProcess = [&]
 			{
-				std::unique_lock<std::mutex> lock(watcherDataMutex_);
+				auto lock = std::unique_lock(watcherDataMutex_);
 				std::vector<std::pair<JsContainer*, ContainerData*>> dataToProcess;
+
 				for (auto& [pContainer, containerData] : monitoredContainers_)
 				{
 					const auto it = std::ranges::find_if(activeContainers_, [pContainer = pContainer](auto& elem)

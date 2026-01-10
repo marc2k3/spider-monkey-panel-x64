@@ -474,7 +474,7 @@ namespace mozjs
 		return dispId;
 	}
 
-	void JsActiveXObject::GetImpl(int dispId, std::span<_variant_t> args, JS::MutableHandleValue vp, std::optional<std::function<void()>> refreshFn)
+	void JsActiveXObject::GetImpl(DISPID dispId, std::span<_variant_t> args, JS::MutableHandleValue vp, std::optional<std::function<void()>> refreshFn)
 	{
 		DISPPARAMS dispparams = { nullptr, nullptr, 0, 0 };
 		if (!args.empty())

@@ -53,7 +53,7 @@ namespace mozjs
 		m_font = std::make_unique<Gdiplus::Font>(dc.get(), m_hFont.get());
 	}
 
-	JsGdiFont::JsGdiFont(JSContext* cx, const std::wstring& name, int pxSize, int style) : m_ctx(cx)
+	JsGdiFont::JsGdiFont(JSContext* cx, const std::wstring& name, int32_t pxSize, int32_t style) : m_ctx(cx)
 	{
 		m_name = FontHelper::get().get_name_checked(name);
 		m_hFont = FontHelper::get().create(m_name, pxSize, static_cast<Gdiplus::FontStyle>(style));
@@ -71,7 +71,7 @@ namespace mozjs
 		return std::unique_ptr<JsGdiFont>(new JsGdiFont(cx, lf));
 	}
 
-	std::unique_ptr<JsGdiFont> JsGdiFont::CreateNative(JSContext* cx, const std::wstring& name, int pxSize, int style)
+	std::unique_ptr<JsGdiFont> JsGdiFont::CreateNative(JSContext* cx, const std::wstring& name, int32_t pxSize, int32_t style)
 	{
 		return std::unique_ptr<JsGdiFont>(new JsGdiFont(cx, name, pxSize, style));
 	}
@@ -91,12 +91,12 @@ namespace mozjs
 		return m_hFont.get();
 	}
 
-	JSObject* JsGdiFont::Constructor(JSContext* cx, const std::wstring& fontName, int pxSize, int style)
+	JSObject* JsGdiFont::Constructor(JSContext* cx, const std::wstring& fontName, int32_t pxSize, int32_t style)
 	{
 		return JsGdiFont::CreateJs(cx, fontName, pxSize, style);
 	}
 
-	JSObject* JsGdiFont::ConstructorWithOpt(JSContext* cx, size_t optArgCount, const std::wstring& fontName, int pxSize, int style)
+	JSObject* JsGdiFont::ConstructorWithOpt(JSContext* cx, size_t optArgCount, const std::wstring& fontName, int32_t pxSize, int32_t style)
 	{
 		switch (optArgCount)
 		{

@@ -24,9 +24,9 @@ namespace mozjs
 		JsMeasureStringInfo(JSContext* cx, float x, float y, float w, float h, uint32_t l, uint32_t c);
 
 	private:
-		[[maybe_unused]] JSContext* pJsCtx_ = nullptr;
+		JSContext* pJsCtx_{};
 
-		float x_, y_, w_, h_;
-		int lines_, characters_;
+		float x_{}, y_{}, w_{}, h_{};
+		int32_t lines_{}, characters_{};
 	};
 }
