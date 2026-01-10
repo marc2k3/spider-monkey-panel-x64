@@ -267,17 +267,17 @@ namespace
 
 		bool Fb::CheckClipboardContents()
 		{
-			pfc::com_ptr_t<IDataObject> pDO;
-			HRESULT hr = OleGetClipboard(pDO.receive_ptr());
-			if (FAILED(hr))
+			wil::com_ptr<IDataObject> obj;
+
+			if SUCCEEDED(OleGetClipboard(&obj))
 			{
-				return false;
+				DWORD effect = DROPEFFECT_COPY;
+				bool native{};
+
+				return SUCCEEDED(ole_interaction::get()->check_dataobject(obj.get(), effect, native));
 			}
 
-			bool native;
-			DWORD drop_effect = DROPEFFECT_COPY;
-			hr = ole_interaction::get()->check_dataobject(pDO, drop_effect, native);
-			return SUCCEEDED(hr);
+			return false;
 		}
 
 		void Fb::ClearPlaylist()
@@ -289,8 +289,8 @@ namespace
 		{
 			QwrException::ExpectTrue(handles, "handles argument is null");
 
-			pfc::com_ptr_t<IDataObject> pDO = ole_interaction::get()->create_dataobject(handles->GetHandleList());
-			return SUCCEEDED(OleSetClipboard(pDO.get_ptr()));
+			auto obj = ole_interaction::get()->create_dataobject(handles->GetHandleList());
+			return SUCCEEDED(OleSetClipboard(obj.get_ptr()));
 		}
 
 		JSObject* Fb::CreateContextMenuManager()
@@ -361,10 +361,10 @@ namespace
 			}
 
 			modal::MessageBlockingScope scope;
-			pfc::com_ptr_t<IDataObject> pDO = ole_interaction::get()->create_dataobject(handleList);
+			auto obj = ole_interaction::get()->create_dataobject(handleList);
 			pfc::com_ptr_t<com::IDropSourceImpl> pIDropSource = new com::IDropSourceImpl(
 				wnd,
-				pDO.get_ptr(),
+				obj.get_ptr(),
 				handleCount,
 				parsedOptions.show_text,
 				parsedOptions.custom_image
@@ -373,7 +373,7 @@ namespace
 			SendMessageW(wnd, std::to_underlying(InternalSyncMessage::wnd_internal_drag_start), 0, 0);
 
 			DWORD returnEffect{};
-			const auto hr = SHDoDragDrop(nullptr, pDO.get_ptr(), pIDropSource.get_ptr(), okEffects, &returnEffect);
+			const auto hr = SHDoDragDrop(nullptr, obj.get_ptr(), pIDropSource.get_ptr(), okEffects, &returnEffect);
 
 			SendMessageW(wnd, std::to_underlying(InternalSyncMessage::wnd_internal_drag_stop), 0, 0);
 
@@ -423,25 +423,16 @@ namespace
 
 		JSObject* Fb::GetClipboardContents(uint32_t)
 		{
-			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-			QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
-			auto api = ole_interaction::get();
-			pfc::com_ptr_t<IDataObject> pDO;
+			wil::com_ptr<IDataObject> obj;
 			metadb_handle_list items;
 
-			if (SUCCEEDED(OleGetClipboard(pDO.receive_ptr())))
+			if SUCCEEDED(OleGetClipboard(&obj))
 			{
-				DWORD drop_effect = DROPEFFECT_COPY;
-				bool native;
+				dropped_files_data_impl data;
 
-				if (SUCCEEDED(api->check_dataobject(pDO, drop_effect, native)))
+				if SUCCEEDED(ole_interaction::get()->parse_dataobject(obj.get(), data))
 				{
-					dropped_files_data_impl data;
-					if (SUCCEEDED(api->parse_dataobject(pDO, data)))
-					{
-						data.to_handles(items, native, wnd);
-					}
+					data.to_handles(items, false, core_api::get_main_window());
 				}
 			}
 
@@ -465,11 +456,11 @@ namespace
 		{
 			auto j = JSON::array();
 			auto api = dsp_config_manager_v2::get();
-
 			const auto selectedPreset = api->get_selected_preset();
-			pfc::string8 name;
+
 			for (const auto i : indices(api->get_preset_count()))
 			{
+				pfc::string8 name;
 				api->get_preset_name(i, name);
 
 				j.push_back({
@@ -526,12 +517,13 @@ namespace
 		JSObject* Fb::GetNowPlaying()
 		{
 			metadb_handle_ptr metadb;
-			if (!fb2k::api::pc->get_now_playing(metadb))
+			
+			if (fb2k::api::pc->get_now_playing(metadb))
 			{
-				return nullptr;
+				return JsFbMetadbHandle::CreateJs(m_ctx, metadb);
 			}
 
-			return JsFbMetadbHandle::CreateJs(m_ctx, metadb);
+			return nullptr;
 		}
 
 		std::string Fb::GetOutputDevices()
@@ -542,15 +534,16 @@ namespace
 			outputCoreConfig_t config{};
 			api->getCoreConfig(config);
 
-			api->listDevices([&j, &config](const std::string& name, const GUID& output_id, const GUID& device_id) {
-				const std::string output_string = fmt::format("{{{}}}", pfc::print_guid(output_id).get_ptr());
-				const std::string device_string = fmt::format("{{{}}}", pfc::print_guid(device_id).get_ptr());
+			api->listDevices([&j, &config](const std::string& name, const GUID& output_id, const GUID& device_id)
+				{
+					const std::string output_string = fmt::format("{{{}}}", pfc::print_guid(output_id).get_ptr());
+					const std::string device_string = fmt::format("{{{}}}", pfc::print_guid(device_id).get_ptr());
 
-				j.push_back({
-					{ "name", name },
-					{ "output_id", output_string },
-					{ "device_id", device_string },
-					{ "active", config.m_output == output_id && config.m_device == device_id }
+					j.push_back({
+						{ "name", name },
+						{ "output_id", output_string },
+						{ "device_id", device_string },
+						{ "active", config.m_output == output_id && config.m_device == device_id }
 					});
 				});
 
@@ -591,12 +584,12 @@ namespace
 			metadb_handle_list items;
 			ui_selection_manager::get()->get_selection(items);
 
-			if (!items.get_count())
+			if (items.get_count())
 			{
-				return nullptr;
+				return JsFbMetadbHandle::CreateJs(m_ctx, items[0]);
 			}
 
-			return JsFbMetadbHandle::CreateJs(m_ctx, items[0]);
+			return nullptr;
 		}
 
 		JSObject* Fb::GetSelections(uint32_t flags)
@@ -639,7 +632,7 @@ namespace
 		bool Fb::IsMainMenuCommandChecked(const std::string& command)
 		{
 			const auto status = GetMainmenuCommandStatusByName(command);
-			return (mainmenu_commands::flag_checked & status || mainmenu_commands::flag_radiochecked & status);
+			return WI_IsAnyFlagSet(status, mainmenu_commands::flag_checked | mainmenu_commands::flag_radiochecked);
 		}
 
 		bool Fb::IsMetadbInMediaLibrary(JsFbMetadbHandle* handle)
@@ -791,8 +784,9 @@ namespace
 
 		void Fb::SetOutputDevice(const std::wstring& output, const std::wstring& device)
 		{
-			GUID output_id;
-			GUID device_id;
+			GUID output_id{};
+			GUID device_id{};
+
 			if (CLSIDFromString(output.c_str(), &output_id) == NOERROR && CLSIDFromString(device.c_str(), &device_id) == NOERROR)
 			{
 				output_manager_v2::get()->setCoreConfigDevice(output_id, device_id);
@@ -801,8 +795,7 @@ namespace
 
 		void Fb::ShowConsole()
 		{
-			constexpr GUID guid_main_show_console = { 0x5b652d25, 0xce44, 0x4737, { 0x99, 0xbb, 0xa3, 0xcf, 0x2a, 0xeb, 0x35, 0xcc } };
-			standard_commands::run_main(guid_main_show_console);
+			standard_commands::main_show_console();
 		}
 
 		void Fb::ShowLibrarySearchUI(const std::string& query)
@@ -818,8 +811,9 @@ namespace
 
 		void Fb::ShowPopupMessage(const std::string& msg, const std::string& title)
 		{
-			fb2k::inMainThread([msg, title] {
-				popup_message::g_show(msg.c_str(), title.c_str());
+			fb2k::inMainThread([msg, title]
+				{
+					popup_message::g_show(msg.c_str(), title.c_str());
 				});
 		}
 
