@@ -377,7 +377,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="utils\thread_pool.h" />
     <ClInclude Include="utils\type_traits.h" />
     <ClInclude Include="utils\ui_ddx.h" />
-    <ClInclude Include="utils\ui_option.h" />
     <ClInclude Include="utils\unicode.h" />
     <ClInclude Include="utils\winapi_error_helpers.h" />
     <ClInclude Include="utils\zip_utils.h" />

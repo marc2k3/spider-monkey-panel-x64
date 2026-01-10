@@ -127,7 +127,7 @@ void CDialogConf::Revert()
 
 void CDialogConf::SwitchTab(CDialogConf::Tab tabId)
 {
-	SetActiveTabIdx(tabId);
+	activeTabIdx_ = std::to_underlying(tabId);
 	cTabs_.SetCurSel(activeTabIdx_);
 	CreateChildTab();
 }
@@ -390,18 +390,18 @@ void CDialogConf::InitializeTabData(CDialogConf::Tab tabId)
 		tabs_.emplace_back(std::make_unique<CConfigTabPackage>(*this, localSettings_));
 	}
 
-	SetActiveTabIdx(tabId);
+	activeTabIdx_ = std::to_underlying(tabId);
 }
 
 void CDialogConf::ReinitializeTabData()
 {
 	if (localSettings_.GetSourceType() == config::ScriptSourceType::Package)
 	{
-		tabs_.insert(tabs_.cbegin() + GetTabIdx(Tab::package), std::make_unique<CConfigTabPackage>(*this, localSettings_));
+		tabs_.insert(tabs_.cbegin() + std::to_underlying(Tab::package), std::make_unique<CConfigTabPackage>(*this, localSettings_));
 	}
 	else
 	{
-		tabs_.erase(tabs_.cbegin() + GetTabIdx(Tab::package));
+		tabs_.erase(tabs_.cbegin() + std::to_underlying(Tab::package));
 	}
 }
 
@@ -471,30 +471,10 @@ void CDialogConf::CreateChildTab()
 
 void CDialogConf::DestroyChildTab()
 {
-	if (pcCurTab_ && static_cast<HWND>(*pcCurTab_))
+	if (pcCurTab_ && pcCurTab_->IsWindow())
 	{
 		pcCurTab_->ShowWindow(SW_HIDE);
 		pcCurTab_->DestroyWindow();
 		pcCurTab_ = nullptr;
 	}
-}
-
-int CDialogConf::GetTabIdx(CDialogConf::Tab tabId) const
-{
-	switch (tabId)
-	{
-	case Tab::script:
-		return 0;
-	case Tab::package:
-		return 1;
-	case Tab::properties:
-		return static_cast<int>(tabs_.size()) - 1;
-	default:
-		return 0;
-	}
-}
-
-void CDialogConf::SetActiveTabIdx(CDialogConf::Tab tabId)
-{
-	activeTabIdx_ = GetTabIdx(tabId);
 }

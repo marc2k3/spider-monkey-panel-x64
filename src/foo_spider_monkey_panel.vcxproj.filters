@@ -799,9 +799,6 @@
     <ClInclude Include="utils\ui_ddx.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\ui_option.h">
-      <Filter>utils</Filter>
-    </ClInclude>
     <ClInclude Include="utils\unicode.h">
       <Filter>utils</Filter>
     </ClInclude>

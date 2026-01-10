@@ -2,7 +2,6 @@
 #include <config/parsed_panel_config.h>
 #include <panel/user_message.h>
 #include <utils/ui_ddx.h>
-#include <utils/ui_option.h>
 
 namespace smp
 {
@@ -27,10 +26,9 @@ public:
 class CDialogConf : public CDialogImpl<CDialogConf>, public CDialogResize<CDialogConf>
 {
 public:
-	enum class Tab : uint8_t
+	enum class Tab
 	{
 		script,
-		properties,
 		package,
 		def = script,
 	};
@@ -111,8 +109,6 @@ private:
 	void ReinitializeTabControls();
 	void CreateChildTab();
 	void DestroyChildTab();
-	int GetTabIdx(CDialogConf::Tab tabId) const;
-	void SetActiveTabIdx(CDialogConf::Tab tabId);
 
 private:
 	fb2k::CCoreDarkModeHooks m_hooks;
