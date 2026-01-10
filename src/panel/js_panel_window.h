@@ -16,19 +16,18 @@ namespace smp
 		class IDropTargetImpl;
 	}
 
-	enum class PanelType : uint8_t
-	{
-		CUI = 0,
-		DUI = 1
-	};
-
 	class js_panel_window : public ui_config_callback_impl
 	{
 	public:
+		enum class PanelType
+		{
+			CUI = 0,
+			DUI = 1
+		};
+
 		js_panel_window(PanelType instanceType);
 		virtual ~js_panel_window();
 
-	public:
 		// ui_config_callback_impl
 		void ui_colors_changed() override;
 		void ui_fonts_changed() override;
@@ -45,7 +44,6 @@ namespace smp
 		void Repaint(bool force = false);
 		void RepaintRect(const CRect& rc, bool force = false);
 
-	public: // accessors
 		[[nodiscard]] std::string GetPanelId();
 		[[nodiscard]] std::string GetPanelDescription(bool includeVersionAndAuthor = true);
 		[[nodiscard]] HDC GetHDC() const;

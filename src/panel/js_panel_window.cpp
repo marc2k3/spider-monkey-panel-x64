@@ -43,7 +43,7 @@ namespace smp
 	void js_panel_window::Fail(const std::string& errorText)
 	{
 		hasFailed_ = true;
-		smp::ReportErrorWithPopup(errorText);
+		ReportErrorWithPopup(errorText);
 
 		if (wnd_)
 		{              // can be null during startup
@@ -90,7 +90,7 @@ namespace smp
 				}
 				catch (const QwrException& e)
 				{
-					smp::ReportErrorWithPopup(
+					ReportErrorWithPopup(
 						fmt::format(
 							"Can't load panel settings. Your panel will be completely reset!\nError: {}",
 							e.what()
@@ -103,7 +103,7 @@ namespace smp
 
 		if (!UpdateSettings(settings, reloadPanel))
 		{
-			smp::ReportErrorWithPopup(fmt::format("Can't load panel settings. Your panel will be completely reset!"));
+			ReportErrorWithPopup(fmt::format("Can't load panel settings. Your panel will be completely reset!"));
 			UpdateSettings(config::PanelSettings{}, reloadPanel);
 		}
 	}
@@ -141,7 +141,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(e.what());
+			ReportErrorWithPopup(e.what());
 			return false;
 		}
 	}
@@ -1004,7 +1004,7 @@ namespace smp
 			}
 			catch (const QwrException& e)
 			{
-				smp::ReportErrorWithPopup(e.what());
+				ReportErrorWithPopup(e.what());
 			}
 			break;
 		}
@@ -1050,26 +1050,26 @@ namespace smp
 		{
 			CMenuHandle menu{ hMenu };
 
-			auto curIdx = id_base;
+			menu.AppendMenuW(MF_STRING, id_base + 1uz, L"&Reload");
+			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
+			menu.AppendMenuW(MF_STRING, id_base + 2uz, L"&Open component folder");
+			menu.AppendMenuW(MF_STRING, id_base + 3uz, L"&Open documentation");
+			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
 
-			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Reload");
-			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
-			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Open component folder");
-			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Open documentation");
-			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
-			menu.AppendMenuW(MF_STRING + (settings_.isPseudoTransparent ? MF_CHECKED : 0), ++curIdx, L"P&seudo transparent");
-			menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
+			if (panelType_ == PanelType::CUI)
+			{
+				menu.AppendMenuW(MF_STRING + (settings_.isPseudoTransparent ? MF_CHECKED : 0), id_base + 4uz, L"P&seudo transparent");
+				menu.AppendMenuW(MF_SEPARATOR, UINT_PTR{}, LPCWSTR{});
+			}
 
 			if (settings_.GetSourceType() == config::ScriptSourceType::Package)
 			{
-				++curIdx;
-
 				const auto scriptFiles = PackageUtils::GetScriptFiles(settings_);
 				const auto scriptsDir = PackageUtils::GetScriptsDir(settings_);
 
 				CMenu cSubMenu;
 				cSubMenu.CreatePopupMenu();
-				auto scriptIdx = id_base + 100;
+				auto scriptIdx = id_base + 100uz;
 
 				for (const auto& file: scriptFiles)
 				{
@@ -1093,18 +1093,19 @@ namespace smp
 			}
 			else
 			{
-				menu.AppendMenuW(MF_STRING, ++curIdx, L"&Edit panel script...");
+				menu.AppendMenuW(MF_STRING, id_base + 5uz, L"&Edit panel script...");
 			}
-			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Panel properties...");
-			menu.AppendMenuW(MF_STRING, ++curIdx, L"&Configure panel...");
+
+			menu.AppendMenuW(MF_STRING, id_base + 6uz, L"&Panel properties...");
+			menu.AppendMenuW(MF_STRING, id_base + 7uz, L"&Configure panel...");
 		}
 		catch (const fs::filesystem_error& e)
 		{
-			smp::ReportFSErrorWithPopup(e);
+			ReportFSErrorWithPopup(e);
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(e.what());
+			ReportErrorWithPopup(e.what());
 		}
 	}
 
@@ -1114,45 +1115,45 @@ namespace smp
 		{
 			switch (id - id_base)
 			{
-			case 1:
+			case 1uz:
 			{
 				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptReload), EventPriority::kControl);
 				break;
 			}
-			case 2:
+			case 2uz:
 			{
 				ShellExecuteW(nullptr, L"open", path::Component().c_str(), nullptr, nullptr, SW_SHOW);
 				break;
 			}
-			case 3:
+			case 3uz:
 			{
 				ShellExecuteW(nullptr, L"open", path::JsDocsIndex().c_str(), nullptr, nullptr, SW_SHOW);
 				break;
 			}
-			case 4:
+			case 4uz:
 			{
 				settings_.isPseudoTransparent = !settings_.isPseudoTransparent;
 				ReloadScript();
 				break;
 			}
-			case 5:
+			case 5uz:
 			{
 				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptEdit), EventPriority::kControl);
 				break;
 			}
-			case 6:
+			case 6uz:
 			{
 				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptShowProperties), EventPriority::kControl);
 				break;
 			}
-			case 7:
+			case 7uz:
 			{
 				EventDispatcher::Get().PutEvent(wnd_, std::make_unique<Event_Basic>(EventId::kScriptShowConfigure), EventPriority::kControl);
 				break;
 			}
 			}
 
-			if (id - id_base > 100)
+			if (id - id_base > 100uz)
 			{
 				const auto scriptFiles = PackageUtils::GetScriptFiles(settings_);
 				const auto fileIdx = std::min(id - id_base - 100uz, scriptFiles.size()) - 1uz;
@@ -1163,7 +1164,7 @@ namespace smp
 		}
 		catch (const QwrException& e)
 		{
-			smp::ReportErrorWithPopup(e.what());
+			ReportErrorWithPopup(e.what());
 		}
 	}
 
@@ -1240,7 +1241,7 @@ namespace smp
 		return dlgCode_;
 	}
 
-	PanelType js_panel_window::GetPanelType() const
+	js_panel_window::PanelType js_panel_window::GetPanelType() const
 	{
 		return panelType_;
 	}
@@ -1507,7 +1508,7 @@ namespace smp
 		}
 		else
 		{
-			if (settings_.isPseudoTransparent)
+			if (panelType_ == PanelType::CUI && settings_.isPseudoTransparent)
 			{
 				uie::win32::paint_background_using_parent(wnd_, memDc, false);
 			}
@@ -1620,7 +1621,7 @@ namespace smp
 				dropTargetHandler_.Attach(new ComPtrImpl<com::TrackDropTarget>(*this));
 
 				HRESULT hr = dropTargetHandler_->RegisterDragDrop();
-				smp::CheckHR(hr, "RegisterDragDrop");
+				CheckHR(hr, "RegisterDragDrop");
 			}
 		}
 		else
