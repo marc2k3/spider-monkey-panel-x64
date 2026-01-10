@@ -131,8 +131,8 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="config\panel_config.cpp" />
     <ClCompile Include="config\parsed_panel_config.cpp" />
     <ClCompile Include="events\event.cpp" />
-    <ClCompile Include="events\event_drag.cpp" />
     <ClCompile Include="events\event_dispatcher.cpp" />
+    <ClCompile Include="events\event_drag.cpp" />
     <ClCompile Include="events\event_mouse.cpp" />
     <ClCompile Include="events\event_notify_others.cpp" />
     <ClCompile Include="events\task_controller.cpp" />
@@ -204,7 +204,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="ui\ui_conf\ui_conf_tab_script_source.cpp" />
     <ClCompile Include="ui\ui_edit_in_progress.cpp" />
     <ClCompile Include="ui\ui_html.cpp">
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</MultiProcessorCompilation>
     </ClCompile>
     <ClCompile Include="ui\ui_input_box.cpp" />
     <ClCompile Include="ui\ui_package_manager.cpp" />
@@ -275,10 +275,10 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="config\panel_config.h" />
     <ClInclude Include="config\parsed_panel_config.h" />
     <ClInclude Include="events\event.h" />
+    <ClInclude Include="events\event_dispatcher.h" />
     <ClInclude Include="events\event_drag.h" />
     <ClInclude Include="events\event_ids.h" />
     <ClInclude Include="events\event_js_callback.h" />
-    <ClInclude Include="events\event_dispatcher.h" />
     <ClInclude Include="events\event_mouse.h" />
     <ClInclude Include="events\event_notify_others.h" />
     <ClInclude Include="events\task_controller.h" />
@@ -382,11 +382,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="utils\zip_utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resources\foo_spider_monkey_panel.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\includes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\foobar2000-sdk\columns_ui-sdk\columns_ui-sdk.vcxproj">
       <Project>{93ec0ede-01cd-4fb0-b8e8-4f2a027e026e}</Project>
     </ProjectReference>
@@ -418,10 +413,17 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <None Include="resources\cfgDarkGray.cfg" />
     <None Include="resources\cfgDefault.cfg" />
     <None Include="resources\cfgRubyBlue.cfg" />
+    <None Include="resources\default_script.js" />
+    <None Include="resources\recovery_package_json.json" />
+    <None Include="resources\recovery_package_script.js" />
     <None Include="resources\scintilla_interface.api" />
+    <None Include="resources\scintilla_jscript.api" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="com_utils\com_interface.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\foo_spider_monkey_panel.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
