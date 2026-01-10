@@ -104,7 +104,7 @@ namespace mozjs
 		void put_CursorFollowPlayback(bool p);
 		void put_PlaybackFollowCursor(bool p);
 		void put_PlaybackTime(double time);
-		void put_ReplaygainMode(uint32_t p);
+		void put_ReplaygainMode(uint32_t mode);
 		void put_StopAfterCurrent(bool p);
 		void put_Volume(float value);
 

@@ -26,6 +26,8 @@ namespace
 			{
 				const auto ins = core_api::get_my_instance();
 				Scintilla_RegisterClasses(ins);
+
+				fb2k::api::before_ui_init(); // must be before PlaylistLock
 				PlaylistLock::before_ui_init();
 
 				std::ignore = wtl_module.Init(nullptr, ins);
@@ -42,6 +44,7 @@ namespace
 		smp::EventDispatcher::Get().NotifyAllAboutExit();
 		QwrThreadPool::GetInstance().Finalize();
 		Scintilla_ReleaseResources();
+		fb2k::api::reset();
 		typelib_smp.reset();
 		wtl_module.Term();
 	}

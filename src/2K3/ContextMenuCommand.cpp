@@ -5,7 +5,7 @@
 
 ContextMenuCommand::ContextMenuCommand(std::string_view command, uint32_t flags) : m_command(command)
 {
-	if (playback_control::get()->is_playing())
+	if (fb2k::api::pc->is_playing())
 	{
 		m_cm = contextmenu_manager::get();
 		m_cm->init_context_now_playing(flags);

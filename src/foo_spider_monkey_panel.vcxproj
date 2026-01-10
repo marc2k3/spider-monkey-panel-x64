@@ -86,6 +86,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2K3\AlbumArtStatic.cpp" />
+    <ClCompile Include="2K3\API.cpp" />
     <ClCompile Include="2K3\Attach.cpp" />
     <ClCompile Include="2K3\ContextMenuCommand.cpp" />
     <ClCompile Include="2K3\DownloadFileAsync.cpp" />
@@ -93,6 +94,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="2K3\HTTPRequestAsync.cpp" />
     <ClCompile Include="2K3\MainMenuCommand.cpp" />
     <ClCompile Include="2K3\PlaylistLock.cpp" />
+    <ClCompile Include="2K3\ProcessLocationsNotify.cpp" />
     <ClCompile Include="2K3\Scintilla\DialogEditor.cpp" />
     <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp" />
     <ClCompile Include="2K3\Scintilla\DialogGoto.cpp" />
@@ -214,7 +216,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="utils\guid_helpers.cpp" />
     <ClCompile Include="utils\hook_handler.cpp" />
     <ClCompile Include="utils\image_helpers.cpp" />
-    <ClCompile Include="utils\location_processor.cpp" />
     <ClCompile Include="utils\mainmenu.cpp" />
     <ClCompile Include="utils\mainmenu_dynamic.cpp" />
     <ClCompile Include="utils\menu_helpers.cpp" />
@@ -225,6 +226,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2K3\AlbumArtStatic.hpp" />
+    <ClInclude Include="2K3\API.hpp" />
     <ClInclude Include="2K3\Attach.hpp" />
     <ClInclude Include="2K3\ContextMenuCommand.hpp" />
     <ClInclude Include="2K3\CustomSort.hpp" />
@@ -242,6 +244,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\LoadImageAsync.hpp" />
     <ClInclude Include="2K3\MainMenuCommand.hpp" />
     <ClInclude Include="2K3\PlaylistLock.hpp" />
+    <ClInclude Include="2K3\ProcessLocationsNotify.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogEditor.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp" />
     <ClInclude Include="2K3\Scintilla\DialogGoto.hpp" />
@@ -368,7 +371,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="utils\hook_handler.h" />
     <ClInclude Include="utils\image_helpers.h" />
     <ClInclude Include="utils\js_exception.h" />
-    <ClInclude Include="utils\location_processor.h" />
     <ClInclude Include="utils\mainmenu_dynamic.h" />
     <ClInclude Include="utils\menu_helpers.h" />
     <ClInclude Include="utils\qwr_exception.h" />

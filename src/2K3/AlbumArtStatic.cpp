@@ -33,7 +33,6 @@ album_art_data_ptr AlbumArtStatic::get(const metadb_handle_ptr& handle, size_t t
 	}
 
 	const auto type = get_type(type_id);
-	auto api = album_art_manager_v2::get();
 	album_art_data_ptr data;
 	album_art_path_list::ptr paths;
 
@@ -42,7 +41,7 @@ album_art_data_ptr AlbumArtStatic::get(const metadb_handle_ptr& handle, size_t t
 
 	try
 	{
-		auto instance = api->open(handles, types, fb2k::noAbort);
+		auto instance = fb2k::api::aam->open(handles, types, fb2k::noAbort);
 		data = instance->query(type, fb2k::noAbort);
 		paths = instance->query_paths(type, fb2k::noAbort);
 	}
@@ -52,7 +51,7 @@ album_art_data_ptr AlbumArtStatic::get(const metadb_handle_ptr& handle, size_t t
 		{
 			try
 			{
-				auto instance = api->open_stub(fb2k::noAbort);
+				auto instance = fb2k::api::aam->open_stub(fb2k::noAbort);
 				data = instance->query(type, fb2k::noAbort);
 				paths = instance->query_paths(type, fb2k::noAbort);
 			}

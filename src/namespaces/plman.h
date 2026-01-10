@@ -112,6 +112,5 @@ namespace mozjs
 
 		JSContext* m_ctx{};
 		JS::PersistentRootedObject m_recycler;
-		playlist_manager_v5::ptr m_api;
 	};
 }

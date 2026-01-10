@@ -14,11 +14,13 @@ namespace mozjs
 
 	public:
 		JSObject* get_Handle();
-		uint32_t get_PlaylistIndex();
-		uint32_t get_PlaylistItemIndex();
+		int32_t get_PlaylistIndex();
+		int32_t get_PlaylistItemIndex();
 
 	private:
 		JsFbPlaybackQueueItem(JSContext* cx, const t_playback_queue_item& playbackQueueItem);
+
+		bool ValidateIndexes() const;
 
 	private:
 		JSContext* pJsCtx_ = nullptr;

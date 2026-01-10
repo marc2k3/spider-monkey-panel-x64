@@ -34,6 +34,12 @@ namespace mozjs
 		: pJsCtx_(cx)
 		, playbackQueueItem_(playbackQueueItem) {}
 
+	bool JsFbPlaybackQueueItem::ValidateIndexes() const
+	{
+		return playbackQueueItem_.m_playlist < fb2k::api::pm->get_playlist_count()
+			&& playbackQueueItem_.m_item < fb2k::api::pm->playlist_get_item_count(playbackQueueItem_.m_playlist);
+	}
+
 	std::unique_ptr<JsFbPlaybackQueueItem> JsFbPlaybackQueueItem::CreateNative(JSContext* cx, const t_playback_queue_item& playbackQueueItem)
 	{
 		return std::unique_ptr<JsFbPlaybackQueueItem>(new JsFbPlaybackQueueItem(cx, playbackQueueItem));
@@ -41,7 +47,7 @@ namespace mozjs
 
 	uint32_t JsFbPlaybackQueueItem::GetInternalSize()
 	{
-		return 0;
+		return sizeof(t_playback_queue_item);
 	}
 
 	JSObject* JsFbPlaybackQueueItem::get_Handle()
@@ -49,13 +55,19 @@ namespace mozjs
 		return JsFbMetadbHandle::CreateJs(pJsCtx_, playbackQueueItem_.m_handle);
 	}
 
-	uint32_t JsFbPlaybackQueueItem::get_PlaylistIndex()
+	int32_t JsFbPlaybackQueueItem::get_PlaylistIndex()
 	{
-		return to_uint(playbackQueueItem_.m_playlist);
+		if (ValidateIndexes())
+			return to_int(playbackQueueItem_.m_playlist);
+		else
+			return -1;
 	}
 
-	uint32_t JsFbPlaybackQueueItem::get_PlaylistItemIndex()
+	int32_t JsFbPlaybackQueueItem::get_PlaylistItemIndex()
 	{
-		return to_uint(playbackQueueItem_.m_item);
+		if (ValidateIndexes())
+			return to_int(playbackQueueItem_.m_item);
+		else
+			return -1;
 	}
 }

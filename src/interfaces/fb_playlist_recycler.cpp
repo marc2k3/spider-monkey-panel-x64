@@ -53,48 +53,42 @@ namespace mozjs
 
 	JSObject* JsFbPlaylistRecycler::GetContent(uint32_t index)
 	{
-		auto api = playlist_manager_v3::get();
-		const auto count = api->recycler_get_count();
+		const auto count = fb2k::api::pm->recycler_get_count();
 		QwrException::ExpectTrue(index < count, "Index is out of bounds");
 
 		metadb_handle_list handles;
-		playlist_manager_v3::get()->recycler_get_content(index, handles);
+		fb2k::api::pm->recycler_get_content(index, handles);
 
 		return JsFbMetadbHandleList::CreateJs(pJsCtx_, handles);
 	}
 
 	pfc::string8 JsFbPlaylistRecycler::GetName(uint32_t index)
 	{
-		auto api = playlist_manager_v3::get();
-		const auto count = api->recycler_get_count();
+		const auto count = fb2k::api::pm->recycler_get_count();
 		QwrException::ExpectTrue(index < count, "Index is out of bounds");
 
 		pfc::string8 name;
-		playlist_manager_v3::get()->recycler_get_name(index, name);
+		fb2k::api::pm->recycler_get_name(index, name);
 		return name;
 	}
 
 	void JsFbPlaylistRecycler::Purge(JS::HandleValue affectedItems)
 	{
-		auto api = playlist_manager_v3::get();
-		pfc::bit_array_bittable affected(api->recycler_get_count());
-
+		pfc::bit_array_bittable affected(fb2k::api::pm->recycler_get_count());
 		convert::to_native::ProcessArray<uint32_t>(pJsCtx_, affectedItems, [&affected](uint32_t index) { affected.set(index, true); });
-
-		api->recycler_purge(affected);
+		fb2k::api::pm->recycler_purge(affected);
 	}
 
 	void JsFbPlaylistRecycler::Restore(uint32_t index)
 	{
-		auto api = playlist_manager_v3::get();
-		const auto count = api->recycler_get_count();
+		const auto count = fb2k::api::pm->recycler_get_count();
 		QwrException::ExpectTrue(index < count, "Index is out of bounds");
 
-		api->recycler_restore(index);
+		fb2k::api::pm->recycler_restore(index);
 	}
 
 	uint32_t JsFbPlaylistRecycler::get_Count()
 	{
-		return to_uint(playlist_manager_v3::get()->recycler_get_count());
+		return to_uint(fb2k::api::pm->recycler_get_count());
 	}
 }

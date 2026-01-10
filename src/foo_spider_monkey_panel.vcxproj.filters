@@ -16,9 +16,6 @@
     <ClCompile Include="utils\menu_helpers.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="utils\location_processor.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
     <ClCompile Include="ui\ui_slow_script.cpp">
       <Filter>ui</Filter>
     </ClCompile>
@@ -392,6 +389,12 @@
     <ClCompile Include="InitQuit.cpp" />
     <ClCompile Include="Paths.cpp" />
     <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="2K3\API.cpp">
+      <Filter>2K3</Filter>
+    </ClCompile>
+    <ClCompile Include="2K3\ProcessLocationsNotify.cpp">
+      <Filter>2K3</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ui\ui_input_box.h">
@@ -410,9 +413,6 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\colour_helpers.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\location_processor.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="ui\ui_slow_script.h">
@@ -849,6 +849,12 @@
     <ClInclude Include="MozJS.hpp" />
     <ClInclude Include="Paths.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="2K3\API.hpp">
+      <Filter>2K3</Filter>
+    </ClInclude>
+    <ClInclude Include="2K3\ProcessLocationsNotify.hpp">
+      <Filter>2K3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="utils">

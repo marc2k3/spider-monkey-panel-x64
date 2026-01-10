@@ -7,49 +7,46 @@ PlaylistLock::PlaylistLock(uint32_t mask) : m_mask(mask) {}
 #pragma region static
 bool PlaylistLock::add(size_t playlistIndex, uint32_t mask) noexcept
 {
-	auto api = playlist_manager_v5::get();
 	auto lock = fb2k::service_new<PlaylistLock>(mask);
 
-	if (!api->playlist_lock_install(playlistIndex, lock))
+	if (!fb2k::api::pm->playlist_lock_install(playlistIndex, lock))
 		return false;
 
-	api->playlist_set_property_int(playlistIndex, smp::guid::playlist_attribute_lock_state, mask);
-	const auto g = api->playlist_get_guid(playlistIndex);
+	fb2k::api::pm->playlist_set_property_int(playlistIndex, smp::guid::playlist_attribute_lock_state, mask);
+	const auto g = fb2k::api::pm->playlist_get_guid(playlistIndex);
 	s_map.set(g, lock);
 	return true;
 }
 
 bool PlaylistLock::is_my_lock(size_t playlistIndex) noexcept
 {
-	const auto g = playlist_manager_v5::get()->playlist_get_guid(playlistIndex);
+	const auto g = fb2k::api::pm->playlist_get_guid(playlistIndex);
 	return s_map.contains(g);
 }
 
 bool PlaylistLock::remove(size_t playlistIndex) noexcept
 {
-	auto api = playlist_manager_v5::get();
-	const auto g = api->playlist_get_guid(playlistIndex);
+	const auto g = fb2k::api::pm->playlist_get_guid(playlistIndex);
 	const auto it = s_map.find(g);
 
 	if (it.is_empty())
 		return false;
 
-	const auto ret = api->playlist_lock_uninstall(playlistIndex, it->m_value);
-	api->playlist_remove_property(playlistIndex, smp::guid::playlist_attribute_lock_state);
+	const auto ret = fb2k::api::pm->playlist_lock_uninstall(playlistIndex, it->m_value);
+	fb2k::api::pm->playlist_remove_property(playlistIndex, smp::guid::playlist_attribute_lock_state);
 	s_map.remove(g);
 	return ret;
 }
 
 void PlaylistLock::before_ui_init() noexcept
 {
-	auto api = playlist_manager_v5::get();
-	const auto count = api->get_playlist_count();
+	const auto count = fb2k::api::pm->get_playlist_count();
 
 	for (const auto playlistIndex : indices(count))
 	{
 		uint32_t mask{};
 
-		if (api->playlist_get_property_int(playlistIndex, smp::guid::playlist_attribute_lock_state, mask))
+		if (fb2k::api::pm->playlist_get_property_int(playlistIndex, smp::guid::playlist_attribute_lock_state, mask))
 		{
 			add(playlistIndex, mask);
 		}

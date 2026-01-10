@@ -63,7 +63,7 @@ namespace mozjs
 	{
 		pfc::string8 text;
 
-		if (playback_control::get()->playback_format_title(nullptr, text, titleFormatObject_, nullptr, playback_control::display_level_all))
+		if (fb2k::api::pc->playback_format_title(nullptr, text, titleFormatObject_, nullptr, playback_control::display_level_all))
 		{
 			return text;
 		}

@@ -2,11 +2,11 @@
 #include "track_drop_target.h"
 #include "drag_utils.h"
 
+#include <2K3/ProcessLocationsNotify.hpp>
 #include <events/event_dispatcher.h>
 #include <events/event_drag.h>
 #include <interfaces/drop_source_action.h>
 #include <panel/js_panel_window.h>
-#include <utils/location_processor.h>
 
 namespace
 {
@@ -134,12 +134,13 @@ namespace smp::com
 
 		if SUCCEEDED(hr)
 		{
-			const auto g = playlist_manager_v5::get()->playlist_get_guid(dragParams.playlistIdx);
+			const auto g = fb2k::api::pm->playlist_get_guid(dragParams.playlistIdx);
+			auto cb = fb2k::service_new<ProcessLocationsNotify>(g, dragParams.base, dragParams.toSelect);
 
 			droppedData.to_handles_async_ex(
 				playlist_incoming_item_filter_v2::op_flag_delay_ui,
 				core_api::get_main_window(),
-				fb2k::service_new<smp::OnProcessLocationsNotify_InsertHandles>(g, dragParams.base, dragParams.toSelect)
+				cb
 			);
 		}
 	}

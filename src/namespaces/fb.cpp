@@ -345,7 +345,7 @@ namespace
 			{
 				metadb_handle_ptr handle;
 
-				if (!playlist_manager::get()->activeplaylist_get_focus_item_handle(handle) || handleList.find_item(handle) == SIZE_MAX)
+				if (!fb2k::api::pm->activeplaylist_get_focus_item_handle(handle) || handleList.find_item(handle) == SIZE_MAX)
 				{
 					handle = handleList[0];
 				}
@@ -475,28 +475,22 @@ namespace
 				j.push_back({
 					{ "active", selectedPreset == i },
 					{ "name", name.get_ptr() }
-					});
+				});
 			}
 
 			return j.dump(2);
 		}
 
-		JSObject* Fb::GetFocusItem(bool force)
+		JSObject* Fb::GetFocusItem(bool)
 		{
 			metadb_handle_ptr metadb;
-			auto api = playlist_manager::get();
 
-			if (!api->activeplaylist_get_focus_item_handle(metadb) && force)
+			if (fb2k::api::pm->activeplaylist_get_focus_item_handle(metadb))
 			{
-				api->activeplaylist_get_item_handle(metadb, 0);
+				return JsFbMetadbHandle::CreateJs(m_ctx, metadb);
 			}
 
-			if (metadb.is_empty())
-			{
-				return nullptr;
-			}
-
-			return JsFbMetadbHandle::CreateJs(m_ctx, metadb);
+			return nullptr;
 		}
 
 		JSObject* Fb::GetFocusItemWithOpt(size_t optArgCount, bool force)
@@ -532,7 +526,7 @@ namespace
 		JSObject* Fb::GetNowPlaying()
 		{
 			metadb_handle_ptr metadb;
-			if (!playback_control::get()->get_now_playing(metadb))
+			if (!fb2k::api::pc->get_now_playing(metadb))
 			{
 				return nullptr;
 			}
@@ -897,11 +891,9 @@ namespace
 
 		int32_t Fb::get_CustomVolume()
 		{
-			auto api = playback_control_v3::get();
-
-			if (api->custom_volume_is_active())
+			if (fb2k::api::pc->custom_volume_is_active())
 			{
-				return api->custom_volume_get();
+				return fb2k::api::pc->custom_volume_get();
 			}
 
 			return -1;
@@ -914,12 +906,12 @@ namespace
 
 		bool Fb::get_IsPaused()
 		{
-			return playback_control::get()->is_paused();
+			return fb2k::api::pc->is_paused();
 		}
 
 		bool Fb::get_IsPlaying()
 		{
-			return playback_control::get()->is_playing();
+			return fb2k::api::pc->is_playing();
 		}
 
 		bool Fb::get_PlaybackFollowCursor()
@@ -929,12 +921,12 @@ namespace
 
 		double Fb::get_PlaybackLength()
 		{
-			return playback_control::get()->playback_get_length();
+			return fb2k::api::pc->playback_get_length();
 		}
 
 		double Fb::get_PlaybackTime()
 		{
-			return playback_control::get()->playback_get_position();
+			return fb2k::api::pc->playback_get_position();
 		}
 
 		std::string Fb::get_ProfilePath()
@@ -951,7 +943,7 @@ namespace
 
 		bool Fb::get_StopAfterCurrent()
 		{
-			return playback_control::get()->get_stop_after_current();
+			return fb2k::api::pc->get_stop_after_current();
 		}
 
 		std::string Fb::get_Version()
@@ -961,7 +953,7 @@ namespace
 
 		float Fb::get_Volume()
 		{
-			return playback_control::get()->get_volume();
+			return fb2k::api::pc->get_volume();
 		}
 
 		void Fb::put_AlwaysOnTop(bool p)
@@ -981,37 +973,33 @@ namespace
 
 		void Fb::put_PlaybackTime(double time)
 		{
-			playback_control::get()->playback_seek(time);
+			fb2k::api::pc->playback_seek(time);
 		}
 
-		void Fb::put_ReplaygainMode(uint32_t p)
+		void Fb::put_ReplaygainMode(uint32_t mode)
 		{
-			static constexpr std::array guids =
-			{
-				&standard_commands::guid_main_rg_disable,
-				&standard_commands::guid_main_rg_set_track,
-				&standard_commands::guid_main_rg_set_album,
-				&standard_commands::guid_main_rg_byorder
-			};
+			QwrException::ExpectTrue(mode <= t_replaygain_config::source_mode_byPlaybackOrder, "Invalid replay gain mode: {}", mode);
 
-			QwrException::ExpectTrue(p < guids.size(), "Invalid replay gain mode: {}", p);
+			auto api = replaygain_manager::get();
 
-			standard_commands::run_main(*guids[p]);
-			playback_control_v3::get()->restart();
+			t_replaygain_config config;
+			api->get_core_settings(config);
+			config.m_source_mode = mode;
+			api->set_core_settings(config);
+
+			fb2k::api::pc->restart();
 		}
 
 		void Fb::put_StopAfterCurrent(bool p)
 		{
-			playback_control::get()->set_stop_after_current(p);
+			fb2k::api::pc->set_stop_after_current(p);
 		}
 
 		void Fb::put_Volume(float value)
 		{
-			auto api = playback_control_v3::get();
-
-			if (!api->custom_volume_is_active())
+			if (!fb2k::api::pc->custom_volume_is_active())
 			{
-				api->set_volume(value);
+				fb2k::api::pc->set_volume(value);
 			}
 		}
 
