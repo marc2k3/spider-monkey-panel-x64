@@ -607,7 +607,7 @@ const LM = _scale(5);
 const TM = _scale(20);
 
 let tooltip = window.CreateTooltip('Segoe UI', _scale(12));
-tooltip.SetMaxWidth(1200);
+tooltip.SetMaxWidth(800);
 
 let folders = {};
 folders.home = fb.ComponentPath + 'samples\\complete\\';
