@@ -62,33 +62,36 @@ namespace
 
 namespace
 {
-	std::unique_ptr<Gdiplus::Bitmap> CreateDownsizedImage(Gdiplus::Bitmap& srcImg, uint32_t maxPixelCount)
+	std::unique_ptr<Gdiplus::Bitmap> CreateDownsizedImage(Gdiplus::Bitmap& srcImg)
 	{
-		const auto [imgWidth, imgHeight] = [&srcImg, maxPixelCount]
-			{
-				if (srcImg.GetWidth() * srcImg.GetHeight() > maxPixelCount)
-				{
-					const double ratio = static_cast<double>(srcImg.GetWidth()) / srcImg.GetHeight();
-					const auto imgHeight = static_cast<uint32_t>(std::round(std::sqrt(maxPixelCount / ratio)));
-					const auto imgWidth = static_cast<uint32_t>(std::round(imgHeight * ratio));
+		if (srcImg.GetWidth() <= 220u && srcImg.GetHeight() <= 220u)
+		{
+			std::unique_ptr<Gdiplus::Bitmap> pBitmap(srcImg.Clone(
+				0,
+				0,
+				static_cast<int>(srcImg.GetWidth()),
+				static_cast<int>(srcImg.GetHeight()),
+				PixelFormat32bppPARGB
+			));
 
-					return std::make_tuple(imgWidth, imgHeight);
-				}
-				else
-				{
-					return std::make_tuple(srcImg.GetWidth(), srcImg.GetHeight());
-				}
-			}();
+			smp::CheckGdiPlusObject(pBitmap);
+			return pBitmap;
+		}
+
+		const auto dwidth = static_cast<double>(srcImg.GetWidth());
+		const auto dheight = static_cast<double>(srcImg.GetHeight());
+		const auto ratio = std::min(220.0 / dwidth, 220.0 / dheight);
+		const auto imgWidth = static_cast<uint32_t>(dwidth * ratio);
+		const auto imgHeight = static_cast<uint32_t>(dheight * ratio);
 
 		auto pBitmap = std::make_unique<Gdiplus::Bitmap>(imgWidth, imgHeight, PixelFormat32bppPARGB);
 		smp::CheckGdiPlusObject(pBitmap);
 
 		auto gr = Gdiplus::Graphics(pBitmap.get());
-
 		auto status = gr.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBilinear);
 		smp::CheckGdi(status, "SetInterpolationMode");
 
-		status = gr.DrawImage(&srcImg, 0, 0, imgWidth, imgHeight); // scale image down
+		status = gr.DrawImage(&srcImg, 0, 0, imgWidth, imgHeight);
 		smp::CheckGdi(status, "DrawImage");
 
 		return pBitmap;
@@ -239,12 +242,11 @@ namespace mozjs
 
 	JS::Value JsGdiBitmap::GetColourScheme(uint32_t count)
 	{
-		constexpr uint32_t kMaxPixelCount = 220 * 220;
-		auto pBitmap = CreateDownsizedImage(*pGdi_, kMaxPixelCount);
-		const Gdiplus::Rect rect{ 0, 0, static_cast<int>(pBitmap->GetWidth()), static_cast<int>(pBitmap->GetHeight()) };
-		Gdiplus::BitmapData bmpdata{};
+		auto resized = CreateDownsizedImage(*pGdi_);
+		const Gdiplus::Rect rect(0, 0, static_cast<int>(resized->GetWidth()), static_cast<int>(resized->GetHeight()));
+		Gdiplus::BitmapData bmpdata;
 
-		const auto status = pBitmap->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
+		const auto status = resized->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
 		smp::CheckGdi(status, "LockBits");
 
 		std::map<uint32_t, uint32_t> color_counters;
@@ -273,7 +275,7 @@ namespace mozjs
 			)];
 		}
 
-		pBitmap->UnlockBits(&bmpdata);
+		std::ignore = resized->UnlockBits(&bmpdata);
 
 		std::vector<std::pair<uint32_t, uint32_t>> sort_vec(color_counters.cbegin(), color_counters.cend());
 		std::ranges::sort(sort_vec, [](const auto& a, const auto& b)
@@ -287,9 +289,10 @@ namespace mozjs
 		convert::to_js::ToArrayValue(
 			pJsCtx_,
 			sort_vec,
-			[](const auto& vec, auto index) {
-				return vec[index].first;
-			},
+			[](const auto& vec, auto index)
+				{
+					return vec[index].first;
+				},
 			&jsValue);
 
 		return jsValue;
@@ -297,13 +300,11 @@ namespace mozjs
 
 	std::string JsGdiBitmap::GetColourSchemeJSON(uint32_t count)
 	{
-		const int32_t width = std::min<int32_t >(pGdi_->GetWidth(), 220);
-		const int32_t height = std::min<int32_t >(pGdi_->GetHeight(), 220);
-		const Gdiplus::Rect rect(0, 0, width, height);
+		auto resized = CreateDownsizedImage(*pGdi_);
+		const Gdiplus::Rect rect(0, 0, static_cast<int>(resized->GetWidth()), static_cast<int>(resized->GetHeight()));
 		Gdiplus::BitmapData bmpdata;
 
-		auto resized = CreateDownsizedImage(*pGdi_, 220 * 220);
-		auto status = resized->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
+		const auto status = resized->LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppARGB, &bmpdata);
 		smp::CheckGdi(status, "LockBits");
 
 		const uint32_t colours_length = bmpdata.Width * bmpdata.Height;
@@ -324,8 +325,7 @@ namespace mozjs
 			++colour_counters[values];
 		}
 
-		status = resized->UnlockBits(&bmpdata);
-		smp::CheckGdi(status, "UnlockBits");
+		std::ignore = resized->UnlockBits(&bmpdata);
 
 		KPoints points;
 		for (auto&& [index, value] : std::views::enumerate(colour_counters))
