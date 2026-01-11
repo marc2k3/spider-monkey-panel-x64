@@ -1,3 +1,7 @@
+## 1.7.26.1.12
+- Fix regression in `GdiBitmap` `GetColourSchemeJSON` causing unexpected script errors.
+- Increase tooltip max length to 1024 characters.
+
 ## 1.7.26.1.11
 - Large internal code refactor removing dead code.
 - Limit tooltip length to 256 characters.
