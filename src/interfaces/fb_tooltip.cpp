@@ -188,7 +188,8 @@ namespace mozjs
 	void JsFbTooltip::put_Text(const std::wstring& text)
 	{
 		m_buffer = text;
-		m_info->lpszText = m_buffer.data();
+		auto fix0red = m_buffer.substr(0uz, 256uz);
+		m_info->lpszText = fix0red.data();
 		m_ctrl.SetToolInfo(m_info.get());
 	}
 
