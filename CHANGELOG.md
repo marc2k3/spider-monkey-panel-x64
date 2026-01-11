@@ -1,3 +1,10 @@
+## 1.7.26.1.11
+- Large internal code refactor removing dead code.
+- Limit tooltip length to 256 characters.
+- Pseudo transparency options are now suppressed in `Default UI`. It's only useful for `Columns UI` toolbars.
+- Fix bug so invalid `FbPlaybackQueueItem` indexes are now `-1`.
+- Fix bug in the `Properties` sample where `Unix` line breaks in tag values were ignored leading to display errors.
+
 ## 1.7.26.1.2
 - Hopefully fix long standing crash on exit bug from original component.
 
