@@ -29,20 +29,20 @@ namespace mozjs
 	const JSPropertySpec* JsGdiRawBitmap::JsProperties = jsProperties.data();
 	const JsPrototypeId JsGdiRawBitmap::PrototypeId = JsPrototypeId::GdiRawBitmap;
 
-	JsGdiRawBitmap::JsGdiRawBitmap(JSContext* cx, wil::unique_hbitmap hBmp, uint32_t width, uint32_t height)
-		: pJsCtx_(cx)
-		, pDc_(CreateCompatibleDC(nullptr))
-		, hBmp_(std::move(hBmp))
-		, autoBmp_(SelectObject(pDc_.get(), hBmp_.get()))
-		, width_(width)
-		, height_(height) {}
+	JsGdiRawBitmap::JsGdiRawBitmap(JSContext* ctx, wil::unique_hbitmap hbitmap, uint32_t width, uint32_t height)
+		: m_ctx(ctx)
+		, m_hdc(CreateCompatibleDC(nullptr))
+		, m_hbitmap(std::move(hbitmap))
+		, m_obj(SelectObject(m_hdc.get(), m_hbitmap.get()))
+		, m_width(width)
+		, m_height(height) {}
 
 	wil::unique_hbitmap JsGdiRawBitmap::CreateHBitmapFromGdiPlusBitmap(Gdiplus::Bitmap& bitmap)
 	{
-		const Gdiplus::Rect rect{ 0, 0, static_cast<int>(bitmap.GetWidth()), static_cast<int>(bitmap.GetHeight()) };
+		const auto rect = Gdiplus::Rect(0, 0, static_cast<int32_t>(bitmap.GetWidth()), static_cast<int32_t>(bitmap.GetHeight()));
 		Gdiplus::BitmapData bmpdata{};
 
-		if (bitmap.LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppPARGB, &bmpdata) != Gdiplus::Ok)
+		if (Gdiplus::Ok != bitmap.LockBits(&rect, Gdiplus::ImageLockModeRead, PixelFormat32bppPARGB, &bmpdata))
 			return nullptr;
 
 		BITMAP bm{};
@@ -60,34 +60,34 @@ namespace mozjs
 		return hBitmap;
 	}
 
-	std::unique_ptr<JsGdiRawBitmap> JsGdiRawBitmap::CreateNative(JSContext* cx, Gdiplus::Bitmap* pBmp)
+	std::unique_ptr<JsGdiRawBitmap> JsGdiRawBitmap::CreateNative(JSContext* ctx, Gdiplus::Bitmap* bitmap)
 	{
-		QwrException::ExpectTrue(pBmp, "Internal error: Gdiplus::Bitmap is null");
+		QwrException::ExpectTrue(bitmap, "Internal error: Gdiplus::Bitmap is null");
 
-		auto hBitmap = CreateHBitmapFromGdiPlusBitmap(*pBmp);
+		auto hBitmap = CreateHBitmapFromGdiPlusBitmap(*bitmap);
 		QwrException::ExpectTrue(hBitmap.get(), "Internal error: failed to get HBITMAP from Gdiplus::Bitmap");
 
-		return std::unique_ptr<JsGdiRawBitmap>(new JsGdiRawBitmap(cx, std::move(hBitmap), pBmp->GetWidth(), pBmp->GetHeight()));
+		return std::unique_ptr<JsGdiRawBitmap>(new JsGdiRawBitmap(ctx, std::move(hBitmap), bitmap->GetWidth(), bitmap->GetHeight()));
 	}
 
 	uint32_t JsGdiRawBitmap::GetInternalSize()
 	{
 		// We generate only PixelFormat32bppPARGB images
-		return width_ * height_ * Gdiplus::GetPixelFormatSize(PixelFormat32bppPARGB) / 8;
+		return m_width * m_height * Gdiplus::GetPixelFormatSize(PixelFormat32bppPARGB) / 8;
 	}
 
 	HDC JsGdiRawBitmap::GetHDC() const
 	{
-		return pDc_.get();
+		return m_hdc.get();
 	}
 
 	uint32_t JsGdiRawBitmap::get_Height()
 	{
-		return height_;
+		return m_height;
 	}
 
 	uint32_t JsGdiRawBitmap::get_Width()
 	{
-		return width_;
+		return m_width;
 	}
 }
