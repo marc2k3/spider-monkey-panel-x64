@@ -3,98 +3,79 @@
 #include "drag_utils.h"
 #include "drag_image.h"
 
-_COM_SMARTPTR_TYPEDEF(IDragSourceHelper2, IID_IDragSourceHelper2);
-
 namespace smp::com
 {
-	IDropSourceImpl::IDropSourceImpl(HWND hWnd, IDataObject* pDataObject, size_t itemCount, bool showText, Gdiplus::Bitmap* pUserImage) : pDataObject_(pDataObject)
+	IDropSourceImpl::IDropSourceImpl(HWND hWnd, IDataObject* data, std::wstring_view text, Gdiplus::Bitmap* bitmap) : m_data(data)
 	{
-		HRESULT hr = pDragSourceHelper_.CreateInstance(CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER);
-		smp::CheckHR(hr, "CreateInstance");
+		auto drag_source_helper = wil::CoCreateInstanceNoThrow<IDragSourceHelper>(CLSID_DragDropHelper);
 
-		if (IDragSourceHelper2Ptr pDragSourceHelper2 = pDragSourceHelper_; pDragSourceHelper2)
-		{
-			(void)pDragSourceHelper2->SetFlags(DSH_ALLOWDROPDESCRIPTIONTEXT);
-		}
+		if (!drag_source_helper)
+			return;
 
-		if (drag::RenderDragImage(hWnd, itemCount, showText, pUserImage, dragImage_))
+		m_drag_source_helper = drag_source_helper.try_query<IDragSourceHelper2>();
+
+		if (!m_drag_source_helper)
+			return;
+
+		m_drag_source_helper->SetFlags(DSH_ALLOWDROPDESCRIPTIONTEXT);
+
+		if (uih::create_drag_image(hWnd, text, bitmap, m_dragImage))
 		{
-			(void)pDragSourceHelper_->InitializeFromBitmap(&dragImage_, pDataObject);
+			m_drag_source_helper->InitializeFromBitmap(&m_dragImage, data);
 		}
 
 		if (IsThemeActive() && IsAppThemed())
 		{
-			(void)drag::SetDefaultImage(pDataObject);
+			drag::SetDefaultImage(data);
 		}
 	};
 
 	IDropSourceImpl::~IDropSourceImpl()
 	{
-		if (dragImage_.hbmpDragImage)
+		if (m_dragImage.hbmpDragImage)
 		{
-			DeleteObject(dragImage_.hbmpDragImage);
+			DeleteObject(m_dragImage.hbmpDragImage);
 		}
 	}
 
 	STDMETHODIMP IDropSourceImpl::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
 	{
-		if (fEscapePressed || (grfKeyState & MK_RBUTTON) || (grfKeyState & MK_MBUTTON))
-		{
+		if (fEscapePressed || WI_IsAnyFlagSet(grfKeyState, MK_RBUTTON | MK_MBUTTON))
 			return DRAGDROP_S_CANCEL;
-		}
-
-		if (!(grfKeyState & MK_LBUTTON))
-		{
-			return (lastEffect_ == DROPEFFECT_NONE ? DRAGDROP_S_CANCEL : DRAGDROP_S_DROP);
-		}
-
-		return S_OK;
+		else if (WI_IsFlagSet(grfKeyState, MK_LBUTTON))
+			return S_OK;
+		else if (m_effect == DROPEFFECT_NONE)
+			return DRAGDROP_S_CANCEL;
+		else
+			return DRAGDROP_S_DROP;
 	}
 
 	STDMETHODIMP IDropSourceImpl::GiveFeedback(DWORD dwEffect)
 	{
-		BOOL isShowingLayered = FALSE;
-		if (IsThemeActive())
-		{
-			drag::GetIsShowingLayered(pDataObject_, isShowingLayered);
-		}
+		HWND wnd_drag{};
+		BOOL isShowingLayered{};
 
-		HWND wnd_drag = nullptr;
-		if (SUCCEEDED(drag::GetDragWindow(pDataObject_, wnd_drag)) && wnd_drag)
-		{
+		if (IsThemeActive())
+			drag::GetIsShowingLayered(m_data.get(), isShowingLayered);
+
+		if (SUCCEEDED(drag::GetDragWindow(m_data.get(), wnd_drag)) && wnd_drag)
 			PostMessageW(wnd_drag, DDWM_UPDATEWINDOW, NULL, NULL);
-		}
 
 		if (isShowingLayered)
 		{
-			if (!wasShowingLayered_)
+			if (!m_prev_is_showing_layered)
 			{
-				SetCursor(LoadCursor(nullptr, IDC_ARROW));
+				SetCursor(LoadCursorW(nullptr, IDC_ARROW));
 			}
+
 			if (wnd_drag && dwEffect == DROPEFFECT_NONE)
 			{
-				PostMessageW(wnd_drag, DDWM_SETCURSOR, 1 /*wp*/, NULL);
+				PostMessageW(wnd_drag, DDWM_SETCURSOR, 1, NULL);
 			}
 		}
 
-		wasShowingLayered_ = !!isShowingLayered;
-		lastEffect_ = dwEffect;
-
-		return (isShowingLayered ? S_OK : DRAGDROP_S_USEDEFAULTCURSORS);
-	}
-
-	ULONG STDMETHODCALLTYPE IDropSourceImpl::AddRef()
-	{
-		return ++refCount_;
-	}
-
-	ULONG STDMETHODCALLTYPE IDropSourceImpl::Release()
-	{
-		const ULONG n = --refCount_;
-		if (!n)
-		{
-			delete this;
-		}
-		return n;
+		m_prev_is_showing_layered = isShowingLayered != 0;
+		m_effect = dwEffect;
+		return isShowingLayered ? S_OK : DRAGDROP_S_USEDEFAULTCURSORS;
 	}
 }

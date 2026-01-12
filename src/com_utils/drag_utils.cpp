@@ -47,14 +47,9 @@ namespace
 
 		return hr;
 	}
-
-	std::string FormatDragText(size_t selectionCount)
-	{
-		return fmt::format("{} {}", selectionCount, (selectionCount > 1 ? "tracks" : "track"));
-	}
 }
 
-namespace smp::com::drag
+namespace smp::drag
 {
 	HRESULT SetDefaultImage(IDataObject* pdtobj)
 	{
@@ -99,31 +94,5 @@ namespace smp::com::drag
 	{
 		static const auto cfRet = static_cast<CLIPFORMAT>(RegisterClipboardFormatW(L"IsShowingLayered"));
 		return GetDataObjectDataSimple(pDataObj, cfRet, p_out);
-	}
-
-	bool RenderDragImage(HWND hWnd, size_t itemCount, bool showText, Gdiplus::Bitmap* pCustomImage, SHDRAGIMAGE& dragImage)
-	{
-		wil::unique_htheme dd_theme;
-
-		if (IsThemeActive() && IsAppThemed())
-		{
-			dd_theme.reset(OpenThemeData(hWnd, VSCLASS_DRAGDROP));
-		}
-
-		LOGFONT lf;
-		memset(&lf, 0, sizeof(LOGFONT));
-		SystemParametersInfoW(SPI_GETICONTITLELOGFONT, 0, &lf, 0);
-
-		return uih::create_drag_image(
-			hWnd,
-			dd_theme.get(),
-			GetSysColor(COLOR_HIGHLIGHT),
-			GetSysColor(COLOR_HIGHLIGHTTEXT),
-			nullptr,
-			&lf,
-			showText ? FormatDragText(itemCount) : "",
-			pCustomImage,
-			&dragImage
-		);
 	}
 }

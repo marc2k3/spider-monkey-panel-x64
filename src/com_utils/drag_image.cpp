@@ -1,17 +1,8 @@
 #include <PCH.hpp>
 #include "drag_image.h"
-#include <utils/image_helpers.h>
 
 namespace
 {
-	/// Restore some windowsx.h macros
-	#ifndef SelectFont
-	#define SelectFont(hdc, hfont) ((HFONT)SelectObject((hdc), (HGDIOBJ)(HFONT)(hfont)))
-	#endif
-	#ifndef SelectBitmap
-	#define SelectBitmap(hdc, hbm) ((HBITMAP)SelectObject((hdc), (HGDIOBJ)(HBITMAP)(hbm)))
-	#endif
-
 	// Ripped from win32_helpers.cpp
 
 	SIZE get_system_dpi()
@@ -32,47 +23,52 @@ namespace
 	{
 		return theme && IsThemePartDefined(theme, partId, stateId);
 	}
-}
 
-namespace uih
-{
-	// Only used in non-themed mode – if theming is active, the shell draws the background for us
-	void draw_drag_image_background(HWND wnd, HTHEME theme, HDC dc, COLORREF selectionBackgroundColour, const RECT& rc)
+	SIZE GetResizedImageSize(const SIZE& currentDimension, const SIZE& maxDimensions) noexcept
 	{
-		constexpr int themeState = 0;
+		const auto& [imgWidth, imgHeight] = currentDimension;
+		const auto& [maxWidth, maxHeight] = maxDimensions;
 
-		if (UsesTheming(theme, DD_IMAGEBG, themeState))
+		if (imgWidth <= maxWidth && imgHeight <= maxHeight)
+			return currentDimension;
+
+		SIZE newSize{};
+		const auto imgRatio = static_cast<double>(imgHeight) / imgWidth;
+		const auto constraintsRatio = static_cast<double>(maxHeight) / maxWidth;
+
+		if (imgRatio > constraintsRatio)
 		{
-			if (IsThemeBackgroundPartiallyTransparent(theme, DD_IMAGEBG, themeState))
-			{
-				DrawThemeParentBackground(wnd, dc, &rc);
-			}
-			DrawThemeBackground(theme, dc, DD_IMAGEBG, themeState, &rc, nullptr);
+			newSize.cy = maxHeight;
+			newSize.cx = lround(maxHeight / imgRatio);
 		}
 		else
 		{
-			auto brush = wil::unique_hbrush(CreateSolidBrush(selectionBackgroundColour));
-			FillRect(dc, &rc, brush.get());
+			newSize.cx = maxWidth;
+			newSize.cy = lround(maxWidth * imgRatio);
 		}
+
+		return newSize;
 	}
 
-	void draw_drag_image_label(HWND wnd, HTHEME theme, HDC dc, const RECT& rc, COLORREF selectionTextColour, std::string_view text)
+	void draw_drag_image_label(HWND wnd, HTHEME theme, HDC dc, const RECT& rc, std::wstring_view text)
 	{
+		auto font = wil::unique_hfont(uCreateIconFont());
+		auto select = wil::SelectObject(dc, font.get());
+
 		constexpr int theme_state = 0;
 		const bool useTheming = UsesTheming(theme, DD_TEXTBG, theme_state);
-		const auto wtext = smp::ToWide(text);
 
 		DWORD text_flags = DT_CENTER | DT_WORDBREAK;
 		RECT rc_text{};
 
 		if (useTheming)
 		{
-			GetThemeTextExtent(theme, dc, DD_TEXTBG, theme_state, wtext.c_str(), to_int(wtext.length()), text_flags, &rc, &rc_text);
+			GetThemeTextExtent(theme, dc, DD_TEXTBG, theme_state, text.data(), to_int(text.length()), text_flags, &rc, &rc_text);
 		}
 		else
 		{
 			rc_text = rc;
-			DrawTextW(dc, wtext.c_str(), to_int(wtext.length()), &rc_text, text_flags | DT_CALCRECT);
+			DrawTextW(dc, text.data(), to_int(text.length()), &rc_text, text_flags | DT_CALCRECT);
 		}
 
 		auto x_offset = (wil::rect_width(rc) - wil::rect_width(rc_text)) / 2;
@@ -97,51 +93,45 @@ namespace uih
 			{
 				DrawThemeParentBackground(wnd, dc, &background_rect);
 			}
+
 			DrawThemeBackground(theme, dc, DD_TEXTBG, theme_state, &background_rect, nullptr);
-			DrawThemeText(theme, dc, DD_TEXTBG, theme_state, wtext.c_str(), to_int(wtext.length()), text_flags, 0, &rc_text);
+			DrawThemeText(theme, dc, DD_TEXTBG, theme_state, text.data(), to_int(text.length()), text_flags, 0, &rc_text);
 		}
 		else
 		{
 			auto previousColour = GetTextColor(dc);
 			auto previousBackgroundMode = GetBkMode(dc);
-			SetTextColor(dc, selectionTextColour);
+			SetTextColor(dc, GetSysColor(COLOR_HIGHLIGHTTEXT));
 			SetBkMode(dc, TRANSPARENT);
-			DrawTextW(dc, wtext.c_str(), to_int(wtext.length()), &rc_text, text_flags);
+			DrawTextW(dc, text.data(), to_int(text.length()), &rc_text, text_flags);
 			SetTextColor(dc, previousColour);
 			SetBkMode(dc, previousBackgroundMode);
 		}
 	}
 
-	bool draw_drag_custom_image(HDC dc, const RECT& rc, Gdiplus::Bitmap& customImage)
+	bool draw_drag_custom_image(HDC dc, const SIZE& max_size, Gdiplus::Bitmap& customImage)
 	{
-		const auto imgWidth = static_cast<int32_t>(customImage.GetWidth());
-		const auto imgHeight = static_cast<int32_t>(customImage.GetHeight());
-		const auto [newWidth, newHeight] = smp::GetResizedImageSize(std::make_tuple(imgWidth, imgHeight), std::make_tuple(rc.right, rc.bottom));
+		const auto size = SIZE(customImage.GetWidth(), customImage.GetHeight());
+		const auto [newWidth, newHeight] = GetResizedImageSize(size, max_size);
 
 		auto gdiGraphics = Gdiplus::Graphics(dc);
 
 		const auto status = gdiGraphics.DrawImage(
 			&customImage,
 			Gdiplus::Rect(
-				lround(static_cast<float>(rc.right - newWidth) / 2),
-				lround(static_cast<float>(rc.bottom - newHeight) / 2),
-				static_cast<int32_t>(newWidth),
-				static_cast<int32_t>(newHeight)
+				lround(static_cast<float>(max_size.cx - newWidth) / 2.f),
+				lround(static_cast<float>(max_size.cy - newHeight) / 2.f),
+				newWidth,
+				newHeight
 			),
 			0,
 			0,
-			imgWidth,
-			imgHeight,
+			size.cx,
+			size.cy,
 			Gdiplus::UnitPixel
 		);
 
 		return Gdiplus::Ok == status;
-	}
-
-	void draw_drag_image_icon(HDC dc, const RECT& rc, HICON icon)
-	{
-		// We may want to use better scaling.
-		DrawIconEx(dc, 0, 0, icon, wil::rect_width(rc), wil::rect_height(rc), 0, nullptr, DI_NORMAL);
 	}
 
 	std::tuple<SIZE, POINT> GetDragImageContentSizeAndOffset(HDC dc, HTHEME theme)
@@ -171,65 +161,54 @@ namespace uih
 
 		return { sz, offset };
 	}
+}
 
-	bool create_drag_image(HWND wnd, HTHEME theme, COLORREF selectionBackgroundColour,
-							COLORREF selectionTextColour, HICON icon, const LPLOGFONT font, std::string_view text,
-							Gdiplus::Bitmap* pCustomImage, LPSHDRAGIMAGE lpsdi)
+namespace uih
+{
+	bool create_drag_image(
+		HWND wnd,
+		std::wstring_view text,
+		Gdiplus::Bitmap* bitmap,
+		SHDRAGIMAGE& dragImage)
 	{
+		wil::unique_htheme dd_theme;
+
+		if (IsThemeActive() && IsAppThemed())
+		{
+			dd_theme.reset(OpenThemeData(wnd, VSCLASS_DRAGDROP));
+		}
+
 		HDC dc = GetDC(wnd);
 		HDC dc_mem = CreateCompatibleDC(dc);
 
-		auto [size, offset] = GetDragImageContentSizeAndOffset(dc, theme);
-		const RECT rc{ 0, 0, size.cx, size.cy };
+		auto [size, offset] = GetDragImageContentSizeAndOffset(dc, dd_theme.get());
+		const auto rc = RECT(0, 0, size.cx, size.cy);
 
 		HBITMAP bm_mem = CreateCompatibleBitmap(dc, size.cx, size.cy);
-		HBITMAP bm_old = SelectBitmap(dc_mem, bm_mem);
+		auto select = wil::SelectObject(dc_mem, bm_mem);
 
-		LOGFONT lf = *font;
-		lf.lfWeight = FW_BOLD;
-		// lf.lfQuality = NONANTIALIASED_QUALITY;
-
-		HFONT fnt = CreateFontIndirectW(&lf);
-		HFONT font_old = SelectFont(dc_mem, fnt);
-
-		if (pCustomImage)
+		if (bitmap)
 		{
-			if (!draw_drag_custom_image(dc_mem, rc, *pCustomImage))
+			if (!draw_drag_custom_image(dc_mem, size, *bitmap))
 			{
 				return false;
 			}
 		}
-		else
-		{
-			if (!theme)
-			{
-				draw_drag_image_background(wnd, theme, dc_mem, selectionBackgroundColour, rc);
-			}
-		}
-
-		if (icon)
-		{
-			draw_drag_image_icon(dc_mem, rc, icon);
-		}
 
 		if (text.length())
 		{
-			draw_drag_image_label(wnd, theme, dc_mem, rc, selectionTextColour, text);
+			draw_drag_image_label(wnd, dd_theme.get(), dc_mem, rc, text);
 		}
 
-		SelectFont(dc_mem, font_old);
-		DeleteFont(fnt);
-
-		SelectObject(dc_mem, bm_old);
 		DeleteDC(dc_mem);
 		ReleaseDC(wnd, dc);
 
-		lpsdi->sizeDragImage.cx = size.cx;
-		lpsdi->sizeDragImage.cy = size.cy;
-		lpsdi->ptOffset.x = size.cx / 2;
-		lpsdi->ptOffset.y = (size.cy - offset.y) - (size.cy - offset.y) / 10;
-		lpsdi->hbmpDragImage = bm_mem;
-		lpsdi->crColorKey = CLR_NONE;
+		dragImage.sizeDragImage.cx = size.cx;
+		dragImage.sizeDragImage.cy = size.cy;
+		dragImage.ptOffset.x = size.cx / 2;
+		dragImage.ptOffset.y = (size.cy - offset.y) - (size.cy - offset.y) / 10;
+		dragImage.hbmpDragImage = bm_mem;
+		dragImage.crColorKey = CLR_NONE;
 
 		return true;
 	}

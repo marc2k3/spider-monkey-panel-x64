@@ -1,31 +1,26 @@
 #pragma once
 #include "com_tools.h"
 
-_COM_SMARTPTR_TYPEDEF(IDragSourceHelper, IID_IDragSourceHelper);
-
 namespace smp::com
 {
-	class IDropSourceImpl : public IDropSource
+	class IDropSourceImpl : public ImplementCOMRefCounter<IDropSource>
 	{
 	public:
 		/// @throw QwrException
-		IDropSourceImpl(HWND hWnd, IDataObject* pDataObject, size_t itemCount, bool showText, Gdiplus::Bitmap* pUserImage);
+		IDropSourceImpl(HWND hWnd, IDataObject* pDataObject, std::wstring_view text, Gdiplus::Bitmap* pUserImage);
 		virtual ~IDropSourceImpl();
+
+		COM_QI_SIMPLE(IDropSource)
 
 		// IDropSource
 		STDMETHODIMP QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState) override;
 		STDMETHODIMP GiveFeedback(DWORD dwEffect) override;
-		ULONG STDMETHODCALLTYPE AddRef() override;
-		ULONG STDMETHODCALLTYPE Release() override;
 
 	private:
-		IDragSourceHelperPtr pDragSourceHelper_;
-		IDataObject* pDataObject_{};
-		SHDRAGIMAGE dragImage_{};
-		bool wasShowingLayered_{};
-		std::atomic<ULONG> refCount_{};
-		DWORD lastEffect_ = DROPEFFECT_NONE;
-
-		COM_QI_SIMPLE(IDropSource)
+		wil::com_ptr<IDataObject> m_data;
+		wil::com_ptr<IDragSourceHelper2> m_drag_source_helper;
+		SHDRAGIMAGE m_dragImage{};
+		DWORD m_effect = DROPEFFECT_NONE;
+		bool m_prev_is_showing_layered{};
 	};
 }

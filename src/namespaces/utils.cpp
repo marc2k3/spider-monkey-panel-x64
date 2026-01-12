@@ -521,7 +521,8 @@ namespace mozjs
 			modal_dialog_scope scope(wnd);
 
 			CInputBox dlg(prompt.c_str(), caption.c_str(), def.c_str());
-			auto status = dlg.DoModal(wnd);
+			const auto status = dlg.DoModal(wnd);
+
 			if (status == IDCANCEL && error_on_cancel)
 			{
 				throw QwrException("Dialog window was closed");

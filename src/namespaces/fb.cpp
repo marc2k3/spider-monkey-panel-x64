@@ -340,6 +340,7 @@ namespace
 
 			std::unique_ptr<Gdiplus::Bitmap> bitmap;
 			auto parsedOptions = ParseDoDragDropOptions(options);
+			std::wstring text;
 
 			if (parsedOptions.show_album_art && !parsedOptions.custom_image)
 			{
@@ -360,20 +361,25 @@ namespace
 				}
 			}
 
+			if (parsedOptions.show_text)
+			{
+				text = fmt::format(L"{} {}", handleCount, (handleCount > 1 ? L"tracks" : L"track"));
+			}
+
 			modal::MessageBlockingScope scope;
-			auto obj = ole_interaction::get()->create_dataobject(handleList);
-			pfc::com_ptr_t<com::IDropSourceImpl> pIDropSource = new com::IDropSourceImpl(
+			auto data = ole_interaction::get()->create_dataobject(handleList);
+
+			wil::com_ptr_t<com::IDropSourceImpl> pIDropSource = new com::IDropSourceImpl(
 				wnd,
-				obj.get_ptr(),
-				handleCount,
-				parsedOptions.show_text,
+				data.get_ptr(),
+				text,
 				parsedOptions.custom_image
 			);
 
 			SendMessageW(wnd, std::to_underlying(InternalSyncMessage::wnd_internal_drag_start), 0, 0);
 
 			DWORD returnEffect{};
-			const auto hr = SHDoDragDrop(nullptr, obj.get_ptr(), pIDropSource.get_ptr(), okEffects, &returnEffect);
+			const auto hr = SHDoDragDrop(nullptr, data.get_ptr(), pIDropSource.get(), okEffects, &returnEffect);
 
 			SendMessageW(wnd, std::to_underlying(InternalSyncMessage::wnd_internal_drag_stop), 0, 0);
 
