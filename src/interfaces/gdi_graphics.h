@@ -13,7 +13,7 @@ namespace mozjs
 
 		DEFINE_JS_INTERFACE_VARS
 
-		static std::unique_ptr<JsGdiGraphics> CreateNative(JSContext* cx);
+		static std::unique_ptr<JsGdiGraphics> CreateNative(JSContext* ctx);
 		uint32_t GetInternalSize();
 
 	public:
@@ -76,21 +76,21 @@ namespace mozjs
 		JSObject* MeasureStringWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font,
 			float x, float y, float w, float h,
 			uint32_t flags);
-		void SetInterpolationMode(uint32_t mode = 0);
+		void SetInterpolationMode(uint32_t mode = 0u);
 		void SetInterpolationModeWithOpt(size_t optArgCount, uint32_t mode);
-		void SetSmoothingMode(uint32_t mode = 0);
+		void SetSmoothingMode(uint32_t mode = 0u);
 		void SetSmoothingModeWithOpt(size_t optArgCount, uint32_t mode);
-		void SetTextRenderingHint(uint32_t mode = 0);
+		void SetTextRenderingHint(uint32_t mode = 0u);
 		void SetTextRenderingHintWithOpt(size_t optArgCount, uint32_t mode);
 
 	private:
-		JsGdiGraphics(JSContext* cx);
+		JsGdiGraphics(JSContext* ctx);
 
 		void GetRoundRectPath(Gdiplus::GraphicsPath& gp, const Gdiplus::RectF& rect, float arc_width, float arc_height) const;
 		void ParsePoints(JS::HandleValue jsValue, std::vector<Gdiplus::PointF>& gdiPoints);
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-		Gdiplus::Graphics* pGdi_ = nullptr;
+		JSContext* m_ctx{};
+		Gdiplus::Graphics* m_graphics{};
 	};
 }

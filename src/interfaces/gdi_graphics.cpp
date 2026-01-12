@@ -75,11 +75,11 @@ namespace mozjs
 	const JSPropertySpec* JsGdiGraphics::JsProperties = jsProperties.data();
 	const JsPrototypeId JsGdiGraphics::PrototypeId = JsPrototypeId::GdiGraphics;
 
-	JsGdiGraphics::JsGdiGraphics(JSContext* cx) : pJsCtx_(cx) {}
+	JsGdiGraphics::JsGdiGraphics(JSContext* ctx) : m_ctx(ctx) {}
 
-	std::unique_ptr<JsGdiGraphics> JsGdiGraphics::CreateNative(JSContext* cx)
+	std::unique_ptr<JsGdiGraphics> JsGdiGraphics::CreateNative(JSContext* ctx)
 	{
-		return std::unique_ptr<JsGdiGraphics>(new JsGdiGraphics(cx));
+		return std::unique_ptr<JsGdiGraphics>(new JsGdiGraphics(ctx));
 	}
 
 	uint32_t JsGdiGraphics::GetInternalSize()
@@ -89,17 +89,17 @@ namespace mozjs
 
 	Gdiplus::Graphics* JsGdiGraphics::GetGraphicsObject() const
 	{
-		return pGdi_;
+		return m_graphics;
 	}
 
 	void JsGdiGraphics::SetGraphicsObject(Gdiplus::Graphics* graphics)
 	{
-		pGdi_ = graphics;
+		m_graphics = graphics;
 	}
 
 	uint32_t JsGdiGraphics::CalcTextHeight(const std::wstring& str, JsGdiFont* font)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
 		auto dc = wil::GetDC(nullptr);
@@ -112,7 +112,7 @@ namespace mozjs
 
 	uint32_t JsGdiGraphics::CalcTextWidth(const std::wstring& str, JsGdiFont* font, bool use_exact)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
 		auto dc = wil::GetDC(nullptr);
@@ -147,10 +147,10 @@ namespace mozjs
 
 	void JsGdiGraphics::DrawEllipse(float x, float y, float w, float h, float line_width, uint32_t colour)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
 		Gdiplus::Pen pen(colour, line_width);
-		const auto status = pGdi_->DrawEllipse(&pen, x, y, w, h);
+		const auto status = m_graphics->DrawEllipse(&pen, x, y, w, h);
 		smp::CheckGdi(status, "DrawEllipse");
 	}
 
@@ -159,50 +159,47 @@ namespace mozjs
 		float srcX, float srcY, float srcW, float srcH,
 		float angle, uint8_t alpha)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(image, "image argument is null");
 
-		Gdiplus::Bitmap* img = image->GdiBitmap();
-		Gdiplus::Matrix oldMatrix;
-		Gdiplus::Status status;
+		auto bitmap = image->GdiBitmap();
+		const auto rect = Gdiplus::RectF(dstX, dstY, dstW, dstH);
+		Gdiplus::ImageAttributes ia;
+		Gdiplus::Status status{};
 
-		if (angle != 0.0)
+		if (alpha < UINT8_MAX)
 		{
-			Gdiplus::Matrix m;
-			status = m.RotateAt(angle, Gdiplus::PointF{ dstX + dstW / 2, dstY + dstH / 2 });
-			smp::CheckGdi(status, "RotateAt");
-
-			status = pGdi_->GetTransform(&oldMatrix);
-			smp::CheckGdi(status, "GetTransform");
-
-			status = pGdi_->SetTransform(&m);
-			smp::CheckGdi(status, "SetTransform");
-		}
-
-		if (alpha < 255)
-		{
-			Gdiplus::ImageAttributes ia;
-			Gdiplus::ColorMatrix cm{};
-
-			cm.m[0][0] = cm.m[1][1] = cm.m[2][2] = cm.m[4][4] = 1.0f;
-			cm.m[3][3] = static_cast<float>(alpha) / 255;
+			Gdiplus::ColorMatrix cm = { 0.f };
+			cm.m[0][0] = cm.m[1][1] = cm.m[2][2] = cm.m[4][4] = 1.f;
+			cm.m[3][3] = static_cast<float>(alpha) / 255.f;
 
 			status = ia.SetColorMatrix(&cm);
 			smp::CheckGdi(status, "SetColorMatrix");
+		}
 
-			status = pGdi_->DrawImage(img, Gdiplus::RectF(dstX, dstY, dstW, dstH), srcX, srcY, srcW, srcH, Gdiplus::UnitPixel, &ia);
+		if (angle != 0.f)
+		{
+			Gdiplus::Matrix m, old_m;
+			
+			status = m.RotateAt(angle, Gdiplus::PointF(dstX + (dstW / 2), dstY + (dstH / 2)));
+			smp::CheckGdi(status, "RotateAt");
+
+			status = m_graphics->GetTransform(&old_m);
+			smp::CheckGdi(status, "GetTransform");
+
+			status = m_graphics->SetTransform(&m);
+			smp::CheckGdi(status, "SetTransform");
+
+			status = m_graphics->DrawImage(bitmap, rect, srcX, srcY, srcW, srcH, Gdiplus::UnitPixel, &ia);
 			smp::CheckGdi(status, "DrawImage");
+
+			status = m_graphics->SetTransform(&old_m);
+			smp::CheckGdi(status, "SetTransform");
 		}
 		else
 		{
-			status = pGdi_->DrawImage(img, Gdiplus::RectF(dstX, dstY, dstW, dstH), srcX, srcY, srcW, srcH, Gdiplus::UnitPixel);
+			status = m_graphics->DrawImage(bitmap, rect, srcX, srcY, srcW, srcH, Gdiplus::UnitPixel, &ia);
 			smp::CheckGdi(status, "DrawImage");
-		}
-
-		if (angle != 0.0)
-		{
-			status = pGdi_->SetTransform(&oldMatrix);
-			smp::CheckGdi(status, "SetTransform");
 		}
 	}
 
@@ -226,42 +223,42 @@ namespace mozjs
 
 	void JsGdiGraphics::DrawLine(float x1, float y1, float x2, float y2, float line_width, uint32_t colour)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
 		Gdiplus::Pen pen(colour, line_width);
-		const auto status = pGdi_->DrawLine(&pen, x1, y1, x2, y2);
+		const auto status = m_graphics->DrawLine(&pen, x1, y1, x2, y2);
 		smp::CheckGdi(status, "DrawLine");
 	}
 
 	void JsGdiGraphics::DrawPolygon(uint32_t colour, float line_width, JS::HandleValue points)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
 		std::vector<Gdiplus::PointF> gdiPoints;
 		ParsePoints(points, gdiPoints);
 
 		Gdiplus::Pen pen(colour, line_width);
-		const auto status = pGdi_->DrawPolygon(&pen, gdiPoints.data(), to_int(gdiPoints.size()));
+		const auto status = m_graphics->DrawPolygon(&pen, gdiPoints.data(), to_int(gdiPoints.size()));
 		smp::CheckGdi(status, "DrawPolygon");
 	}
 
 	void JsGdiGraphics::DrawRect(float x, float y, float w, float h, float line_width, uint32_t colour)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
 		Gdiplus::Pen pen(colour, line_width);
-		const auto status = pGdi_->DrawRectangle(&pen, x, y, w, h);
+		const auto status = m_graphics->DrawRectangle(&pen, x, y, w, h);
 		smp::CheckGdi(status, "DrawRectangle");
 	}
 
 	void JsGdiGraphics::DrawRoundRect(float x, float y, float w, float h, float arc_width, float arc_height, float line_width, uint32_t colour)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(2 * arc_width <= w && 2 * arc_height <= h, "Arc argument has invalid value");
 
 		Gdiplus::Pen pen(colour, line_width);
 		Gdiplus::GraphicsPath gp;
-		GetRoundRectPath(gp, Gdiplus::RectF{ x, y, w, h }, arc_width, arc_height);
+		GetRoundRectPath(gp, Gdiplus::RectF(x, y, w, h), arc_width, arc_height);
 
 		auto status = pen.SetStartCap(Gdiplus::LineCapRound);
 		smp::CheckGdi(status, "SetStartCap");
@@ -269,13 +266,13 @@ namespace mozjs
 		status = pen.SetEndCap(Gdiplus::LineCapRound);
 		smp::CheckGdi(status, "SetEndCap");
 
-		status = pGdi_->DrawPath(&pen, &gp);
+		status = m_graphics->DrawPath(&pen, &gp);
 		smp::CheckGdi(status, "DrawPath");
 	}
 
 	void JsGdiGraphics::DrawString(const std::wstring& str, JsGdiFont* font, uint32_t colour, float x, float y, float w, float h, uint32_t flags)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
 		Gdiplus::Font* pGdiFont = font->GdiFont();
@@ -300,7 +297,7 @@ namespace mozjs
 			smp::CheckGdi(status, "SetFormatFlags");
 		}
 
-		status = pGdi_->DrawString(str.c_str(), -1, pGdiFont, Gdiplus::RectF(x, y, w, h), &fmt, &br);
+		status = m_graphics->DrawString(str.c_str(), -1, pGdiFont, Gdiplus::RectF(x, y, w, h), &fmt, &br);
 		smp::CheckGdi(status, "DrawString");
 	}
 
@@ -321,30 +318,30 @@ namespace mozjs
 
 	JSObject* JsGdiGraphics::EstimateLineWrap(const std::wstring& str, JsGdiFont* font, uint32_t max_width)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
 		auto dc = wil::GetDC(nullptr);
 		auto scope = wil::SelectObject(dc.get(), font->GetHFont());
 		auto result = ::EstimateLineWrap(dc.get(), max_width).wrap(str);
 
-		JS::RootedObject jsArray(pJsCtx_, JS::NewArrayObject(pJsCtx_, result.size() * 2));
+		JS::RootedObject jsArray(m_ctx, JS::NewArrayObject(m_ctx, result.size() * 2));
 		JsException::ExpectTrue(jsArray);
 
-		JS::RootedValue jsValue(pJsCtx_);
+		JS::RootedValue jsValue(m_ctx);
 		uint32_t i{};
 
 		for (const auto& [text, width] : result)
 		{
-			convert::to_js::ToValue(pJsCtx_, text, &jsValue);
+			convert::to_js::ToValue(m_ctx, text, &jsValue);
 
-			if (!JS_SetElement(pJsCtx_, jsArray, i++, jsValue))
+			if (!JS_SetElement(m_ctx, jsArray, i++, jsValue))
 			{
 				throw JsException();
 			}
 
 			jsValue.setNumber(to_uint(width));
-			if (!JS_SetElement(pJsCtx_, jsArray, i++, jsValue))
+			if (!JS_SetElement(m_ctx, jsArray, i++, jsValue))
 			{
 				throw JsException();
 			}
@@ -355,23 +352,23 @@ namespace mozjs
 
 	void JsGdiGraphics::FillEllipse(float x, float y, float w, float h, uint32_t colour)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
 		Gdiplus::SolidBrush br(colour);
-		const auto status = pGdi_->FillEllipse(&br, x, y, w, h);
+		const auto status = m_graphics->FillEllipse(&br, x, y, w, h);
 		smp::CheckGdi(status, "FillEllipse");
 	}
 
 	void JsGdiGraphics::FillGradRect(float x, float y, float w, float h, float angle, uint32_t colour1, uint32_t colour2, float focus)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
-		const Gdiplus::RectF rect{ x, y, w, h };
+		const auto rect = Gdiplus::RectF(x, y, w, h);
 		Gdiplus::LinearGradientBrush brush(rect, colour1, colour2, angle, TRUE);
 		auto status = brush.SetBlendTriangularShape(focus);
 		smp::CheckGdi(status, "SetBlendTriangularShape");
 
-		status = pGdi_->FillRectangle(&brush, rect);
+		status = m_graphics->FillRectangle(&brush, rect);
 		smp::CheckGdi(status, "FillRectangle");
 	}
 
@@ -390,37 +387,36 @@ namespace mozjs
 
 	void JsGdiGraphics::FillPolygon(uint32_t colour, uint32_t fillmode, JS::HandleValue points)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
 		std::vector<Gdiplus::PointF> gdiPoints;
 		ParsePoints(points, gdiPoints);
 
 		Gdiplus::SolidBrush br(colour);
-		const auto status = pGdi_->FillPolygon(&br, gdiPoints.data(), to_int(gdiPoints.size()), static_cast<Gdiplus::FillMode>(fillmode));
+		const auto status = m_graphics->FillPolygon(&br, gdiPoints.data(), to_int(gdiPoints.size()), static_cast<Gdiplus::FillMode>(fillmode));
 		smp::CheckGdi(status, "FillPolygon");
 	}
 
 	void JsGdiGraphics::FillRoundRect(float x, float y, float w, float h, float arc_width, float arc_height, uint32_t colour)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
-
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(2 * arc_width <= w && 2 * arc_height <= h, "Arc argument has invalid value");
 
 		Gdiplus::SolidBrush br(colour);
 		Gdiplus::GraphicsPath gp;
-		const Gdiplus::RectF rect{ x, y, w, h };
+		const auto rect = Gdiplus::RectF(x, y, w, h);
 		GetRoundRectPath(gp, rect, arc_width, arc_height);
 
-		const auto status = pGdi_->FillPath(&br, &gp);
+		const auto status = m_graphics->FillPath(&br, &gp);
 		smp::CheckGdi(status, "FillPath");
 	}
 
 	void JsGdiGraphics::FillSolidRect(float x, float y, float w, float h, uint32_t colour)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
 		Gdiplus::SolidBrush brush(colour);
-		const auto status = pGdi_->FillRectangle(&brush, x, y, w, h);
+		const auto status = m_graphics->FillRectangle(&brush, x, y, w, h);
 		smp::CheckGdi(status, "FillRectangle");
 	}
 
@@ -429,15 +425,15 @@ namespace mozjs
 		int32_t srcX, int32_t srcY, uint32_t srcW, uint32_t srcH,
 		uint8_t alpha)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(bitmap, "bitmap argument is null");
 
 		const auto srcDc = bitmap->GetHDC();
-		const auto hDc = pGdi_->GetHDC();
+		const auto hDc = m_graphics->GetHDC();
 
 		auto autoHdcReleaser = wil::scope_exit([this, hDc]
 			{
-				pGdi_->ReleaseHDC(hDc);
+				m_graphics->ReleaseHDC(hDc);
 			});
 
 		BOOL bRet = ::GdiAlphaBlend(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, BLENDFUNCTION{ AC_SRC_OVER, 0, alpha, AC_SRC_ALPHA });
@@ -464,15 +460,15 @@ namespace mozjs
 		int32_t dstX, int32_t dstY, uint32_t dstW, uint32_t dstH,
 		int32_t srcX, int32_t srcY, uint32_t srcW, uint32_t srcH)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(bitmap, "bitmap argument is null");
 
 		HDC srcDc = bitmap->GetHDC();
-		HDC hDc = pGdi_->GetHDC();
+		HDC hDc = m_graphics->GetHDC();
 
 		auto autoHdcReleaser = wil::scope_exit([this, hDc]
 			{
-				pGdi_->ReleaseHDC(hDc);
+				m_graphics->ReleaseHDC(hDc);
 			});
 
 		BOOL bRet;
@@ -496,13 +492,13 @@ namespace mozjs
 
 	void JsGdiGraphics::GdiDrawText(const std::wstring& str, JsGdiFont* font, uint32_t colour, int32_t x, int32_t y, uint32_t w, uint32_t h, uint32_t format)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
-		const auto hDc = pGdi_->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([pGdi = pGdi_, hDc]
+		const auto hDc = m_graphics->GetHDC();
+		auto autoHdcReleaser = wil::scope_exit([this, hDc]
 			{
-				pGdi->ReleaseHDC(hDc);
+				m_graphics->ReleaseHDC(hDc);
 			});
 
 		auto _ = wil::SelectObject(hDc, font->GetHFont());
@@ -546,8 +542,8 @@ namespace mozjs
 			}
 		}
 
-		iRet = DrawTextEx(hDc, const_cast<wchar_t*>(str.c_str()), -1, &rc, format, &dpt);
-		smp::CheckWinApi(iRet, "DrawTextEx");
+		iRet = DrawTextExW(hDc, const_cast<wchar_t*>(str.c_str()), -1, &rc, format, &dpt);
+		smp::CheckWinApi(iRet, "DrawTextExW");
 	}
 
 	void JsGdiGraphics::GdiDrawTextWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font, uint32_t colour,
@@ -567,11 +563,12 @@ namespace mozjs
 
 	JSObject* JsGdiGraphics::MeasureString(const std::wstring& str, JsGdiFont* font, float x, float y, float w, float h, uint32_t flags)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
 		Gdiplus::Font* fn = font->GdiFont();
 		Gdiplus::StringFormat fmt = Gdiplus::StringFormat::GenericTypographic();
+
 		if (flags != 0)
 		{
 			fmt.SetAlignment(static_cast<Gdiplus::StringAlignment>((flags >> 28) & 0x3));     //0xf0000000
@@ -581,11 +578,11 @@ namespace mozjs
 		}
 
 		Gdiplus::RectF bound;
-		int32_t  chars{}, lines{};
-		const auto status = pGdi_->MeasureString(str.c_str(), -1, fn, Gdiplus::RectF(x, y, w, h), &fmt, &bound, &chars, &lines);
+		int32_t chars{}, lines{};
+		const auto status = m_graphics->MeasureString(str.c_str(), -1, fn, Gdiplus::RectF(x, y, w, h), &fmt, &bound, &chars, &lines);
 		smp::CheckGdi(status, "MeasureString");
 
-		return JsMeasureStringInfo::CreateJs(pJsCtx_, bound.X, bound.Y, bound.Width, bound.Height, lines, chars);
+		return JsMeasureStringInfo::CreateJs(m_ctx, bound.X, bound.Y, bound.Width, bound.Height, lines, chars);
 	}
 
 	JSObject* JsGdiGraphics::MeasureStringWithOpt(size_t optArgCount, const std::wstring& str, JsGdiFont* font,
@@ -605,9 +602,9 @@ namespace mozjs
 
 	void JsGdiGraphics::SetInterpolationMode(uint32_t mode)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
-		const auto status = pGdi_->SetInterpolationMode(static_cast<Gdiplus::InterpolationMode>(mode));
+		const auto status = m_graphics->SetInterpolationMode(static_cast<Gdiplus::InterpolationMode>(mode));
 		smp::CheckGdi(status, "SetInterpolationMode");
 	}
 
@@ -626,9 +623,9 @@ namespace mozjs
 
 	void JsGdiGraphics::SetSmoothingMode(uint32_t mode)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
-		const auto status = pGdi_->SetSmoothingMode(static_cast<Gdiplus::SmoothingMode>(mode));
+		const auto status = m_graphics->SetSmoothingMode(static_cast<Gdiplus::SmoothingMode>(mode));
 		smp::CheckGdi(status, "SetSmoothingMode");
 	}
 
@@ -647,9 +644,9 @@ namespace mozjs
 
 	void JsGdiGraphics::SetTextRenderingHint(uint32_t mode)
 	{
-		QwrException::ExpectTrue(pGdi_, "Internal error: Gdiplus::Graphics object is null");
+		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 
-		const auto status = pGdi_->SetTextRenderingHint(static_cast<Gdiplus::TextRenderingHint>(mode));
+		const auto status = m_graphics->SetTextRenderingHint(static_cast<Gdiplus::TextRenderingHint>(mode));
 		smp::CheckGdi(status, "SetTextRenderingHint");
 	}
 
@@ -670,7 +667,7 @@ namespace mozjs
 	{
 		const float arc_dia_w = arc_width * 2;
 		const float arc_dia_h = arc_height * 2;
-		Gdiplus::RectF corner{ rect.X, rect.Y, arc_dia_w, arc_dia_h };
+		auto corner = Gdiplus::RectF(rect.X, rect.Y, arc_dia_w, arc_dia_h);
 
 		auto status = gp.Reset();
 		smp::CheckGdi(status, "Reset");
@@ -716,7 +713,7 @@ namespace mozjs
 			};
 
 		gdiPoints.clear();
-		convert::to_native::ProcessArray<float>(pJsCtx_, jsValue, pointParser);
+		convert::to_native::ProcessArray<float>(m_ctx, jsValue, pointParser);
 
 		QwrException::ExpectTrue(isX, "Points count must be a multiple of two"); ///< Means that we were expecting `y` coordinate
 	}
