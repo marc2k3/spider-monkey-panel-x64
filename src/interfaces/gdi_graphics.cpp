@@ -428,15 +428,14 @@ namespace mozjs
 		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(bitmap, "bitmap argument is null");
 
-		const auto srcDc = bitmap->GetHDC();
-		const auto hDc = m_graphics->GetHDC();
-
-		auto autoHdcReleaser = wil::scope_exit([this, hDc]
+		const auto dc = m_graphics->GetHDC();
+		auto releaser = wil::scope_exit([this, dc]
 			{
-				m_graphics->ReleaseHDC(hDc);
+				m_graphics->ReleaseHDC(dc);
 			});
 
-		BOOL bRet = ::GdiAlphaBlend(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, BLENDFUNCTION{ AC_SRC_OVER, 0, alpha, AC_SRC_ALPHA });
+		const auto srcDc = bitmap->GetHDC();
+		const auto bRet = ::GdiAlphaBlend(dc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, BLENDFUNCTION{ AC_SRC_OVER, 0, alpha, AC_SRC_ALPHA });
 		smp::CheckWinApi(bRet, "GdiAlphaBlend");
 	}
 
@@ -463,29 +462,29 @@ namespace mozjs
 		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(bitmap, "bitmap argument is null");
 
-		HDC srcDc = bitmap->GetHDC();
-		HDC hDc = m_graphics->GetHDC();
-
-		auto autoHdcReleaser = wil::scope_exit([this, hDc]
+		const auto dc = m_graphics->GetHDC();
+		auto releaser = wil::scope_exit([this, dc]
 			{
-				m_graphics->ReleaseHDC(hDc);
+				m_graphics->ReleaseHDC(dc);
 			});
 
-		BOOL bRet;
+		const auto srcDc = bitmap->GetHDC();
+		BOOL bRet{};
+
 		if (dstW == srcW && dstH == srcH)
 		{
-			bRet = BitBlt(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, SRCCOPY);
+			bRet = BitBlt(dc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, SRCCOPY);
 			smp::CheckWinApi(bRet, "BitBlt");
 		}
 		else
 		{
-			bRet = SetStretchBltMode(hDc, HALFTONE);
+			bRet = SetStretchBltMode(dc, HALFTONE);
 			smp::CheckWinApi(bRet, "SetStretchBltMode");
 
-			bRet = SetBrushOrgEx(hDc, 0, 0, nullptr);
+			bRet = SetBrushOrgEx(dc, 0, 0, nullptr);
 			smp::CheckWinApi(bRet, "SetBrushOrgEx");
 
-			bRet = StretchBlt(hDc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, SRCCOPY);
+			bRet = StretchBlt(dc, dstX, dstY, dstW, dstH, srcDc, srcX, srcY, srcW, srcH, SRCCOPY);
 			smp::CheckWinApi(bRet, "StretchBlt");
 		}
 	}
@@ -495,54 +494,50 @@ namespace mozjs
 		QwrException::ExpectTrue(m_graphics, "Internal error: Gdiplus::Graphics object is null");
 		QwrException::ExpectTrue(font, "font argument is null");
 
-		const auto hDc = m_graphics->GetHDC();
-		auto autoHdcReleaser = wil::scope_exit([this, hDc]
+		const auto dc = m_graphics->GetHDC();
+		auto releaser = wil::scope_exit([this, dc]
 			{
-				m_graphics->ReleaseHDC(hDc);
+				m_graphics->ReleaseHDC(dc);
 			});
 
-		auto _ = wil::SelectObject(hDc, font->GetHFont());
+		auto rect = CRect(x, y, x + w, y + h);
+		auto scope = wil::SelectObject(dc, font->GetHFont());
+		SetTextColor(dc, smp::ArgbToColorref(colour));
 
-		RECT rc{ x, y, static_cast<LONG>(x + w), static_cast<LONG>(y + h) };
-		DRAWTEXTPARAMS dpt = { sizeof(DRAWTEXTPARAMS), 4, 0, 0, 0 };
-
-		SetTextColor(hDc, smp::ArgbToColorref(colour));
-
-		int32_t iRet = SetBkMode(hDc, TRANSPARENT);
+		auto iRet = SetBkMode(dc, TRANSPARENT);
 		smp::CheckWinApi(CLR_INVALID != iRet, "SetBkMode");
 
-		UINT uRet = SetTextAlign(hDc, TA_LEFT | TA_TOP | TA_NOUPDATECP);
+		auto uRet = SetTextAlign(dc, TA_LEFT | TA_TOP | TA_NOUPDATECP);
 		smp::CheckWinApi(GDI_ERROR != uRet, "SetTextAlign");
 
-		if (format & DT_MODIFYSTRING)
+		if (WI_IsFlagSet(format, DT_MODIFYSTRING))
 		{
 			format &= ~DT_MODIFYSTRING;
 		}
 
-		// Well, magic :P
-		if (format & DT_CALCRECT)
+		if (WI_IsFlagSet(format, DT_CALCRECT))
 		{
-			const RECT rc_old = rc;
-
-			RECT rc_calc = rc;
-			iRet = DrawText(hDc, str.c_str(), -1, &rc_calc, format);
+			auto rect_calc = CRect(rect);
+			iRet = DrawTextW(dc, str.data(), -1, &rect_calc, format);
 			smp::CheckWinApi(iRet, "DrawText");
+
+			const auto nh = rect_calc.Height();
 
 			format &= ~DT_CALCRECT;
 
-			// adjust vertical align
-			if (format & DT_VCENTER)
+			if (WI_IsFlagSet(format, DT_VCENTER))
 			{
-				rc.top = rc_old.top + (((rc_old.bottom - rc_old.top) - (rc_calc.bottom - rc_calc.top)) >> 1);
-				rc.bottom = rc.top + (rc_calc.bottom - rc_calc.top);
+				rect.top += ((h - nh) >> 1);
+				rect.bottom = rect.top + nh;
 			}
-			else if (format & DT_BOTTOM)
+			else if (WI_IsFlagSet(format, DT_BOTTOM))
 			{
-				rc.top = rc_old.bottom - (rc_calc.bottom - rc_calc.top);
+				rect.top = rect.bottom - nh;
 			}
 		}
 
-		iRet = DrawTextExW(hDc, const_cast<wchar_t*>(str.c_str()), -1, &rc, format, &dpt);
+		auto dtp = DRAWTEXTPARAMS(sizeof(DRAWTEXTPARAMS), 4, 0, 0, 0);
+		iRet = DrawTextExW(dc, const_cast<LPWSTR>(str.data()), -1, &rect, format, &dtp);
 		smp::CheckWinApi(iRet, "DrawTextExW");
 	}
 
