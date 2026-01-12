@@ -128,5 +128,5 @@ private:
 
 	WStrings files_;
 	CListBox filesListBox_;
-	CComPtr<smp::com::FileDropTarget> pFilesListBoxDrop_;
+	wil::com_ptr<smp::com::FileDropTarget> pFilesListBoxDrop_;
 };

@@ -150,7 +150,7 @@ private:
 
 	bool isClosing_ = false;
 
-	IHostExternalPtr pExternal_;
+	wil::com_ptr<IHostExternal> pExternal_;
 
 	IDocHostUIHandlerPtr pDefaultUiHandler_;
 	IOleInPlaceActiveObjectPtr pOleInPlaceHandler_;

@@ -1,8 +1,6 @@
 #pragma once
 #include "com_tools.h"
 
-_COM_SMARTPTR_TYPEDEF(IHostExternal, __uuidof(IHostExternal));
-
 namespace smp::com
 {
 	class HostExternal : public IDispatchImpl3<IHostExternal>

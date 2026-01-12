@@ -7,7 +7,7 @@ namespace smp::com
 	{
 	public:
 		/// @throw QwrException
-		IDropSourceImpl(HWND hWnd, IDataObject* pDataObject, std::wstring_view text, Gdiplus::Bitmap* pUserImage);
+		IDropSourceImpl(HWND hWnd, IDataObject* pDataObj, std::wstring_view text, Gdiplus::Bitmap* pUserImage);
 		virtual ~IDropSourceImpl();
 
 		COM_QI_SIMPLE(IDropSource)

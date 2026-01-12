@@ -6,7 +6,7 @@
 namespace smp::drag
 {
 	HRESULT GetIsShowingLayered(IDataObject* pDataObj, BOOL& p_out);
-	HRESULT SetDefaultImage(IDataObject* pdtobj);
-	HRESULT SetDropText(IDataObject* pdtobj, DROPIMAGETYPE dit, const wchar_t* msg, const wchar_t* insert);
+	HRESULT SetDefaultImage(IDataObject* pDataObj);
+	HRESULT SetDropText(IDataObject* pDataObj, DROPIMAGETYPE dit, const wchar_t* msg, const wchar_t* insert);
 	HRESULT GetDragWindow(IDataObject* pDataObj, HWND& p_wnd);
 }

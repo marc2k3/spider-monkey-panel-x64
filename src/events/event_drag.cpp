@@ -6,14 +6,14 @@
 
 namespace smp
 {
-	Event_Drag::Event_Drag(EventId id, int32_t x, int32_t y, uint32_t mask, uint32_t modifiers, const DragActionParams& dragParams, IDataObjectPtr pData)
+	Event_Drag::Event_Drag(EventId id, int32_t x, int32_t y, uint32_t mask, uint32_t modifiers, const DragActionParams& dragParams, IDataObject* pDataObj)
 		: Event_Mouse(id, x, y, mask, modifiers)
 		, dragParams_(dragParams)
-		, pDataObject_(pData)
+		, pDataObject_(pDataObj)
 		, pStorage_(com::GetNewStoredObject())
 	{
 		pDataObject_->AddRef();
-		pStorage_->pUnknown = pDataObject_;
+		pStorage_->pUnknown = pDataObject_.get();
 	}
 
 	Event_Drag::~Event_Drag() {}
@@ -33,16 +33,16 @@ namespace smp
 		return dragParams_;
 	}
 
-	IDataObjectPtr Event_Drag::GetStoredData() const
+	IDataObject* Event_Drag::GetStoredData() const
 	{
-		return pDataObject_;
+		return pDataObject_.get();
 	}
 
 	void Event_Drag::DisposeStoredData()
 	{
 		if (pStorage_)
 		{
-			pDataObject_ = nullptr;
+			pDataObject_.reset();
 			com::MarkStoredObjectAsToBeDeleted(pStorage_);
 			pStorage_ = nullptr;
 		}

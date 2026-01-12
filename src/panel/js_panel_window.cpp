@@ -1606,6 +1606,7 @@ namespace smp
 		{
 			ReleaseCapture();
 		}
+
 		isMouseCaptured_ = shouldCapture;
 	}
 
@@ -1614,13 +1615,14 @@ namespace smp
 		isDraggingInside_ = false;
 		hasInternalDrag_ = false;
 		lastDragParams_.reset();
+
 		if (isEnabled)
 		{
 			if (!dropTargetHandler_)
 			{
-				dropTargetHandler_.Attach(new ComPtrImpl<com::TrackDropTarget>(*this));
+				dropTargetHandler_ = new com::TrackDropTarget(*this);
 
-				HRESULT hr = dropTargetHandler_->RegisterDragDrop();
+				const auto hr = dropTargetHandler_->RegisterDragDrop();
 				CheckHR(hr, "RegisterDragDrop");
 			}
 		}
@@ -1629,7 +1631,7 @@ namespace smp
 			if (dropTargetHandler_)
 			{
 				dropTargetHandler_->RevokeDragDrop();
-				dropTargetHandler_.Release();
+				dropTargetHandler_.reset();
 			}
 		}
 	}

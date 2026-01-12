@@ -9,9 +9,6 @@ namespace smp::com
 {
 	class TrackDropTarget : public IDropTargetImpl
 	{
-	protected:
-		virtual void FinalRelease();
-
 	public:
 		TrackDropTarget(js_panel_window& panel);
 		~TrackDropTarget() override = default;
@@ -22,17 +19,15 @@ namespace smp::com
 		DWORD OnDrop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
 		void OnDragLeave() override;
 
-		static void ProcessDropEvent(IDataObjectPtr pDataObject, std::optional<DragActionParams> dragParamsOpt);
+		static void ProcessDropEvent(IDataObject* pDataObj, std::optional<DragActionParams> dragParamsOpt);
 
 	private:
 		[[nodiscard]] std::optional<DragActionParams>
 		PutDragEvent(EventId eventId, DWORD grfKeyState, POINTL pt, DWORD allowedEffects);
 
 	private:
-		js_panel_window* pPanel_ = nullptr;
-		IDataObjectPtr pDataObject_;
+		js_panel_window* pPanel_{};
+		wil::com_ptr<IDataObject> pDataObject_;
 		DWORD fb2kAllowedEffect_ = DROPEFFECT_NONE;
-
-		COM_QI_SIMPLE(IDropTarget)
 	};
 }

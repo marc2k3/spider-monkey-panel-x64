@@ -104,7 +104,7 @@ BOOL CConfigTabPackage::OnInitDialog(HWND, LPARAM)
 void CConfigTabPackage::OnDestroy()
 {
 	pFilesListBoxDrop_->RevokeDragDrop();
-	pFilesListBoxDrop_.Release();
+	pFilesListBoxDrop_.reset();
 }
 
 void CConfigTabPackage::OnDdxUiChange(UINT, int nID, CWindow)
@@ -233,6 +233,7 @@ void CConfigTabPackage::OnRenameFile(UINT, int, CWindow)
 	auto filepath = fs::path(files_[focusedFileIdx_]);
 
 	CInputBox dlg("Enter new file name", "Rename file", filepath.filename().u8string().c_str());
+
 	if (dlg.DoModal(m_hWnd) != IDOK)
 	{
 		return;
@@ -359,6 +360,7 @@ LONG CConfigTabPackage::OnEditScriptDropDown(LPNMHDR pnmh)
 	button.ClientToScreen(&pt);
 
 	CMenu menu;
+
 	if (menu.CreatePopupMenu())
 	{
 		menu.AppendMenu(MF_BYPOSITION, ID_EDIT_WITH_EXTERNAL, L"Edit with...");
@@ -383,9 +385,10 @@ LRESULT CConfigTabPackage::OnDropFiles(UINT, WPARAM wParam, LPARAM lParam)
 		filesListBox_,
 		wParam,
 		lParam,
-		[&](const auto& path) {
-			AddFile(path);
-		});
+		[&](const auto& path)
+			{
+				AddFile(path);
+			});
 }
 
 void CConfigTabPackage::DoFullDdxToUi()
@@ -437,11 +440,11 @@ void CConfigTabPackage::InitializeFilesListBox()
 		// !!! Important !!!
 
 		filesListBox_ = GetDlgItem(IDC_LIST_PACKAGE_FILES);
-		pFilesListBoxDrop_.Attach(new ComPtrImpl<smp::com::FileDropTarget>(filesListBox_, m_hWnd));
+		pFilesListBoxDrop_ = new smp::com::FileDropTarget(filesListBox_, m_hWnd);
 
 		try
 		{
-			HRESULT hr = pFilesListBoxDrop_->RegisterDragDrop();
+			const auto hr = pFilesListBoxDrop_->RegisterDragDrop();
 			smp::CheckHR(hr, "RegisterDragDrop");
 		}
 		catch (QwrException& e)
@@ -450,8 +453,10 @@ void CConfigTabPackage::InitializeFilesListBox()
 		}
 
 		files_ = PackageUtils::GetFiles(settings_);
+
 		if (const auto it = std::ranges::find(files_, focusedFile_.native()); it == files_.cend())
-		{ // in case file was deleted
+		{
+			// in case file was deleted
 			focusedFile_ = mainScriptPath_;
 		}
 
@@ -469,19 +474,23 @@ void CConfigTabPackage::SortFiles()
 	{
 		return;
 	}
+
 	// skip first file (that is main file)
-	std::sort(files_.begin() + 1, files_.end(), [](const auto& a, const auto& b) {
-		return (a < b);
+	std::sort(files_.begin() + 1, files_.end(), [](const auto& a, const auto& b)
+		{
+			return (a < b);
 		});
 
 	// move assets to the end
 	const auto scriptDir = (packagePath_ / "scripts").wstring();
-	const auto it = std::find_if(files_.cbegin() + 1, files_.cend(), [&scriptDir](const fs::path& a) {
-		return (a.wstring().starts_with(scriptDir));
+	const auto it = std::find_if(files_.cbegin() + 1, files_.cend(), [&scriptDir](const fs::path& a)
+		{
+			return (a.wstring().starts_with(scriptDir));
 		});
+
 	if (it != files_.end() && std::distance(files_.cbegin(), it) != 1)
 	{
-		decltype(files_) sortedFiles;
+		WStrings sortedFiles;
 		sortedFiles.reserve(files_.size());
 
 		sortedFiles.emplace_back(files_[0]);
@@ -500,8 +509,8 @@ void CConfigTabPackage::UpdateListBoxFromData()
 
 		const auto it = std::ranges::find(files_, focusedFile_.native());
 		focusedFileIdx_ = static_cast<int>(std::ranges::distance(files_.cbegin(), it));
-
 		filesListBox_.ResetContent();
+
 		for (const auto& file : files_)
 		{
 			filesListBox_.AddString(fs::relative(file, packagePath_).c_str());
@@ -518,7 +527,7 @@ void CConfigTabPackage::AddFile(const fs::path& path)
 	try
 	{
 		const auto newPath = [&]
-				{
+			{
 				if (path.extension() == ".js")
 				{
 					return packagePath_ / "scripts" / path.filename();

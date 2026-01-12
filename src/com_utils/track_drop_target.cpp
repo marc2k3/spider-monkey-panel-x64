@@ -53,17 +53,13 @@ namespace smp::com
 {
 	TrackDropTarget::TrackDropTarget(js_panel_window& panel) : IDropTargetImpl(panel.GetHWND()), pPanel_(&panel) {}
 
-	void TrackDropTarget::FinalRelease()
-	{
-		pPanel_ = nullptr;
-	}
-
 	DWORD TrackDropTarget::OnDragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect)
 	{
 		pDataObject_ = pDataObj;
 
-		bool native;
-		HRESULT hr = ole_interaction::get()->check_dataobject(pDataObj, fb2kAllowedEffect_, native);
+		bool native{};
+		const auto hr = ole_interaction::get()->check_dataobject(pDataObj, fb2kAllowedEffect_, native);
+		
 		if (FAILED(hr))
 		{
 			fb2kAllowedEffect_ = DROPEFFECT_NONE;
@@ -90,7 +86,7 @@ namespace smp::com
 		const auto& lastDragParams = *lastDragParamsOpt;
 
 		const wchar_t* dragText = (lastDragParams.text.empty() ? GetDropTextFromEffect(lastDragParams.effect) : lastDragParams.text.c_str());
-		drag::SetDropText(pDataObject_, GetDropImageFromEffect(lastDragParams.effect), dragText, L"");
+		drag::SetDropText(pDataObject_.get(), GetDropImageFromEffect(lastDragParams.effect), dragText, L"");
 
 		return lastDragParams.effect;
 	}
@@ -102,8 +98,8 @@ namespace smp::com
 		ScreenToClient(hWnd_, reinterpret_cast<LPPOINT>(&pt));
 		(void)PutDragEvent(EventId::kMouseDragDrop, grfKeyState, pt, dwEffect & fb2kAllowedEffect_);
 
-		drag::SetDropText(pDataObject_, DROPIMAGE_INVALID, L"", L"");
-		pDataObject_.Release();
+		drag::SetDropText(pDataObject_.get(), DROPIMAGE_INVALID, L"", L"");
+		pDataObject_.reset();
 
 		if (!lastDragParamsOpt || dwEffect == DROPEFFECT_NONE)
 		{
@@ -116,13 +112,13 @@ namespace smp::com
 	void TrackDropTarget::OnDragLeave()
 	{
 		(void)PutDragEvent(EventId::kMouseDragLeave, {}, {}, {});
-		drag::SetDropText(pDataObject_, DROPIMAGE_INVALID, L"", L"");
-		pDataObject_.Release();
+		drag::SetDropText(pDataObject_.get(), DROPIMAGE_INVALID, L"", L"");
+		pDataObject_.reset();
 	}
 
-	void TrackDropTarget::ProcessDropEvent(IDataObjectPtr pDataObject, std::optional<DragActionParams> dragParamsOpt)
+	void TrackDropTarget::ProcessDropEvent(IDataObject* pDataObj, std::optional<DragActionParams> dragParamsOpt)
 	{
-		if (!pDataObject || !dragParamsOpt || dragParamsOpt->effect == DROPEFFECT_NONE)
+		if (!pDataObj || !dragParamsOpt || dragParamsOpt->effect == DROPEFFECT_NONE)
 		{
 			return;
 		}
@@ -130,7 +126,7 @@ namespace smp::com
 		const auto& dragParams = *dragParamsOpt;
 
 		dropped_files_data_impl droppedData;
-		const auto hr = ole_interaction::get()->parse_dataobject(pDataObject.GetInterfacePtr(), droppedData);
+		const auto hr = ole_interaction::get()->parse_dataobject(pDataObj, droppedData);
 
 		if SUCCEEDED(hr)
 		{
@@ -165,7 +161,19 @@ namespace smp::com
 
 		// process system stuff first (e.g. mouse capture)
 		SendMessageW(pPanel_->GetHWND(), std::to_underlying(eventToMsg.at(eventId)), 0, 0);
-		EventDispatcher::Get().PutEvent(hWnd_, std::make_unique<Event_Drag>(eventId, pt.x, pt.y, grfKeyState, GetHotkeyModifierFlags(), dragParams, pDataObject_), EventPriority::kInput);
+
+		EventDispatcher::Get().PutEvent(
+			hWnd_,
+			std::make_unique<Event_Drag>(
+				eventId,
+				pt.x,
+				pt.y,
+				grfKeyState,
+				GetHotkeyModifierFlags(),
+				dragParams,
+				pDataObject_.get()
+			),
+			EventPriority::kInput);
 
 		if (eventId == EventId::kMouseDragEnter)
 		{ // don't want to catch left-overs from the last operation

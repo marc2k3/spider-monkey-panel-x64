@@ -54,12 +54,7 @@ namespace smp::com
 			return 0;
 		}
 
-	protected:
-		void FinalRelease();
-
 	private:
-		COM_QI_SIMPLE(IDropTarget)
-
 		// com::IDropTargetImpl
 		DWORD OnDragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
 		DWORD OnDragOver(DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;

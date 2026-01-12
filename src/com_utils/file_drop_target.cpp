@@ -11,8 +11,6 @@ namespace smp::com
 		return msgId;
 	}
 
-	void FileDropTarget::FinalRelease() {}
-
 	DWORD FileDropTarget::OnDragEnter(IDataObject* pDataObj, DWORD /*grfKeyState*/, POINTL /*pt*/, DWORD)
 	{
 		isFile_ = IsFile(pDataObj);

@@ -2,12 +2,13 @@
 
 namespace smp::com
 {
-	class IDropTargetImpl : public IDropTarget
+	class IDropTargetImpl : public ImplementCOMRefCounter<IDropTarget>
 	{
 	public:
 		IDropTargetImpl(HWND hWnd);
-
 		virtual ~IDropTargetImpl();
+
+		COM_QI_SIMPLE(IDropTarget)
 
 		HRESULT RegisterDragDrop();
 		HRESULT RevokeDragDrop();

@@ -1,19 +1,19 @@
 #include <PCH.hpp>
 #include "drop_target_impl.h"
 
-_COM_SMARTPTR_TYPEDEF(IDropTargetHelper, IID_IDropTargetHelper);
-
 namespace
 {
 	/// @throw QwrException
-	IDropTargetHelperPtr GetDropTargetHelper()
+	wil::com_ptr<IDropTargetHelper> GetDropTargetHelper()
 	{
 		// delay helper initialization, since it's pretty expensive
-		static IDropTargetHelperPtr dth = []
+		static wil::com_ptr<IDropTargetHelper> dth = []
 			{
-				IDropTargetHelperPtr tmp;
-				HRESULT hr = tmp.CreateInstance(CLSID_DragDropHelper, nullptr, CLSCTX_INPROC_SERVER);
-				smp::CheckHR(hr, "CreateInstance");
+				auto tmp = wil::CoCreateInstanceNoThrow<IDropTargetHelper>(CLSID_DragDropHelper);
+				
+				if (!tmp)
+					throw QwrException("CoCreateInstance");
+
 				return tmp;
 			}();
 
@@ -47,14 +47,7 @@ namespace smp::com
 
 	STDMETHODIMP IDropTargetImpl::DragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
 	{
-		if (!pDataObj)
-		{
-			return E_FAIL;
-		}
-		if (!pdwEffect)
-		{
-			return E_POINTER;
-		}
+		RETURN_HR_IF(E_INVALIDARG, !pDataObj || !pdwEffect);
 
 		POINT point{ pt.x, pt.y };
 
@@ -69,18 +62,15 @@ namespace smp::com
 		}
 
 		*pdwEffect = OnDragEnter(pDataObj, grfKeyState, pt, *pdwEffect);
-
 		return S_OK;
 	}
 
 	STDMETHODIMP IDropTargetImpl::DragOver(DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
 	{
-		if (!pdwEffect)
-		{
-			return E_POINTER;
-		}
+		RETURN_HR_IF(E_INVALIDARG, !pdwEffect);
 
 		POINT point{ pt.x, pt.y };
+
 		try
 		{
 			GetDropTargetHelper()->DragOver(&point, *pdwEffect);
@@ -92,7 +82,6 @@ namespace smp::com
 		}
 
 		*pdwEffect = OnDragOver(grfKeyState, pt, *pdwEffect);
-
 		return S_OK;
 	}
 
@@ -109,22 +98,15 @@ namespace smp::com
 		}
 
 		OnDragLeave();
-
 		return S_OK;
 	}
 
 	STDMETHODIMP IDropTargetImpl::Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
 	{
-		if (!pDataObj)
-		{
-			return E_FAIL;
-		}
-		if (!pdwEffect)
-		{
-			return E_POINTER;
-		}
+		RETURN_HR_IF(E_INVALIDARG, !pDataObj || !pdwEffect);
 
 		POINT point{ pt.x, pt.y };
+
 		try
 		{
 			GetDropTargetHelper()->Drop(pDataObj, &point, *pdwEffect);
@@ -136,7 +118,6 @@ namespace smp::com
 		}
 
 		*pdwEffect = OnDrop(pDataObj, grfKeyState, pt, *pdwEffect);
-
 		return S_OK;
 	}
 }

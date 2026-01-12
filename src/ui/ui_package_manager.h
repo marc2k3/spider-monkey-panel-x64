@@ -77,6 +77,6 @@ private:
 
 	std::vector<PackageData> packages_;
 	CListBox packagesListBox_;
-	CComPtr<smp::com::FileDropTarget> pPackagesListBoxDrop_;
+	wil::com_ptr<smp::com::FileDropTarget> pPackagesListBoxDrop_;
 	CEdit m_edit_package;
 };

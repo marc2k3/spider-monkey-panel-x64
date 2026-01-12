@@ -22,7 +22,7 @@ namespace
 		return S_OK;
 	}
 
-	HRESULT SetDataBlob(IDataObject* pdtobj, CLIPFORMAT cf, const void* pvBlob, UINT cbBlob)
+	HRESULT SetDataBlob(IDataObject* pDataObj, CLIPFORMAT cf, const void* pvBlob, UINT cbBlob)
 	{
 		auto pv = GlobalAlloc(GPTR, cbBlob);
 
@@ -38,7 +38,7 @@ namespace
 		stgm.tymed = TYMED_HGLOBAL;
 		stgm.hGlobal = pv;
 
-		const auto hr = pdtobj->SetData(&fmte, &stgm, TRUE);
+		const auto hr = pDataObj->SetData(&fmte, &stgm, TRUE);
 
 		if FAILED(hr)
 		{
@@ -51,11 +51,11 @@ namespace
 
 namespace smp::drag
 {
-	HRESULT SetDefaultImage(IDataObject* pdtobj)
+	HRESULT SetDefaultImage(IDataObject* pDataObj)
 	{
 		static const auto cfRet = static_cast<CLIPFORMAT>(RegisterClipboardFormatW(L"UsingDefaultDragImage"));
 		const BOOL blobValue = TRUE;
-		return SetDataBlob(pdtobj, cfRet, &blobValue, sizeof(blobValue));
+		return SetDataBlob(pDataObj, cfRet, &blobValue, sizeof(blobValue));
 	}
 
 	HRESULT SetDropText(IDataObject* pdtobj, DROPIMAGETYPE dit, const wchar_t* msg, const wchar_t* insert)

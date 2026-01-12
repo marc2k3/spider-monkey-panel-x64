@@ -437,8 +437,8 @@ STDMETHODIMP CDialogHtml::GetExternal(IDispatch** ppDispatch)
 
 	if (ppDispatch && pExternal_)
 	{
-		pExternal_.AddRef();
-		*ppDispatch = pExternal_;
+		pExternal_->AddRef();
+		*ppDispatch = pExternal_.get();
 		return S_OK;
 	}
 
@@ -515,8 +515,7 @@ void CDialogHtml::ParseOptions(JS::HandleValue options)
 
 		_variant_t data;
 		convert::com::JsToVariant(pJsCtx_, jsValue, *data.GetAddress());
-
-		pExternal_.Attach(new ComPtrImpl<smp::com::HostExternal>(data));
+		pExternal_ = new ComPtrImpl<smp::com::HostExternal>(data);
 	}
 }
 
