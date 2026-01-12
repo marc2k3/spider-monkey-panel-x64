@@ -9,14 +9,14 @@ namespace mozjs
 
 		DEFINE_JS_INTERFACE_VARS_GLOBAL_PROTO
 
-		static std::unique_ptr<JsGdiBitmap> CreateNative(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> gdiBitmap);
+		static std::unique_ptr<JsGdiBitmap> CreateNative(JSContext* ctx, std::unique_ptr<Gdiplus::Bitmap> bitmap);
 		uint32_t GetInternalSize();
 
 	public:
 		[[nodiscard]] Gdiplus::Bitmap* GdiBitmap() const;
 
 	public:
-		static JSObject* Constructor(JSContext* cx, JsGdiBitmap* other);
+		static JSObject* Constructor(JSContext* ctx, JsGdiBitmap* other);
 
 	public:
 		JSObject* ApplyAlpha(uint8_t alpha);
@@ -40,11 +40,12 @@ namespace mozjs
 		uint32_t get_Width();
 
 	private:
-		JsGdiBitmap(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> gdiBitmap);
+		JsGdiBitmap(JSContext* ctx, std::unique_ptr<Gdiplus::Bitmap> gdiBitmap);
+
+		std::unique_ptr<Gdiplus::Bitmap> ApplyAttributes(const Gdiplus::ImageAttributes& ia);
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-
-		std::unique_ptr<Gdiplus::Bitmap> pGdi_;
+		JSContext* m_ctx{};
+		std::unique_ptr<Gdiplus::Bitmap> m_bitmap;
 	};
 }
