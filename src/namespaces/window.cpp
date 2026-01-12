@@ -326,12 +326,14 @@ namespace mozjs
 			return nullptr;
 		}
 
-		if (!JsThemeManager::HasThemeData(m_parent.GetHWND(), classid))
-		{ // Not a error: not found
-			return nullptr;
+		auto theme = wil::unique_htheme(OpenThemeData(m_parent.GetHWND(), classid.data()));
+
+		if (theme)
+		{
+			return JsThemeManager::CreateJs(m_ctx, std::move(theme));
 		}
 
-		return JsThemeManager::CreateJs(m_ctx, m_parent.GetHWND(), classid);
+		return nullptr;
 	}
 
 	JSObject* Window::CreateTooltip(const std::wstring& name, uint32_t pxSize, uint32_t style)

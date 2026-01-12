@@ -29,35 +29,16 @@ namespace mozjs
 	const JSPropertySpec* JsThemeManager::JsProperties = jsProperties.data();
 	const JsPrototypeId JsThemeManager::PrototypeId = JsPrototypeId::ThemeManager;
 
-	JsThemeManager::JsThemeManager(JSContext* cx, HTHEME hTheme) : pJsCtx_(cx), hTheme_(hTheme) {}
+	JsThemeManager::JsThemeManager(JSContext* ctx, wil::unique_htheme theme) : m_ctx(ctx), m_theme(std::move(theme)) {}
 
 	JsThemeManager::~JsThemeManager()
 	{
-		if (hTheme_)
-		{
-			CloseThemeData(hTheme_);
-		}
+		m_theme.reset();
 	}
 
-	bool JsThemeManager::HasThemeData(HWND hwnd, const std::wstring& classId)
+	std::unique_ptr<JsThemeManager> JsThemeManager::CreateNative(JSContext* ctx, wil::unique_htheme theme)
 	{
-		// Since CreateNative return nullptr only on error, we need to validate args beforehand
-		HTHEME hTheme = OpenThemeData(hwnd, classId.c_str());
-		bool bFound = !!hTheme;
-		if (hTheme)
-		{
-			CloseThemeData(hTheme);
-		}
-
-		return bFound;
-	}
-
-	std::unique_ptr<JsThemeManager> JsThemeManager::CreateNative(JSContext* cx, HWND hwnd, const std::wstring& classId)
-	{
-		HTHEME hTheme = OpenThemeData(hwnd, classId.c_str());
-		QwrException::ExpectTrue(hTheme, "Internal error: Failed to get theme data for the provided class list");
-
-		return std::unique_ptr<JsThemeManager>(new JsThemeManager(cx, hTheme));
+		return std::unique_ptr<JsThemeManager>(new JsThemeManager(ctx, std::move(theme)));
 	}
 
 	uint32_t JsThemeManager::GetInternalSize()
@@ -71,20 +52,26 @@ namespace mozjs
 	{
 		QwrException::ExpectTrue(gr, "gr argument is null");
 
-		Gdiplus::Graphics* graphics = gr->GetGraphicsObject();
-		HDC dc = graphics->GetHDC();
+		const auto rect = CRect(x, y, x + w, y + h);
+		auto graphics = gr->GetGraphicsObject();
+		const auto dc = graphics->GetHDC();
 
-		auto autoHdcReleaser = wil::scope_exit([graphics, dc]
+		auto releaser = wil::scope_exit([graphics, dc]
 			{
 				graphics->ReleaseHDC(dc);
 			});
 
-		const RECT rc{ x, y, static_cast<LONG>(x + w), static_cast<LONG>(y + h) };
-		const RECT clip_rc{ clip_x, clip_y, static_cast<LONG>(clip_x + clip_y), static_cast<LONG>(clip_w + clip_h) };
-		LPCRECT pclip_rc = (!clip_x && !clip_y && !clip_w && !clip_h) ? nullptr : &clip_rc;
-
-		HRESULT hr = ::DrawThemeBackground(hTheme_, dc, partId_, stateId_, &rc, pclip_rc);
-		smp::CheckHR(hr, "DrawThemeBackground");
+		if (clip_x == 0 && clip_y == 0 && clip_w == 0 && clip_h == 0)
+		{
+			const auto hr = ::DrawThemeBackground(m_theme.get(), dc, m_part_id, m_state_id, &rect, nullptr);
+			smp::CheckHR(hr, "DrawThemeBackground");
+		}
+		else
+		{
+			const auto rect_clip = CRect(clip_x, clip_y, clip_x + clip_w, clip_y + clip_h);
+			const auto hr = ::DrawThemeBackground(m_theme.get(), dc, m_part_id, m_state_id, &rect, rect_clip);
+			smp::CheckHR(hr, "DrawThemeBackground");
+		}
 	}
 
 	void JsThemeManager::DrawThemeBackgroundWithOpt(size_t optArgCount, JsGdiGraphics* gr,
@@ -110,13 +97,13 @@ namespace mozjs
 
 	bool JsThemeManager::IsThemePartDefined(int32_t partid, int32_t stateId)
 	{
-		return ::IsThemePartDefined(hTheme_, partid, stateId);
+		return ::IsThemePartDefined(m_theme.get(), partid, stateId);
 	}
 
 	void JsThemeManager::SetPartAndStateID(int32_t partid, int32_t stateId)
 	{
-		partId_ = partid;
-		stateId_ = stateId;
+		m_part_id = partid;
+		m_state_id = stateId;
 	}
 
 	void JsThemeManager::SetPartAndStateIDWithOpt(size_t optArgCount, int32_t partid, int32_t stateId)

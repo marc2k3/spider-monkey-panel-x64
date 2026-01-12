@@ -9,8 +9,7 @@ namespace mozjs
 
 		DEFINE_JS_INTERFACE_VARS
 
-		static bool HasThemeData(HWND hwnd, const std::wstring& classId);
-		static std::unique_ptr<JsThemeManager> CreateNative(JSContext* cx, HWND hwnd, const std::wstring& classId);
+		static std::unique_ptr<JsThemeManager> CreateNative(JSContext* ctx, wil::unique_htheme theme);
 		uint32_t GetInternalSize();
 
 	public:
@@ -25,13 +24,11 @@ namespace mozjs
 		void SetPartAndStateIDWithOpt(size_t optArgCount, int32_t partid, int32_t stateId);
 
 	private:
-		JsThemeManager(JSContext* cx, HTHEME hTheme);
+		JsThemeManager(JSContext* ctx, wil::unique_htheme theme);
 
 	private:
-		[[maybe_unused]] JSContext* pJsCtx_ = nullptr;
-
-		HTHEME hTheme_ = nullptr;
-		int32_t partId_ = 0;
-		int32_t stateId_ = 0;
+		JSContext* m_ctx{};
+		wil::unique_htheme m_theme;
+		int32_t m_part_id{}, m_state_id{};
 	};
 }
