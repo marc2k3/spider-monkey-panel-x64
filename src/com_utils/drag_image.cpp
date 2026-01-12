@@ -114,8 +114,8 @@ namespace uih
 
 	bool draw_drag_custom_image(HDC dc, const RECT& rc, Gdiplus::Bitmap& customImage)
 	{
-		const int imgWidth = static_cast<int>(customImage.GetWidth());
-		const int imgHeight = static_cast<int>(customImage.GetHeight());
+		const auto imgWidth = static_cast<int32_t>(customImage.GetWidth());
+		const auto imgHeight = static_cast<int32_t>(customImage.GetHeight());
 		const auto [newWidth, newHeight] = smp::GetResizedImageSize(std::make_tuple(imgWidth, imgHeight), std::make_tuple(rc.right, rc.bottom));
 
 		auto gdiGraphics = Gdiplus::Graphics(dc);
@@ -125,8 +125,8 @@ namespace uih
 			Gdiplus::Rect(
 				lround(static_cast<float>(rc.right - newWidth) / 2),
 				lround(static_cast<float>(rc.bottom - newHeight) / 2),
-				static_cast<int>(newWidth),
-				static_cast<int>(newHeight)
+				static_cast<int32_t>(newWidth),
+				static_cast<int32_t>(newHeight)
 			),
 			0,
 			0,

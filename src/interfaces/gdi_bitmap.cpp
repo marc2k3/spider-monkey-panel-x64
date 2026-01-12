@@ -117,8 +117,8 @@ namespace mozjs
 
 	std::unique_ptr<Gdiplus::Bitmap> JsGdiBitmap::ApplyAttributes(const Gdiplus::ImageAttributes& ia)
 	{
-		const int width = static_cast<int32_t>(m_bitmap->GetWidth());
-		const int height = static_cast<int32_t>(m_bitmap->GetHeight());
+		const auto width = static_cast<int32_t>(m_bitmap->GetWidth());
+		const auto height = static_cast<int32_t>(m_bitmap->GetHeight());
 		auto bitmap = std::make_unique<Gdiplus::Bitmap>(width, height, PixelFormat32bppPARGB);
 
 		auto gr = Gdiplus::Graphics(bitmap.get());
