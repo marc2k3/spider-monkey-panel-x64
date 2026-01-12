@@ -122,12 +122,12 @@ namespace uih
 
 		const auto status = gdiGraphics.DrawImage(
 			&customImage,
-			Gdiplus::Rect{
+			Gdiplus::Rect(
 				lround(static_cast<float>(rc.right - newWidth) / 2),
 				lround(static_cast<float>(rc.bottom - newHeight) / 2),
 				static_cast<int>(newWidth),
 				static_cast<int>(newHeight)
-			},
+			),
 			0,
 			0,
 			imgWidth,

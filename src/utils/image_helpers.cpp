@@ -55,8 +55,7 @@ namespace smp
 			return nullptr;
 
 		auto bitmap = std::make_unique<Gdiplus::Bitmap>(w, h, PixelFormat32bppPARGB);
-
-		Gdiplus::Rect rect{ 0, 0, static_cast<INT>(w), static_cast<INT>(h) };
+		const auto rect = Gdiplus::Rect(0, 0, static_cast<int32_t>(w), static_cast<int32_t>(h));
 		Gdiplus::BitmapData bmpdata{};
 
 		if (Gdiplus::Ok != bitmap->LockBits(&rect, Gdiplus::ImageLockModeRead | Gdiplus::ImageLockModeWrite, PixelFormat32bppPARGB, &bmpdata))

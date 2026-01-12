@@ -1575,7 +1575,7 @@ namespace smp
 		Gdiplus::Graphics gr(memdc);
 
 		// SetClip() may improve performance slightly
-		gr.SetClip(Gdiplus::Rect{ updateRc.left, updateRc.top, updateRc.Width(), updateRc.Height() });
+		gr.SetClip(Gdiplus::Rect(updateRc.left, updateRc.top, updateRc.Width(), updateRc.Height()));
 
 		pJsContainer_->InvokeOnPaint(gr);
 	}
