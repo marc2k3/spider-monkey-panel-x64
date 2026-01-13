@@ -83,7 +83,7 @@ namespace mozjs
 			JS::RootedObject jsObject(pJsCtx_, JS_NewPlainObject(pJsCtx_));
 
 			JS::RootedValue jsValue(pJsCtx_);
-			convert::com::VariantToJs(pJsCtx_, curElem_, &jsValue);
+			convert::VariantToJs(pJsCtx_, curElem_, &jsValue);
 			AddProperty(pJsCtx_, jsObject, "value", static_cast<JS::HandleValue>(jsValue));
 			AddProperty(pJsCtx_, jsObject, "done", isAtEnd_);
 
@@ -97,7 +97,7 @@ namespace mozjs
 			JS::RootedObject jsNext(pJsCtx_, &heapHelper_.Get(*jsNextId_).toObject());
 
 			JS::RootedValue jsValue(pJsCtx_);
-			convert::com::VariantToJs(pJsCtx_, curElem_, &jsValue);
+			convert::VariantToJs(pJsCtx_, curElem_, &jsValue);
 			SetProperty(pJsCtx_, jsNext, "value", static_cast<JS::HandleValue>(jsValue));
 			SetProperty(pJsCtx_, jsNext, "done", isAtEnd_);
 

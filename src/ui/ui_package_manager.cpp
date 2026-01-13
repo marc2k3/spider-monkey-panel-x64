@@ -30,7 +30,7 @@ LRESULT CDialogPackageManager::OnInitDialog(HWND, LPARAM)
 	packagesListBox_ = GetDlgItem(IDC_LIST_PACKAGES);
 	m_edit_package = GetDlgItem(IDC_PACKAGE_INFO);
 	m_edit_package.SetWindowLongPtrW(GWL_EXSTYLE, 0L);
-	pPackagesListBoxDrop_ = new smp::com::FileDropTarget(packagesListBox_, m_hWnd);
+	pPackagesListBoxDrop_ = new FileDropTarget(packagesListBox_, m_hWnd);
 
 	try
 	{

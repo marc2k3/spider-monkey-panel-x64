@@ -23,7 +23,7 @@ public:
 		COMMAND_HANDLER_EX(IDC_BUTTON_EXPORT_PACKAGE, BN_CLICKED, OnExportPackage)
 		COMMAND_HANDLER_EX(IDC_BUTTON_OPEN_FOLDER, BN_CLICKED, OnOpenFolder)
 		COMMAND_RANGE_HANDLER_EX(IDOK, IDCANCEL, OnCloseCmd)
-		MESSAGE_HANDLER_EX(smp::com::FileDropTarget::GetOnDropMsg(), OnDropFiles)
+		MESSAGE_HANDLER_EX(FileDropTarget::GetOnDropMsg(), OnDropFiles)
 	END_MSG_MAP()
 
 	CDialogPackageManager(const std::string& currentPackageId);
@@ -77,6 +77,6 @@ private:
 
 	std::vector<PackageData> packages_;
 	CListBox packagesListBox_;
-	wil::com_ptr<smp::com::FileDropTarget> pPackagesListBoxDrop_;
+	wil::com_ptr<FileDropTarget> pPackagesListBoxDrop_;
 	CEdit m_edit_package;
 };

@@ -4,7 +4,6 @@
 
 #include <com_utils/com_interface_h.h>
 #include <com_utils/com_tools.h>
-#include <com_utils/com_error_helpers.h>
 #include <js_backend/com_convert.h>
 
 namespace
@@ -146,7 +145,7 @@ namespace
 	{
 		try
 		{
-			convert::com::JsToVariant(cx, rval, arg);
+			convert::JsToVariant(cx, rval, arg);
 		}
 		catch (...)
 		{
@@ -393,7 +392,7 @@ namespace mozjs
 		QwrException::ExpectTrue(is, "Object is not an array");
 
 		_variant_t var;
-		convert::com::JsArrayToVariantArray(cx, jsObjectIn, static_cast<VARTYPE>(elementVariantType), var);
+		convert::JsArrayToVariantArray(cx, jsObjectIn, static_cast<VARTYPE>(elementVariantType), var);
 
 		std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(cx, var));
 		JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::move(x)));
@@ -506,10 +505,10 @@ namespace mozjs
 
 		if (FAILED(hresult))
 		{
-			smp::com::ReportActiveXError(hresult, exception, argerr);
+			smp::ReportActiveXError(hresult, exception, argerr);
 		}
 
-		convert::com::VariantToJs(pJsCtx_, varResult, vp);
+		convert::VariantToJs(pJsCtx_, varResult, vp);
 	}
 
 	bool JsActiveXObject::Has(const std::wstring& name)
@@ -643,7 +642,7 @@ namespace mozjs
 
 		if (FAILED(hresult))
 		{
-			smp::com::ReportActiveXError(hresult, exception, argerr);
+			smp::ReportActiveXError(hresult, exception, argerr);
 		}
 	}
 
@@ -702,7 +701,7 @@ namespace mozjs
 
 		if (FAILED(hresult))
 		{
-			smp::com::ReportActiveXError(hresult, exception, argerr);
+			smp::ReportActiveXError(hresult, exception, argerr);
 		}
 	}
 
@@ -752,10 +751,10 @@ namespace mozjs
 
 		if (FAILED(hresult))
 		{
-			smp::com::ReportActiveXError(hresult, exception, argerr);
+			smp::ReportActiveXError(hresult, exception, argerr);
 		}
 
-		convert::com::VariantToJs(pJsCtx_, varResult, callArgs.rval());
+		convert::VariantToJs(pJsCtx_, varResult, callArgs.rval());
 	}
 
 	void JsActiveXObject::SetupMembers(JS::HandleObject jsObject)

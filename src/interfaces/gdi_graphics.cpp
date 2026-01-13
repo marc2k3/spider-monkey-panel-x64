@@ -7,7 +7,6 @@
 
 #include <2K3/EstimateLineWrap.hpp>
 #include <utils/colour_helpers.h>
-#include <utils/gdi_error_helpers.h>
 
 namespace
 {

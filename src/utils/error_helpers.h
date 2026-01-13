@@ -34,4 +34,6 @@ namespace smp
 			throw QwrException("Failed to create GdiPlus object");
 		}
 	}
+
+	void ReportActiveXError(HRESULT hresult, EXCEPINFO& exception, UINT& argerr);
 }

@@ -3,10 +3,10 @@
 
 namespace
 {
-	std::unordered_map<void*, std::unique_ptr<smp::com::StorageObject>> g_objectStorage;
-	std::vector<std::unique_ptr<smp::com::StorageObject>> g_objectsToDelete;
+	std::unordered_map<void*, std::unique_ptr<smp::StorageObject>> g_objectStorage;
+	std::vector<std::unique_ptr<smp::StorageObject>> g_objectsToDelete;
 
-	void CleanObject(smp::com::StorageObject& object)
+	void CleanObject(smp::StorageObject& object)
 	{
 		if (object.pDispatch)
 		{
@@ -30,11 +30,11 @@ namespace
 
 		CoFreeUnusedLibraries();
 
-		object = smp::com::StorageObject{};
+		object = smp::StorageObject{};
 	}
 }
 
-namespace smp::com
+namespace smp
 {
 	StorageObject* GetNewStoredObject()
 	{

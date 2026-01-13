@@ -7,7 +7,7 @@
 // If COM object locks during JS object's `finalize`, then it will cause a dead-lock
 // once GC is triggered again in re-entered message loop.
 
-namespace smp::com
+namespace smp
 {
 	struct StorageObject
 	{

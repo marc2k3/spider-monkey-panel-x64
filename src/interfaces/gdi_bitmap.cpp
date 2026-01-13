@@ -4,7 +4,6 @@
 
 #include <2K3/KMeans.hpp>
 #include <2K3/StackBlur.hpp>
-#include <utils/gdi_error_helpers.h>
 #include <utils/image_helpers.h>
 
 namespace

@@ -5,29 +5,26 @@
 #include <events/event.h>
 #include <panel/drag_action_params.h>
 
-namespace smp::com
+class TrackDropTarget : public IDropTargetImpl
 {
-	class TrackDropTarget : public IDropTargetImpl
-	{
-	public:
-		TrackDropTarget(js_panel_window& panel);
-		~TrackDropTarget() override = default;
+public:
+	TrackDropTarget(smp::js_panel_window& panel);
+	~TrackDropTarget() override = default;
 
-		// IDropTargetImpl
-		DWORD OnDragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
-		DWORD OnDragOver(DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
-		DWORD OnDrop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
-		void OnDragLeave() override;
+	// IDropTargetImpl
+	DWORD OnDragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
+	DWORD OnDragOver(DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
+	DWORD OnDrop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
+	void OnDragLeave() override;
 
-		static void ProcessDropEvent(IDataObject* pDataObj, std::optional<DragActionParams> dragParamsOpt);
+	static void ProcessDropEvent(IDataObject* pDataObj, std::optional<DragActionParams> dragParamsOpt);
 
-	private:
-		[[nodiscard]] std::optional<DragActionParams>
-		PutDragEvent(EventId eventId, DWORD grfKeyState, POINTL pt, DWORD allowedEffects);
+private:
+	[[nodiscard]] std::optional<DragActionParams>
+	PutDragEvent(smp::EventId eventId, DWORD grfKeyState, POINTL pt, DWORD allowedEffects);
 
-	private:
-		js_panel_window* pPanel_{};
-		wil::com_ptr<IDataObject> pDataObject_;
-		DWORD fb2kAllowedEffect_ = DROPEFFECT_NONE;
-	};
-}
+private:
+	smp::js_panel_window* pPanel_{};
+	wil::com_ptr<IDataObject> pDataObject_;
+	DWORD fb2kAllowedEffect_ = DROPEFFECT_NONE;
+};

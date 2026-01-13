@@ -1,6 +1,6 @@
 #include <oleauto.h>
 
-namespace mozjs::convert::com
+namespace mozjs::convert
 {
 	void VariantToJs(JSContext* cx, VARIANTARG& var, JS::MutableHandleValue rval);
 	// assumes that variant arg is uninitialized

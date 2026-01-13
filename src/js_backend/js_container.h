@@ -5,10 +5,11 @@
 #include "js_realm_inner.h"
 #include "native_to_js_invoker.h"
 
+struct DragActionParams;
+
 namespace smp
 {
 	class js_panel_window;
-	struct DragActionParams;
 }
 
 namespace mozjs
@@ -70,7 +71,7 @@ namespace mozjs
 			return mozjs::InvokeJsCallback<ReturnType>(pJsCtx_, jsGlobal_, functionName, std::forward<ArgTypes>(args)...);
 		}
 
-		[[nodiscard]] bool InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, smp::DragActionParams& actionParams);
+		[[nodiscard]] bool InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, DragActionParams& actionParams);
 		void InvokeOnNotify(const std::wstring& name, JS::HandleValue info);
 		void InvokeOnPaint(Gdiplus::Graphics& gr);
 		bool InvokeJsAsyncTask(JsAsyncTask& jsTask);

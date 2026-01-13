@@ -141,9 +141,6 @@
     <ClCompile Include="com_utils\com_destruction_handler.cpp">
       <Filter>com_utils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\com_error_helpers.cpp">
-      <Filter>com_utils</Filter>
-    </ClCompile>
     <ClCompile Include="com_utils\com_tools.cpp">
       <Filter>com_utils</Filter>
     </ClCompile>
@@ -405,7 +402,7 @@
     <ClCompile Include="utils\error_popup.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="utils\gdi_error_helpers.cpp">
+    <ClCompile Include="utils\error_helpers.cpp">
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="utils\guid_helpers.cpp">
@@ -541,9 +538,6 @@
       <Filter>2K3\Scintilla</Filter>
     </ClInclude>
     <ClInclude Include="com_utils\com_destruction_handler.h">
-      <Filter>com_utils</Filter>
-    </ClInclude>
-    <ClInclude Include="com_utils\com_error_helpers.h">
       <Filter>com_utils</Filter>
     </ClInclude>
     <ClInclude Include="com_utils\com_tools.h">
@@ -852,7 +846,7 @@
     <ClInclude Include="utils\error_popup.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\gdi_error_helpers.h">
+    <ClInclude Include="utils\error_helpers.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="utils\guid_helpers.h">

@@ -14,7 +14,7 @@ namespace mozjs
 		uint32_t GetInternalSize();
 
 	public:
-		smp::DragActionParams& AccessDropActionParams();
+		DragActionParams& AccessDropActionParams();
 
 	public:
 		uint32_t get_Effect() const;
@@ -31,6 +31,6 @@ namespace mozjs
 	private:
 		[[maybe_unused]] JSContext* pJsCtx_ = nullptr;
 
-		smp::DragActionParams actionParams_;
+		DragActionParams actionParams_;
 	};
 }

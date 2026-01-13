@@ -13,7 +13,6 @@ using namespace smp;
 namespace
 {
 	using namespace mozjs;
-	using namespace convert::com;
 
 	class WrappedJs : public IDispatchImpl3<IWrappedJs>, public mozjs::IHeapUser
 	{
@@ -88,7 +87,7 @@ namespace
 			{
 				for (size_t i = 0; i < args.size(); ++i)
 				{
-					convert::com::VariantToJs(pJsCtx_, *args[i], wrappedArgs[i]);
+					convert::VariantToJs(pJsCtx_, *args[i], wrappedArgs[i]);
 				}
 
 				JS::RootedValue retVal(pJsCtx_);
@@ -97,7 +96,7 @@ namespace
 					throw JsException();
 				}
 
-				convert::com::JsToVariant(pJsCtx_, retVal, *pResult);
+				convert::JsToVariant(pJsCtx_, retVal, *pResult);
 			}
 			catch (...)
 			{
@@ -176,7 +175,7 @@ namespace
 			}
 			smp::CheckHR(hr, "SafeArrayGetElement");
 
-			VariantToJs(cx, var, &jsVal);
+			convert::VariantToJs(cx, var, &jsVal);
 
 			if (!JS_SetElement(cx, jsArray, i, jsVal))
 			{
@@ -234,7 +233,7 @@ namespace
 	}
 }
 
-namespace mozjs::convert::com
+namespace mozjs::convert
 {
 	/// VariantToJs assumes that the caller will call VariantClear on `var`, so call AddRef on new objects
 	void VariantToJs(JSContext* cx, VARIANTARG& var, JS::MutableHandleValue rval)

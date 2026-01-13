@@ -6,7 +6,6 @@
 #include <interfaces/gdi_bitmap.h>
 #include <interfaces/gdi_font.h>
 #include <js_backend/js_image_helpers.h>
-#include <utils/gdi_error_helpers.h>
 
 namespace
 {

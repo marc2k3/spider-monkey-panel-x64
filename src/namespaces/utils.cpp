@@ -17,7 +17,6 @@
 #include <ui/ui_input_box.h>
 #include <utils/colour_helpers.h>
 #include <utils/edit_text.h>
-#include <utils/gdi_error_helpers.h>
 
 namespace
 {

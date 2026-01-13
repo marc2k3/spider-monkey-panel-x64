@@ -440,7 +440,7 @@ void CConfigTabPackage::InitializeFilesListBox()
 		// !!! Important !!!
 
 		filesListBox_ = GetDlgItem(IDC_LIST_PACKAGE_FILES);
-		pFilesListBoxDrop_ = new smp::com::FileDropTarget(filesListBox_, m_hWnd);
+		pFilesListBoxDrop_ = new FileDropTarget(filesListBox_, m_hWnd);
 
 		try
 		{

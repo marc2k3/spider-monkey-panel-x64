@@ -147,11 +147,9 @@ private:
 	bool isFormSelectionEnabled_ = false;
 	bool isResizable_ = false;
 	bool isScrollEnabled_ = false;
-
 	bool isClosing_ = false;
 
-	wil::com_ptr<IHostExternal> pExternal_;
-
+	wil::com_ptr<HostExternal> pExternal_;
 	IDocHostUIHandlerPtr pDefaultUiHandler_;
 	IOleInPlaceActiveObjectPtr pOleInPlaceHandler_;
 	uint32_t hookId_ = 0;

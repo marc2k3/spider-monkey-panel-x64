@@ -369,7 +369,7 @@ namespace
 			modal::MessageBlockingScope scope;
 			auto data = ole_interaction::get()->create_dataobject(handleList);
 
-			wil::com_ptr_t<com::IDropSourceImpl> pIDropSource = new com::IDropSourceImpl(
+			wil::com_ptr_t<IDropSourceImpl> pIDropSource = new IDropSourceImpl(
 				wnd,
 				data.get_ptr(),
 				text,

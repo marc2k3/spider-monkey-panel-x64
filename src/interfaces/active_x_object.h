@@ -88,7 +88,7 @@ namespace mozjs
 		MemberMap members_;
 
 	public:
-		smp::com::StorageObject* pStorage_ = smp::com::GetNewStoredObject();
+		smp::StorageObject* pStorage_ = smp::GetNewStoredObject();
 		bool hasVariant_ = false;
 	};
 }

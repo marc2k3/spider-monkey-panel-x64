@@ -2,7 +2,6 @@
 #include "gdi_font.h"
 
 #include <2K3/FontHelper.hpp>
-#include <utils/gdi_error_helpers.h>
 
 namespace
 {

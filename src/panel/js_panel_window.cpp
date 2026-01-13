@@ -189,7 +189,7 @@ namespace smp
 				--msgNestedCounter;
 				if (!msgNestedCounter)
 				{
-					com::DeleteMarkedObjects();
+					DeleteMarkedObjects();
 				}
 			});
 
@@ -397,7 +397,7 @@ namespace smp
 
 				if (bRet)
 				{
-					com::TrackDropTarget::ProcessDropEvent(pDragEvent->GetStoredData(), dragParams);
+					TrackDropTarget::ProcessDropEvent(pDragEvent->GetStoredData(), dragParams);
 				}
 			}
 
@@ -1620,7 +1620,7 @@ namespace smp
 		{
 			if (!dropTargetHandler_)
 			{
-				dropTargetHandler_ = new com::TrackDropTarget(*this);
+				dropTargetHandler_ = new TrackDropTarget(*this);
 
 				const auto hr = dropTargetHandler_->RegisterDragDrop();
 				CheckHR(hr, "RegisterDragDrop");

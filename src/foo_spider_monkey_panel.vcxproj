@@ -117,7 +117,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="callbacks\UISelectionCallback.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="com_utils\com_destruction_handler.cpp" />
-    <ClCompile Include="com_utils\com_error_helpers.cpp" />
     <ClCompile Include="com_utils\com_tools.cpp" />
     <ClCompile Include="com_utils\drag_image.cpp" />
     <ClCompile Include="com_utils\drag_utils.cpp" />
@@ -212,7 +211,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="ui\ui_slow_script.cpp" />
     <ClCompile Include="utils\edit_text.cpp" />
     <ClCompile Include="utils\error_popup.cpp" />
-    <ClCompile Include="utils\gdi_error_helpers.cpp" />
+    <ClCompile Include="utils\error_helpers.cpp" />
     <ClCompile Include="utils\guid_helpers.cpp" />
     <ClCompile Include="utils\hook_handler.cpp" />
     <ClCompile Include="utils\image_helpers.cpp" />
@@ -259,7 +258,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="2K3\TextFile.hpp" />
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="com_utils\com_destruction_handler.h" />
-    <ClInclude Include="com_utils\com_error_helpers.h" />
     <ClInclude Include="com_utils\com_tools.h" />
     <ClInclude Include="com_utils\dispatch_ptr.h" />
     <ClInclude Include="com_utils\drag_image.h" />
@@ -366,7 +364,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="utils\colour_helpers.h" />
     <ClInclude Include="utils\edit_text.h" />
     <ClInclude Include="utils\error_popup.h" />
-    <ClInclude Include="utils\gdi_error_helpers.h" />
+    <ClInclude Include="utils\error_helpers.h" />
     <ClInclude Include="utils\guid_helpers.h" />
     <ClInclude Include="utils\hook_handler.h" />
     <ClInclude Include="utils\image_helpers.h" />

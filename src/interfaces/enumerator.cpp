@@ -92,7 +92,7 @@ namespace mozjs
 		}
 
 		JS::RootedValue jsValue(pJsCtx_);
-		convert::com::VariantToJs(pJsCtx_, curElem_, &jsValue);
+		convert::VariantToJs(pJsCtx_, curElem_, &jsValue);
 
 		return jsValue;
 	}

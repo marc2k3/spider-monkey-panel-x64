@@ -268,7 +268,7 @@ namespace mozjs
 		{
 			smp::TimerManager_Native::Get().Finalize();
 			JS_ShutDown();
-			smp::com::DeleteAllStoredObject();
+			smp::DeleteAllStoredObject();
 		}
 
 		isInitialized_ = false;

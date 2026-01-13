@@ -49,7 +49,7 @@ namespace
 	}
 }
 
-namespace smp::drag
+namespace drag
 {
 	HRESULT SetDefaultImage(IDataObject* pDataObj)
 	{

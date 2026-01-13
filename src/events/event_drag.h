@@ -5,12 +5,8 @@
 
 namespace smp
 {
-	namespace com
-	{
-		struct StorageObject;
-	}
-
 	class js_panel_window;
+	struct StorageObject;
 
 	class Event_Drag : public Event_Mouse
 	{
@@ -32,6 +28,6 @@ namespace smp
 	private:
 		const DragActionParams dragParams_;
 		wil::com_ptr<IDataObject> pDataObject_;
-		com::StorageObject* pStorage_;
+		StorageObject* pStorage_;
 	};
 }

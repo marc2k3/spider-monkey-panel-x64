@@ -26,98 +26,95 @@ namespace
 	}
 }
 
-namespace smp::com
+IDropTargetImpl::IDropTargetImpl(HWND hWnd) : hWnd_(hWnd) {}
+
+IDropTargetImpl::~IDropTargetImpl()
 {
-	IDropTargetImpl::IDropTargetImpl(HWND hWnd) : hWnd_(hWnd) {}
+	RevokeDragDrop();
+}
 
-	IDropTargetImpl::~IDropTargetImpl()
+HRESULT IDropTargetImpl::RegisterDragDrop()
+{
+	return ::RegisterDragDrop(hWnd_, this);
+}
+
+HRESULT IDropTargetImpl::RevokeDragDrop()
+{
+	return ::RevokeDragDrop(hWnd_);
+}
+
+STDMETHODIMP IDropTargetImpl::DragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+{
+	RETURN_HR_IF(E_INVALIDARG, !pDataObj || !pdwEffect);
+
+	POINT point{ pt.x, pt.y };
+
+	try
 	{
-		RevokeDragDrop();
+		GetDropTargetHelper()->DragEnter(hWnd_, pDataObj, &point, *pdwEffect);
+	}
+	catch (const QwrException& e)
+	{
+		log_dnd_error(e.what());
+		return E_FAIL;
 	}
 
-	HRESULT IDropTargetImpl::RegisterDragDrop()
+	*pdwEffect = OnDragEnter(pDataObj, grfKeyState, pt, *pdwEffect);
+	return S_OK;
+}
+
+STDMETHODIMP IDropTargetImpl::DragOver(DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+{
+	RETURN_HR_IF(E_INVALIDARG, !pdwEffect);
+
+	POINT point{ pt.x, pt.y };
+
+	try
 	{
-		return ::RegisterDragDrop(hWnd_, this);
+		GetDropTargetHelper()->DragOver(&point, *pdwEffect);
+	}
+	catch (const QwrException& e)
+	{
+		log_dnd_error(e.what());
+		return E_FAIL;
 	}
 
-	HRESULT IDropTargetImpl::RevokeDragDrop()
+	*pdwEffect = OnDragOver(grfKeyState, pt, *pdwEffect);
+	return S_OK;
+}
+
+STDMETHODIMP IDropTargetImpl::DragLeave()
+{
+	try
 	{
-		return ::RevokeDragDrop(hWnd_);
+		GetDropTargetHelper()->DragLeave();
+	}
+	catch (const QwrException& e)
+	{
+		log_dnd_error(e.what());
+		return E_FAIL;
 	}
 
-	STDMETHODIMP IDropTargetImpl::DragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+	OnDragLeave();
+	return S_OK;
+}
+
+STDMETHODIMP IDropTargetImpl::Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
+{
+	RETURN_HR_IF(E_INVALIDARG, !pDataObj || !pdwEffect);
+
+	POINT point{ pt.x, pt.y };
+
+	try
 	{
-		RETURN_HR_IF(E_INVALIDARG, !pDataObj || !pdwEffect);
-
-		POINT point{ pt.x, pt.y };
-
-		try
-		{
-			GetDropTargetHelper()->DragEnter(hWnd_, pDataObj, &point, *pdwEffect);
-		}
-		catch (const QwrException& e)
-		{
-			log_dnd_error(e.what());
-			return E_FAIL;
-		}
-
-		*pdwEffect = OnDragEnter(pDataObj, grfKeyState, pt, *pdwEffect);
-		return S_OK;
+		GetDropTargetHelper()->Drop(pDataObj, &point, *pdwEffect);
+	}
+	catch (const QwrException& e)
+	{
+		log_dnd_error(e.what());
+		return E_FAIL;
 	}
 
-	STDMETHODIMP IDropTargetImpl::DragOver(DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
-	{
-		RETURN_HR_IF(E_INVALIDARG, !pdwEffect);
-
-		POINT point{ pt.x, pt.y };
-
-		try
-		{
-			GetDropTargetHelper()->DragOver(&point, *pdwEffect);
-		}
-		catch (const QwrException& e)
-		{
-			log_dnd_error(e.what());
-			return E_FAIL;
-		}
-
-		*pdwEffect = OnDragOver(grfKeyState, pt, *pdwEffect);
-		return S_OK;
-	}
-
-	STDMETHODIMP IDropTargetImpl::DragLeave()
-	{
-		try
-		{
-			GetDropTargetHelper()->DragLeave();
-		}
-		catch (const QwrException& e)
-		{
-			log_dnd_error(e.what());
-			return E_FAIL;
-		}
-
-		OnDragLeave();
-		return S_OK;
-	}
-
-	STDMETHODIMP IDropTargetImpl::Drop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect)
-	{
-		RETURN_HR_IF(E_INVALIDARG, !pDataObj || !pdwEffect);
-
-		POINT point{ pt.x, pt.y };
-
-		try
-		{
-			GetDropTargetHelper()->Drop(pDataObj, &point, *pdwEffect);
-		}
-		catch (const QwrException& e)
-		{
-			log_dnd_error(e.what());
-			return E_FAIL;
-		}
-
-		*pdwEffect = OnDrop(pDataObj, grfKeyState, pt, *pdwEffect);
-		return S_OK;
-	}
+	*pdwEffect = OnDrop(pDataObj, grfKeyState, pt, *pdwEffect);
+	return S_OK;
 }

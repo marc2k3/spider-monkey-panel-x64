@@ -111,6 +111,7 @@ using JSON = nlohmann::json;
 #include <utils/type_traits.h>
 #include <utils/winapi_error_helpers.h>
 #include <utils/qwr_exception.h>
+#include <utils/error_helpers.h>
 
 #include <2K3/API.hpp>
 #include <2K3/Helpers.hpp>

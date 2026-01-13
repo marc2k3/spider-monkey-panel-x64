@@ -55,7 +55,7 @@ public:
 #pragma warning(disable : 26454) // Arithmetic overflow
 		NOTIFY_HANDLER_EX(IDC_BUTTON_EDIT_SCRIPT, BCN_DROPDOWN, OnEditScriptDropDown)
 #pragma warning(pop)
-		MESSAGE_HANDLER_EX(smp::com::FileDropTarget::GetOnDropMsg(), OnDropFiles)
+		MESSAGE_HANDLER_EX(FileDropTarget::GetOnDropMsg(), OnDropFiles)
 		CHAIN_MSG_MAP(CDialogResize<CConfigTabPackage>)
 	END_MSG_MAP()
 
@@ -128,5 +128,5 @@ private:
 
 	WStrings files_;
 	CListBox filesListBox_;
-	wil::com_ptr<smp::com::FileDropTarget> pFilesListBoxDrop_;
+	wil::com_ptr<FileDropTarget> pFilesListBoxDrop_;
 };

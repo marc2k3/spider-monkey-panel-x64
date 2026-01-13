@@ -10,7 +10,7 @@ namespace smp
 		: Event_Mouse(id, x, y, mask, modifiers)
 		, dragParams_(dragParams)
 		, pDataObject_(pDataObj)
-		, pStorage_(com::GetNewStoredObject())
+		, pStorage_(GetNewStoredObject())
 	{
 		pDataObject_->AddRef();
 		pStorage_->pUnknown = pDataObject_.get();
@@ -43,7 +43,7 @@ namespace smp
 		if (pStorage_)
 		{
 			pDataObject_.reset();
-			com::MarkStoredObjectAsToBeDeleted(pStorage_);
+			MarkStoredObjectAsToBeDeleted(pStorage_);
 			pStorage_ = nullptr;
 		}
 	}

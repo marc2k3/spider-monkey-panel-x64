@@ -7,14 +7,11 @@
 #include <interfaces/fb_tooltip.h>
 #include <ui/ui_conf/ui_conf.h>
 
+class IDropTargetImpl;
+
 namespace smp
 {
 	class TimeoutManager;
-
-	namespace com
-	{
-		class IDropTargetImpl;
-	}
 
 	class js_panel_window : public ui_config_callback_impl
 	{
@@ -159,7 +156,7 @@ namespace smp
 		bool isDraggingInside_ = false;            // used only internally
 		ui_selection_holder::ptr selectionHolder_; // used only internally
 
-		wil::com_ptr<smp::com::IDropTargetImpl> dropTargetHandler_; // used only internally
+		wil::com_ptr<IDropTargetImpl> dropTargetHandler_; // used only internally
 		std::optional<DragActionParams> lastDragParams_;       // used externally as well
 
 		bool isPanelIdOverridenByScript_ = false; // used only internally
