@@ -141,9 +141,6 @@
     <ClCompile Include="com_utils\com_destruction_handler.cpp">
       <Filter>com_utils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\com_tools.cpp">
-      <Filter>com_utils</Filter>
-    </ClCompile>
     <ClCompile Include="com_utils\drag_image.cpp">
       <Filter>com_utils</Filter>
     </ClCompile>

@@ -1,7 +1,7 @@
 #pragma once
 #include "com_tools.h"
 
-class HostExternal : public IDispatchImpl3<IHostExternal>
+class HostExternal : public JSDispatch<IHostExternal>
 {
 protected:
 	HostExternal(_variant_t data) : data_(data) {}

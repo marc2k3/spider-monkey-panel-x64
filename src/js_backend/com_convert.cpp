@@ -14,7 +14,7 @@ namespace
 {
 	using namespace mozjs;
 
-	class WrappedJs : public IDispatchImpl3<IWrappedJs>, public mozjs::IHeapUser
+	class WrappedJs : public JSDispatch<IWrappedJs>, public mozjs::IHeapUser
 	{
 	protected:
 		WrappedJs(JSContext* cx, JS::HandleFunction jsFunction) : pJsCtx_(cx)
@@ -402,7 +402,7 @@ namespace mozjs::convert
 				JS::RootedFunction func(cx, JS_ValueToFunction(cx, rval));
 
 				arg.vt = VT_DISPATCH;
-				arg.pdispVal = new ComPtrImpl<WrappedJs>(cx, func);
+				arg.pdispVal = new ComObject<WrappedJs>(cx, func);
 			}
 			else
 			{

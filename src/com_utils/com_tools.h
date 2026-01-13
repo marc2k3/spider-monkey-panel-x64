@@ -1,90 +1,79 @@
 #pragma once
 #include "com_interface_h.h"
 
-namespace internal
-{
-	class TypeInfoCacheHolder
-	{
-	public:
-		TypeInfoCacheHolder();
-
-		[[nodiscard]] bool Empty();
-
-		void InitFromTypelib(ITypeLib* p_typeLib, const GUID& guid);
-
-		// "Expose" some ITypeInfo related methods here
-		HRESULT GetTypeInfo(UINT iTInfo, LCID lcid, ITypeInfo** ppTInfo);
-		HRESULT GetIDsOfNames(LPOLESTR* rgszNames, UINT cNames, MEMBERID* pMemId);
-		HRESULT Invoke(PVOID pvInstance, MEMBERID memid, WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult, EXCEPINFO* pExcepInfo, UINT* puArgErr);
-
-	protected:
-		std::unordered_map<ULONG, DISPID> cache_;
-		ITypeInfoPtr typeInfo_;
-	};
-}
-
 extern wil::com_ptr<ITypeLib> typelib_smp;
 
-template <class T>
-class IDispatchWithCachedTypes : public T
+template <typename T>
+class JSDispatchBase : public T
 {
-public:
-	STDMETHODIMP GetTypeInfoCount(uint32_t* n)
+protected:
+	JSDispatchBase()
 	{
-		if (!n)
+		if (!s_type_info)
 		{
-			return E_INVALIDARG;
+			THROW_IF_FAILED(typelib_smp->GetTypeInfoOfGuid(__uuidof(T), &s_type_info));
 		}
+	}
+
+	virtual ~JSDispatchBase() = default;
+
+public:
+	STDMETHODIMP GetIDsOfNames(REFIID, OLECHAR** names, uint32_t, LCID, DISPID* dispids) noexcept final
+	{
+		RETURN_HR_IF_NULL(E_POINTER, dispids);
+
+		const auto hash = LHashValOfName(LANG_NEUTRAL, names[0]);
+		const auto it = s_dispid_map.find(hash);
+
+		if (it != s_dispid_map.end())
+		{
+			dispids[0] = it->second;
+		}
+		else
+		{
+			RETURN_IF_FAILED(s_type_info->GetIDsOfNames(&names[0], 1, &dispids[0]));
+
+			s_dispid_map.emplace(hash, dispids[0]);
+		}
+
+		return S_OK;
+	}
+
+	STDMETHODIMP GetTypeInfo(uint32_t i, LCID, ITypeInfo** out) noexcept final
+	{
+		RETURN_HR_IF_NULL(E_POINTER, out);
+		RETURN_HR_IF(DISP_E_BADINDEX, i != 0u);
+
+		s_type_info->AddRef();
+		*out = s_type_info.get();
+		return S_OK;
+	}
+
+	STDMETHODIMP GetTypeInfoCount(uint32_t* n) noexcept final
+	{
+		RETURN_HR_IF_NULL(E_POINTER, n);
+
 		*n = 1;
 		return S_OK;
 	}
 
-	STDMETHODIMP GetTypeInfo(uint32_t i, LCID lcid, ITypeInfo** pp)
+	STDMETHODIMP Invoke(DISPID dispid, REFIID, LCID, WORD flags, DISPPARAMS* params, VARIANT* result, EXCEPINFO* excep, uint32_t* err) noexcept final
 	{
-		return g_typeInfoCacheHolder.GetTypeInfo(i, lcid, pp);
+		return s_type_info->Invoke(this, dispid, flags, params, result, excep, err);
 	}
 
-	STDMETHODIMP GetIDsOfNames(REFIID, OLECHAR** names, uint32_t cnames, LCID, DISPID* dispids)
-	{
-		if (g_typeInfoCacheHolder.Empty())
-		{
-			return E_UNEXPECTED;
-		}
-		return g_typeInfoCacheHolder.GetIDsOfNames(names, cnames, dispids);
-	}
-
-	STDMETHODIMP Invoke(DISPID dispid, REFIID, LCID, WORD flag, DISPPARAMS* params, VARIANT* result, EXCEPINFO* excep, uint32_t* err)
-	{
-		if (g_typeInfoCacheHolder.Empty())
-		{
-			return E_UNEXPECTED;
-		}
-		return g_typeInfoCacheHolder.Invoke(this, dispid, flag, params, result, excep, err);
-	}
-
-protected:
-	IDispatchWithCachedTypes<T>()
-	{
-		if (g_typeInfoCacheHolder.Empty() && typelib_smp)
-		{
-			g_typeInfoCacheHolder.InitFromTypelib(typelib_smp.get(), __uuidof(T));
-		}
-	}
-
-	virtual ~IDispatchWithCachedTypes<T>() = default;
-
-	virtual void FinalRelease() {}
-
-protected:
-	static inline internal::TypeInfoCacheHolder g_typeInfoCacheHolder;
+	static inline std::unordered_map<ULONG, DISPID> s_dispid_map;
+	static inline wil::com_ptr<ITypeInfo> s_type_info;
 };
 
 template <class T>
-class IDispatchImpl3 : public IDispatchWithCachedTypes<T>
+class JSDispatch : public JSDispatchBase<T>
 {
 protected:
-	IDispatchImpl3<T>() = default;
-	~IDispatchImpl3<T>() override = default;
+	JSDispatch<T>() = default;
+	~JSDispatch<T>() = default;
+
+	virtual void FinalRelease() {}
 
 private:
 	COM_QI_BEGIN()
@@ -94,31 +83,32 @@ private:
 };
 
 template <typename T>
-class ComPtrImpl : public T
+class ComObject : public T
 {
-public:
-	template <typename... Args>
-	ComPtrImpl(Args&&... args) : T(std::forward<Args>(args)...) {}
+protected:
+	virtual ~ComObject() = default;
 
-	ULONG STDMETHODCALLTYPE AddRef()
+public:
+	ComObject(auto&&... args) : T(std::forward<decltype(args)>(args)...) {}
+
+	ULONG STDMETHODCALLTYPE AddRef() noexcept final
 	{
-		return ++refCount_;
+		return ++m_counter;
 	}
 
-	ULONG STDMETHODCALLTYPE Release()
+	ULONG STDMETHODCALLTYPE Release() noexcept final
 	{
-		const ULONG n = --refCount_;
-		if (!n)
+		const auto n = --m_counter;
+
+		if (n == 0ul)
 		{
 			this->FinalRelease();
 			delete this;
 		}
+
 		return n;
 	}
 
 private:
-	~ComPtrImpl() override = default;
-
-private:
-	std::atomic<ULONG> refCount_ = 1;
+	std::atomic<ULONG> m_counter = 1ul;
 };
