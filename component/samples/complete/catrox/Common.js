@@ -1,5 +1,133 @@
 ﻿'use strict';
 
+const MF_STRING = 0x00000000;
+const MF_GRAYED = 0x00000001;
+
+const TPM_RIGHTALIGN = 0x0008;
+const TPM_BOTTOMALIGN = 0x0020;
+
+const DLGC_WANTALLKEYS = 0x0004;
+
+const DT_LEFT = 0x00000000;
+const DT_CENTER = 0x00000001;
+const DT_RIGHT = 0x00000002;
+const DT_VCENTER = 0x00000004;
+const DT_WORDBREAK = 0x00000010;
+const DT_CALCRECT = 0x00000400;
+const DT_NOPREFIX = 0x00000800;
+const DT_END_ELLIPSIS = 0x00008000;
+
+const MK_LBUTTON = 0x0001;
+const MK_RBUTTON = 0x0002;
+const MK_SHIFT = 0x0004; // The SHIFT key is down.
+const MK_CONTROL = 0x0008; // The CTRL key is down.
+const MK_MBUTTON = 0x0010;
+const MK_XBUTTON1 = 0x0020;
+const MK_XBUTTON2 = 0x0040;
+
+const VK_BACKSPACE = 0x08;
+const VK_SHIFT = 0x10;
+const VK_CONTROL = 0x11;
+const VK_MENU = 0x12; // ALT
+const VK_PAUSE = 0x13;
+const VK_ESCAPE = 0x1B;
+const VK_SPACE = 0x20;
+const VK_DELETE = 0x2E;
+const VK_PRIOR = 0x21; // PAGE UP key
+const VK_NEXT = 0x22; // PAGE DOWN key
+const VK_END = 0x23;
+const VK_HOME = 0x24;
+const VK_LEFT = 0x25;
+const VK_UP = 0x26;
+const VK_RIGHT = 0x27;
+const VK_DOWN = 0x28;
+const VK_RETURN = 0x0D; // Enter
+const VK_LSHIFT = 0xA0; // Left SHIFT key
+const VK_RSHIFT = 0xA1; // Right SHIFT key
+const VK_LCONTROL = 0xA2; // Left CONTROL key
+const VK_RCONTROL = 0xA3; // Right CONTROL key
+const VK_LMENU = 0xA4; // Left MENU key (Left Alt)
+const VK_RMENU = 0xA5; // Right MENU key (Right Alt)
+
+const VK_KEY_0 = 0x30; //	0
+const VK_KEY_1 = 0x31; //	1
+const VK_KEY_2 = 0x32; //	2
+const VK_KEY_3 = 0x33; //	3
+const VK_KEY_4 = 0x34; //	4
+const VK_KEY_5 = 0x35; //	5
+const VK_KEY_6 = 0x36; //	6
+const VK_KEY_7 = 0x37; //	7
+const VK_KEY_8 = 0x38; //	8
+const VK_KEY_9 = 0x39; //	9
+const VK_KEY_A = 0x41; //	A
+const VK_KEY_B = 0x42; //	B
+const VK_KEY_C = 0x43; //	C
+const VK_KEY_D = 0x44; //	D
+const VK_KEY_E = 0x45; //	E
+const VK_KEY_F = 0x46; //	F
+const VK_KEY_G = 0x47; //	G
+const VK_KEY_H = 0x48; //	H
+const VK_KEY_I = 0x49; //	I
+const VK_KEY_J = 0x4A; //	J
+const VK_KEY_K = 0x4B; //	K
+const VK_KEY_L = 0x4C; //	L
+const VK_KEY_M = 0x4D; //	M
+const VK_KEY_N = 0x4E; //	N
+const VK_KEY_O = 0x4F; //	O
+const VK_KEY_P = 0x50; //	P
+const VK_KEY_Q = 0x51; //	Q
+const VK_KEY_R = 0x52; //	R
+const VK_KEY_S = 0x53; //	S
+const VK_KEY_T = 0x54; //	T
+const VK_KEY_U = 0x55; //	U
+const VK_KEY_V = 0x56; //	V
+const VK_KEY_W = 0x57; //	W
+const VK_KEY_X = 0x58; //	X
+const VK_KEY_Y = 0x59; //	Y
+const VK_KEY_Z = 0x5A; //	Z
+
+const VK_F1 = 0x70; // F1
+const VK_F10 = 0x79; // F10
+const VK_F11 = 0x7A; // F11
+const VK_F12 = 0x7B; // F12
+const VK_F13 = 0x7C; // F13
+const VK_F14 = 0x7D; // F14
+const VK_F15 = 0x7E; // F15
+const VK_F16 = 0x7F; // F16
+const VK_F17 = 0x80; // F17
+const VK_F18 = 0x81; // F18
+const VK_F19 = 0x82; // F19
+const VK_F2 = 0x71; // F2
+const VK_F20 = 0x83; // F20
+const VK_F21 = 0x84; // F21
+const VK_F22 = 0x85; // F22
+const VK_F23 = 0x86; // F23
+const VK_F24 = 0x87; // F24
+const VK_F3 = 0x72; // F3
+const VK_F4 = 0x73; // F4
+const VK_F5 = 0x74; // F5
+const VK_F6 = 0x75; // F6
+const VK_F7 = 0x76; // F7
+const VK_F8 = 0x77; // F8
+const VK_F9 = 0x78; // F9
+
+const IDC_ARROW = 32512;
+const IDC_IBEAM = 32513;
+const IDC_WAIT = 32514;
+const IDC_CROSS = 32515;
+const IDC_UPARROW = 32516;
+const IDC_SIZE = 32640;
+const IDC_ICON = 32641;
+const IDC_SIZENWSE = 32642;
+const IDC_SIZENESW = 32643;
+const IDC_SIZEWE = 32644;
+const IDC_SIZENS = 32645;
+const IDC_SIZEALL = 32646;
+const IDC_NO = 32648;
+const IDC_APPSTARTING = 32650;
+const IDC_HAND = 32649;
+const IDC_HELP = 32651;
+
 let g_theme = {};
 g_theme.name = 'CaTRoX (QWR Edition)';
 g_theme.version = '5.0.0';
@@ -440,25 +568,25 @@ let qwr_utils = {
 
 		switch (site.toLowerCase()) {
 			case 'google':
-				site = (search_term ? 'http://images.google.com/search?q=' + search_term + '&ie=utf-8' : null);
+				site = (search_term ? 'https://images.google.com/search?q=' + search_term + '&ie=utf-8' : null);
 				break;
 			case 'googleimages':
-				site = (search_term ? 'http://images.google.com/images?hl=en&q=' + search_term + '&ie=utf-8' : null);
+				site = (search_term ? 'https://images.google.com/images?hl=en&q=' + search_term + '&ie=utf-8' : null);
 				break;
 			case 'ecover':
-				site = (search_term || album ? 'http://ecover.to/?Module=ExtendedSearch&SearchString=' + search_term + '+' + album + '&ie=utf-8' : null);
+				site = (search_term || album ? 'https://ecover.to/?Module=ExtendedSearch&SearchString=' + search_term + '+' + album + '&ie=utf-8' : null);
 				break;
 			case 'wikipedia':
-				site = (artist ? 'http://en.wikipedia.org/wiki/' + artist.replace(/\+/g, '_') : null);
+				site = (artist ? 'https://en.wikipedia.org/wiki/' + artist.replace(/\+/g, '_') : null);
 				break;
 			case 'youtube':
-				site = (search_term ? 'http://www.youtube.com/results?search_type=&search_query=' + search_term + '&ie=utf-8' : null);
+				site = (search_term ? 'https://www.youtube.com/results?search_type=&search_query=' + search_term + '&ie=utf-8' : null);
 				break;
 			case 'lastfm':
-				site = (search_term ? 'http://www.last.fm/music/' + search_term.replace('/', '%252F') : null);
+				site = (search_term ? 'https://www.last.fm/music/' + search_term.replace('/', '%252F') : null);
 				break;
 			case 'discogs':
-				site = (search_term || album ? 'http://www.discogs.com/search?q=' + search_term + '+' + album + '&ie=utf-8' : null);
+				site = (search_term || album ? 'https://www.discogs.com/search?q=' + search_term + '+' + album + '&ie=utf-8' : null);
 				break;
 			default:
 				site = '';
@@ -468,7 +596,7 @@ let qwr_utils = {
 			return;
 		}
 
-		_.run(site);
+		_run(site);
 	},
 	/**
 	 * @constructor
@@ -681,3 +809,147 @@ let PanelProperties = (function () {
 })();
 
 let g_properties = PanelProperties.get_instance();
+
+function _alpha_timer(items_arg, hover_predicate_arg) {
+	this.start = () => {
+		var hover_in_step = 50;
+		var hover_out_step = 15;
+
+		if (!alpha_timer_internal) {
+			alpha_timer_internal = window.SetInterval(_.bind(function () {
+				_.forEach(items, function (item) {
+					var saved_alpha = item.hover_alpha;
+					if (hover_predicate(item)) {
+						item.hover_alpha = Math.min(255, item.hover_alpha += hover_in_step);
+					}
+					else {
+						item.hover_alpha = Math.max(0, item.hover_alpha -= hover_out_step);
+					}
+
+					if (saved_alpha !== item.hover_alpha) {
+						item.repaint();
+					}
+				});
+
+				var alpha_in_progress = _.some(items, function (item) {
+					return item.hover_alpha > 0 && item.hover_alpha < 255;
+				});
+
+				if (!alpha_in_progress) {
+					this.stop();
+				}
+			}, this), 25);
+		}
+	}
+
+	this.stop = () => {
+		if (alpha_timer_internal) {
+			window.ClearInterval(alpha_timer_internal);
+			alpha_timer_internal = null;
+		}
+	};
+
+	var alpha_timer_internal = null;
+	var items = items_arg;
+	var hover_predicate = hover_predicate_arg;
+}
+
+function _cc(name) {
+	return utils.CheckComponent(name, true);
+}
+
+function _isInstanceOf(a, b) {
+	return (a instanceof b);
+}
+
+function _q(value) {
+	return '"' + value + '"';
+}
+
+function _RGB(r, g, b) {
+	return 0xFF000000 | r << 16 | g << 8 | b;
+}
+
+function _RGBA(r, g, b, a) {
+	return a << 24 | r << 16 | g << 8 | b;
+}
+
+function _run() {
+	try {
+		WshShell.Run(_.map(arguments, _q).join(' '));
+		return true;
+	} catch (e) {
+		return false;
+	}
+}
+function _runCmd(command, wait, show) {
+	try {
+		WshShell.Run(command, show ? 1 : 0, !_.isNil(wait) ? wait : false);
+		return true;
+	} catch (e) {
+		return false;
+	}
+}
+
+function _tf(t, metadb) {
+	if (!metadb) {
+		return '';
+	}
+	let tfo = fb.TitleFormat(t);
+	return tfo.EvalWithMetadb(metadb);
+}
+
+function _tfe(t, force) {
+	let tfo = fb.TitleFormat(t);
+	return tfo.Eval(force);
+}
+
+function _trimArray(array, count, fromStart) {
+	if (array.length === count) {
+		array.length = 0;
+		return;
+	}
+
+	/// Length deduction is much faster then _.drop or slice, since it does not create a new array
+	if (fromStart) {
+		array.reverse();
+		array.length -= count;
+		array.reverse();
+	}
+	else {
+		array.length -= count;
+	}
+}
+
+const TextRenderingHint = {
+	SystemDefault:            0,
+	SingleBitPerPixelGridFit: 1,
+	SingleBitPerPixel:        2,
+	AntiAliasGridFit:         3,
+	AntiAlias:                4,
+	ClearTypeGridFit:         5
+};
+
+const SmoothingMode = {
+	Invalid:     -1,
+	Default:     0,
+	HighSpeed:   1,
+	HighQuality: 2,
+	None:        3,
+	AntiAlias:   4
+};
+
+const InterpolationMode = {
+	Invalid:             -1,
+	Default:             0,
+	LowQuality:          1,
+	HighQuality:         2,
+	Bilinear:            3,
+	Bicubic:             4,
+	NearestNeighbor:     5,
+	HighQualityBilinear: 6,
+	HighQualityBicubic:  7
+};
+
+let WshShell = new ActiveXObject('WScript.Shell');
+let fso = new ActiveXObject('Scripting.FileSystemObject');

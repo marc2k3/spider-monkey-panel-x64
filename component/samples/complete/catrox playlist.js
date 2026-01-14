@@ -16,7 +16,6 @@ const g_theme_path = fb.ComponentPath + 'samples\\complete\\catrox\\';
 include(fb.ComponentPath + 'samples\\complete\\js\\lodash.min.js');
 
 [
-	'Helpers.js',
 	'Common.js',
 	'Control_ContextMenu.js',
 	'Control_Scrollbar.js',
