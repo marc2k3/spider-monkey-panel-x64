@@ -1,3 +1,10 @@
+## 1.7.26.1.14
+- Include `CaTRoX Playlist` as a built in sample. Note that:
+  * It is not DPI aware.
+  * The colours are fixed.
+  * It can be used in `Default UI` or `Columns UI`.
+  * I am not taking feature requests!
+
 ## 1.7.26.1.12
 - Fix regression in `GdiBitmap` `GetColourSchemeJSON` causing unexpected script errors.
 - Increase tooltip max length to 1024 characters.
