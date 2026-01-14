@@ -573,9 +573,6 @@ let qwr_utils = {
 			case 'googleimages':
 				site = (search_term ? 'https://images.google.com/images?hl=en&q=' + search_term + '&ie=utf-8' : null);
 				break;
-			case 'ecover':
-				site = (search_term || album ? 'https://ecover.to/?Module=ExtendedSearch&SearchString=' + search_term + '+' + album + '&ie=utf-8' : null);
-				break;
 			case 'wikipedia':
 				site = (artist ? 'https://en.wikipedia.org/wiki/' + artist.replace(/\+/g, '_') : null);
 				break;
