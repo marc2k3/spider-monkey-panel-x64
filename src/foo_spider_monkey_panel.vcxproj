@@ -264,7 +264,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="com_utils\drop_source_impl.h" />
     <ClInclude Include="com_utils\drop_target_impl.h" />
     <ClInclude Include="com_utils\file_drop_target.h" />
-    <ClInclude Include="com_utils\host_external.h" />
     <ClInclude Include="com_utils\track_drop_target.h" />
     <ClInclude Include="config\advanced_config.h" />
     <ClInclude Include="config\delayed_package_utils.h" />

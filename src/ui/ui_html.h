@@ -1,6 +1,5 @@
 #pragma once
 #include <com_utils/com_tools.h>
-#include <com_utils/host_external.h>
 
 class CDialogHtml
 	: public CAxDialogImpl<CDialogHtml>
@@ -126,14 +125,35 @@ public:
 	ULONG STDMETHODCALLTYPE Release() override;
 
 private:
-	/// @throw QwrException
-	/// @throw JsException
+	class HostExternal : public JSDispatch<IHostExternal>
+	{
+	protected:
+		HostExternal(_variant_t data) : data_(data) {}
+
+		~HostExternal() override = default;
+
+	public:
+		STDMETHODIMP get_dialogArguments(VARIANT* pData) override
+		{
+			if (pData)
+			{
+				return VariantCopy(pData, &data_);
+			}
+			else
+			{
+				return S_OK;
+			}
+		}
+
+	private:
+		_variant_t data_;
+	};
+
 	void ParseOptions(JS::HandleValue options);
 	void SetOptions();
 
 	static void GetMsgProc(int code, WPARAM wParam, LPARAM lParam, HWND hParent, CDialogHtml* pParent);
 
-private:
 	JSContext* pJsCtx_ = nullptr;
 
 	const std::wstring& htmlCodeOrPath_;

@@ -558,9 +558,6 @@
     <ClInclude Include="com_utils\file_drop_target.h">
       <Filter>com_utils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\host_external.h">
-      <Filter>com_utils</Filter>
-    </ClInclude>
     <ClInclude Include="com_utils\track_drop_target.h">
       <Filter>com_utils</Filter>
     </ClInclude>
