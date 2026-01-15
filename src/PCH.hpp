@@ -70,9 +70,7 @@
 #include <fmt/xchar.h>
 
 // json
-#define JSON_DIAGNOSTICS 1
 #define JSON_USE_IMPLICIT_CONVERSIONS 0
-#define JSON_HAS_FILESYSTEM 0
 #include <nlohmann/json.hpp>
 using JSON = nlohmann::json;
 
