@@ -17,7 +17,8 @@ namespace mozjs
 
 	public: // methods
 		bool Compare(JsFbMetadbHandle* handle);
-		JSObject* GetFileInfo();
+		JSObject* GetFileInfo(bool want_full_info = false);
+		JSObject* GetFileInfoWithOpt(size_t optArgCount, bool want_full_info);
 
 	public: // props
 		uint64_t get_FileSize();

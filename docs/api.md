@@ -73,7 +73,7 @@ function on_locations_added(task_id, handle_list) {
 |requested_length|`number`|seconds|
 |offset|`number`|Default `0`|
 
-Returns an [FbAudioChunk](FbAudioChunk.md) instance or `null` on failure.
+Returns a [FbAudioChunk](FbAudioChunk.md) instance or `null` on failure.
 
 Also see the included `VU Meter` sample.
 
@@ -123,6 +123,15 @@ No return value.
 
 # Interfaces
 
+## `FbMetadbHandle` `GetFileInfo([want_full_info])`
+|Arguments|||
+|---|---|---|
+|want_full_info|`boolean`|Default `false`. Will be ignored if not using `foobar2000` `2.26` as it's not required. Even then it's only required if tag values are blocked by [LargeFieldsConfig-v2.txt](https://www.foobar2000.org/LargeFieldsConfig-v2).
+
+While this method has always existed, the optional `want_full_info` argument is new.
+
+Return a `FbFileInfo` instance.
+
 ## `FbMetadbHandleList` `OptimiseFileLayout([minimise])`
 |Arguments|||
 |---|---|---|
@@ -154,6 +163,16 @@ An example:
 var handle_list = plman.GetPlaylistItems(plman.ActivePlaylist);
 handle_list.SaveAs("z:\\blah.fpl");
 ```
+
+## `FbTitleFormat` `EvalWithMetadb(handle[, want_full_info])`
+|Arguments|||
+|---|---|---|
+|handle|`FbMetadbHandle`|
+|want_full_info|`boolean`|Default `false`. Will be ignored if not using `foobar2000` `2.26` as it's not required. Even then it's only required if tag values are blocked by [LargeFieldsConfig-v2.txt](https://www.foobar2000.org/LargeFieldsConfig-v2).
+
+While this method has always existed, the optional `want_full_info` argument is new.
+
+Returns a `string`.
 
 # Properties
 |||||

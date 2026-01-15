@@ -12,13 +12,13 @@ namespace
 	DEFINE_JS_CLASS_NO_PROPERTIES("FbTitleFormat")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(Eval, JsFbTitleFormat::Eval, JsFbTitleFormat::EvalWithOpt, 1)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(EvalWithMetadb, JsFbTitleFormat::EvalWithMetadb)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(EvalWithMetadb, JsFbTitleFormat::EvalWithMetadb, JsFbTitleFormat::EvalWithMetadbWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(EvalWithMetadbs, JsFbTitleFormat::EvalWithMetadbs)
 
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{
 			JS_FN("Eval", Eval, 0, kDefaultPropsFlags),
-			JS_FN("EvalWithMetadb", EvalWithMetadb, 1, kDefaultPropsFlags),
+			JS_FN("EvalWithMetadb", EvalWithMetadb, 2, kDefaultPropsFlags),
 			JS_FN("EvalWithMetadbs", EvalWithMetadbs, 1, kDefaultPropsFlags),
 			JS_FS_END,
 		});
@@ -95,13 +95,46 @@ namespace mozjs
 		}
 	}
 
-	pfc::string8 JsFbTitleFormat::EvalWithMetadb(JsFbMetadbHandle* handle)
+	pfc::string8 JsFbTitleFormat::EvalWithMetadb(JsFbMetadbHandle* handle , bool want_full_info)
 	{
 		QwrException::ExpectTrue(handle, "handle argument is null");
 
+		const auto& nativeHandle = handle->GetHandle();
+		metadb_info_container::ptr info;
 		pfc::string8 text;
-		handle->GetHandle()->format_title(nullptr, text, titleFormatObject_, nullptr);
+
+		if (want_full_info && fb2k::api::is_2_26 && !filesystem::g_is_remote_or_unrecognized(nativeHandle->get_path()))
+		{
+			try
+			{
+				info = nativeHandle->get_full_info_ref(fb2k::noAbort);
+			}
+			catch (...) {}
+		}
+
+		if (info.is_valid())
+		{
+			nativeHandle->format_title_from_external_info(info->info(), nullptr, text, titleFormatObject_, nullptr);
+		}
+		else
+		{
+			nativeHandle->format_title(nullptr, text, titleFormatObject_, nullptr);
+		}
+
 		return text;
+	}
+
+	pfc::string8 JsFbTitleFormat::EvalWithMetadbWithOpt(size_t optArgCount, JsFbMetadbHandle* handle, bool want_full_info)
+	{
+		switch (optArgCount)
+		{
+		case 0:
+			return EvalWithMetadb(handle, want_full_info);
+		case 1:
+			return EvalWithMetadb(handle);
+		default:
+			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		}
 	}
 
 	JS::Value JsFbTitleFormat::EvalWithMetadbs(JsFbMetadbHandleList* handles)

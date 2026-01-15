@@ -11,12 +11,12 @@ namespace
 	DEFINE_JS_CLASS("FbMetadbHandle")
 
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Compare, JsFbMetadbHandle::Compare)
-	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFileInfo, JsFbMetadbHandle::GetFileInfo)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetFileInfo, JsFbMetadbHandle::GetFileInfo, JsFbMetadbHandle::GetFileInfoWithOpt, 1)
 
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{
 			JS_FN("Compare", Compare, 1, kDefaultPropsFlags),
-			JS_FN("GetFileInfo", GetFileInfo, 0, kDefaultPropsFlags),
+			JS_FN("GetFileInfo", GetFileInfo, 1, kDefaultPropsFlags),
 			JS_FS_END,
 		});
 
@@ -72,16 +72,44 @@ namespace mozjs
 		return (handle->GetHandle() == metadbHandle_);
 	}
 
-	JSObject* JsFbMetadbHandle::GetFileInfo()
+	JSObject* JsFbMetadbHandle::GetFileInfo(bool want_full_info)
 	{
-		auto containerInfo = metadbHandle_->query_v2_().info;
+		metadb_info_container::ptr info;
 
-		if (containerInfo.is_empty())
+		if (want_full_info && fb2k::api::is_2_26 && !filesystem::g_is_remote_or_unrecognized(metadbHandle_->get_path()))
 		{
-			containerInfo = metadbHandle_->get_info_ref();
+			try
+			{
+				info = metadbHandle_->get_full_info_ref(fb2k::noAbort);
+			}
+			catch (...) {}
 		}
 
-		return JsFbFileInfo::CreateJs(pJsCtx_, containerInfo);
+		if (info.is_empty())
+		{
+			info = metadbHandle_->query_v2_().info;
+		}
+
+		// last resort, don't want to return null
+		if (info.is_empty())
+		{
+			info = metadbHandle_->get_info_ref();
+		}
+
+		return JsFbFileInfo::CreateJs(pJsCtx_, info);
+	}
+
+	JSObject* JsFbMetadbHandle::GetFileInfoWithOpt(size_t optArgCount, bool want_full_info)
+	{
+		switch (optArgCount)
+		{
+		case 0:
+			return GetFileInfo(want_full_info);
+		case 1:
+			return GetFileInfo();
+		default:
+			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		}
 	}
 
 	uint64_t JsFbMetadbHandle::get_FileSize()
