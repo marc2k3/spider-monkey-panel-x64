@@ -1,4 +1,4 @@
-#include <PCH.hpp>
+#include "PCH.hpp"
 #include "Scintilla.hpp"
 
 #include "DialogFindReplace.hpp"

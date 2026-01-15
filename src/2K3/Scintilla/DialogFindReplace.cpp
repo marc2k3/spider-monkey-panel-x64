@@ -1,4 +1,4 @@
-#include <PCH.hpp>
+#include "PCH.hpp"
 #include "DialogFindReplace.hpp"
 
 #include "KeyHook.hpp"

@@ -1,4 +1,4 @@
-#include <PCH.hpp>
+#include "PCH.hpp"
 #include "DialogGoto.hpp"
 
 CDialogGoto::CDialogGoto(intptr_t line_number) : m_line_number(line_number) {}

@@ -1,4 +1,4 @@
-#include <PCH.hpp>
+#include "PCH.hpp"
 #include "edit_text.h"
 
 #include <2K3/Scintilla/DialogEditor.hpp>
