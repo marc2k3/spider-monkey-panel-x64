@@ -3,6 +3,10 @@
 argument. This enables full retrieval of tags that have been blocked with [LargeFieldsConfig-v2](https://www.foobar2000.org/LargeFieldsConfig-v2)
 in the latest `foobar2000` `2.26` previews.
 
+https://github.com/marc2k3/spider-monkey-panel-x64/blob/main/docs/api.md#fbmetadbhandle-getfileinfowant_full_info
+
+https://github.com/marc2k3/spider-monkey-panel-x64/blob/main/docs/api.md#fbtitleformat-evalwithmetadbhandle-want_full_info
+
 ## 1.7.26.1.14
 - Include `CaTRoX Playlist` as a built in sample. Note that:
   * It is not DPI aware.
