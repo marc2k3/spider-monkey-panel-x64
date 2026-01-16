@@ -34,14 +34,14 @@ namespace mozjs
 	const JsPrototypeId JsFbTitleFormat::PrototypeId = JsPrototypeId::FbTitleFormat;
 	const JSNative JsFbTitleFormat::JsConstructor = ::FbTitleFormat_Constructor;
 
-	JsFbTitleFormat::JsFbTitleFormat(JSContext* cx, const std::string& expr) : pJsCtx_(cx)
+	JsFbTitleFormat::JsFbTitleFormat(JSContext* ctx, const std::string& expr) : m_ctx(ctx)
 	{
-		titleformat_compiler::get()->compile_safe(titleFormatObject_, expr.c_str());
+		titleformat_compiler::get()->compile_safe(m_obj, expr.c_str());
 	}
 
-	std::unique_ptr<JsFbTitleFormat> JsFbTitleFormat::CreateNative(JSContext* cx, const std::string& expr)
+	std::unique_ptr<JsFbTitleFormat> JsFbTitleFormat::CreateNative(JSContext* ctx, const std::string& expr)
 	{
-		return std::unique_ptr<JsFbTitleFormat>(new JsFbTitleFormat(cx, expr));
+		return std::unique_ptr<JsFbTitleFormat>(new JsFbTitleFormat(ctx, expr));
 	}
 
 	uint32_t JsFbTitleFormat::GetInternalSize()
@@ -51,7 +51,7 @@ namespace mozjs
 
 	titleformat_object::ptr JsFbTitleFormat::GetTitleFormat()
 	{
-		return titleFormatObject_;
+		return m_obj;
 	}
 
 	JSObject* JsFbTitleFormat::Constructor(JSContext* cx, const std::string& expr)
@@ -63,7 +63,7 @@ namespace mozjs
 	{
 		pfc::string8 text;
 
-		if (fb2k::api::pc->playback_format_title(nullptr, text, titleFormatObject_, nullptr, playback_control::display_level_all))
+		if (fb2k::api::pc->playback_format_title(nullptr, text, m_obj, nullptr, playback_control::display_level_all))
 		{
 			return text;
 		}
@@ -76,7 +76,7 @@ namespace mozjs
 				metadb::get()->handle_create(handle, make_playable_location("file://C:\\________.ogg", 0));
 			}
 
-			handle->format_title(nullptr, text, titleFormatObject_, nullptr);
+			handle->format_title(nullptr, text, m_obj, nullptr);
 		}
 
 		return text;
@@ -114,11 +114,11 @@ namespace mozjs
 
 		if (info.is_valid())
 		{
-			nativeHandle->format_title_from_external_info(info->info(), nullptr, text, titleFormatObject_, nullptr);
+			nativeHandle->format_title_from_external_info(info->info(), nullptr, text, m_obj, nullptr);
 		}
 		else
 		{
-			nativeHandle->format_title(nullptr, text, titleFormatObject_, nullptr);
+			nativeHandle->format_title(nullptr, text, m_obj, nullptr);
 		}
 
 		return text;
@@ -148,11 +148,11 @@ namespace mozjs
 
 		api->queryMultiParallel_(native, [&](size_t index, const metadb_v2::rec_t& rec)
 			{
-				api->formatTitle_v2(native[index], rec, nullptr, values[index], titleFormatObject_, nullptr);
+				api->formatTitle_v2(native[index], rec, nullptr, values[index], m_obj, nullptr);
 			});
 
-		JS::RootedValue jsValue(pJsCtx_);
-		convert::to_js::ToArrayValue(pJsCtx_, values, &jsValue);
+		JS::RootedValue jsValue(m_ctx);
+		convert::to_js::ToArrayValue(m_ctx, values, &jsValue);
 		return jsValue;
 	}
 }

@@ -46,13 +46,13 @@ namespace mozjs
 	const JSPropertySpec* JsFbMetadbHandle::JsProperties = jsProperties.data();
 	const JsPrototypeId JsFbMetadbHandle::PrototypeId = JsPrototypeId::FbMetadbHandle;
 
-	JsFbMetadbHandle::JsFbMetadbHandle(JSContext* cx, const metadb_handle_ptr& handle) : pJsCtx_(cx), metadbHandle_(handle) {}
+	JsFbMetadbHandle::JsFbMetadbHandle(JSContext* ctx, const metadb_handle_ptr& handle) : m_ctx(ctx), m_handle(handle) {}
 
-	std::unique_ptr<mozjs::JsFbMetadbHandle> JsFbMetadbHandle::CreateNative(JSContext* cx, const metadb_handle_ptr& handle)
+	std::unique_ptr<mozjs::JsFbMetadbHandle> JsFbMetadbHandle::CreateNative(JSContext* ctx, const metadb_handle_ptr& handle)
 	{
 		QwrException::ExpectTrue(handle.is_valid(), "Internal error: metadb_handle_ptr is null");
 
-		return std::unique_ptr<JsFbMetadbHandle>(new JsFbMetadbHandle(cx, handle));
+		return std::unique_ptr<JsFbMetadbHandle>(new JsFbMetadbHandle(ctx, handle));
 	}
 
 	uint32_t JsFbMetadbHandle::GetInternalSize()
@@ -62,41 +62,41 @@ namespace mozjs
 
 	metadb_handle_ptr& JsFbMetadbHandle::GetHandle()
 	{
-		return metadbHandle_;
+		return m_handle;
 	}
 
 	bool JsFbMetadbHandle::Compare(JsFbMetadbHandle* handle)
 	{
 		QwrException::ExpectTrue(handle, "handle argument is null");
 
-		return (handle->GetHandle() == metadbHandle_);
+		return (handle->GetHandle() == m_handle);
 	}
 
 	JSObject* JsFbMetadbHandle::GetFileInfo(bool want_full_info)
 	{
 		metadb_info_container::ptr info;
 
-		if (want_full_info && fb2k::api::is_2_26 && !filesystem::g_is_remote_or_unrecognized(metadbHandle_->get_path()))
+		if (want_full_info && fb2k::api::is_2_26 && !filesystem::g_is_remote_or_unrecognized(m_handle->get_path()))
 		{
 			try
 			{
-				info = metadbHandle_->get_full_info_ref(fb2k::noAbort);
+				info = m_handle->get_full_info_ref(fb2k::noAbort);
 			}
 			catch (...) {}
 		}
 
 		if (info.is_empty())
 		{
-			info = metadbHandle_->query_v2_().info;
+			info = m_handle->query_v2_().info;
 		}
 
 		// last resort, don't want to return null
 		if (info.is_empty())
 		{
-			info = metadbHandle_->get_info_ref();
+			info = m_handle->get_info_ref();
 		}
 
-		return JsFbFileInfo::CreateJs(pJsCtx_, info);
+		return JsFbFileInfo::CreateJs(m_ctx, info);
 	}
 
 	JSObject* JsFbMetadbHandle::GetFileInfoWithOpt(size_t optArgCount, bool want_full_info)
@@ -114,22 +114,22 @@ namespace mozjs
 
 	uint64_t JsFbMetadbHandle::get_FileSize()
 	{
-		return metadbHandle_->get_filesize();
+		return m_handle->get_filesize();
 	}
 
 	double JsFbMetadbHandle::get_Length()
 	{
-		return metadbHandle_->get_length();
+		return m_handle->get_length();
 	}
 
 	std::string JsFbMetadbHandle::get_Path()
 	{
-		return filesystem::g_get_native_path(metadbHandle_->get_path()).get_ptr();
+		return filesystem::g_get_native_path(m_handle->get_path()).get_ptr();
 	}
 
 	std::string JsFbMetadbHandle::get_RawPath()
 	{
-		const std::string rp = metadbHandle_->get_path();
+		const std::string rp = m_handle->get_path();
 
 		if (rp.starts_with("file-relative://"))
 		{
@@ -142,6 +142,6 @@ namespace mozjs
 
 	uint32_t JsFbMetadbHandle::get_SubSong()
 	{
-		return metadbHandle_->get_subsong_index();
+		return m_handle->get_subsong_index();
 	}
 }

@@ -9,7 +9,7 @@ namespace mozjs
 
 		DEFINE_JS_INTERFACE_VARS
 
-		static std::unique_ptr<JsFbFileInfo> CreateNative(JSContext* cx, metadb_info_container::ptr containerInfo);
+		static std::unique_ptr<JsFbFileInfo> CreateNative(JSContext* ctx, metadb_info_container::ptr info);
 		uint32_t GetInternalSize();
 
 	public:
@@ -26,11 +26,10 @@ namespace mozjs
 		uint32_t get_MetaCount();
 
 	private:
-		JsFbFileInfo(JSContext* cx, metadb_info_container::ptr containerInfo);
+		JsFbFileInfo(JSContext* ctx, metadb_info_container::ptr info);
 
 	private:
-		[[maybe_unused]] JSContext* pJsCtx_ = nullptr;
-		metadb_info_container::ptr containerInfo_;
-		const file_info& fileInfo_;
+		JSContext* m_ctx{};
+		metadb_info_container::ptr m_info;
 	};
 }

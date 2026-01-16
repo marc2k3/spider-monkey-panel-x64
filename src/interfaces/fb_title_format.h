@@ -32,7 +32,7 @@ namespace mozjs
 		JsFbTitleFormat(JSContext* cx, const std::string& expr);
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-		titleformat_object::ptr titleFormatObject_;
+		JSContext* m_ctx{};
+		titleformat_object::ptr m_obj;
 	};
 }

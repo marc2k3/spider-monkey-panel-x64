@@ -9,7 +9,7 @@ namespace mozjs
 
 		DEFINE_JS_INTERFACE_VARS
 
-		static std::unique_ptr<JsFbMetadbHandle> CreateNative(JSContext* cx, const metadb_handle_ptr& handle);
+		static std::unique_ptr<JsFbMetadbHandle> CreateNative(JSContext* ctx, const metadb_handle_ptr& handle);
 		uint32_t GetInternalSize();
 
 	public:
@@ -28,10 +28,10 @@ namespace mozjs
 		uint32_t get_SubSong();
 
 	private:
-		JsFbMetadbHandle(JSContext* cx, const metadb_handle_ptr& handle);
+		JsFbMetadbHandle(JSContext* ctx, const metadb_handle_ptr& handle);
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-		metadb_handle_ptr metadbHandle_;
+		JSContext* m_ctx{};
+		metadb_handle_ptr m_handle;
 	};
 }
