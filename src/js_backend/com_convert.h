@@ -2,10 +2,10 @@
 
 namespace mozjs::convert
 {
-	void VariantToJs(JSContext* cx, VARIANTARG& var, JS::MutableHandleValue rval);
+	void VariantToJs(JSContext* ctx, VARIANTARG& var, JS::MutableHandleValue rval);
 	// assumes that variant arg is uninitialized
-	void JsToVariant(JSContext* cx, JS::HandleValue rval, VARIANTARG& arg);
+	void JsToVariant(JSContext* ctx, JS::HandleValue rval, VARIANTARG& arg);
 
 	// assumes that obj is an array
-	void JsArrayToVariantArray(JSContext* cx, JS::HandleObject obj, VARTYPE elementVariantType, VARIANT& var);
+	void JsArrayToVariantArray(JSContext* ctx, JS::HandleObject obj, VARTYPE elementVariantType, VARIANT& var);
 }

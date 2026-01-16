@@ -138,14 +138,12 @@ namespace mozjs
 {
 	const JSClass& JsGlobalObject::JsClass = jsClass;
 
-	JsGlobalObject::JsGlobalObject(JSContext* cx, JsContainer& parentContainer, Window* pWindow)
-		: pJsCtx_(cx)
-		, parentContainer_(parentContainer)
-		, pWindow_(pWindow)
-	{
-	}
+	JsGlobalObject::JsGlobalObject(JSContext* ctx, JsContainer& parentContainer, Window* pWindow)
+		: m_ctx(ctx)
+		, m_parent_container(parentContainer)
+		, m_window(pWindow) {}
 
-	JSObject* JsGlobalObject::CreateNative(JSContext* cx, JsContainer& parentContainer)
+	JSObject* JsGlobalObject::CreateNative(JSContext* ctx, JsContainer& parentContainer)
 	{
 		if (!jsOps.trace)
 		{ // JS_GlobalObjectTraceHook address is only accessible after mozjs is loaded.
@@ -155,92 +153,92 @@ namespace mozjs
 		JS::RealmCreationOptions creationOptions;
 		creationOptions.setTrace(JsGlobalObject::Trace);
 		JS::RealmOptions options(creationOptions, JS::RealmBehaviors{});
-		JS::RootedObject jsObj(cx, JS_NewGlobalObject(cx, &jsClass, nullptr, JS::DontFireOnNewGlobalHook, options));
+		JS::RootedObject jsObj(ctx, JS_NewGlobalObject(ctx, &jsClass, nullptr, JS::DontFireOnNewGlobalHook, options));
 
 		if (!jsObj)
 		{
 			throw JsException();
 		}
 
-		JSAutoRealm ac(cx, jsObj);
-		JS::SetRealmPrivate(js::GetContextRealm(cx), new JsRealmInner());
+		JSAutoRealm ac(ctx, jsObj);
+		JS::SetRealmPrivate(js::GetContextRealm(ctx), new JsRealmInner());
 
-		if (!JS::InitRealmStandardClasses(cx))
+		if (!JS::InitRealmStandardClasses(ctx))
 		{
 			throw JsException();
 		}
 
-		DefineConsole(cx, jsObj);
-		CreateAndInstallObject<Gdi>(cx, jsObj, "gdi");
-		CreateAndInstallObject<Plman>(cx, jsObj, "plman");
-		CreateAndInstallObject<Utils>(cx, jsObj, "utils");
-		CreateAndInstallObject<Fb>(cx, jsObj, "fb");
-		CreateAndInstallObject<Window>(cx, jsObj, "window", parentContainer.GetParentPanel());
+		DefineConsole(ctx, jsObj);
+		CreateAndInstallObject<Gdi>(ctx, jsObj, "gdi");
+		CreateAndInstallObject<Plman>(ctx, jsObj, "plman");
+		CreateAndInstallObject<Utils>(ctx, jsObj, "utils");
+		CreateAndInstallObject<Fb>(ctx, jsObj, "fb");
+		CreateAndInstallObject<Window>(ctx, jsObj, "window", parentContainer.GetParentPanel());
 
-		if (!JS_DefineFunctions(cx, jsObj, jsFunctions.data()))
+		if (!JS_DefineFunctions(ctx, jsObj, jsFunctions.data()))
 		{
 			throw JsException();
 		}
 
-		CreateAndInstallPrototype<JsActiveXObject>(cx, JsPrototypeId::ActiveX);
-		CreateAndInstallPrototype<JsGdiBitmap>(cx, JsPrototypeId::GdiBitmap);
-		CreateAndInstallPrototype<JsGdiFont>(cx, JsPrototypeId::GdiFont);
-		CreateAndInstallPrototype<JsEnumerator>(cx, JsPrototypeId::Enumerator);
-		CreateAndInstallPrototype<JsFbMetadbHandleList>(cx, JsPrototypeId::FbMetadbHandleList);
-		CreateAndInstallPrototype<JsFbProfiler>(cx, JsPrototypeId::FbProfiler);
-		CreateAndInstallPrototype<JsFbTitleFormat>(cx, JsPrototypeId::FbTitleFormat);
+		CreateAndInstallPrototype<JsActiveXObject>(ctx, JsPrototypeId::ActiveX);
+		CreateAndInstallPrototype<JsGdiBitmap>(ctx, JsPrototypeId::GdiBitmap);
+		CreateAndInstallPrototype<JsGdiFont>(ctx, JsPrototypeId::GdiFont);
+		CreateAndInstallPrototype<JsEnumerator>(ctx, JsPrototypeId::Enumerator);
+		CreateAndInstallPrototype<JsFbMetadbHandleList>(ctx, JsPrototypeId::FbMetadbHandleList);
+		CreateAndInstallPrototype<JsFbProfiler>(ctx, JsPrototypeId::FbProfiler);
+		CreateAndInstallPrototype<JsFbTitleFormat>(ctx, JsPrototypeId::FbTitleFormat);
 
-		auto pWindow = GetNativeObjectProperty<Window>(cx, jsObj, "window");
-		auto pNative = std::unique_ptr<JsGlobalObject>(new JsGlobalObject(cx, parentContainer, pWindow));
-		pNative->heapManager_ = GlobalHeapManager::Create(cx);
+		auto pWindow = GetNativeObjectProperty<Window>(ctx, jsObj, "window");
+		auto pNative = std::unique_ptr<JsGlobalObject>(new JsGlobalObject(ctx, parentContainer, pWindow));
+		pNative->m_heap_manager = GlobalHeapManager::Create(ctx);
 
 		JS::SetReservedSlot(jsObj, kReservedObjectSlot, JS::PrivateValue(pNative.release()));
-		JS_FireOnNewGlobalObject(cx, jsObj);
+		JS_FireOnNewGlobalObject(ctx, jsObj);
 		return jsObj;
 	}
 
-	JsGlobalObject* JsGlobalObject::ExtractNative(JSContext* cx, JS::HandleObject jsObject)
+	JsGlobalObject* JsGlobalObject::ExtractNative(JSContext* ctx, JS::HandleObject jsObject)
 	{
-		return static_cast<mozjs::JsGlobalObject*>(GetInstanceFromReservedSlot(cx, jsObject, &mozjs::JsGlobalObject::JsClass, nullptr));
+		return static_cast<mozjs::JsGlobalObject*>(GetInstanceFromReservedSlot(ctx, jsObject, &mozjs::JsGlobalObject::JsClass, nullptr));
 	}
 
 	void JsGlobalObject::Fail(const std::string& errorText)
 	{
-		parentContainer_.Fail(errorText);
+		m_parent_container.Fail(errorText);
 	}
 
 	GlobalHeapManager& JsGlobalObject::GetHeapManager() const
 	{
-		return *heapManager_;
+		return *m_heap_manager;
 	}
 
-	void JsGlobalObject::PrepareForGc(JSContext* cx, JS::HandleObject self)
+	void JsGlobalObject::PrepareForGc(JSContext* ctx, JS::HandleObject self)
 	{
-		auto pNativeGlobal = JsGlobalObject::ExtractNative(cx, self);
+		auto pNativeGlobal = JsGlobalObject::ExtractNative(ctx, self);
 
-		CleanupObjectProperty<Window>(cx, self, "window");
-		CleanupObjectProperty<Plman>(cx, self, "plman");
+		CleanupObjectProperty<Window>(ctx, self, "window");
+		CleanupObjectProperty<Plman>(ctx, self, "plman");
 
-		if (pNativeGlobal->heapManager_)
+		if (pNativeGlobal->m_heap_manager)
 		{
-			pNativeGlobal->heapManager_->PrepareForGc();
-			pNativeGlobal->heapManager_.reset();
+			pNativeGlobal->m_heap_manager->PrepareForGc();
+			pNativeGlobal->m_heap_manager.reset();
 		}
 	}
 
 	HWND JsGlobalObject::GetPanelHwnd() const
 	{
-		return pWindow_->GetHwnd();
+		return m_window->GetHwnd();
 	}
 
 	void JsGlobalObject::ClearInterval(uint32_t intervalId)
 	{
-		pWindow_->ClearInterval(intervalId);
+		m_window->ClearInterval(intervalId);
 	}
 
 	void JsGlobalObject::ClearTimeout(uint32_t timeoutId)
 	{
-		pWindow_->ClearInterval(timeoutId);
+		m_window->ClearInterval(timeoutId);
 	}
 
 	void JsGlobalObject::IncludeScript(const std::wstring& path, JS::HandleValue options)
@@ -249,12 +247,12 @@ namespace mozjs
 			{
 				std::vector<fs::path> paths;
 
-				if (const auto currentPathOpt = hack::GetCurrentScriptPath(pJsCtx_); currentPathOpt)
+				if (const auto currentPathOpt = hack::GetCurrentScriptPath(m_ctx); currentPathOpt)
 				{
 					paths.emplace_back(currentPathOpt->parent_path());
 				}
 
-				if (const auto& setting = parentContainer_.GetParentPanel().GetSettings(); setting.packageId)
+				if (const auto& setting = m_parent_container.GetParentPanel().GetSettings(); setting.packageId)
 				{
 					paths.emplace_back(PackageUtils::GetScriptsDir(setting));
 				}
@@ -266,17 +264,18 @@ namespace mozjs
 
 		const auto fsPath = ::FindSuitableFileForInclude(path, allSearchPaths);
 		const auto parsedOptions = ParseIncludeOptions(options);
-		if (!parsedOptions.alwaysEvaluate && includedFiles_.contains(fsPath.native()))
+
+		if (!parsedOptions.alwaysEvaluate && m_included_files.contains(fsPath.native()))
 		{
 			return;
 		}
 
-		includedFiles_.emplace(fsPath.native());
+		m_included_files.emplace(fsPath.native());
 
-		JS::RootedScript jsScript(pJsCtx_, JsEngine::GetInstance().GetScriptCache().GetCachedScript(pJsCtx_, fsPath));
-		JS::RootedValue dummyRval(pJsCtx_);
+		JS::RootedScript jsScript(m_ctx, JsEngine::GetInstance().GetScriptCache().GetCachedScript(m_ctx, fsPath));
+		JS::RootedValue dummyRval(m_ctx);
 
-		if (!JS_ExecuteScript(pJsCtx_, jsScript, &dummyRval))
+		if (!JS_ExecuteScript(m_ctx, jsScript, &dummyRval))
 		{
 			throw JsException();
 		}
@@ -297,22 +296,22 @@ namespace mozjs
 
 	uint32_t JsGlobalObject::SetInterval(JS::HandleValue func, uint32_t delay, JS::HandleValueArray funcArgs)
 	{
-		return pWindow_->SetInterval(func, delay, funcArgs);
+		return m_window->SetInterval(func, delay, funcArgs);
 	}
 
 	uint32_t JsGlobalObject::SetIntervalWithOpt(size_t optArgCount, JS::HandleValue func, uint32_t delay, JS::HandleValueArray funcArgs)
 	{
-		return pWindow_->SetIntervalWithOpt(optArgCount, func, delay, funcArgs);
+		return m_window->SetIntervalWithOpt(optArgCount, func, delay, funcArgs);
 	}
 
 	uint32_t JsGlobalObject::SetTimeout(JS::HandleValue func, uint32_t delay, JS::HandleValueArray funcArgs)
 	{
-		return pWindow_->SetTimeout(func, delay, funcArgs);
+		return m_window->SetTimeout(func, delay, funcArgs);
 	}
 
 	uint32_t JsGlobalObject::SetTimeoutWithOpt(size_t optArgCount, JS::HandleValue func, uint32_t delay, JS::HandleValueArray funcArgs)
 	{
-		return pWindow_->SetTimeoutWithOpt(optArgCount, func, delay, funcArgs);
+		return m_window->SetTimeoutWithOpt(optArgCount, func, delay, funcArgs);
 	}
 
 	JsGlobalObject::IncludeOptions JsGlobalObject::ParseIncludeOptions(JS::HandleValue options)
@@ -322,9 +321,9 @@ namespace mozjs
 		if (!options.isNullOrUndefined())
 		{
 			QwrException::ExpectTrue(options.isObject(), "options argument is not an object");
-			JS::RootedObject jsOptions(pJsCtx_, &options.toObject());
+			JS::RootedObject jsOptions(m_ctx, &options.toObject());
 
-			parsedOptions.alwaysEvaluate = GetOptionalProperty<bool>(pJsCtx_, jsOptions, "always_evaluate").value_or(false);
+			parsedOptions.alwaysEvaluate = GetOptionalProperty<bool>(m_ctx, jsOptions, "always_evaluate").value_or(false);
 		}
 
 		return parsedOptions;
@@ -334,9 +333,9 @@ namespace mozjs
 	{
 		auto pNative = static_cast<JsGlobalObject*>(GetMaybePtrFromReservedSlot(obj, kReservedObjectSlot));
 
-		if (pNative && pNative->heapManager_)
+		if (pNative && pNative->m_heap_manager)
 		{
-			pNative->heapManager_->Trace(trc);
+			pNative->m_heap_manager->Trace(trc);
 		}
 	}
 }

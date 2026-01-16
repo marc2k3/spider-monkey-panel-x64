@@ -9,7 +9,7 @@
 namespace mozjs::convert::to_js
 {
 	template <>
-	void ToValue(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, std::unique_ptr<Gdiplus::Bitmap> inValue, JS::MutableHandleValue wrappedValue)
 	{
 		if (!inValue)
 		{ // Not an error
@@ -17,7 +17,7 @@ namespace mozjs::convert::to_js
 			return;
 		}
 
-		wrappedValue.setObjectOrNull(JsGdiBitmap::CreateJs(cx, std::move(inValue)));
+		wrappedValue.setObjectOrNull(JsGdiBitmap::CreateJs(ctx, std::move(inValue)));
 	}
 
 	template <>
@@ -75,21 +75,21 @@ namespace mozjs::convert::to_js
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const pfc::string8& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const pfc::string8& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		ToValue<std::wstring>(cx, smp::ToWide(inValue), wrappedValue);
+		ToValue<std::wstring>(ctx, smp::ToWide(inValue), wrappedValue);
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const std::string& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const std::string& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		ToValue<std::wstring>(cx, smp::ToWide(inValue), wrappedValue);
+		ToValue<std::wstring>(ctx, smp::ToWide(inValue), wrappedValue);
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const std::wstring& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const std::wstring& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		JS::RootedString jsString(cx, JS_NewUCStringCopyN(cx, reinterpret_cast<const char16_t*>(inValue.data()), inValue.length()));
+		JS::RootedString jsString(ctx, JS_NewUCStringCopyN(ctx, reinterpret_cast<const char16_t*>(inValue.data()), inValue.length()));
 		if (!jsString)
 		{
 			throw JsException();
@@ -99,13 +99,13 @@ namespace mozjs::convert::to_js
 	}
 
 	template <>
-	void ToValue(JSContext* /*cx*/, const std::nullptr_t& /*inValue*/, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* /*ctx*/, const std::nullptr_t& /*inValue*/, JS::MutableHandleValue wrappedValue)
 	{
 		wrappedValue.setUndefined();
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const metadb_handle_ptr& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const metadb_handle_ptr& inValue, JS::MutableHandleValue wrappedValue)
 	{
 		if (inValue.is_empty())
 		{ // Not an error
@@ -113,24 +113,24 @@ namespace mozjs::convert::to_js
 			return;
 		}
 
-		wrappedValue.setObjectOrNull(JsFbMetadbHandle::CreateJs(cx, inValue));
+		wrappedValue.setObjectOrNull(JsFbMetadbHandle::CreateJs(ctx, inValue));
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const metadb_handle_list& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const metadb_handle_list& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		wrappedValue.setObjectOrNull(JsFbMetadbHandleList::CreateJs(cx, inValue));
+		wrappedValue.setObjectOrNull(JsFbMetadbHandleList::CreateJs(ctx, inValue));
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const metadb_handle_list_cref& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const metadb_handle_list_cref& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		wrappedValue.setObjectOrNull(JsFbMetadbHandleList::CreateJs(cx, inValue));
+		wrappedValue.setObjectOrNull(JsFbMetadbHandleList::CreateJs(ctx, inValue));
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const t_playback_queue_item& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const t_playback_queue_item& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		wrappedValue.setObjectOrNull(JsFbPlaybackQueueItem::CreateJs(cx, inValue));
+		wrappedValue.setObjectOrNull(JsFbPlaybackQueueItem::CreateJs(ctx, inValue));
 	}
 }

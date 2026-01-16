@@ -8,116 +8,114 @@ using namespace smp;
 
 namespace mozjs
 {
-	JsContainer::JsContainer(js_panel_window& parentPanel)
+	JsContainer::JsContainer(js_panel_window& parent_window)
 	{
-		pParentPanel_ = &parentPanel;
+		m_parent_window = &parent_window;
 
 		bool bRet = JsEngine::GetInstance().RegisterContainer(*this);
-		jsStatus_ = (bRet ? JsStatus::Ready : JsStatus::EngineFailed);
+		m_js_status = (bRet ? JsStatus::Ready : JsStatus::EngineFailed);
 	}
 
 	JsContainer::~JsContainer()
 	{
 		Finalize();
 		JsEngine::GetInstance().UnregisterContainer(*this);
-		pJsCtx_ = nullptr;
+		m_ctx = nullptr;
 	}
 
 	bool JsContainer::Initialize()
 	{
-		if (JsStatus::EngineFailed == jsStatus_)
+		if (JsStatus::EngineFailed == m_js_status)
 		{
 			Fail("JS engine failed to initialize");
 			return false;
 		}
 
-		if (JsStatus::Working == jsStatus_)
+		if (JsStatus::Working == m_js_status)
 		{
 			return true;
 		}
 
-		if (jsGlobal_.initialized() || jsGraphics_.initialized())
+		if (m_global.initialized() || m_graphics.initialized())
 		{
-			jsGraphics_.reset();
-			jsGlobal_.reset();
+			m_graphics.reset();
+			m_global.reset();
 		}
 
 		try
 		{
-			jsGlobal_.init(pJsCtx_, JsGlobalObject::CreateNative(pJsCtx_, *this));
+			m_global.init(m_ctx, JsGlobalObject::CreateNative(m_ctx, *this));
 
-			auto autoGlobal = wil::scope_exit([&jsGlobal = jsGlobal_]
+			auto autoGlobal = wil::scope_exit([this]
 				{
-					jsGlobal.reset();
+					m_global.reset();
 				});
 
-			JSAutoRealm ac(pJsCtx_, jsGlobal_);
-
-			jsGraphics_.init(pJsCtx_, JsGdiGraphics::CreateJs(pJsCtx_));
-
-			pNativeRealm_ = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(pJsCtx_)));
+			JSAutoRealm ac(m_ctx, m_global);
+			m_graphics.init(m_ctx, JsGdiGraphics::CreateJs(m_ctx));
+			m_realm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(m_ctx)));
 			autoGlobal.release();
 		}
 		catch (...)
 		{
-			Fail(mozjs::ExceptionToText(pJsCtx_));
+			Fail(mozjs::ExceptionToText(m_ctx));
 			return false;
 		}
 
-		pNativeGlobal_ = static_cast<JsGlobalObject*>(GetMaybePtrFromReservedSlot(jsGlobal_, kReservedObjectSlot));
-		pNativeGraphics_ = JsGdiGraphics::ExtractNativeUnchecked(jsGraphics_);
-		jsStatus_ = JsStatus::Working;
+		m_native_global = static_cast<JsGlobalObject*>(GetMaybePtrFromReservedSlot(m_global, kReservedObjectSlot));
+		m_native_graphics = JsGdiGraphics::ExtractNativeUnchecked(m_graphics);
+		m_js_status = JsStatus::Working;
 		return true;
 	}
 
 	void JsContainer::Finalize()
 	{
-		if (JsStatus::Ready == jsStatus_)
+		if (JsStatus::Ready == m_js_status)
 		{
 			return;
 		}
 
-		if (JsStatus::Failed != jsStatus_ && JsStatus::EngineFailed != jsStatus_)
+		if (JsStatus::Failed != m_js_status && JsStatus::EngineFailed != m_js_status)
 		{ // Don't suppress error: it should be cleared only on initialization
-			jsStatus_ = JsStatus::Ready;
+			m_js_status = JsStatus::Ready;
 		}
 
-		pNativeGraphics_ = nullptr;
-		jsGraphics_.reset();
-		jsDropAction_.reset();
-		if (!jsGlobal_.initialized())
+		m_native_graphics = nullptr;
+		m_graphics.reset();
+		m_drop_action.reset();
+
+		if (!m_global.initialized())
 		{
 			return;
 		}
 
 		{
-			JSAutoRealm ac(pJsCtx_, jsGlobal_);
+			JSAutoRealm ac(m_ctx, m_global);
+			JsGlobalObject::PrepareForGc(m_ctx, m_global);
 
-			JsGlobalObject::PrepareForGc(pJsCtx_, jsGlobal_);
-
-			auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(pJsCtx_)));
-			pNativeRealm_ = nullptr;
-			pJsRealm->MarkForDeletion();
+			auto realm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(m_ctx)));
+			m_realm = nullptr;
+			realm->MarkForDeletion();
 		}
 
-		pNativeGlobal_ = nullptr;
-		jsGlobal_.reset();
-
-		(void)JsEngine::GetInstance().GetGcEngine().TriggerGc();
+		m_native_global = nullptr;
+		m_global.reset();
+		JsEngine::GetInstance().GetGcEngine().TriggerGc();
 	}
 
 	void JsContainer::Fail(const std::string& errorText)
 	{
 		Finalize();
 
-		if (JsStatus::EngineFailed != jsStatus_)
-		{ // Don't suppress error
-			jsStatus_ = JsStatus::Failed;
+		if (JsStatus::EngineFailed != m_js_status)
+		{
+			// Don't suppress error
+			m_js_status = JsStatus::Failed;
 		}
 
 		const auto errorTextPadded = [this, &errorText]
 			{
-				const auto text = fmt::format("Error: {} ({})", Component::name_with_version, pParentPanel_->GetPanelDescription());
+				const auto text = fmt::format("Error: {} ({})", Component::name_with_version, m_parent_window->GetPanelDescription());
 
 				if (errorText.empty())
 				{
@@ -129,52 +127,57 @@ namespace mozjs
 				}
 			}();
 
-		pParentPanel_->Fail(errorTextPadded);
+		m_parent_window->Fail(errorTextPadded);
 	}
 
 	JsContainer::JsStatus JsContainer::GetStatus() const
 	{
-		return jsStatus_;
+		return m_js_status;
 	}
 
 	bool JsContainer::ExecuteScript(const std::string& scriptCode)
 	{
 		auto selfSaver = shared_from_this();
-		isParsingScript_ = true;
+		m_is_parsing_script = true;
+
 		const auto autoParseState = wil::scope_exit([&]
 			{
-				isParsingScript_ = false;
+				m_is_parsing_script = false;
 			});
 
-		JSAutoRealm ac(pJsCtx_, jsGlobal_);
+		JSAutoRealm ac(m_ctx, m_global);
+
 		try
 		{
 			JS::SourceText<mozilla::Utf8Unit> source;
-			if (!source.init(pJsCtx_, scriptCode.c_str(), scriptCode.length(), JS::SourceOwnership::Borrowed))
+			if (!source.init(m_ctx, scriptCode.c_str(), scriptCode.length(), JS::SourceOwnership::Borrowed))
 			{
 				throw JsException();
 			}
 
-			JS::CompileOptions opts(pJsCtx_);
+			JS::CompileOptions opts(m_ctx);
 			opts.setFileAndLine("", 1);
 
 			OnJsActionStart();
-			auto autoAction = wil::scope_exit([&]
+
+			auto autoAction = wil::scope_exit([this]
 				{
 					OnJsActionEnd();
 				});
 
-			JS::RootedValue dummyRval(pJsCtx_);
-			if (!JS::Evaluate(pJsCtx_, opts, source, &dummyRval))
+			JS::RootedValue dummyRval(m_ctx);
+
+			if (!JS::Evaluate(m_ctx, opts, source, &dummyRval))
 			{
 				throw JsException();
 			}
+
 			return true;
 		}
 		catch (...)
 		{
-			mozjs::ExceptionToJsError(pJsCtx_);
-			Fail(mozjs::JsErrorToText(pJsCtx_));
+			mozjs::ExceptionToJsError(m_ctx);
+			Fail(mozjs::JsErrorToText(m_ctx));
 			return false;
 		}
 	}
@@ -182,28 +185,30 @@ namespace mozjs
 	bool JsContainer::ExecuteScriptFile(const std::filesystem::path& scriptPath)
 	{
 		auto selfSaver = shared_from_this();
-		isParsingScript_ = true;
+		m_is_parsing_script = true;
+
 		auto autoParseState = wil::scope_exit([&]
 			{
-				isParsingScript_ = false;
+				m_is_parsing_script = false;
 			});
 
-		JSAutoRealm ac(pJsCtx_, jsGlobal_);
+		JSAutoRealm ac(m_ctx, m_global);
 		try
 		{
 			OnJsActionStart();
-			auto autoAction = wil::scope_exit([&]
+
+			auto autoAction = wil::scope_exit([this]
 				{
 					OnJsActionEnd();
 				});
 
-			pNativeGlobal_->IncludeScript(scriptPath);
+			m_native_global->IncludeScript(scriptPath);
 			return true;
 		}
 		catch (...)
 		{
-			mozjs::ExceptionToJsError(pJsCtx_);
-			Fail(mozjs::JsErrorToText(pJsCtx_));
+			mozjs::ExceptionToJsError(m_ctx);
+			Fail(mozjs::JsErrorToText(m_ctx));
 			return false;
 		}
 	}
@@ -215,7 +220,7 @@ namespace mozjs
 
 	smp::js_panel_window& JsContainer::GetParentPanel() const
 	{
-		return *pParentPanel_;
+		return *m_parent_window;
 	}
 
 	bool JsContainer::InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, DragActionParams& actionParams)
@@ -226,17 +231,18 @@ namespace mozjs
 		}
 
 		auto selfSaver = shared_from_this();
-		JsAutoRealmWithErrorReport autoScope(pJsCtx_, jsGlobal_);
+		JsAutoRealmWithErrorReport autoScope(m_ctx, m_global);
 
 		if (!CreateDropActionIfNeeded())
-		{ // reports
+		{
+			// reports
 			return false;
 		}
 
-		pNativeDropAction_->AccessDropActionParams() = actionParams;
+		m_native_drop_action->AccessDropActionParams() = actionParams;
 
 		auto retVal = InvokeJsCallback(functionName,
-			static_cast<JS::HandleObject>(jsDropAction_),
+			static_cast<JS::HandleObject>(m_drop_action),
 			static_cast<int32_t>(pt.x),
 			static_cast<int32_t>(pt.y),
 			static_cast<uint32_t>(keyState));
@@ -245,7 +251,7 @@ namespace mozjs
 			return false;
 		}
 
-		actionParams = pNativeDropAction_->AccessDropActionParams();
+		actionParams = m_native_drop_action->AccessDropActionParams();
 		return true;
 	}
 
@@ -257,24 +263,25 @@ namespace mozjs
 		}
 
 		auto selfSaver = shared_from_this();
-		JsAutoRealmWithErrorReport autoScope(pJsCtx_, jsGlobal_);
+		JsAutoRealmWithErrorReport autoScope(m_ctx, m_global);
 
 		// Bind object to current realm
-		JS::RootedValue jsValue(pJsCtx_, info);
-		if (!JS_WrapValue(pJsCtx_, &jsValue))
-		{ // reports
+		JS::RootedValue jsValue(m_ctx, info);
+		if (!JS_WrapValue(m_ctx, &jsValue))
+		{
+			// reports
 			return;
 		}
 
 		autoScope.DisableReport(); ///< InvokeJsCallback has it's own AutoReportException
-		(void)InvokeJsCallback("on_notify_data",
-			name,
-			static_cast<JS::HandleValue>(jsValue));
+		InvokeJsCallback("on_notify_data", name, static_cast<JS::HandleValue>(jsValue));
+
 		if (jsValue.isObject())
-		{ // this will remove all wrappers (e.g. during callback re-entrancy)
+		{
+			// this will remove all wrappers (e.g. during callback re-entrancy)
 			js::NukeCrossCompartmentWrappers(
-				pJsCtx_,
-				js::SingleCompartment{ js::GetContextCompartment(pJsCtx_) },
+				m_ctx,
+				js::SingleCompartment{ js::GetContextCompartment(m_ctx) },
 				js::GetNonCCWObjectRealm(js::UncheckedUnwrap(&jsValue.toObject())),
 				js::NukeReferencesToWindow::DontNukeWindowReferences, ///< browser specific flag, irrelevant to us
 				js::NukeReferencesFromTarget::NukeIncomingReferences
@@ -290,13 +297,13 @@ namespace mozjs
 		}
 
 		auto selfSaver = shared_from_this();
-		pNativeGraphics_->SetGraphicsObject(&gr);
+		m_native_graphics->SetGraphicsObject(&gr);
+		InvokeJsCallback("on_paint", static_cast<JS::HandleObject>(m_graphics));
 
-		(void)InvokeJsCallback("on_paint",
-			static_cast<JS::HandleObject>(jsGraphics_));
-		if (pNativeGraphics_)
-		{ // InvokeJsCallback invokes Fail() on error, which resets pNativeGraphics_
-			pNativeGraphics_->SetGraphicsObject(nullptr);
+		if (m_native_graphics)
+		{
+			// InvokeJsCallback invokes Fail() on error, which resets pNativeGraphics_
+			m_native_graphics->SetGraphicsObject(nullptr);
 		}
 	}
 
@@ -308,10 +315,11 @@ namespace mozjs
 		}
 
 		auto selfSaver = shared_from_this();
-		JsAutoRealmWithErrorReport autoScope(pJsCtx_, jsGlobal_);
+		JsAutoRealmWithErrorReport autoScope(m_ctx, m_global);
 
 		OnJsActionStart();
-		auto autoAction = wil::scope_exit([&]
+
+		auto autoAction = wil::scope_exit([this]
 			{
 				OnJsActionEnd();
 			});
@@ -319,40 +327,40 @@ namespace mozjs
 		return jsTask.InvokeJs();
 	}
 
-	void JsContainer::SetJsCtx(JSContext* cx)
+	void JsContainer::SetJsCtx(JSContext* ctx)
 	{
-		pJsCtx_ = cx;
+		m_ctx = ctx;
 	}
 
 	bool JsContainer::IsReadyForCallback() const
 	{
-		return (JsStatus::Working == jsStatus_) && !isParsingScript_;
+		return (JsStatus::Working == m_js_status) && !m_is_parsing_script;
 	}
 
 	bool JsContainer::CreateDropActionIfNeeded()
 	{
-		if (jsDropAction_.initialized())
+		if (m_drop_action.initialized())
 		{
 			return true;
 		}
 
 		try
 		{
-			jsDropAction_.init(pJsCtx_, JsDropSourceAction::CreateJs(pJsCtx_));
+			m_drop_action.init(m_ctx, JsDropSourceAction::CreateJs(m_ctx));
 		}
 		catch (...)
 		{
-			mozjs::ExceptionToJsError(pJsCtx_);
+			mozjs::ExceptionToJsError(m_ctx);
 			return false;
 		}
 
-		pNativeDropAction_ = JsDropSourceAction::ExtractNativeUnchecked(jsDropAction_);
+		m_native_drop_action = JsDropSourceAction::ExtractNativeUnchecked(m_drop_action);
 		return true;
 	}
 
 	void JsContainer::OnJsActionStart()
 	{
-		if (nestedJsCounter_++ == 0)
+		if (m_nested_js_counter++ == 0)
 		{
 			JsEngine::GetInstance().OnJsActionStart(*this);
 		}
@@ -360,7 +368,7 @@ namespace mozjs
 
 	void JsContainer::OnJsActionEnd()
 	{
-		if (--nestedJsCounter_ == 0)
+		if (--m_nested_js_counter == 0)
 		{
 			JsEngine::GetInstance().OnJsActionEnd(*this);
 		}

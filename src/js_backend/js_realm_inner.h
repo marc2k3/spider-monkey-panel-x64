@@ -28,12 +28,12 @@ namespace mozjs
 		void OnHeapDeallocate(uint32_t size);
 
 	private:
-		bool isMarkedForDeletion_ = false;
-		bool isMarkedForGc_ = false;
-		mutable std::mutex gcDataLock_;
-		uint64_t curHeapSize_ = 0;
-		uint64_t lastHeapSize_ = 0;
-		uint32_t curAllocCount_ = 0;
-		uint32_t lastAllocCount_ = 0;
+		bool m_is_marked_for_deletion{};
+		bool m_is_marked_for_gc{};
+		mutable std::mutex m_lock;
+		uint64_t m_curHeapSize{};
+		uint64_t m_lastHeapSize{};
+		uint32_t m_curAllocCount{};
+		uint32_t m_lastAllocCount{};
 	};
 }

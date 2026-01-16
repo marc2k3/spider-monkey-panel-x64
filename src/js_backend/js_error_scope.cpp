@@ -4,25 +4,25 @@
 
 namespace mozjs
 {
-	AutoJsReport::AutoJsReport(JSContext* cx) : cx(cx) {}
+	AutoJsReport::AutoJsReport(JSContext* ctx) : m_ctx(ctx) {}
 
 	AutoJsReport::~AutoJsReport() noexcept
 	{
-		if (isDisabled_)
+		if (m_is_disabled)
 		{
 			return;
 		}
 
-		if (!JS_IsExceptionPending(cx))
+		if (!JS_IsExceptionPending(m_ctx))
 		{
 			return;
 		}
 
 		try
 		{
-			const auto errorText = JsErrorToText(cx);
-			JS_ClearPendingException(cx);
-			JS::RootedObject global(cx, JS::CurrentGlobalOrNull(cx));
+			const auto errorText = JsErrorToText(m_ctx);
+			JS_ClearPendingException(m_ctx);
+			JS::RootedObject global(m_ctx, JS::CurrentGlobalOrNull(m_ctx));
 
 			if (global)
 			{
@@ -31,7 +31,7 @@ namespace mozjs
 				if (globalCtx)
 				{
 					globalCtx->Fail(errorText);
-					JS_ClearPendingException(cx);
+					JS_ClearPendingException(m_ctx);
 				}
 			}
 
@@ -41,13 +41,13 @@ namespace mozjs
 
 	void AutoJsReport::Disable()
 	{
-		isDisabled_ = true;
+		m_is_disabled = true;
 	}
 
-	JsAutoRealmWithErrorReport::JsAutoRealmWithErrorReport(JSContext* cx, JS::HandleObject global) : ac_(cx, global), are_(cx) {}
+	JsAutoRealmWithErrorReport::JsAutoRealmWithErrorReport(JSContext* ctx, JS::HandleObject global) : m_ac(ctx, global), m_are(ctx) {}
 
 	void JsAutoRealmWithErrorReport::DisableReport()
 	{
-		are_.Disable();
+		m_are.Disable();
 	}
 }

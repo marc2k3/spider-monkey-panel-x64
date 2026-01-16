@@ -17,16 +17,16 @@ namespace
 	class WrappedJs : public JSDispatch<IWrappedJs>, public mozjs::IHeapUser
 	{
 	protected:
-		WrappedJs(JSContext* cx, JS::HandleFunction jsFunction) : pJsCtx_(cx)
+		WrappedJs(JSContext* ctx, JS::HandleFunction jsFunction) : m_ctx(ctx)
 		{
-			JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-			pNativeGlobal_ = JsGlobalObject::ExtractNative(cx, jsGlobal);
-			auto& heapMgr = pNativeGlobal_->GetHeapManager();
+			JS::RootedObject jsGlobal(ctx, JS::CurrentGlobalOrNull(ctx));
+			m_native_global = JsGlobalObject::ExtractNative(ctx, jsGlobal);
+			auto& heapMgr = m_native_global->GetHeapManager();
 			heapMgr.RegisterUser(this);
 
-			funcId_ = heapMgr.Store(jsFunction);
-			globalId_ = heapMgr.Store(jsGlobal);
-			isJsAvailable_ = true;
+			m_func_id = heapMgr.Store(jsFunction);
+			m_global_id = heapMgr.Store(jsGlobal);
+			m_js_available = true;
 		}
 
 		/// @details Might be called off main thread
@@ -34,26 +34,28 @@ namespace
 
 		/// @details Might be called off main thread
 		void FinalRelease() override
-		{ // most of the JS object might be invalid at GC time,
+		{
+			// most of the JS object might be invalid at GC time,
 			// so we need to be extra careful
-			std::scoped_lock sl(cleanupLock_);
-			if (!isJsAvailable_)
+			std::scoped_lock sl(m_lock);
+
+			if (!m_js_available)
 			{
 				return;
 			}
 
-			auto& heapMgr = pNativeGlobal_->GetHeapManager();
+			auto& heapMgr = m_native_global->GetHeapManager();
 
-			heapMgr.Remove(globalId_);
-			heapMgr.Remove(funcId_);
+			heapMgr.Remove(m_global_id);
+			heapMgr.Remove(m_func_id);
 			heapMgr.UnregisterUser(this);
 		}
 
 		void PrepareForGlobalGc() override
 		{
-			std::scoped_lock sl(cleanupLock_);
+			std::scoped_lock sl(m_lock);
 			// Global is being destroyed, can't access anything
-			isJsAvailable_ = false;
+			m_js_available = false;
 		}
 
 		/// @details Executed on the main thread
@@ -64,7 +66,7 @@ namespace
 				return E_POINTER;
 			}
 
-			if (!isJsAvailable_)
+			if (!m_js_available)
 			{ // shutting down, no need to log errors here
 				pResult->vt = VT_ERROR;
 				pResult->scode = E_FAIL;
@@ -73,42 +75,43 @@ namespace
 
 			// Might be executed outside of main JS workflow, so we need to set realm
 
-			auto& heapMgr = pNativeGlobal_->GetHeapManager();
+			auto& heapMgr = m_native_global->GetHeapManager();
 
-			JS::RootedObject jsGlobal(pJsCtx_, heapMgr.Get(globalId_).toObjectOrNull());
-			JSAutoRealm ac(pJsCtx_, jsGlobal);
+			JS::RootedObject jsGlobal(m_ctx, heapMgr.Get(m_global_id).toObjectOrNull());
+			JSAutoRealm ac(m_ctx, jsGlobal);
 
-			JS::RootedValue vFunc(pJsCtx_, heapMgr.Get(funcId_));
-			JS::RootedFunction rFunc(pJsCtx_, JS_ValueToFunction(pJsCtx_, vFunc));
+			JS::RootedValue vFunc(m_ctx, heapMgr.Get(m_func_id));
+			JS::RootedFunction rFunc(m_ctx, JS_ValueToFunction(m_ctx, vFunc));
 			std::array<VARIANT*, 7> args = { &arg1, &arg2, &arg3, &arg4, &arg5, &arg6, &arg7 };
-			JS::RootedValueArray<args.size()> wrappedArgs(pJsCtx_);
+			JS::RootedValueArray<args.size()> wrappedArgs(m_ctx);
 
 			try
 			{
 				for (size_t i = 0; i < args.size(); ++i)
 				{
-					convert::VariantToJs(pJsCtx_, *args[i], wrappedArgs[i]);
+					convert::VariantToJs(m_ctx, *args[i], wrappedArgs[i]);
 				}
 
-				JS::RootedValue retVal(pJsCtx_);
-				if (!JS::Call(pJsCtx_, jsGlobal, rFunc, wrappedArgs, &retVal))
+				JS::RootedValue retVal(m_ctx);
+				if (!JS::Call(m_ctx, jsGlobal, rFunc, wrappedArgs, &retVal))
 				{
 					throw JsException();
 				}
 
-				convert::JsToVariant(pJsCtx_, retVal, *pResult);
+				convert::JsToVariant(m_ctx, retVal, *pResult);
 			}
 			catch (...)
 			{
-				const auto hWnd = pNativeGlobal_->GetPanelHwnd();
-				if (!hWnd)
+				auto wnd = m_native_global->GetPanelHwnd();
+				
+				if (wnd)
 				{
-					mozjs::SuppressException(pJsCtx_);
+					const auto errorMsg = mozjs::ExceptionToText(m_ctx);
+					SendMessageW(wnd, std::to_underlying(InternalSyncMessage::script_fail), 0, reinterpret_cast<LPARAM>(&errorMsg));
 				}
 				else
 				{
-					const auto errorMsg = mozjs::ExceptionToText(pJsCtx_);
-					SendMessageW(hWnd, std::to_underlying(InternalSyncMessage::script_fail), 0, reinterpret_cast<LPARAM>(&errorMsg));
+					mozjs::SuppressException(m_ctx);
 				}
 
 				pResult->vt = VT_ERROR;
@@ -120,16 +123,15 @@ namespace
 		}
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-		uint32_t funcId_;
-		uint32_t globalId_;
-		mozjs::JsGlobalObject* pNativeGlobal_ = nullptr;
-
-		std::mutex cleanupLock_;
-		bool isJsAvailable_ = false;
+		JSContext* m_ctx{};
+		uint32_t m_func_id{};
+		uint32_t m_global_id{};
+		mozjs::JsGlobalObject* m_native_global{};
+		std::mutex m_lock;
+		bool m_js_available{};
 	};
 
-	bool ComArrayToJsArray(JSContext* cx, const VARIANT& src, JS::MutableHandleValue& dest)
+	bool ComArrayToJsArray(JSContext* ctx, const VARIANT& src, JS::MutableHandleValue& dest)
 	{
 		// We only support one dimensional arrays for now
 		QwrException::ExpectTrue(SafeArrayGetDim(src.parray) == 1, "Multi-dimensional array are not supported failed");
@@ -145,7 +147,7 @@ namespace
 		smp::CheckHR(hr, "SafeArrayGetLBound");
 
 		// Create the JS Array
-		JS::RootedObject jsArray(cx, JS::NewArrayObject(cx, ubound - lbound + 1));
+		JS::RootedObject jsArray(ctx, JS::NewArrayObject(ctx, ubound - lbound + 1));
 		JsException::ExpectTrue(jsArray);
 
 		// Divine the type of our array
@@ -160,7 +162,7 @@ namespace
 			smp::CheckHR(hr, "SafeArrayGetVartype");
 		}
 
-		JS::RootedValue jsVal(cx);
+		JS::RootedValue jsVal(ctx);
 		for (long i = lbound; i <= ubound; ++i) // NOLINT (google-runtime-int)
 		{
 			_variant_t var;
@@ -175,9 +177,9 @@ namespace
 			}
 			smp::CheckHR(hr, "SafeArrayGetElement");
 
-			convert::VariantToJs(cx, var, &jsVal);
+			convert::VariantToJs(ctx, var, &jsVal);
 
-			if (!JS_SetElement(cx, jsArray, i, jsVal))
+			if (!JS_SetElement(ctx, jsArray, i, jsVal))
 			{
 				throw JsException();
 			}
@@ -236,7 +238,7 @@ namespace
 namespace mozjs::convert
 {
 	/// VariantToJs assumes that the caller will call VariantClear on `var`, so call AddRef on new objects
-	void VariantToJs(JSContext* cx, VARIANTARG& var, JS::MutableHandleValue rval)
+	void VariantToJs(JSContext* ctx, VARIANTARG& var, JS::MutableHandleValue rval)
 	{
 		const bool ref = !!(var.vt & VT_BYREF);
 		const int type = (ref ? var.vt &= ~VT_BYREF : var.vt);
@@ -285,7 +287,7 @@ namespace mozjs::convert
 			break;
 		case VT_BSTR:
 		{
-			JS::RootedString jsString(cx, JS_NewUCStringCopyN(cx, reinterpret_cast<const char16_t*>(FETCH(bstrVal)), SysStringLen(FETCH(bstrVal))));
+			JS::RootedString jsString(ctx, JS_NewUCStringCopyN(ctx, reinterpret_cast<const char16_t*>(FETCH(bstrVal)), SysStringLen(FETCH(bstrVal))));
 			JsException::ExpectTrue(jsString);
 
 			rval.setString(jsString);
@@ -297,7 +299,7 @@ namespace mozjs::convert
 			SYSTEMTIME time;
 			VariantTimeToSystemTime(d, &time);
 
-			JS::RootedObject jsObject(cx, JS::NewDateObject(cx, time.wYear, time.wMonth - 1, time.wDay, time.wHour, time.wMinute, time.wSecond));
+			JS::RootedObject jsObject(ctx, JS::NewDateObject(ctx, time.wYear, time.wMonth - 1, time.wDay, time.wHour, time.wMinute, time.wSecond));
 			JsException::ExpectTrue(jsObject);
 
 			rval.setObjectOrNull(jsObject);
@@ -311,8 +313,8 @@ namespace mozjs::convert
 				break;
 			}
 
-			std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(cx, FETCH(punkVal), true));
-			JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::move(x)));
+			std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(ctx, FETCH(punkVal), true));
+			JS::RootedObject jsObject(ctx, JsActiveXObject::CreateJsFromNative(ctx, std::move(x)));
 			rval.setObjectOrNull(jsObject);
 			break;
 		}
@@ -324,8 +326,8 @@ namespace mozjs::convert
 				break;
 			}
 
-			std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(cx, FETCH(pdispVal), true));
-			JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::move(x)));
+			std::unique_ptr<JsActiveXObject> x(new JsActiveXObject(ctx, FETCH(pdispVal), true));
+			JS::RootedObject jsObject(ctx, JsActiveXObject::CreateJsFromNative(ctx, std::move(x)));
 			rval.setObjectOrNull(jsObject);
 			break;
 		}
@@ -335,21 +337,21 @@ namespace mozjs::convert
 				VARIANTARG* v = var.pvarVal;
 				if (v)
 				{
-					return VariantToJs(cx, *v, rval);
+					return VariantToJs(ctx, *v, rval);
 				}
 			}
 			break;
 		default:
 			if ((type & VT_ARRAY) && !(type & VT_UI1))
 			{ // convert all arrays that are not binary data: SMP has no use for it, but it's needed in COM interface
-				ComArrayToJsArray(cx, var, rval);
+				ComArrayToJsArray(ctx, var, rval);
 				break;
 			}
 			else
 			{
 				QwrException::ExpectTrue(type <= VT_CLSID || type == (VT_ARRAY | VT_UI1), "ActiveX: unsupported object type: {:#x}", type);
 
-				JS::RootedObject jsObject(cx, JsActiveXObject::CreateJsFromNative(cx, std::make_unique<JsActiveXObject>(cx, var)));
+				JS::RootedObject jsObject(ctx, JsActiveXObject::CreateJsFromNative(ctx, std::make_unique<JsActiveXObject>(ctx, var)));
 				rval.setObjectOrNull(jsObject);
 			}
 		}
@@ -357,27 +359,22 @@ namespace mozjs::convert
 #undef FETCH
 	}
 
-	void JsToVariant(JSContext* cx, JS::HandleValue rval, VARIANTARG& arg)
+	void JsToVariant(JSContext* ctx, JS::HandleValue rval, VARIANTARG& arg)
 	{
 		VariantInit(&arg);
 
 		if (rval.isObject())
 		{
-			JS::RootedObject j0(cx, &rval.toObject());
-			auto pNative = JsActiveXObject::ExtractNative(cx, j0);
+			JS::RootedObject j0(ctx, &rval.toObject());
+			auto pNative = JsActiveXObject::ExtractNative(ctx, j0);
 
 			if (pNative)
 			{
 				JsActiveXObject* x = pNative;
 				if (x->pStorage_->variant.vt != VT_EMPTY)
 				{
-					//1.7.2.3
 					HRESULT hr = VariantCopyInd(&arg, &x->pStorage_->variant);
 					smp::CheckHR(hr, "VariantCopyInd");
-					//VariantCopy(&arg,&x->variant_);
-					//1.7.2.2 could address invalid memory if x is freed before arg
-					// arg.vt = VT_VARIANT | VT_BYREF;
-					// arg.pvarVal = &x->variant_;
 				}
 				else if (x->pStorage_->pDispatch)
 				{
@@ -399,22 +396,22 @@ namespace mozjs::convert
 			}
 			else if (JS_ObjectIsFunction(j0))
 			{
-				JS::RootedFunction func(cx, JS_ValueToFunction(cx, rval));
+				JS::RootedFunction func(ctx, JS_ValueToFunction(ctx, rval));
 
 				arg.vt = VT_DISPATCH;
-				arg.pdispVal = new ComObject<WrappedJs>(cx, func);
+				arg.pdispVal = new ComObject<WrappedJs>(ctx, func);
 			}
 			else
 			{
 				bool is;
-				if (!JS::IsArrayObject(cx, rval, &is))
+				if (!JS::IsArrayObject(ctx, rval, &is))
 				{
 					throw JsException();
 				}
 
 				if (is)
 				{ // other types of arrays are created manually (e.g. VT_ARRAY|VT_I1)
-					JsArrayToVariantArray(cx, j0, VT_VARIANT, arg);
+					JsArrayToVariantArray(ctx, j0, VT_VARIANT, arg);
 				}
 				else
 				{
@@ -449,7 +446,7 @@ namespace mozjs::convert
 		}
 		else if (rval.isString())
 		{
-			const auto str = convert::to_native::ToValue<std::wstring>(cx, rval);
+			const auto str = convert::to_native::ToValue<std::wstring>(ctx, rval);
 			_bstr_t bStr = str.c_str();
 
 			arg.vt = VT_BSTR;
@@ -461,10 +458,10 @@ namespace mozjs::convert
 		}
 	}
 
-	void JsArrayToVariantArray(JSContext* cx, JS::HandleObject obj, VARTYPE elementVariantType, VARIANT& var)
+	void JsArrayToVariantArray(JSContext* ctx, JS::HandleObject obj, VARTYPE elementVariantType, VARIANT& var)
 	{
 		uint32_t len;
-		if (!JS::GetArrayLength(cx, obj, &len))
+		if (!JS::GetArrayLength(ctx, obj, &len))
 		{
 			throw JsException();
 		}
@@ -493,13 +490,13 @@ namespace mozjs::convert
 
 				for (uint32_t i = 0; i < len; ++i)
 				{
-					JS::RootedValue val(cx);
-					if (!JS_GetElement(cx, obj, i, &val))
+					JS::RootedValue val(ctx);
+					if (!JS_GetElement(ctx, obj, i, &val))
 					{
 						throw JsException();
 					}
 
-					JsToVariant(cx, val, varArray[i]);
+					JsToVariant(ctx, val, varArray[i]);
 				}
 			}
 			else
@@ -515,14 +512,14 @@ namespace mozjs::convert
 
 				for (uint32_t i = 0; i < len; ++i)
 				{
-					JS::RootedValue val(cx);
-					if (!JS_GetElement(cx, obj, i, &val))
+					JS::RootedValue val(ctx);
+					if (!JS_GetElement(ctx, obj, i, &val))
 					{
 						throw JsException();
 					}
 
 					_variant_t tmp;
-					JsToVariant(cx, val, tmp);
+					JsToVariant(ctx, val, tmp);
 					tmp.ChangeType(elementVariantType);
 
 					PutVariantInSafeArrayData(dataArray, i, tmp);

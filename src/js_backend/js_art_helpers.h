@@ -4,7 +4,7 @@ namespace mozjs
 {
 	/// @throw JsException
 	[[nodiscard]] JSObject* GetAlbumArtPromise(
-		JSContext* cx,
+		JSContext* ctx,
 		HWND hWnd,
 		const metadb_handle_ptr& handle,
 		uint32_t art_id,

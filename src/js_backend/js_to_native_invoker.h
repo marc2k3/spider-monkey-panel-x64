@@ -15,20 +15,20 @@ namespace mozjs::internal
 	}
 
 	template <typename BaseClass>
-	BaseClass* InvokeNativeCallback_GetThisObject(JSContext* cx, JS::HandleValue jsThis)
+	BaseClass* InvokeNativeCallback_GetThisObject(JSContext* ctx, JS::HandleValue jsThis)
 	{
 		if (jsThis.isObject())
 		{
-			JS::RootedObject jsObject(cx, &jsThis.toObject());
-			return JsObjectBase<BaseClass>::ExtractNative(cx, jsObject);
+			JS::RootedObject jsObject(ctx, &jsThis.toObject());
+			return JsObjectBase<BaseClass>::ExtractNative(ctx, jsObject);
 		}
 
 		if constexpr (std::is_same_v<BaseClass, JsGlobalObject>)
 		{
 			if (jsThis.isUndefined())
 			{ // global has undefined `this`
-				JS::RootedObject jsObject(cx, JS::CurrentGlobalOrNull(cx));
-				return JsGlobalObject::ExtractNative(cx, jsObject);
+				JS::RootedObject jsObject(ctx, JS::CurrentGlobalOrNull(ctx));
+				return JsGlobalObject::ExtractNative(ctx, jsObject);
 			}
 		}
 
@@ -50,7 +50,7 @@ namespace mozjs::internal
 	}
 
 	template <typename... ArgTypes>
-	auto InvokeNativeCallback_ParseArguments(JSContext* cx, JS::MutableHandleValueVector valueVector, const JS::CallArgs& jsArgs)
+	auto InvokeNativeCallback_ParseArguments(JSContext* ctx, JS::MutableHandleValueVector valueVector, const JS::CallArgs& jsArgs)
 	{
 		constexpr uint32_t argCount = sizeof...(ArgTypes);
 		if constexpr (argCount > 0)
@@ -76,7 +76,7 @@ namespace mozjs::internal
 		auto callbackArguments =
 			ProcessJsArgs<ArgTypes...>(
 				jsArgs,
-				[cx, &valueVector](const JS::CallArgs& jsArgs, auto argTypeStruct, uint32_t index) {
+				[ctx, &valueVector](const JS::CallArgs& jsArgs, auto argTypeStruct, uint32_t index) {
 					using ArgType = std::decay_t<typename decltype(argTypeStruct)::type>;
 					constexpr uint32_t MaxArgCount = sizeof...(ArgTypes);
 					// Not an error: default value might be set in callback
@@ -112,7 +112,7 @@ namespace mozjs::internal
 						}
 						else
 						{
-							return convert::to_native::ToValue<ArgType>(cx, jsArgs[index]);
+							return convert::to_native::ToValue<ArgType>(ctx, jsArgs[index]);
 						}
 					}
 				});
@@ -157,20 +157,20 @@ namespace mozjs::internal
 	}
 
 	template <bool HasOptArg, typename ReturnType, typename FuncType, typename FuncOptType, typename ArgTupleType>
-	ReturnType InvokeNativeCallback_Call_Static(JSContext* cx, FuncType fn, FuncOptType fnWithOpt, const ArgTupleType& argTuple, uint32_t optArgCount)
+	ReturnType InvokeNativeCallback_Call_Static(JSContext* ctx, FuncType fn, FuncOptType fnWithOpt, const ArgTupleType& argTuple, uint32_t optArgCount)
 	{
 		if constexpr (!HasOptArg)
 		{
-			return std::apply(fn, std::tuple_cat(std::make_tuple(cx), argTuple));
+			return std::apply(fn, std::tuple_cat(std::make_tuple(ctx), argTuple));
 		}
 		else
 		{
-			return std::apply(fnWithOpt, std::tuple_cat(std::make_tuple(cx, optArgCount), argTuple));
+			return std::apply(fnWithOpt, std::tuple_cat(std::make_tuple(ctx, optArgCount), argTuple));
 		}
 	}
 
 	template <uint32_t OptArgCount, typename BaseClass, typename ReturnType, typename FuncType, typename FuncOptType, typename... ArgTypes>
-	void InvokeNativeCallback_Member(JSContext* cx, FuncType fn, FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
+	void InvokeNativeCallback_Member(JSContext* ctx, FuncType fn, FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
 	{
 		constexpr uint32_t maxArgCount = sizeof...(ArgTypes);
 		static_assert(OptArgCount <= maxArgCount);
@@ -181,14 +181,14 @@ namespace mozjs::internal
 			throw QwrException("Invalid number of arguments");
 		}
 
-		BaseClass* baseClass = InvokeNativeCallback_GetThisObject<BaseClass>(cx, jsArgs.thisv());
+		BaseClass* baseClass = InvokeNativeCallback_GetThisObject<BaseClass>(ctx, jsArgs.thisv());
 		if (!baseClass)
 		{
 			throw QwrException("Invalid `this` context");
 		}
 
-		JS::RootedValueVector handleValueVector(cx);
-		auto callbackArguments = InvokeNativeCallback_ParseArguments<ArgTypes...>(cx, &handleValueVector, jsArgs);
+		JS::RootedValueVector handleValueVector(ctx);
+		auto callbackArguments = InvokeNativeCallback_ParseArguments<ArgTypes...>(ctx, &handleValueVector, jsArgs);
 
 		// May return raw JS pointer! (see below)
 		const auto invokeNative = [&]
@@ -218,12 +218,12 @@ namespace mozjs::internal
 		}
 		else
 		{
-			convert::to_js::ToValue(cx, invokeNative(), jsArgs.rval());
+			convert::to_js::ToValue(ctx, invokeNative(), jsArgs.rval());
 		}
 	}
 
 	template <uint32_t OptArgCount, typename ReturnType, typename FuncType, typename FuncOptType, typename... ArgTypes>
-	void InvokeNativeCallback_Static(JSContext* cx, FuncType fn, FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
+	void InvokeNativeCallback_Static(JSContext* ctx, FuncType fn, FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
 	{
 		constexpr uint32_t maxArgCount = sizeof...(ArgTypes);
 		static_assert(OptArgCount <= maxArgCount);
@@ -234,14 +234,14 @@ namespace mozjs::internal
 			throw QwrException("Invalid number of arguments");
 		}
 
-		JS::RootedValueVector handleValueVector(cx);
-		auto callbackArguments = InvokeNativeCallback_ParseArguments<ArgTypes...>(cx, &handleValueVector, jsArgs);
+		JS::RootedValueVector handleValueVector(ctx);
+		auto callbackArguments = InvokeNativeCallback_ParseArguments<ArgTypes...>(ctx, &handleValueVector, jsArgs);
 
 		// May return raw JS pointer! (see below)
 		const auto invokeNative = [&]
 			{
 				return InvokeNativeCallback_Call_Static<!!OptArgCount, ReturnType>(
-					cx,
+					ctx,
 					fn,
 					fnWithOpt,
 					callbackArguments,
@@ -265,7 +265,7 @@ namespace mozjs::internal
 		}
 		else
 		{
-			convert::to_js::ToValue(cx, invokeNative(), jsArgs.rval());
+			convert::to_js::ToValue(ctx, invokeNative(), jsArgs.rval());
 		}
 	}
 }
@@ -273,7 +273,7 @@ namespace mozjs::internal
 namespace mozjs
 {
 	template <uint32_t OptArgCount = 0, typename BaseClass, typename ReturnType, typename FuncOptType, typename... ArgTypes>
-	void InvokeNativeCallback(JSContext* cx, ReturnType(BaseClass::* fn)(ArgTypes...), FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
+	void InvokeNativeCallback(JSContext* ctx, ReturnType(BaseClass::* fn)(ArgTypes...), FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
 	{
 		mozjs::internal::InvokeNativeCallback_Member<
 			OptArgCount,
@@ -281,11 +281,11 @@ namespace mozjs
 			ReturnType,
 			decltype(fn),
 			FuncOptType,
-			ArgTypes...>(cx, fn, fnWithOpt, argc, vp);
+			ArgTypes...>(ctx, fn, fnWithOpt, argc, vp);
 	}
 
 	template <uint32_t OptArgCount = 0, typename BaseClass, typename ReturnType, typename FuncOptType, typename... ArgTypes>
-	void InvokeNativeCallback(JSContext* cx, ReturnType(BaseClass::* fn)(ArgTypes...) const, FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
+	void InvokeNativeCallback(JSContext* ctx, ReturnType(BaseClass::* fn)(ArgTypes...) const, FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
 	{
 		mozjs::internal::InvokeNativeCallback_Member<
 			OptArgCount,
@@ -293,18 +293,18 @@ namespace mozjs
 			ReturnType,
 			decltype(fn),
 			FuncOptType,
-			ArgTypes...>(cx, fn, fnWithOpt, argc, vp);
+			ArgTypes...>(ctx, fn, fnWithOpt, argc, vp);
 	}
 
 	template <uint32_t OptArgCount = 0, typename ReturnType, typename FuncOptType, typename... ArgTypes>
-	void InvokeNativeCallback(JSContext* cx, ReturnType(__cdecl* fn)(JSContext*, ArgTypes...), FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
+	void InvokeNativeCallback(JSContext* ctx, ReturnType(__cdecl* fn)(JSContext*, ArgTypes...), FuncOptType fnWithOpt, unsigned argc, JS::Value* vp)
 	{
 		mozjs::internal::InvokeNativeCallback_Static<
 			OptArgCount,
 			ReturnType,
 			decltype(fn),
 			FuncOptType,
-			ArgTypes...>(cx, fn, fnWithOpt, argc, vp);
+			ArgTypes...>(ctx, fn, fnWithOpt, argc, vp);
 	}
 }
 
@@ -312,9 +312,9 @@ namespace mozjs
 ///        traps C++ exceptions and converts them to JS exceptions,
 ///        while adding `logName` to error report.
 #define MJS_DEFINE_JS_FN_FULL(functionName, logName, functionImpl)                \
-	bool functionName(JSContext* cx, unsigned argc, JS::Value* vp)                \
+	bool functionName(JSContext* ctx, unsigned argc, JS::Value* vp)                \
 	{                                                                               \
-		return mozjs::Execute_JsSafe(cx, logName, functionImpl, argc, vp); \
+		return mozjs::Execute_JsSafe(ctx, logName, functionImpl, argc, vp); \
 	}
 
 /// @brief Same as MJS_DEFINE_JS_FN_FULL, but uses `functionName` for logging.
@@ -327,12 +327,12 @@ namespace mozjs
 ///        (`optArgCount` is the maximum amount of optional arguments),
 ///        in that case `functionImplWithOpt` will be called.
 #define MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT_FULL(functionName, logName, functionImpl, functionImplWithOpt, optArgCount) \
-	bool functionName(JSContext* cx, unsigned argc, JS::Value* vp)                                                        \
+	bool functionName(JSContext* ctx, unsigned argc, JS::Value* vp)                                                        \
 	{                                                                                                                       \
-		const auto wrappedFunc = [](JSContext* cx, unsigned argc, JS::Value* vp) {                                        \
-			InvokeNativeCallback<optArgCount>(cx, &functionImpl, &functionImplWithOpt, argc, vp);                         \
+		const auto wrappedFunc = [](JSContext* ctx, unsigned argc, JS::Value* vp) {                                        \
+			InvokeNativeCallback<optArgCount>(ctx, &functionImpl, &functionImplWithOpt, argc, vp);                         \
 		};                                                                                                                  \
-		return mozjs::Execute_JsSafe(cx, logName, wrappedFunc, argc, vp);                                          \
+		return mozjs::Execute_JsSafe(ctx, logName, wrappedFunc, argc, vp);                                          \
 	}
 
 /// @brief Same as MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT_FULL, but uses `functionName` for logging.

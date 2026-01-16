@@ -45,10 +45,10 @@ namespace mozjs
 		void StartHeartbeatThread() noexcept;
 		void StopHeartbeatThread() noexcept;
 
-		static bool InterruptHandler(JSContext* cx) noexcept;
+		static bool InterruptHandler(JSContext* ctx) noexcept;
 
 		static void RejectedPromiseHandler(
-			JSContext* cx,
+			JSContext* ctx,
 			bool mutedErrors,
 			JS::HandleObject promise,
 			JS::PromiseRejectionHandlingState state,
@@ -57,25 +57,22 @@ namespace mozjs
 		void ReportOomError() noexcept;
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
+		JSContext* m_ctx{};
 
-		bool isInitialized_ = false;
-		bool shouldShutdown_ = false;
+		bool m_is_initialised{};
+		bool m_should_shutdown{};
 
-		std::map<void*, std::reference_wrapper<JsContainer>> registeredContainers_;
+		std::map<void*, std::reference_wrapper<JsContainer>> m_registered_containers;
 
-		bool isBeating_ = false;
-		std::unique_ptr<smp::HeartbeatWindow> heartbeatWindow_;
-		std::thread heartbeatThread_;
-		std::atomic_bool shouldStopHeartbeatThread_ = false;
+		bool m_is_beating{};
+		std::unique_ptr<smp::HeartbeatWindow> m_heartbeat_window;
+		std::thread m_heartbeat_thread;
+		std::atomic_bool m_should_stop_heartbeat_thread{};
 
-		JsGc jsGc_;
-		JsMonitor jsMonitor_;
-
-		JS::PersistentRooted<JS::GCVector<JSObject*, 0, js::SystemAllocPolicy>> rejectedPromises_;
-		bool areJobsInProgress_ = false;
-		uint32_t jobsStartTime_ = 0;
-
-		std::unique_ptr<JsScriptCache> pScriptCache_;
+		JsGc m_gc;
+		JsMonitor m_monitor;
+		JS::PersistentRooted<JS::GCVector<JSObject*, 0, js::SystemAllocPolicy>> m_rejected_promises;
+		bool m_are_jobs_in_progress = false;
+		std::unique_ptr<JsScriptCache> m_script_cache;
 	};
 }

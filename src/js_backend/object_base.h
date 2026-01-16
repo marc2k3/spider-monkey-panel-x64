@@ -69,13 +69,12 @@ namespace mozjs
 		// Creates object T.
 		// Must always return a valid object.
 		// Throw JsException or QwrException on error.
-		static std::unique_ptr<T> CreateNative(JSContext* cx, Args... args);
+		static std::unique_ptr<T> CreateNative(JSContext* ctx, Args... args);
 
 		// Returns the size of properties of T, that can't be calculated by sizeof(T).
 		// E.g. if T has property `std::unique_ptr<BigStruct> bigStruct_`, then
 		// `GetInternalSize` must return sizeof(bigStruct_).
-		// Note: `args` is the same as in `CreateNative`.
-		uint32_t GetInternalSize(Args... args);
+		uint32_t GetInternalSize();
 	*/
 
 	/*
@@ -84,7 +83,7 @@ namespace mozjs
 		// Finalizes the JS object that contains T.
 		// Called before JS object is wrapped in proxy (if `HasProxy` is true).
 		// Throw JsException or QwrException on error.
-		static void PostCreate(JSContext* cx, JS::HandleObject self);
+		static void PostCreate(JSContext* ctx, JS::HandleObject self);
 	*/
 
 #define DEFINE_JS_CLASS_OPS(finalize_object) \
@@ -166,16 +165,16 @@ namespace mozjs
 		virtual ~JsObjectBase() = default;
 
 	public:
-		[[nodiscard]] static JSObject* CreateProto(JSContext* cx)
+		[[nodiscard]] static JSObject* CreateProto(JSContext* ctx)
 		{
-			JS::RootedObject jsObject(cx, JS_NewPlainObject(cx));
+			JS::RootedObject jsObject(ctx, JS_NewPlainObject(ctx));
 
 			if (!jsObject)
 			{
 				throw JsException();
 			}
 
-			if (!JS_DefineFunctions(cx, jsObject, T::JsFunctions) || !JS_DefineProperties(cx, jsObject, T::JsProperties))
+			if (!JS_DefineFunctions(ctx, jsObject, T::JsFunctions) || !JS_DefineProperties(ctx, jsObject, T::JsProperties))
 			{
 				throw JsException();
 			}
@@ -183,7 +182,7 @@ namespace mozjs
 			return jsObject;
 		}
 
-		[[nodiscard]] static JSObject* InstallProto(JSContext* cx, JS::HandleObject parentObject)
+		[[nodiscard]] static JSObject* InstallProto(JSContext* ctx, JS::HandleObject parentObject)
 		{
 			const JSFunctionSpec* staticFns = []
 				{
@@ -194,7 +193,7 @@ namespace mozjs
 				}();
 
 			auto pJsProto = JS_InitClass(
-				cx,
+				ctx,
 				parentObject,
 				nullptr,
 				&T::JsClass,
@@ -214,32 +213,32 @@ namespace mozjs
 		}
 
 		template <typename... ArgTypes>
-		[[nodiscard]] static JSObject* CreateJs(JSContext* cx, ArgTypes&&... args)
+		[[nodiscard]] static JSObject* CreateJs(JSContext* ctx, ArgTypes&&... args)
 		{
-			JS::RootedObject jsProto(cx);
+			JS::RootedObject jsProto(ctx);
 			if constexpr (T::HasProto)
 			{
-				jsProto = GetProto(cx);
+				jsProto = GetProto(ctx);
 			}
 
-			JS::RootedObject jsObject(cx, CreateJsObject_Base(cx, jsProto));
-			std::unique_ptr<T> nativeObject = T::CreateNative(cx, std::forward<ArgTypes>(args)...);
-			nativeObject->nativeObjectSize_ = sizeof(T) + nativeObject->GetInternalSize();
-			return CreateJsObject_Final(cx, jsProto, jsObject, std::move(nativeObject));
+			JS::RootedObject jsObject(ctx, CreateJsObject_Base(ctx, jsProto));
+			std::unique_ptr<T> nativeObject = T::CreateNative(ctx, std::forward<ArgTypes>(args)...);
+			nativeObject->m_native_object_size = sizeof(T) + nativeObject->GetInternalSize();
+			return CreateJsObject_Final(ctx, jsProto, jsObject, std::move(nativeObject));
 		}
 
-		[[nodiscard]] static JSObject* CreateJsFromNative(JSContext* cx, std::unique_ptr<T> nativeObject)
+		[[nodiscard]] static JSObject* CreateJsFromNative(JSContext* ctx, std::unique_ptr<T> nativeObject)
 		{
-			JS::RootedObject jsProto(cx);
+			JS::RootedObject jsProto(ctx);
 			if constexpr (T::HasProto)
 			{
-				jsProto = GetProto(cx);
+				jsProto = GetProto(ctx);
 			}
 
-			JS::RootedObject jsObject(cx, CreateJsObject_Base(cx, jsProto));
-			nativeObject->nativeObjectSize_ = sizeof(T);
+			JS::RootedObject jsObject(ctx, CreateJsObject_Base(ctx, jsProto));
+			nativeObject->m_native_object_size = sizeof(T);
 
-			return CreateJsObject_Final(cx, jsProto, jsObject, std::move(nativeObject));
+			return CreateJsObject_Final(ctx, jsProto, jsObject, std::move(nativeObject));
 		}
 
 		static void FinalizeJsObject(JS::GCContext* /*gcCtx*/, JSObject* pSelf)
@@ -251,7 +250,7 @@ namespace mozjs
 				auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetNonCCWObjectRealm(pSelf)));
 				if (pJsRealm)
 				{
-					pJsRealm->OnHeapDeallocate(pNative->Self::nativeObjectSize_);
+					pJsRealm->OnHeapDeallocate(pNative->Self::m_native_object_size);
 				}
 
 				delete pNative;
@@ -259,9 +258,9 @@ namespace mozjs
 			}
 		}
 
-		[[nodiscard]] static T* ExtractNative(JSContext* cx, JS::HandleObject jsObjectHandle)
+		[[nodiscard]] static T* ExtractNative(JSContext* ctx, JS::HandleObject jsObjectHandle)
 		{
-			JS::RootedObject jsObject(cx, jsObjectHandle);
+			JS::RootedObject jsObject(ctx, jsObjectHandle);
 
 			if (js::IsWrapper(jsObject))
 			{
@@ -273,7 +272,7 @@ namespace mozjs
 				jsObject = js::GetProxyTargetObject(jsObject);
 			}
 
-			if (auto pNative = ExtractNativeExact(cx, jsObject))
+			if (auto pNative = ExtractNativeExact(ctx, jsObject))
 			{
 				return pNative;
 			}
@@ -281,12 +280,12 @@ namespace mozjs
 			return nullptr;
 		}
 
-		[[nodiscard]] static T* ExtractNative(JSContext* cx, JS::HandleValue jsValue)
+		[[nodiscard]] static T* ExtractNative(JSContext* ctx, JS::HandleValue jsValue)
 		{
 			if (jsValue.isObject())
 			{
-				JS::RootedObject jsObject(cx, &jsValue.toObject());
-				return Self::ExtractNative(cx, jsObject);
+				JS::RootedObject jsObject(ctx, &jsValue.toObject());
+				return Self::ExtractNative(ctx, jsObject);
 			}
 
 			return nullptr;
@@ -297,12 +296,12 @@ namespace mozjs
 			return Self::ExtractNativeFromVoid(GetMaybePtrFromReservedSlot(jsObject, kReservedObjectSlot));
 		}
 
-		uint32_t nativeObjectSize_{};
+		uint32_t m_native_object_size{};
 
 	private:
-		[[nodiscard]] static T* ExtractNativeExact(JSContext* cx, JS::HandleObject jsObject)
+		[[nodiscard]] static T* ExtractNativeExact(JSContext* ctx, JS::HandleObject jsObject)
 		{
-			auto pVoid = GetInstanceFromReservedSlot(cx, jsObject, &T::JsClass, nullptr);
+			auto pVoid = GetInstanceFromReservedSlot(ctx, jsObject, &T::JsClass, nullptr);
 			return Self::ExtractNativeFromVoid(pVoid);
 		}
 
@@ -312,27 +311,27 @@ namespace mozjs
 		}
 
 		template <typename U = T, std::enable_if_t<U::HasProto, int> = 0>
-		[[nodiscard]] static JSObject* GetProto(JSContext* cx)
+		[[nodiscard]] static JSObject* GetProto(JSContext* ctx)
 		{
-			JS::RootedObject jsProto(cx);
+			JS::RootedObject jsProto(ctx);
 			if constexpr (T::HasGlobalProto)
 			{
-				jsProto = GetPrototype<T>(cx, T::PrototypeId);
+				jsProto = GetPrototype<T>(ctx, T::PrototypeId);
 			}
 			else
 			{
-				jsProto = GetOrCreatePrototype<T>(cx, T::PrototypeId);
+				jsProto = GetOrCreatePrototype<T>(ctx, T::PrototypeId);
 			}
 
 			return jsProto;
 		}
 
-		[[nodiscard]] static JSObject* CreateJsObject_Base(JSContext* cx, [[maybe_unused]] JS::HandleObject jsProto)
+		[[nodiscard]] static JSObject* CreateJsObject_Base(JSContext* ctx, [[maybe_unused]] JS::HandleObject jsProto)
 		{
-			JS::RootedObject jsObject(cx);
+			JS::RootedObject jsObject(ctx);
 			if constexpr (T::HasProto)
 			{
-				jsObject.set(JS_NewObjectWithGivenProto(cx, &T::JsClass, jsProto));
+				jsObject.set(JS_NewObjectWithGivenProto(ctx, &T::JsClass, jsProto));
 				if (!jsObject)
 				{
 					throw JsException();
@@ -340,13 +339,13 @@ namespace mozjs
 			}
 			else
 			{
-				jsObject.set(JS_NewObject(cx, &T::JsClass));
+				jsObject.set(JS_NewObject(ctx, &T::JsClass));
 				if (!jsObject)
 				{
 					throw JsException();
 				}
 
-				if (!JS_DefineFunctions(cx, jsObject, T::JsFunctions) || !JS_DefineProperties(cx, jsObject, T::JsProperties))
+				if (!JS_DefineFunctions(ctx, jsObject, T::JsFunctions) || !JS_DefineProperties(ctx, jsObject, T::JsProperties))
 				{
 					throw JsException();
 				}
@@ -356,25 +355,25 @@ namespace mozjs
 		}
 
 		[[nodiscard]] static JSObject* CreateJsObject_Final(
-			JSContext* cx,
+			JSContext* ctx,
 			[[maybe_unused]] JS::HandleObject jsProto,
 			JS::HandleObject jsBaseObject,
 			std::unique_ptr<T> premadeNative)
 		{
-			auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(cx)));
-			pJsRealm->OnHeapAllocate(premadeNative->nativeObjectSize_);
+			auto pJsRealm = static_cast<JsRealmInner*>(JS::GetRealmPrivate(js::GetContextRealm(ctx)));
+			pJsRealm->OnHeapAllocate(premadeNative->m_native_object_size);
 
 			JS::SetReservedSlot(jsBaseObject, kReservedObjectSlot, JS::PrivateValue(premadeNative.release()));
 
 			if constexpr (T::HasPostCreate)
 			{
-				T::PostCreate(cx, jsBaseObject);
+				T::PostCreate(ctx, jsBaseObject);
 			}
 
 			if constexpr (T::HasProxy)
 			{
-				JS::RootedValue jsBaseValue(cx, JS::ObjectValue(*jsBaseObject));
-				JS::RootedObject jsProxyObject(cx, js::NewProxyObject(cx, &T::JsProxy, jsBaseValue, jsProto));
+				JS::RootedValue jsBaseValue(ctx, JS::ObjectValue(*jsBaseObject));
+				JS::RootedObject jsProxyObject(ctx, js::NewProxyObject(ctx, &T::JsProxy, jsBaseValue, jsProto));
 				if (!jsProxyObject)
 				{
 					throw JsException();

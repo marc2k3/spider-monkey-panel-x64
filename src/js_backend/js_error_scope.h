@@ -5,21 +5,21 @@ namespace mozjs
 	class AutoJsReport
 	{
 	public:
-		[[nodiscard]] explicit AutoJsReport(JSContext* cx);
+		[[nodiscard]] explicit AutoJsReport(JSContext* ctx);
 		~AutoJsReport() noexcept;
 
 		void Disable();
 
 	private:
-		JSContext* cx{};
-		bool isDisabled_{};
+		JSContext* m_ctx{};
+		bool m_is_disabled{};
 	};
 
 	// DO NOT TOUCH
 	class JsAutoRealmWithErrorReport
 	{
 	public:
-		[[nodiscard]] JsAutoRealmWithErrorReport(JSContext* cx, JS::HandleObject global);
+		[[nodiscard]] JsAutoRealmWithErrorReport(JSContext* ctx, JS::HandleObject global);
 
 		JsAutoRealmWithErrorReport(const JsAutoRealmWithErrorReport&) = delete;
 		JsAutoRealmWithErrorReport& operator=(const JsAutoRealmWithErrorReport&) = delete;
@@ -27,7 +27,7 @@ namespace mozjs
 		void DisableReport();
 
 	private:
-		JSAutoRealm ac_;
-		AutoJsReport are_;
+		JSAutoRealm m_ac;
+		AutoJsReport m_are;
 	};
 }

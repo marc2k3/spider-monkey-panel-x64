@@ -20,15 +20,15 @@ namespace mozjs
 		// @remark No need to cleanup JS here, since it must be performed manually beforehand anyway
 		~JsGlobalObject() = default;
 
-		static JSObject* CreateNative(JSContext* cx, JsContainer& parentContainer);
-		static JsGlobalObject* ExtractNative(JSContext* cx, JS::HandleObject jsObject);
+		static JSObject* CreateNative(JSContext* ctx, JsContainer& parentContainer);
+		static JsGlobalObject* ExtractNative(JSContext* ctx, JS::HandleObject jsObject);
 
 	public:
 		void Fail(const std::string& errorText);
 
 		[[nodiscard]] GlobalHeapManager& GetHeapManager() const;
 
-		static void PrepareForGc(JSContext* cx, JS::HandleObject self);
+		static void PrepareForGc(JSContext* ctx, JS::HandleObject self);
 
 	public: // methods
 		/// @remark HWND might be null, if called before fb2k initialization is completed
@@ -45,7 +45,7 @@ namespace mozjs
 		uint32_t SetTimeoutWithOpt(size_t optArgCount, JS::HandleValue func, uint32_t delay, JS::HandleValueArray funcArgs);
 
 	private:
-		JsGlobalObject(JSContext* cx, JsContainer& parentContainer, Window* pWindow);
+		JsGlobalObject(JSContext* ctx, JsContainer& parentContainer, Window* pWindow);
 
 		struct IncludeOptions
 		{
@@ -55,22 +55,22 @@ namespace mozjs
 		IncludeOptions ParseIncludeOptions(JS::HandleValue options);
 
 		template <typename T>
-		static T* GetNativeObjectProperty(JSContext* cx, JS::HandleObject self, const std::string& propName)
+		static T* GetNativeObjectProperty(JSContext* ctx, JS::HandleObject self, const std::string& propName)
 		{
-			JS::RootedValue jsPropertyValue(cx);
-			if (JS_GetProperty(cx, self, propName.data(), &jsPropertyValue) && jsPropertyValue.isObject())
+			JS::RootedValue jsPropertyValue(ctx);
+			if (JS_GetProperty(ctx, self, propName.data(), &jsPropertyValue) && jsPropertyValue.isObject())
 			{
-				JS::RootedObject jsProperty(cx, &jsPropertyValue.toObject());
-				return JsObjectBase<T>::ExtractNative(cx, jsProperty);
+				JS::RootedObject jsProperty(ctx, &jsPropertyValue.toObject());
+				return JsObjectBase<T>::ExtractNative(ctx, jsProperty);
 			}
 
 			return nullptr;
 		}
 
 		template <typename T>
-		static void CleanupObjectProperty(JSContext* cx, JS::HandleObject self, const std::string& propName)
+		static void CleanupObjectProperty(JSContext* ctx, JS::HandleObject self, const std::string& propName)
 		{
-			auto pNative = GetNativeObjectProperty<T>(cx, self, propName);
+			auto pNative = GetNativeObjectProperty<T>(ctx, self, propName);
 			if (pNative)
 			{
 				pNative->PrepareForGc();
@@ -80,18 +80,18 @@ namespace mozjs
 		static void Trace(JSTracer* trc, JSObject* obj);
 
 	private:
-		JSContext* pJsCtx_{};
-		JsContainer& parentContainer_;
-		Window* pWindow_{};
+		JSContext* m_ctx{};
+		JsContainer& m_parent_container;
+		Window* m_window{};
 
-		std::unordered_set<std::wstring> includedFiles_;
-		std::unique_ptr<GlobalHeapManager> heapManager_;
+		std::unordered_set<std::wstring> m_included_files;
+		std::unique_ptr<GlobalHeapManager> m_heap_manager;
 	};
 
-	static HWND GetPanelHwndForCurrentGlobal(JSContext* cx)
+	static HWND GetPanelHwndForCurrentGlobal(JSContext* ctx)
 	{
-		JS::RootedObject jsGlobal(cx, JS::CurrentGlobalOrNull(cx));
-		const auto pNativeGlobal = JsGlobalObject::ExtractNative(cx, jsGlobal);
+		JS::RootedObject jsGlobal(ctx, JS::CurrentGlobalOrNull(ctx));
+		const auto pNativeGlobal = JsGlobalObject::ExtractNative(ctx, jsGlobal);
 		return pNativeGlobal->GetPanelHwnd();
 	}
 }

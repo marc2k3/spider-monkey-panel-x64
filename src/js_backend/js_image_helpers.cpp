@@ -15,26 +15,18 @@ namespace
 	class JsImageTask : public JsAsyncTaskImpl<JS::HandleValue>
 	{
 	public:
-		JsImageTask(JSContext* cx, JS::HandleValue jsPromise);
+		JsImageTask(JSContext* ctx, JS::HandleValue promise);
 		~JsImageTask() override = default;
 
-		void SetData(std::unique_ptr<Gdiplus::Bitmap> image);
+		bool InvokeJsImpl(JSContext* ctx, JS::HandleObject jsGlobal, JS::HandleValue promise_value) override;
 
-	private:
-		bool InvokeJsImpl(JSContext* cx, JS::HandleObject jsGlobal, JS::HandleValue jsPromiseValue) override;
-
-	private:
-		std::unique_ptr<Gdiplus::Bitmap> image_;
+		std::unique_ptr<Gdiplus::Bitmap> m_image;
 	};
 
 	class ImageFetchTask
 	{
 	public:
-		ImageFetchTask(
-			JSContext* cx,
-			JS::HandleObject jsPromise,
-			HWND hNotifyWnd,
-			const std::wstring& imagePath);
+		ImageFetchTask(JSContext* ctx, JS::HandleObject promise, HWND notify_wnd, const std::wstring& path);
 
 		/// @details Executed off main thread
 		~ImageFetchTask() = default;
@@ -46,73 +38,59 @@ namespace
 		void operator()();
 
 	private:
-		HWND hNotifyWnd_;
-		std::wstring imagePath_;
-
-		std::shared_ptr<JsImageTask> jsTask_;
+		HWND m_notify_wnd;
+		std::wstring m_path;
+		std::shared_ptr<JsImageTask> m_task;
 	};
 
 	ImageFetchTask::ImageFetchTask(
-		JSContext* cx,
-		JS::HandleObject jsPromise,
-		HWND hNotifyWnd,
-		const std::wstring& imagePath)
-		: hNotifyWnd_(hNotifyWnd)
-		, imagePath_(imagePath)
+		JSContext* ctx,
+		JS::HandleObject promise,
+		HWND notify_wnd,
+		const std::wstring& path)
+		: m_notify_wnd(notify_wnd)
+		, m_path(path)
 	{
-		JS::RootedValue jsPromiseValue(cx, JS::ObjectValue(*jsPromise));
-		jsTask_ = std::make_unique<JsImageTask>(cx, jsPromiseValue);
+		JS::RootedValue jsPromiseValue(ctx, JS::ObjectValue(*promise));
+		m_task = std::make_unique<JsImageTask>(ctx, jsPromiseValue);
 	}
 
 	void ImageFetchTask::operator()()
 	{
-		if (!jsTask_->IsCanceled())
+		if (!m_task->IsCanceled())
 		{ // the task still might be executed and posted, since we don't block here
 			return;
 		}
 
-		auto bitmap = FileHelper(imagePath_).load_image();
-		jsTask_->SetData(std::move(bitmap));
-
-		smp::EventDispatcher::Get().PutEvent(
-			hNotifyWnd_,
-			std::make_unique<smp::Event_JsTask>(
-				smp::EventId::kInternalLoadImagePromiseDone,
-				jsTask_
-			)
-		);
+		auto bitmap = FileHelper(m_path).load_image();
+		m_task->m_image = std::move(bitmap);
+		smp::EventDispatcher::Get().PutEvent(m_notify_wnd, std::make_unique<smp::Event_JsTask>(smp::EventId::kInternalLoadImagePromiseDone, m_task));
 	}
 
-	JsImageTask::JsImageTask(JSContext* cx, JS::HandleValue jsPromise) : JsAsyncTaskImpl(cx, jsPromise) {}
+	JsImageTask::JsImageTask(JSContext* ctx, JS::HandleValue promise) : JsAsyncTaskImpl(ctx, promise) {}
 
-	void JsImageTask::SetData(std::unique_ptr<Gdiplus::Bitmap> image)
+	bool JsImageTask::InvokeJsImpl(JSContext* ctx, JS::HandleObject, JS::HandleValue jsPromiseValue)
 	{
-		image_ = std::move(image);
-	}
-
-	bool JsImageTask::InvokeJsImpl(JSContext* cx, JS::HandleObject, JS::HandleValue jsPromiseValue)
-	{
-		JS::RootedObject jsPromise(cx, &jsPromiseValue.toObject());
+		JS::RootedObject jsPromise(ctx, &jsPromiseValue.toObject());
 
 		try
 		{
-			JS::RootedValue jsBitmapValue(cx);
-			if (image_)
+			JS::RootedValue jsBitmapValue(ctx);
+
+			if (m_image)
 			{
-				JS::RootedObject jsBitmap(cx, JsGdiBitmap::CreateJs(cx, std::move(image_)));
+				JS::RootedObject jsBitmap(ctx, JsGdiBitmap::CreateJs(ctx, std::move(m_image)));
 				jsBitmapValue = jsBitmap ? JS::ObjectValue(*jsBitmap) : JS::UndefinedValue();
 			}
 
-			(void)JS::ResolvePromise(cx, jsPromise, jsBitmapValue);
+			JS::ResolvePromise(ctx, jsPromise, jsBitmapValue);
 		}
 		catch (...)
 		{
-			mozjs::ExceptionToJsError(cx);
-
-			JS::RootedValue jsError(cx);
-			(void)JS_GetPendingException(cx, &jsError);
-
-			JS::RejectPromise(cx, jsPromise, jsError);
+			mozjs::ExceptionToJsError(ctx);
+			JS::RootedValue jsError(ctx);
+			JS_GetPendingException(ctx, &jsError);
+			JS::RejectPromise(ctx, jsPromise, jsError);
 		}
 
 		return true;
@@ -121,12 +99,12 @@ namespace
 
 namespace mozjs
 {
-	JSObject* GetImagePromise(JSContext* cx, HWND hWnd, const std::wstring& imagePath)
+	JSObject* GetImagePromise(JSContext* ctx, HWND hWnd, const std::wstring& imagePath)
 	{
-		JS::RootedObject jsObject(cx, JS::NewPromiseObject(cx, nullptr));
+		JS::RootedObject jsObject(ctx, JS::NewPromiseObject(ctx, nullptr));
 		JsException::ExpectTrue(jsObject);
 
-		QwrThreadPool::GetInstance().AddTask([task = std::make_shared<ImageFetchTask>(cx, jsObject, hWnd, imagePath)]
+		QwrThreadPool::GetInstance().AddTask([task = std::make_shared<ImageFetchTask>(ctx, jsObject, hWnd, imagePath)]
 			{
 				std::invoke(*task);
 			});

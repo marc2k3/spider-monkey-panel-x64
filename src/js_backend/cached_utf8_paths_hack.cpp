@@ -28,16 +28,16 @@ namespace mozjs::hack
 		return g_cachedPaths;
 	}
 
-	std::optional<std::filesystem::path> GetCurrentScriptPath(JSContext* cx)
+	std::optional<std::filesystem::path> GetCurrentScriptPath(JSContext* ctx)
 	{
 		try
 		{
-			JS_ReportErrorUTF8(cx, "hacking around...");
-			JS::ExceptionStack excn(cx);
-			(void)JS::StealPendingExceptionStack(cx, &excn);
+			JS_ReportErrorUTF8(ctx, "hacking around...");
+			JS::ExceptionStack excn(ctx);
+			(void)JS::StealPendingExceptionStack(ctx, &excn);
 
-			JS::ErrorReportBuilder reportBuilder(cx);
-			if (!reportBuilder.init(cx, excn, JS::ErrorReportBuilder::SniffingBehavior::WithSideEffects))
+			JS::ErrorReportBuilder reportBuilder(ctx);
+			if (!reportBuilder.init(ctx, excn, JS::ErrorReportBuilder::SniffingBehavior::WithSideEffects))
 			{
 				throw QwrException("ErrorReportBuilder::init failed");
 			}

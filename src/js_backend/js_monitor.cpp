@@ -20,19 +20,19 @@ namespace
 
 namespace mozjs
 {
-	JsMonitor::JsMonitor() : slowScriptLimit_(config::advanced::slow_script_limit.get())
+	JsMonitor::JsMonitor() : m_slow_script_limit(config::advanced::slow_script_limit.get())
 	{
 		// JsMonitor might be created before fb2k is fully initialized
 		fb2k::inMainThread([this]
 			{
-				hFb2k_ = core_api::get_main_window();
+				m_main_window = core_api::get_main_window();
 			});
 	}
 
-	void JsMonitor::Start(JSContext* cx)
+	void JsMonitor::Start(JSContext* ctx)
 	{
-		pJsCtx_ = cx;
-		if (slowScriptLimit_ != std::chrono::seconds::zero())
+		m_ctx = ctx;
+		if (m_slow_script_limit != std::chrono::seconds::zero())
 		{
 			StartMonitorThread();
 		}
@@ -40,26 +40,26 @@ namespace mozjs
 
 	void JsMonitor::Stop()
 	{
-		if (slowScriptLimit_ != std::chrono::seconds::zero())
+		if (m_slow_script_limit != std::chrono::seconds::zero())
 		{
 			StopMonitorThread();
 		}
-		pJsCtx_ = nullptr;
+		m_ctx = nullptr;
 	}
 
 	void JsMonitor::AddContainer(JsContainer& jsContainer)
 	{
-		monitoredContainers_.emplace(&jsContainer, &jsContainer);
+		m_monitored_containers.emplace(&jsContainer, &jsContainer);
 	}
 
 	void JsMonitor::RemoveContainer(JsContainer& jsContainer)
 	{
-		monitoredContainers_.erase(&jsContainer);
+		m_monitored_containers.erase(&jsContainer);
 	}
 
 	void JsMonitor::OnJsActionStart(JsContainer& jsContainer)
 	{
-		auto it = monitoredContainers_.find(&jsContainer);
+		auto it = m_monitored_containers.find(&jsContainer);
 
 		auto& [key, data] = *it;
 		if (data.ignoreSlowScriptCheck)
@@ -71,46 +71,46 @@ namespace mozjs
 		data.slowScriptCheckpoint = curTime;
 
 		{
-			std::unique_lock<std::mutex> ul(watcherDataMutex_);
-			activeContainers_.emplace(&jsContainer, curTime);
-			hasAction_.notify_one();
+			std::unique_lock<std::mutex> ul(m_watcher_mutex);
+			m_active_containers.emplace(&jsContainer, curTime);
+			m_has_action.notify_one();
 		}
 	}
 
 	void JsMonitor::OnJsActionEnd(JsContainer& jsContainer)
 	{
-		auto it = monitoredContainers_.find(&jsContainer);
+		auto it = m_monitored_containers.find(&jsContainer);
 		it->second.slowScriptSecondHalf = false;
 
 		{
-			std::unique_lock<std::mutex> ul(watcherDataMutex_);
-			if (const auto itActive = activeContainers_.find(&jsContainer); itActive != activeContainers_.cend())
+			std::unique_lock<std::mutex> ul(m_watcher_mutex);
+			if (const auto itActive = m_active_containers.find(&jsContainer); itActive != m_active_containers.cend())
 			{
-				// container might or might not be in `activeContainers_` depending on if and when it's `ignoreSlowScriptCheck` was set
-				activeContainers_.erase(itActive);
+				// container might or might not be in `m_active_containers` depending on if and when it's `ignoreSlowScriptCheck` was set
+				m_active_containers.erase(itActive);
 			}
 		}
 	}
 
 	bool JsMonitor::OnInterrupt()
 	{
-		if (!pJsCtx_ || slowScriptLimit_ == std::chrono::seconds::zero())
+		if (!m_ctx || m_slow_script_limit == std::chrono::seconds::zero())
 		{
 			return true;
 		}
 
 		{
-			std::unique_lock<std::mutex> lock(watcherDataMutex_);
-			if (isInInterrupt_)
+			std::unique_lock<std::mutex> lock(m_watcher_mutex);
+			if (m_is_in_interrupt)
 			{
 				return true;
 			}
-			isInInterrupt_ = true;
+			m_is_in_interrupt = true;
 		}
 		auto autoBool = wil::scope_exit([&]
 			{
-				std::unique_lock<std::mutex> lock(watcherDataMutex_);
-				isInInterrupt_ = false;
+				std::unique_lock<std::mutex> lock(m_watcher_mutex);
+				m_is_in_interrupt = false;
 			});
 
 		const auto curTime = GetLowResTime();
@@ -118,21 +118,22 @@ namespace mozjs
 		{ // Action might've been blocked by modal window
 			const bool isInModal = HasActivePopup();
 
-			if (wasInModal_ && !isInModal)
+			if (m_was_in_modal && !isInModal)
 			{
-				for (auto& [pContainer, containerData] : monitoredContainers_)
+				for (auto& [pContainer, containerData] : m_monitored_containers)
 				{
 					containerData.slowScriptCheckpoint = curTime;
 				}
 				{
-					std::unique_lock<std::mutex> lock(watcherDataMutex_);
-					for (auto& [pContainer, startTime] : activeContainers_)
+					std::unique_lock<std::mutex> lock(m_watcher_mutex);
+					for (auto& [pContainer, startTime] : m_active_containers)
 					{
 						startTime = curTime;
 					}
 				}
 			}
-			wasInModal_ = isInModal;
+
+			m_was_in_modal = isInModal;
 
 			if (isInModal)
 			{
@@ -142,17 +143,17 @@ namespace mozjs
 
 		auto containerDataToProcess = [&]
 			{
-				auto lock = std::unique_lock(watcherDataMutex_);
+				auto lock = std::unique_lock(m_watcher_mutex);
 				std::vector<std::pair<JsContainer*, ContainerData*>> dataToProcess;
 
-				for (auto& [pContainer, containerData] : monitoredContainers_)
+				for (auto& [pContainer, containerData] : m_monitored_containers)
 				{
-					const auto it = std::ranges::find_if(activeContainers_, [pContainer = pContainer](auto& elem)
+					const auto it = std::ranges::find_if(m_active_containers, [pContainer = pContainer](auto& elem)
 						{
 							return (elem.first == pContainer);
 						});
 
-					if (activeContainers_.cend() != it)
+					if (m_active_containers.cend() != it)
 					{
 						dataToProcess.emplace_back(pContainer, &containerData);
 					}
@@ -164,7 +165,7 @@ namespace mozjs
 		{
 			auto& containerData = *pContainerData;
 
-			if (containerData.ignoreSlowScriptCheck || (curTime - containerData.slowScriptCheckpoint) < slowScriptLimit_ / 2.0)
+			if (containerData.ignoreSlowScriptCheck || (curTime - containerData.slowScriptCheckpoint) < m_slow_script_limit / 2.0)
 			{
 				continue;
 			}
@@ -210,9 +211,9 @@ namespace mozjs
 				std::string scriptInfo;
 				JS::AutoFilename filename;
 				unsigned lineno;
-				if (!JS::DescribeScriptedCaller(pJsCtx_, &filename, &lineno))
+				if (!JS::DescribeScriptedCaller(m_ctx, &filename, &lineno))
 				{
-					JS_ClearPendingException(pJsCtx_);
+					JS_ClearPendingException(m_ctx);
 					scriptInfo = "<failed to fetch script info>";
 				}
 				else
@@ -242,7 +243,7 @@ namespace mozjs
 			{ // TODO: this might stop the script different from the one in currently iterated container,
 				// we should get the container corresponding to the currently active realm.
 				// Example: panel_1(reported): window.NotifyOthers > panel_2(stopped): on_notify_data
-				JS_ReportErrorUTF8(pJsCtx_, "Script aborted by user");
+				JS_ReportErrorUTF8(m_ctx, "Script aborted by user");
 				return false;
 			}
 
@@ -255,10 +256,11 @@ namespace mozjs
 
 	void JsMonitor::StartMonitorThread()
 	{
-		shouldStopThread_ = false;
-		watcherThread_ = std::thread([&]
+		m_should_stop_thread = false;
+
+		m_watcher_thread = std::thread([this]
 			{
-				while (!shouldStopThread_)
+				while (!m_should_stop_thread)
 				{
 					// We want to avoid showing the slow script dialog if the user's laptop
 					// goes to sleep in the middle of running a script. To ensure this, we
@@ -274,21 +276,21 @@ namespace mozjs
 					std::this_thread::sleep_for(kMonitorRate);
 					bool hasPotentiallySlowScripts = false;
 					{
-						std::unique_lock<std::mutex> lock(watcherDataMutex_);
+						std::unique_lock<std::mutex> lock(m_watcher_mutex);
 
-						if (activeContainers_.empty())
+						if (m_active_containers.empty())
 						{
-							hasAction_.wait(lock, [&]
+							m_has_action.wait(lock, [&]
 								{
-									return (shouldStopThread_ || (!activeContainers_.empty() && !isInInterrupt_));
+									return (m_should_stop_thread || (!m_active_containers.empty() && !m_is_in_interrupt));
 								});
 						}
-						else if (isInInterrupt_)
+						else if (m_is_in_interrupt)
 						{ // Can't interrupt
 							continue;
 						}
 
-						if (shouldStopThread_)
+						if (m_should_stop_thread)
 						{
 							break;
 						}
@@ -297,25 +299,25 @@ namespace mozjs
 							{
 								if (HasActivePopup())
 								{ // popup detected, delay monitoring
-									wasInModal_ = true;
+									m_was_in_modal = true;
 									return false;
 								}
 
 								const auto curTime = GetLowResTime();
 
-								const auto it = std::ranges::find_if(activeContainers_, [&curTime, &slowScriptLimit = slowScriptLimit_](auto& elem)
+								const auto it = std::ranges::find_if(m_active_containers, [&curTime, &slowScriptLimit = m_slow_script_limit](auto& elem)
 									{
 										auto& [pContainer, startTime] = elem;
 										return ((curTime - startTime) > slowScriptLimit / 2.0);
 									});
 
-								return it != activeContainers_.cend();
+								return it != m_active_containers.cend();
 							}();
 					}
 
 					if (hasPotentiallySlowScripts)
 					{
-						JS_RequestInterruptCallback(pJsCtx_);
+						JS_RequestInterruptCallback(m_ctx);
 					}
 				}
 			});
@@ -324,14 +326,14 @@ namespace mozjs
 	void JsMonitor::StopMonitorThread()
 	{
 		{
-			std::unique_lock<std::mutex> lock(watcherDataMutex_);
-			shouldStopThread_ = true;
-			hasAction_.notify_one();
+			std::unique_lock<std::mutex> lock(m_watcher_mutex);
+			m_should_stop_thread = true;
+			m_has_action.notify_one();
 		}
 
-		if (watcherThread_.joinable())
+		if (m_watcher_thread.joinable())
 		{
-			watcherThread_.join();
+			m_watcher_thread.join();
 		}
 	}
 
@@ -347,7 +349,7 @@ namespace mozjs
 			return true;
 		}
 
-		if (hFb2k_ && GetLastActivePopup(hFb2k_) != hFb2k_)
+		if (m_main_window && GetLastActivePopup(m_main_window) != m_main_window)
 		{
 			return true;
 		}

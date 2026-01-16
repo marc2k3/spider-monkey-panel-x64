@@ -7,27 +7,27 @@ namespace
 {
 	using namespace mozjs;
 
-	std::string GetStackTraceString(JSContext* cx, JS::HandleObject exn)
+	std::string GetStackTraceString(JSContext* ctx, JS::HandleObject exn)
 	{
 		try
 		{
 			// Must not throw errors in error handler
 			// Note: exceptions thrown while compiling top-level script have no stack.
-			JS::RootedObject stackObj(cx, JS::ExceptionStackOrNull(exn));
+			JS::RootedObject stackObj(ctx, JS::ExceptionStackOrNull(exn));
 			if (!stackObj)
 			{
 				// quack?
-				return GetOptionalProperty<std::string>(cx, exn, "stack").value_or("");
+				return GetOptionalProperty<std::string>(ctx, exn, "stack").value_or("");
 			}
 
-			JS::RootedString stackStr(cx);
-			if (!JS::BuildStackString(cx, nullptr, stackObj, &stackStr, 2))
+			JS::RootedString stackStr(ctx);
+			if (!JS::BuildStackString(ctx, nullptr, stackObj, &stackStr, 2))
 			{
 				return "";
 			}
 
 			const auto& cachedPaths = hack::GetAllCachedUtf8Paths();
-			auto pfcStackStr = mozjs::convert::to_native::ToValue<pfc::string>(cx, stackStr);
+			auto pfcStackStr = mozjs::convert::to_native::ToValue<pfc::string>(ctx, stackStr);
 
 			for (const auto& [id, path] : cachedPaths)
 			{
@@ -39,19 +39,19 @@ namespace
 		}
 		catch (...)
 		{
-			mozjs::SuppressException(cx);
+			mozjs::SuppressException(ctx);
 			return "";
 		}
 	}
 
-	bool PrependTextToJsStringException(JSContext* cx, JS::HandleValue excn, const std::string& text)
+	bool PrependTextToJsStringException(JSContext* ctx, JS::HandleValue excn, const std::string& text)
 	{
 		std::string currentMessage;
 
 		try
 		{
 			// Must not throw errors in error handler
-			currentMessage = convert::to_native::ToValue<std::string>(cx, excn);
+			currentMessage = convert::to_native::ToValue<std::string>(ctx, excn);
 		}
 		catch (const JsException&)
 		{
@@ -79,12 +79,12 @@ namespace
 			newMessage = fmt::format("{}:\n{}", text, currentMessage);
 		}
 
-		JS::RootedValue jsMessage(cx);
+		JS::RootedValue jsMessage(ctx);
 
 		try
 		{
 			// Must not throw errors in error handler
-			convert::to_js::ToValue<std::string>(cx, newMessage, &jsMessage);
+			convert::to_js::ToValue<std::string>(ctx, newMessage, &jsMessage);
 		}
 		catch (const JsException&)
 		{
@@ -95,20 +95,20 @@ namespace
 			return false;
 		}
 
-		JS_SetPendingException(cx, jsMessage);
+		JS_SetPendingException(ctx, jsMessage);
 		return true;
 	}
 
-	bool PrependTextToJsObjectException(JSContext* cx, JS::HandleValue excn, const std::string& text)
+	bool PrependTextToJsObjectException(JSContext* ctx, JS::HandleValue excn, const std::string& text)
 	{
-		auto autoClearOnError = wil::scope_exit([cx]
+		auto autoClearOnError = wil::scope_exit([ctx]
 			{
-				JS_ClearPendingException(cx);
+				JS_ClearPendingException(ctx);
 			});
 
-		JS::RootedObject excnObject(cx, &excn.toObject());
-		JS_ClearPendingException(cx); ///< need this for js::ErrorReport::init
-		JS::RootedObject excnStackObject(cx, JS::ExceptionStackOrNull(excnObject));
+		JS::RootedObject excnObject(ctx, &excn.toObject());
+		JS_ClearPendingException(ctx); ///< need this for js::ErrorReport::init
+		JS::RootedObject excnStackObject(ctx, JS::ExceptionStackOrNull(excnObject));
 
 		if (!excnStackObject)
 		{
@@ -116,10 +116,10 @@ namespace
 			return false;
 		}
 
-		JS::ExceptionStack excnStack(cx, excn, excnStackObject);
-		JS::ErrorReportBuilder reportBuilder(cx);
+		JS::ExceptionStack excnStack(ctx, excn, excnStackObject);
+		JS::ErrorReportBuilder reportBuilder(ctx);
 
-		if (!reportBuilder.init(cx, excnStack, JS::ErrorReportBuilder::SniffingBehavior::WithSideEffects))
+		if (!reportBuilder.init(ctx, excnStack, JS::ErrorReportBuilder::SniffingBehavior::WithSideEffects))
 		{
 			// Sometimes happens with custom JS errors
 			return false;
@@ -139,47 +139,47 @@ namespace
 			newMessage = fmt::format("{}:\n{}", text, currentMessage);
 		}
 
-		JS::RootedValue jsFilename(cx);
-		JS::RootedValue jsMessage(cx);
+		JS::RootedValue jsFilename(ctx);
+		JS::RootedValue jsMessage(ctx);
 
 		try
 		{
 			// Must not throw errors in error handler
-			convert::to_js::ToValue<std::string>(cx, pReport->filename, &jsFilename);
-			convert::to_js::ToValue<std::string>(cx, newMessage, &jsMessage);
+			convert::to_js::ToValue<std::string>(ctx, pReport->filename, &jsFilename);
+			convert::to_js::ToValue<std::string>(ctx, newMessage, &jsMessage);
 		}
 		catch (...)
 		{
-			mozjs::SuppressException(cx);
+			mozjs::SuppressException(ctx);
 			return false;
 		}
 
-		JS::RootedValue newExcn(cx);
-		JS::RootedString jsFilenameStr(cx, jsFilename.toString());
-		JS::RootedString jsMessageStr(cx, jsMessage.toString());
+		JS::RootedValue newExcn(ctx);
+		JS::RootedString jsFilenameStr(ctx, jsFilename.toString());
+		JS::RootedString jsMessageStr(ctx, jsMessage.toString());
 
-		if (!JS_WrapObject(cx, &excnStackObject))
+		if (!JS_WrapObject(ctx, &excnStackObject))
 		{
 			// Need wrapping for the case when exception is thrown from internal global
 			return false;
 		}
 
-		JS::Rooted<mozilla::Maybe<JS::Value>> cause(cx, mozilla::Nothing{});
+		JS::Rooted<mozilla::Maybe<JS::Value>> cause(ctx, mozilla::Nothing{});
 
-		if (!JS::CreateError(cx, static_cast<JSExnType>(pReport->exnType), excnStackObject, jsFilenameStr, pReport->lineno, pReport->column, nullptr, jsMessageStr, cause, &newExcn))
+		if (!JS::CreateError(ctx, static_cast<JSExnType>(pReport->exnType), excnStackObject, jsFilenameStr, pReport->lineno, pReport->column, nullptr, jsMessageStr, cause, &newExcn))
 		{
 			return false;
 		}
 
 		autoClearOnError.release();
-		JS_SetPendingException(cx, newExcn);
+		JS_SetPendingException(ctx, newExcn);
 		return true;
 	}
 }
 
 namespace mozjs
 {
-	std::string ExceptionToText(JSContext* cx)
+	std::string ExceptionToText(JSContext* ctx)
 	{
 		try
 		{
@@ -187,16 +187,16 @@ namespace mozjs
 		}
 		catch (const JsException&)
 		{
-			return JsErrorToText(cx);
+			return JsErrorToText(ctx);
 		}
 		catch (const QwrException& e)
 		{
-			JS_ClearPendingException(cx);
+			JS_ClearPendingException(ctx);
 			return e.what();
 		}
 		catch (const _com_error& e)
 		{
-			JS_ClearPendingException(cx);
+			JS_ClearPendingException(ctx);
 
 			const auto errorMsg8 = smp::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
 			const auto errorSource8 = smp::ToU8(std::wstring_view{ e.Source().length() ? static_cast<const wchar_t*>(e.Source()) : L"<none>" });
@@ -216,23 +216,23 @@ namespace mozjs
 		}
 		catch (const std::bad_alloc& e)
 		{
-			JS_ClearPendingException(cx);
+			JS_ClearPendingException(ctx);
 			return e.what();
 		}
 		// SM is not designed to handle uncaught exceptions, so we are risking here,
 		// hoping that this exception will reach fb2k handler.
 	}
 
-	std::string JsErrorToText(JSContext* cx)
+	std::string JsErrorToText(JSContext* ctx)
 	{
-		JS::RootedValue excn(cx);
-		JS_GetPendingException(cx, &excn);
-		JS_ClearPendingException(cx); ///< need this for js::ErrorReport::init
+		JS::RootedValue excn(ctx);
+		JS_GetPendingException(ctx, &excn);
+		JS_ClearPendingException(ctx); ///< need this for js::ErrorReport::init
 
-		auto autoErrorClear = wil::scope_exit([cx]
+		auto autoErrorClear = wil::scope_exit([ctx]
 			{
 				// There should be no exceptions on function exit
-				JS_ClearPendingException(cx);
+				JS_ClearPendingException(ctx);
 			});
 
 		std::string errorText;
@@ -241,18 +241,18 @@ namespace mozjs
 			try
 			{
 				// Must not throw errors in error handler
-				errorText = convert::to_native::ToValue<std::string>(cx, excn);
+				errorText = convert::to_native::ToValue<std::string>(ctx, excn);
 			}
 			catch (...)
 			{
-				mozjs::SuppressException(cx);
+				mozjs::SuppressException(ctx);
 			}
 		}
 		else if (excn.isObject())
 		{
-			JS::RootedObject excnObject(cx, &excn.toObject());
+			JS::RootedObject excnObject(ctx, &excn.toObject());
 
-			JSErrorReport* pReport = JS_ErrorFromException(cx, excnObject);
+			JSErrorReport* pReport = JS_ErrorFromException(ctx, excnObject);
 			if (!pReport)
 			{
 				// Sometimes happens with custom JS errors
@@ -296,7 +296,7 @@ namespace mozjs
 					errorText += tmpBuf;
 				}
 
-				const auto stackTrace = GetStackTraceString(cx, excnObject);
+				const auto stackTrace = GetStackTraceString(ctx, excnObject);
 
 				if (!stackTrace.empty())
 				{
@@ -308,7 +308,7 @@ namespace mozjs
 		return errorText;
 	}
 
-	void ExceptionToJsError(JSContext* cx)
+	void ExceptionToJsError(JSContext* ctx)
 	{
 		try
 		{
@@ -319,19 +319,19 @@ namespace mozjs
 		}
 		catch (const QwrException& e)
 		{
-			JS_ClearPendingException(cx);
-			JS_ReportErrorUTF8(cx, e.what());
+			JS_ClearPendingException(ctx);
+			JS_ReportErrorUTF8(ctx, e.what());
 		}
 		catch (const _com_error& e)
 		{
-			JS_ClearPendingException(cx);
+			JS_ClearPendingException(ctx);
 
 			const auto errorMsg8 = smp::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
 			const auto errorSource8 = smp::ToU8(std::wstring_view{ e.Source().length() ? e.Source().GetBSTR() : L"<none>"});
 			const auto errorDesc8 = smp::ToU8(std::wstring_view{ e.Description().length() ? e.Description().GetBSTR() : L"<none>"});
 
 			JS_ReportErrorUTF8(
-				cx,
+				ctx,
 				fmt::format(
 					"COM error:\n"
 					"  hresult: {:#x}\n"
@@ -347,32 +347,32 @@ namespace mozjs
 		}
 		catch (const std::bad_alloc&)
 		{
-			JS_ClearPendingException(cx);
-			JS_ReportAllocationOverflow(cx);
+			JS_ClearPendingException(ctx);
+			JS_ReportAllocationOverflow(ctx);
 		}
 		// SM is not designed to handle uncaught exceptions, so we are risking here,
 		// hoping that this exception will reach fb2k handler.
 	}
 
-	void PrependTextToJsError(JSContext* cx, const std::string& text)
+	void PrependTextToJsError(JSContext* ctx, const std::string& text)
 	{
-		auto autoJsReport = wil::scope_exit([cx, text]
+		auto autoJsReport = wil::scope_exit([ctx, text]
 			{
-				JS_ReportErrorUTF8(cx, "%s", text.c_str());
+				JS_ReportErrorUTF8(ctx, "%s", text.c_str());
 			});
 
-		if (!JS_IsExceptionPending(cx))
+		if (!JS_IsExceptionPending(ctx))
 		{
 			return;
 		}
 
 		// Get exception object before printing and clearing exception.
-		JS::RootedValue excn(cx);
-		JS_GetPendingException(cx, &excn);
+		JS::RootedValue excn(ctx);
+		JS_GetPendingException(ctx, &excn);
 
 		if (excn.isString())
 		{
-			if (PrependTextToJsStringException(cx, excn, text))
+			if (PrependTextToJsStringException(ctx, excn, text))
 			{
 				autoJsReport.release();
 			}
@@ -380,7 +380,7 @@ namespace mozjs
 		}
 		else if (excn.isObject())
 		{
-			if (PrependTextToJsObjectException(cx, excn, text))
+			if (PrependTextToJsObjectException(ctx, excn, text))
 			{
 				autoJsReport.release();
 			}
@@ -388,7 +388,7 @@ namespace mozjs
 		}
 	}
 
-	void SuppressException(JSContext* cx)
+	void SuppressException(JSContext* ctx)
 	{
 		try
 		{
@@ -409,6 +409,6 @@ namespace mozjs
 		// SM is not designed to handle uncaught exceptions, so we are risking here,
 		// hoping that this exception will reach fb2k handler.
 
-		JS_ClearPendingException(cx);
+		JS_ClearPendingException(ctx);
 	}
 }

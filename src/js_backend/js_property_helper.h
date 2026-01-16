@@ -3,10 +3,10 @@
 namespace mozjs
 {
 	template <typename T>
-	std::optional<T> GetOptionalProperty(JSContext* cx, JS::HandleObject jsObject, const std::string& propName)
+	std::optional<T> GetOptionalProperty(JSContext* ctx, JS::HandleObject jsObject, const std::string& propName)
 	{
 		bool hasProp;
-		if (!JS_HasProperty(cx, jsObject, propName.c_str(), &hasProp))
+		if (!JS_HasProperty(ctx, jsObject, propName.c_str(), &hasProp))
 		{
 			throw JsException();
 		}
@@ -16,31 +16,31 @@ namespace mozjs
 			return std::nullopt;
 		}
 
-		JS::RootedValue jsValue(cx);
-		if (!JS_GetProperty(cx, jsObject, propName.c_str(), &jsValue))
+		JS::RootedValue jsValue(ctx);
+		if (!JS_GetProperty(ctx, jsObject, propName.c_str(), &jsValue))
 		{
 			throw JsException();
 		}
 
-		return convert::to_native::ToValue<T>(cx, jsValue);
+		return convert::to_native::ToValue<T>(ctx, jsValue);
 	};
 
 	template <typename T>
-	void AddProperty(JSContext* cx, JS::HandleObject jsObject, const std::string& propName, const T& propValue)
+	void AddProperty(JSContext* ctx, JS::HandleObject jsObject, const std::string& propName, const T& propValue)
 	{
 		if constexpr (std::is_same_v<T, JS::RootedValue>)
 		{
-			if (!JS_DefineProperty(cx, jsObject, propName.c_str(), propValue, kDefaultPropsFlags))
+			if (!JS_DefineProperty(ctx, jsObject, propName.c_str(), propValue, kDefaultPropsFlags))
 			{
 				throw JsException();
 			}
 		}
 		else
 		{
-			JS::RootedValue jsProperty(cx);
-			convert::to_js::ToValue(cx, propValue, &jsProperty);
+			JS::RootedValue jsProperty(ctx);
+			convert::to_js::ToValue(ctx, propValue, &jsProperty);
 
-			if (!JS_DefineProperty(cx, jsObject, propName.c_str(), jsProperty, kDefaultPropsFlags))
+			if (!JS_DefineProperty(ctx, jsObject, propName.c_str(), jsProperty, kDefaultPropsFlags))
 			{
 				throw JsException();
 			}
@@ -48,12 +48,12 @@ namespace mozjs
 	};
 
 	template <typename T>
-	void SetProperty(JSContext* cx, JS::HandleObject jsObject, const std::string& propName, const T& propValue)
+	void SetProperty(JSContext* ctx, JS::HandleObject jsObject, const std::string& propName, const T& propValue)
 	{
-		JS::RootedValue jsProperty(cx);
-		convert::to_js::ToValue(cx, propValue, &jsProperty);
+		JS::RootedValue jsProperty(ctx);
+		convert::to_js::ToValue(ctx, propValue, &jsProperty);
 
-		if (!JS_SetProperty(cx, jsObject, propName.c_str(), jsProperty))
+		if (!JS_SetProperty(ctx, jsObject, propName.c_str(), jsProperty))
 		{
 			throw JsException();
 		}

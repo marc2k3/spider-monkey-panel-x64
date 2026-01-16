@@ -61,9 +61,9 @@ namespace mozjs
 
 	void JsEngine::PrepareForExit() noexcept
 	{
-		shouldShutdown_ = true;
+		m_should_shutdown = true;
 
-		if (registeredContainers_.empty())
+		if (m_registered_containers.empty())
 		{
 			// finalize immediately, since we don't have containers to care about
 			Finalize();
@@ -72,29 +72,29 @@ namespace mozjs
 
 	bool JsEngine::RegisterContainer(JsContainer& jsContainer) noexcept
 	{
-		if (registeredContainers_.empty() && !Initialize())
+		if (m_registered_containers.empty() && !Initialize())
 		{
 			return false;
 		}
 
-		jsContainer.SetJsCtx(pJsCtx_);
-		registeredContainers_.emplace(&jsContainer, jsContainer);
-		jsMonitor_.AddContainer(jsContainer);
+		jsContainer.SetJsCtx(m_ctx);
+		m_registered_containers.emplace(&jsContainer, jsContainer);
+		m_monitor.AddContainer(jsContainer);
 
 		return true;
 	}
 
 	void JsEngine::UnregisterContainer(JsContainer& jsContainer) noexcept
 	{
-		if (auto it = registeredContainers_.find(&jsContainer); it != registeredContainers_.end())
+		if (auto it = m_registered_containers.find(&jsContainer); it != m_registered_containers.end())
 		{
-			jsMonitor_.RemoveContainer(jsContainer);
+			m_monitor.RemoveContainer(jsContainer);
 
 			it->second.get().Finalize();
-			registeredContainers_.erase(it);
+			m_registered_containers.erase(it);
 		}
 
-		if (registeredContainers_.empty())
+		if (m_registered_containers.empty())
 		{
 			Finalize();
 		}
@@ -102,91 +102,91 @@ namespace mozjs
 
 	void JsEngine::MaybeRunJobs() noexcept
 	{
-		if (!isInitialized_ || areJobsInProgress_)
+		if (!m_is_initialised || m_are_jobs_in_progress)
 			return;
 
-		jobsStartTime_ = timeGetTime();
-		areJobsInProgress_ = true;
-		auto autoJobs = wil::scope_exit([&]
+		m_are_jobs_in_progress = true;
+
+		auto autoJobs = wil::scope_exit([this]
 			{
-				areJobsInProgress_ = false;
+				m_are_jobs_in_progress = false;
 			});
 
 		{
-			js::RunJobs(pJsCtx_);
+			js::RunJobs(m_ctx);
 
-			for (size_t i = 0; i < rejectedPromises_.length(); ++i)
+			for (size_t i = 0; i < m_rejected_promises.length(); ++i)
 			{
-				const auto& rejectedPromise = rejectedPromises_[i];
+				const auto& rejectedPromise = m_rejected_promises[i];
 				if (!rejectedPromise)
 				{
 					continue;
 				}
 
-				JSAutoRealm ac(pJsCtx_, rejectedPromise);
-				AutoJsReport are(pJsCtx_);
+				JSAutoRealm ac(m_ctx, rejectedPromise);
+				AutoJsReport are(m_ctx);
 
-				JS::RootedValue jsValue(pJsCtx_, JS::GetPromiseResult(rejectedPromise));
+				JS::RootedValue jsValue(m_ctx, JS::GetPromiseResult(rejectedPromise));
 				if (!jsValue.isNullOrUndefined())
 				{
-					JS_SetPendingException(pJsCtx_, jsValue);
+					JS_SetPendingException(m_ctx, jsValue);
 				}
 				else
 				{ // Should not reach here, mostly paranoia check
-					JS_ReportErrorUTF8(pJsCtx_, "Unhandled promise rejection");
+					JS_ReportErrorUTF8(m_ctx, "Unhandled promise rejection");
 				}
 			}
-			rejectedPromises_.get().clear();
+			m_rejected_promises.get().clear();
 		}
 	}
 
 	void JsEngine::OnJsActionStart(JsContainer& jsContainer) noexcept
 	{
-		jsMonitor_.OnJsActionStart(jsContainer);
+		m_monitor.OnJsActionStart(jsContainer);
 	}
 
 	void JsEngine::OnJsActionEnd(JsContainer& jsContainer) noexcept
 	{
-		jsMonitor_.OnJsActionEnd(jsContainer);
+		m_monitor.OnJsActionEnd(jsContainer);
 	}
 
 	JsGc& JsEngine::GetGcEngine() noexcept
 	{
-		return jsGc_;
+		return m_gc;
 	}
 
 	const JsGc& JsEngine::GetGcEngine() const noexcept
 	{
-		return jsGc_;
+		return m_gc;
 	}
 
 	JsScriptCache& JsEngine::GetScriptCache() noexcept
 	{
-		return *pScriptCache_;
+		return *m_script_cache;
 	}
 
 	void JsEngine::OnHeartbeat() noexcept
 	{
-		if (!isInitialized_ || isBeating_ || shouldStopHeartbeatThread_)
+		if (!m_is_initialised || m_is_beating || m_should_stop_heartbeat_thread)
 		{
 			return;
 		}
 
-		isBeating_ = true;
+		m_is_beating = true;
 
 		{
-			if (!jsGc_.MaybeGc())
+			if (!m_gc.MaybeGc())
 			{ // OOM
 				ReportOomError();
 			}
 		}
 
-		isBeating_ = false;
+		m_is_beating = false;
 	}
 
 	bool JsEngine::Initialize() noexcept
 	{
-		if (isInitialized_)
+		if (m_is_initialised)
 		{
 			return true;
 		}
@@ -201,35 +201,35 @@ namespace mozjs
 			autoJsCtx.reset(JS_NewContext(JsGc::GetMaxHeap()));
 			QwrException::ExpectTrue(autoJsCtx.get(), "JS_NewContext failed");
 
-			JSContext* cx = autoJsCtx.get();
+			JSContext* ctx = autoJsCtx.get();
 
-			JS_SetNativeStackQuota(cx, kMaxStackLimit);
+			JS_SetNativeStackQuota(ctx, kMaxStackLimit);
 
-			if (!JS_AddInterruptCallback(cx, InterruptHandler))
+			if (!JS_AddInterruptCallback(ctx, InterruptHandler))
 			{
 				throw JsException();
 			}
 
-			if (!js::UseInternalJobQueues(cx))
+			if (!js::UseInternalJobQueues(ctx))
 			{
 				throw JsException();
 			}
 
-			JS::SetPromiseRejectionTrackerCallback(cx, RejectedPromiseHandler, this);
+			JS::SetPromiseRejectionTrackerCallback(ctx, RejectedPromiseHandler, this);
 
-			// TODO: JS::SetWarningReporter(pJsCtx_)
+			// TODO: JS::SetWarningReporter(m_ctx)
 
-			if (!JS::InitSelfHostedCode(cx))
+			if (!JS::InitSelfHostedCode(ctx))
 			{
 				throw JsException();
 			}
 
-			jsGc_.Initialize(cx);
-			rejectedPromises_.init(cx, JS::GCVector<JSObject*, 0, js::SystemAllocPolicy>(js::SystemAllocPolicy()));
-			pScriptCache_ = std::make_unique<JsScriptCache>();
+			m_gc.Initialize(ctx);
+			m_rejected_promises.init(ctx, JS::GCVector<JSObject*, 0, js::SystemAllocPolicy>(js::SystemAllocPolicy()));
+			m_script_cache = std::make_unique<JsScriptCache>();
 
 			StartHeartbeatThread();
-			jsMonitor_.Start(cx);
+			m_monitor.Start(ctx);
 		}
 		catch (const JsException&)
 		{
@@ -242,62 +242,63 @@ namespace mozjs
 			return false;
 		}
 
-		pJsCtx_ = autoJsCtx.release();
-		isInitialized_ = true;
+		m_ctx = autoJsCtx.release();
+		m_is_initialised = true;
 
 		return true;
 	}
 
 	void JsEngine::Finalize() noexcept
 	{
-		if (pJsCtx_)
+		if (m_ctx)
 		{
-			jsMonitor_.Stop();
+			m_monitor.Stop();
 			// Stop the thread first, so that we don't get additional GC's during jsGc.Finalize
 			StopHeartbeatThread();
-			jsGc_.Finalize();
+			m_gc.Finalize();
 
-			pScriptCache_.reset();
-			rejectedPromises_.reset();
+			m_script_cache.reset();
+			m_rejected_promises.reset();
 
-			JS_DestroyContext(pJsCtx_);
-			pJsCtx_ = nullptr;
+			JS_DestroyContext(m_ctx);
+			m_ctx = nullptr;
 		}
 
-		if (shouldShutdown_)
+		if (m_should_shutdown)
 		{
 			smp::TimerManager_Native::Get().Finalize();
 			JS_ShutDown();
 			smp::DeleteAllStoredObject();
 		}
 
-		isInitialized_ = false;
+		m_is_initialised = false;
 	}
 
 	void JsEngine::StartHeartbeatThread() noexcept
 	{
-		if (!heartbeatWindow_)
+		if (!m_heartbeat_window)
 		{
-			heartbeatWindow_ = smp::HeartbeatWindow::Create();
+			m_heartbeat_window = smp::HeartbeatWindow::Create();
 		}
 
-		shouldStopHeartbeatThread_ = false;
-		heartbeatThread_ = std::thread([parent = this]
+		m_should_stop_heartbeat_thread = false;
+
+		m_heartbeat_thread = std::thread([parent = this]
 			{
-				while (!parent->shouldStopHeartbeatThread_)
+				while (!parent->m_should_stop_heartbeat_thread)
 				{
 					std::this_thread::sleep_for(std::chrono::milliseconds(kHeartbeatRateMs));
-					PostMessageW(parent->heartbeatWindow_->GetHwnd(), std::to_underlying(smp::MiscMessage::heartbeat), 0, 0);
+					PostMessageW(parent->m_heartbeat_window->GetHwnd(), std::to_underlying(smp::MiscMessage::heartbeat), 0, 0);
 				}
 			});
 	}
 
 	void JsEngine::StopHeartbeatThread() noexcept
 	{
-		if (heartbeatThread_.joinable())
+		if (m_heartbeat_thread.joinable())
 		{
-			shouldStopHeartbeatThread_ = true;
-			heartbeatThread_.join();
+			m_should_stop_heartbeat_thread = true;
+			m_heartbeat_thread.join();
 		}
 	}
 
@@ -308,7 +309,7 @@ namespace mozjs
 
 	bool JsEngine::OnInterrupt() noexcept
 	{
-		return jsMonitor_.OnInterrupt();
+		return m_monitor.OnInterrupt();
 	}
 
 	void JsEngine::RejectedPromiseHandler(JSContext*, bool, JS::HandleObject promise, JS::PromiseRejectionHandlingState state, void* data) noexcept
@@ -317,7 +318,7 @@ namespace mozjs
 
 		if (JS::PromiseRejectionHandlingState::Handled == state)
 		{
-			auto& uncaughtRejections = self.rejectedPromises_;
+			auto& uncaughtRejections = self.m_rejected_promises;
 
 			for (size_t i = 0; i < uncaughtRejections.length(); ++i)
 			{
@@ -332,13 +333,13 @@ namespace mozjs
 		}
 		else
 		{
-			self.rejectedPromises_.get().append(promise);
+			self.m_rejected_promises.get().append(promise);
 		}
 	}
 
 	void JsEngine::ReportOomError() noexcept
 	{
-		for (auto& [hWnd, jsContainer] : registeredContainers_)
+		for (auto& [hWnd, jsContainer] : m_registered_containers)
 		{
 			auto& jsContainerRef = jsContainer.get();
 
@@ -347,7 +348,7 @@ namespace mozjs
 				continue;
 			}
 
-			jsContainerRef.Fail(fmt::format("Out of memory: {}/{} bytes", jsContainerRef.pNativeRealm_->GetCurrentHeapBytes(), JsGc::GetMaxHeap()));
+			jsContainerRef.Fail(fmt::format("Out of memory: {}/{} bytes", jsContainerRef.m_realm->GetCurrentHeapBytes(), JsGc::GetMaxHeap()));
 		}
 	}
 }

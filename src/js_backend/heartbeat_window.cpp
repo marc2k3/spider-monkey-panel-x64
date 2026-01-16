@@ -5,11 +5,11 @@
 
 namespace smp
 {
-	HeartbeatWindow::HeartbeatWindow(HWND hWnd) : hWnd_(hWnd) {};
+	HeartbeatWindow::HeartbeatWindow(HWND wnd) : m_wnd(wnd) {};
 
 	HeartbeatWindow ::~HeartbeatWindow()
 	{
-		DestroyWindow(hWnd_);
+		DestroyWindow(m_wnd);
 	};
 
 	std::unique_ptr<HeartbeatWindow> HeartbeatWindow::Create()
@@ -31,10 +31,10 @@ namespace smp
 
 	HWND HeartbeatWindow::GetHwnd() const
 	{
-		return hWnd_;
+		return m_wnd;
 	}
 
-	LRESULT CALLBACK HeartbeatWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK HeartbeatWindow::WndProc(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (message)
 		{
@@ -50,7 +50,7 @@ namespace smp
 		}
 		default:
 		{
-			return DefWindowProcW(hWnd, message, wParam, lParam);
+			return DefWindowProcW(wnd, message, wParam, lParam);
 		}
 		}
 	}

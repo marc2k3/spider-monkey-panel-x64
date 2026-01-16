@@ -9,9 +9,9 @@ namespace mozjs
 		return v.isUndefined() ? nullptr : v.toPrivate();
 	}
 
-	inline void* GetInstanceFromReservedSlot(JSContext* cx, JS::Handle<JSObject*> obj, const JSClass* cla, JS::CallArgs* args)
+	inline void* GetInstanceFromReservedSlot(JSContext* ctx, JS::Handle<JSObject*> obj, const JSClass* cla, JS::CallArgs* args)
 	{
-		if (JS_InstanceOf(cx, obj, cla, args))
+		if (JS_InstanceOf(ctx, obj, cla, args))
 		{
 			return GetMaybePtrFromReservedSlot(obj, 0u);
 		}
@@ -23,11 +23,11 @@ namespace mozjs
 	///        and store it in the current global object.
 	///        Created prototype is not accessible from JS.
 	template <typename JsObjectType>
-	void CreateAndSavePrototype(JSContext* cx, JsPrototypeId protoId)
+	void CreateAndSavePrototype(JSContext* ctx, JsPrototypeId protoId)
 	{
-		auto globalObject = JS::RootedObject(cx, JS::CurrentGlobalOrNull(cx));
+		auto globalObject = JS::RootedObject(ctx, JS::CurrentGlobalOrNull(ctx));
 		const auto slotIdx = JSCLASS_GLOBAL_SLOT_COUNT + std::to_underlying(protoId);
-		auto jsProto = JS::RootedObject(cx, JsObjectType::CreateProto(cx));
+		auto jsProto = JS::RootedObject(ctx, JsObjectType::CreateProto(ctx));
 		auto protoVal = JS::ObjectValue(*jsProto);
 		JS::SetReservedSlot(globalObject, slotIdx, protoVal);
 	}
@@ -36,20 +36,20 @@ namespace mozjs
 	///        and store it in the current global object.
 	///        Created prototype is accessible from JS.
 	template <typename JsObjectType>
-	void CreateAndInstallPrototype(JSContext* cx, JsPrototypeId protoId)
+	void CreateAndInstallPrototype(JSContext* ctx, JsPrototypeId protoId)
 	{
-		auto globalObject = JS::RootedObject(cx, JS::CurrentGlobalOrNull(cx));
+		auto globalObject = JS::RootedObject(ctx, JS::CurrentGlobalOrNull(ctx));
 		const auto slotIdx = JSCLASS_GLOBAL_SLOT_COUNT + std::to_underlying(protoId);
-		auto jsProto = JS::RootedObject(cx, JsObjectType::InstallProto(cx, globalObject));
+		auto jsProto = JS::RootedObject(ctx, JsObjectType::InstallProto(ctx, globalObject));
 		auto protoVal = JS::ObjectValue(*jsProto);
 		JS::SetReservedSlot(globalObject, slotIdx, protoVal);
 	}
 
 	/// @brief Get the prototype for the specified object from the current global object.
 	template <typename JsObjectType>
-	JSObject* GetPrototype(JSContext* cx, JsPrototypeId protoId)
+	JSObject* GetPrototype(JSContext* ctx, JsPrototypeId protoId)
 	{
-		auto globalObject = JS::RootedObject(cx, JS::CurrentGlobalOrNull(cx));
+		auto globalObject = JS::RootedObject(ctx, JS::CurrentGlobalOrNull(ctx));
 		const auto slotIdx = JSCLASS_GLOBAL_SLOT_COUNT + std::to_underlying(protoId);
 		auto protoVal = JS::GetReservedSlot(globalObject, slotIdx);
 
@@ -66,9 +66,9 @@ namespace mozjs
 	/// @brief Get the prototype for the specified object from the current global object.
 	///        And create the prototype, if it's missing.
 	template <typename JsObjectType>
-	JSObject* GetOrCreatePrototype(JSContext* cx, JsPrototypeId protoId)
+	JSObject* GetOrCreatePrototype(JSContext* ctx, JsPrototypeId protoId)
 	{
-		auto globalObject = JS::RootedObject(cx, JS::CurrentGlobalOrNull(cx));
+		auto globalObject = JS::RootedObject(ctx, JS::CurrentGlobalOrNull(ctx));
 		const auto slotIdx = JSCLASS_GLOBAL_SLOT_COUNT + std::to_underlying(protoId);
 
 		{ // Try fetching prototype
@@ -80,7 +80,7 @@ namespace mozjs
 			}
 		}
 
-		CreateAndSavePrototype<JsObjectType>(cx, protoId);
+		CreateAndSavePrototype<JsObjectType>(ctx, protoId);
 
 		auto protoVal = JS::GetReservedSlot(globalObject, slotIdx);
 		return &protoVal.toObject();

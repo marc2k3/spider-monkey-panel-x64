@@ -15,11 +15,11 @@ namespace smp
 		[[nodiscard]] HWND GetHwnd() const;
 
 	private:
-		HeartbeatWindow(HWND hWnd);
+		HeartbeatWindow(HWND wnd);
 
-		static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+		static LRESULT CALLBACK WndProc(HWND wnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	private:
-		HWND hWnd_{};
+		HWND m_wnd{};
 	};
 }

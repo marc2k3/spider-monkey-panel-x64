@@ -14,27 +14,22 @@ namespace
 {
 	using namespace mozjs;
 
-	class JsAlbumArtTask : public JsAsyncTaskImpl<JS::HandleValue>
+	struct JsAlbumArtTask : public JsAsyncTaskImpl<JS::HandleValue>
 	{
-	public:
-		JsAlbumArtTask(JSContext* cx, JS::HandleValue jsPromise);
+		JsAlbumArtTask(JSContext* ctx, JS::HandleValue jsPromise);
 		~JsAlbumArtTask() override = default;
 
-		void SetData(std::unique_ptr<Gdiplus::Bitmap> image, const std::string& path);
+		bool InvokeJsImpl(JSContext* ctx, JS::HandleObject jsGlobal, JS::HandleValue jsPromiseValue) override;
 
-	private:
-		bool InvokeJsImpl(JSContext* cx, JS::HandleObject jsGlobal, JS::HandleValue jsPromiseValue) override;
-
-	private:
-		std::unique_ptr<Gdiplus::Bitmap> image_;
-		std::string path_;
+		std::unique_ptr<Gdiplus::Bitmap> m_image;
+		std::string m_path;
 	};
 
 	class AlbumArtV2FetchTask
 	{
 	public:
 		AlbumArtV2FetchTask(
-			JSContext* cx,
+			JSContext* ctx,
 			JS::HandleObject jsPromise,
 			HWND wnd,
 			const metadb_handle_ptr& handle,
@@ -58,11 +53,11 @@ namespace
 		uint32_t m_art_id{};
 		bool m_want_stub{}, m_only_embed{};
 
-		std::shared_ptr<JsAlbumArtTask> jsTask_;
+		std::shared_ptr<JsAlbumArtTask> m_task;
 	};
 
 	AlbumArtV2FetchTask::AlbumArtV2FetchTask(
-		JSContext* cx,
+		JSContext* ctx,
 		JS::HandleObject jsPromise,
 		HWND wnd,
 		const metadb_handle_ptr& handle,
@@ -75,67 +70,58 @@ namespace
 		, m_want_stub(want_stub)
 		, m_only_embed(only_embed)
 	{
-		JS::RootedValue jsPromiseValue(cx, JS::ObjectValue(*jsPromise));
-		jsTask_ = std::make_unique<JsAlbumArtTask>(cx, jsPromiseValue);
+		JS::RootedValue jsPromiseValue(ctx, JS::ObjectValue(*jsPromise));
+		m_task = std::make_unique<JsAlbumArtTask>(ctx, jsPromiseValue);
 	}
 
 	void AlbumArtV2FetchTask::operator()()
 	{
-		if (!jsTask_->IsCanceled())
+		if (!m_task->IsCanceled())
 		{ // the task still might be executed and posted, since we don't block here
 			return;
 		}
 
-		std::string imagePath;
-		auto data = AlbumArtStatic::get(m_handle, m_art_id, m_want_stub, m_only_embed, imagePath);
+		auto data = AlbumArtStatic::get(m_handle, m_art_id, m_want_stub, m_only_embed, m_task->m_path);
 		auto bitmap = AlbumArtStatic::to_bitmap(data);
-
-		jsTask_->SetData(std::move(bitmap), imagePath);
-
-		EventDispatcher::Get().PutEvent(m_wnd, std::make_unique<Event_JsTask>(EventId::kInternalGetAlbumArtPromiseDone, jsTask_));
+		m_task->m_image = std::move(bitmap);
+		EventDispatcher::Get().PutEvent(m_wnd, std::make_unique<Event_JsTask>(EventId::kInternalGetAlbumArtPromiseDone, m_task));
 	}
 
-	JsAlbumArtTask::JsAlbumArtTask(JSContext* cx, JS::HandleValue jsPromise) : JsAsyncTaskImpl(cx, jsPromise) {}
+	JsAlbumArtTask::JsAlbumArtTask(JSContext* ctx, JS::HandleValue jsPromise) : JsAsyncTaskImpl(ctx, jsPromise) {}
 
-	void JsAlbumArtTask::SetData(std::unique_ptr<Gdiplus::Bitmap> image, const std::string& path)
+	bool JsAlbumArtTask::InvokeJsImpl(JSContext* ctx, JS::HandleObject, JS::HandleValue jsPromiseValue)
 	{
-		image_ = std::move(image);
-		path_ = path;
-	}
-
-	bool JsAlbumArtTask::InvokeJsImpl(JSContext* cx, JS::HandleObject, JS::HandleValue jsPromiseValue)
-	{
-		JS::RootedObject jsPromise(cx, &jsPromiseValue.toObject());
+		JS::RootedObject jsPromise(ctx, &jsPromiseValue.toObject());
 
 		try
 		{
-			JS::RootedValue jsBitmapValue(cx);
-			if (image_)
+			JS::RootedValue jsBitmapValue(ctx);
+			if (m_image)
 			{
-				JS::RootedObject jsBitmap(cx, JsGdiBitmap::CreateJs(cx, std::move(image_)));
+				JS::RootedObject jsBitmap(ctx, JsGdiBitmap::CreateJs(ctx, std::move(m_image)));
 				jsBitmapValue = jsBitmap ? JS::ObjectValue(*jsBitmap) : JS::UndefinedValue();
 			}
 
-			JS::RootedObject jsResult(cx, JS_NewPlainObject(cx));
+			JS::RootedObject jsResult(ctx, JS_NewPlainObject(ctx));
 			if (!jsResult)
 			{
 				throw JsException();
 			}
 
-			AddProperty(cx, jsResult, "image", JS::HandleValue{ jsBitmapValue });
-			AddProperty(cx, jsResult, "path", path_);
+			AddProperty(ctx, jsResult, "image", JS::HandleValue{ jsBitmapValue });
+			AddProperty(ctx, jsResult, "path", m_path);
 
-			JS::RootedValue jsResultValue(cx, JS::ObjectValue(*jsResult));
-			(void)JS::ResolvePromise(cx, jsPromise, jsResultValue);
+			JS::RootedValue jsResultValue(ctx, JS::ObjectValue(*jsResult));
+			(void)JS::ResolvePromise(ctx, jsPromise, jsResultValue);
 		}
 		catch (...)
 		{
-			mozjs::ExceptionToJsError(cx);
+			mozjs::ExceptionToJsError(ctx);
 
-			JS::RootedValue jsError(cx);
-			(void)JS_GetPendingException(cx, &jsError);
+			JS::RootedValue jsError(ctx);
+			(void)JS_GetPendingException(ctx, &jsError);
 
-			JS::RejectPromise(cx, jsPromise, jsError);
+			JS::RejectPromise(ctx, jsPromise, jsError);
 		}
 
 		return true;
@@ -144,12 +130,12 @@ namespace
 
 namespace mozjs
 {
-	JSObject* GetAlbumArtPromise(JSContext* cx, HWND hWnd, const metadb_handle_ptr& handle, uint32_t art_id, bool want_stub, bool only_embed)
+	JSObject* GetAlbumArtPromise(JSContext* ctx, HWND hWnd, const metadb_handle_ptr& handle, uint32_t art_id, bool want_stub, bool only_embed)
 	{
-		JS::RootedObject jsObject(cx, JS::NewPromiseObject(cx, nullptr));
+		JS::RootedObject jsObject(ctx, JS::NewPromiseObject(ctx, nullptr));
 		JsException::ExpectTrue(jsObject);
 
-		QwrThreadPool::GetInstance().AddTask([task = std::make_shared<AlbumArtV2FetchTask>(cx, jsObject, hWnd, handle, art_id, want_stub, only_embed)]
+		QwrThreadPool::GetInstance().AddTask([task = std::make_shared<AlbumArtV2FetchTask>(ctx, jsObject, hWnd, handle, art_id, want_stub, only_embed)]
 			{
 				std::invoke(*task);
 			});

@@ -31,6 +31,6 @@ namespace mozjs
 
 		[[nodiscard]] RefPtr<JS::Stencil> GetCachedStencil(JSContext* pJsCtx, const std::filesystem::path& absolutePath, const JS::CompileOptions& compileOpts);
 
-		std::unordered_map<std::string, CachedScriptStencil> scriptCache_;
+		std::unordered_map<std::string, CachedScriptStencil> m_script_cache;
 	};
 }

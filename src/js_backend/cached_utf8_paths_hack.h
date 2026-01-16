@@ -21,5 +21,5 @@ namespace mozjs::hack
 	/// @brief This is a hack, don't use it unless it's REALLY necessary
 	/// @throw QwrException
 	/// @throw JsException
-	[[nodiscard]] std::optional<std::filesystem::path> GetCurrentScriptPath(JSContext* cx);
+	[[nodiscard]] std::optional<std::filesystem::path> GetCurrentScriptPath(JSContext* ctx);
 }

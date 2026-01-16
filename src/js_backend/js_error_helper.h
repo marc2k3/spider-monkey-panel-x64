@@ -2,27 +2,27 @@
 
 namespace mozjs
 {
-	[[nodiscard]] std::string ExceptionToText(JSContext* cx);
-	[[nodiscard]] std::string JsErrorToText(JSContext* cx);
-	void ExceptionToJsError(JSContext* cx);
-	void PrependTextToJsError(JSContext* cx, const std::string& text);
-	void SuppressException(JSContext* cx);
+	[[nodiscard]] std::string ExceptionToText(JSContext* ctx);
+	[[nodiscard]] std::string JsErrorToText(JSContext* ctx);
+	void ExceptionToJsError(JSContext* ctx);
+	void PrependTextToJsError(JSContext* ctx, const std::string& text);
+	void SuppressException(JSContext* ctx);
 
 	template <typename F, typename... Args>
-	[[nodiscard]] bool Execute_JsSafe(JSContext* cx, std::string_view functionName, F&& func, Args&&... args)
+	[[nodiscard]] bool Execute_JsSafe(JSContext* ctx, std::string_view functionName, F&& func, Args&&... args)
 	{
 		try
 		{
-			func(cx, std::forward<Args>(args)...);
+			func(ctx, std::forward<Args>(args)...);
 		}
 		catch (...)
 		{
-			ExceptionToJsError(cx);
+			ExceptionToJsError(ctx);
 		}
 
-		if (JS_IsExceptionPending(cx))
+		if (JS_IsExceptionPending(ctx))
 		{
-			PrependTextToJsError(cx, fmt::format("{} failed", functionName));
+			PrependTextToJsError(ctx, fmt::format("{} failed", functionName));
 			return false;
 		}
 

@@ -22,7 +22,7 @@ namespace mozjs
 		friend class JsEngine;
 
 	public:
-		JsContainer(smp::js_panel_window& parentPanel);
+		JsContainer(smp::js_panel_window& parent_window);
 		JsContainer(const JsContainer&) = delete;
 		~JsContainer();
 
@@ -68,7 +68,7 @@ namespace mozjs
 					OnJsActionEnd();
 				});
 
-			return mozjs::InvokeJsCallback<ReturnType>(pJsCtx_, jsGlobal_, functionName, std::forward<ArgTypes>(args)...);
+			return mozjs::InvokeJsCallback<ReturnType>(m_ctx, m_global, functionName, std::forward<ArgTypes>(args)...);
 		}
 
 		[[nodiscard]] bool InvokeOnDragAction(const std::string& functionName, const POINTL& pt, uint32_t keyState, DragActionParams& actionParams);
@@ -77,7 +77,7 @@ namespace mozjs
 		bool InvokeJsAsyncTask(JsAsyncTask& jsTask);
 
 	private:
-		void SetJsCtx(JSContext* cx);
+		void SetJsCtx(JSContext* ctx);
 
 		[[nodiscard]] bool IsReadyForCallback() const;
 
@@ -88,20 +88,20 @@ namespace mozjs
 		void OnJsActionEnd();
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-		smp::js_panel_window* pParentPanel_ = nullptr;
+		JSContext* m_ctx{};
+		smp::js_panel_window* m_parent_window{};
 
-		JS::PersistentRootedObject jsGlobal_;
-		JS::PersistentRootedObject jsGraphics_;
-		JS::PersistentRootedObject jsDropAction_;
+		JS::PersistentRootedObject m_global;
+		JS::PersistentRootedObject m_graphics;
+		JS::PersistentRootedObject m_drop_action;
 
-		JsRealmInner* pNativeRealm_{};
-		JsGlobalObject* pNativeGlobal_{};
-		JsGdiGraphics* pNativeGraphics_{};
-		JsDropSourceAction* pNativeDropAction_{};
+		JsRealmInner* m_realm;
+		JsGlobalObject* m_native_global{};
+		JsGdiGraphics* m_native_graphics{};
+		JsDropSourceAction* m_native_drop_action{};
 
-		JsStatus jsStatus_ = JsStatus::EngineFailed;
-		bool isParsingScript_ = false;
-		uint32_t nestedJsCounter_ = 0;
+		JsStatus m_js_status = JsStatus::EngineFailed;
+		bool m_is_parsing_script{};
+		uint32_t m_nested_js_counter{};
 	};
 }

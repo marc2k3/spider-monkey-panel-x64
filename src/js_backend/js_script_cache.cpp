@@ -44,7 +44,7 @@ namespace mozjs
 				}
 			}();
 
-		if (auto it = scriptCache_.find(cleanPath.u8string()); scriptCache_.cend() != it)
+		if (auto it = m_script_cache.find(cleanPath.u8string()); m_script_cache.cend() != it)
 		{
 			if (it->second.writeTime == lastWriteTime)
 			{
@@ -63,6 +63,6 @@ namespace mozjs
 		RefPtr<JS::Stencil> scriptStencil = JS::CompileGlobalScriptToStencil(pJsCtx, compileOpts, source);
 		JsException::ExpectTrue(scriptStencil);
 
-		return scriptCache_.insert_or_assign(cleanPath.u8string(), CachedScriptStencil{ scriptStencil, lastWriteTime }).first->second.scriptStencil;
+		return m_script_cache.insert_or_assign(cleanPath.u8string(), CachedScriptStencil{ scriptStencil, lastWriteTime }).first->second.scriptStencil;
 	}
 }

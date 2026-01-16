@@ -19,7 +19,7 @@ namespace mozjs
 		GlobalHeapManager(const GlobalHeapManager&) = delete;
 		GlobalHeapManager& operator=(const GlobalHeapManager&) = delete;
 
-		[[nodiscard]] static std::unique_ptr<GlobalHeapManager> Create(JSContext* cx);
+		[[nodiscard]] static std::unique_ptr<GlobalHeapManager> Create(JSContext* ctx);
 
 	public:
 		void RegisterUser(IHeapUser* heapUser);
@@ -35,20 +35,17 @@ namespace mozjs
 		void PrepareForGc();
 
 	private:
-		GlobalHeapManager(JSContext* cx);
+		GlobalHeapManager(JSContext* ctx);
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-
-		uint32_t currentHeapId_ = 0;
-
 		using HeapElement = JS::Heap<JS::Value>;
 
-		std::mutex heapElementsLock_;
-		std::unordered_map<uint32_t, std::unique_ptr<HeapElement>> heapElements_;
-		std::list<std::unique_ptr<HeapElement>> unusedHeapElements_;
-
-		std::mutex heapUsersLock_;
-		std::unordered_map<IHeapUser*, IHeapUser*> heapUsers_;
+		JSContext* m_ctx{};
+		uint32_t m_current_id = 0;
+		std::mutex m_elements_lock;
+		std::mutex m_users_lock;
+		std::unordered_map<uint32_t, std::unique_ptr<HeapElement>> m_elements;
+		std::list<std::unique_ptr<HeapElement>> m_unused_elements;
+		std::unordered_map<IHeapUser*, IHeapUser*> m_users;
 	};
 }

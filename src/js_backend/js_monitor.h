@@ -13,7 +13,7 @@ namespace mozjs
 		/// @detail Assumes that JSContext is freshly created
 		///
 		/// @throw QwrException
-		void Start(JSContext* cx);
+		void Start(JSContext* ctx);
 		void Stop();
 
 		void AddContainer(JsContainer& jsContainer);
@@ -32,34 +32,29 @@ namespace mozjs
 		[[nodiscard]] bool HasActivePopup() const;
 
 	private:
-		JSContext* pJsCtx_ = nullptr;
-		HWND hFb2k_ = nullptr;
-		const std::chrono::seconds slowScriptLimit_;
-
 		struct ContainerData
 		{
-			ContainerData(JsContainer* pContainer)
-				: pContainer(pContainer)
-			{
-			}
+			ContainerData(JsContainer* pContainer) : pContainer(pContainer) {}
 
-			JsContainer* pContainer;
-
-			bool ignoreSlowScriptCheck = false;
+			JsContainer* pContainer{};
+			bool ignoreSlowScriptCheck{};
 			std::chrono::milliseconds slowScriptCheckpoint{};
-			bool slowScriptSecondHalf = false;
+			bool slowScriptSecondHalf{};
 		};
 
-		std::unordered_map<JsContainer*, ContainerData> monitoredContainers_;
+		JSContext* m_ctx{};
+		HWND m_main_window{};
+		const std::chrono::seconds m_slow_script_limit;
+		std::unordered_map<JsContainer*, ContainerData> m_monitored_containers;
 
-		std::mutex watcherDataMutex_;
-		std::thread watcherThread_;
-		std::atomic_bool shouldStopThread_ = false;
-		std::condition_variable hasAction_;
+		std::mutex m_watcher_mutex;
+		std::thread m_watcher_thread;
+		std::atomic_bool m_should_stop_thread{};
+		std::condition_variable m_has_action;
 		// Contains the same time as slowScriptCheckpoint in monitoredContainers_
-		std::unordered_map<JsContainer*, std::chrono::milliseconds> activeContainers_;
-		bool isInInterrupt_ = false;
+		std::unordered_map<JsContainer*, std::chrono::milliseconds> m_active_containers;
+		bool m_is_in_interrupt{};
 
-		std::atomic_bool wasInModal_ = false;
+		std::atomic_bool m_was_in_modal = false;
 	};
 }

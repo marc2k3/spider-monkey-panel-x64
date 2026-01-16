@@ -3,86 +3,86 @@
 namespace mozjs::convert::to_js
 {
 	template <typename T>
-	void ToValue(JSContext* cx, const std::reference_wrapper<T>& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const std::reference_wrapper<T>& inValue, JS::MutableHandleValue wrappedValue)
 	{
-		ToValue(cx, inValue.get(), wrappedValue);
+		ToValue(ctx, inValue.get(), wrappedValue);
 	}
 
 	template <typename T>
-	void ToValue(JSContext* cx, JS::Handle<T> inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, JS::Handle<T> inValue, JS::MutableHandleValue wrappedValue)
 	{
 		static_assert(0, "Unsupported type");
 	}
 
 	template <>
-	void ToValue(JSContext* cx, JS::HandleObject inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, JS::HandleObject inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, JS::HandleValue inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, JS::HandleValue inValue, JS::MutableHandleValue wrappedValue);
 
 	template <typename T>
-	void ToValue(JSContext* cx, const T& inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, const T& inValue, JS::MutableHandleValue wrappedValue)
 	{
 		static_assert(0, "Unsupported type");
 	}
 
 	template <>
-	void ToValue(JSContext* cx, const bool& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const bool& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const uint8_t& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const uint8_t& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const int32_t& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const int32_t& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const uint32_t& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const uint32_t& inValue, JS::MutableHandleValue wrappedValue);
 
 	/// @details Returns only approximate uint64_t value, use with care!
 	template <>
-	void ToValue(JSContext* cx, const uint64_t& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const uint64_t& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const double& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const double& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const float& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const float& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const pfc::string8& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const pfc::string8& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const std::string& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const std::string& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const std::wstring& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const std::wstring& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const std::nullptr_t& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const std::nullptr_t& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const metadb_handle_ptr& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const metadb_handle_ptr& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const metadb_handle_list& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const metadb_handle_list& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const metadb_handle_list_cref& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const metadb_handle_list_cref& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* cx, const t_playback_queue_item& inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, const t_playback_queue_item& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <typename T>
-	void ToValue(JSContext* cx, std::unique_ptr<T> inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, std::unique_ptr<T> inValue, JS::MutableHandleValue wrappedValue)
 	{
 		static_assert(0, "Unsupported type");
 	}
 
 	template <>
-	void ToValue(JSContext* cx, std::unique_ptr<Gdiplus::Bitmap> inValue, JS::MutableHandleValue wrappedValue);
+	void ToValue(JSContext* ctx, std::unique_ptr<Gdiplus::Bitmap> inValue, JS::MutableHandleValue wrappedValue);
 
 	template <typename T>
-	void ToValue(JSContext* cx, std::shared_ptr<T> inValue, JS::MutableHandleValue wrappedValue)
+	void ToValue(JSContext* ctx, std::shared_ptr<T> inValue, JS::MutableHandleValue wrappedValue)
 	{
 		if (!inValue)
 		{
@@ -90,22 +90,22 @@ namespace mozjs::convert::to_js
 			return;
 		}
 
-		ToValue(cx, *inValue, wrappedValue);
+		ToValue(ctx, *inValue, wrappedValue);
 	}
 
 	template <typename T, typename F>
-	void ToArrayValue(JSContext* cx, const T& inContainer, F&& accessorFunc, JS::MutableHandleValue wrappedValue)
+	void ToArrayValue(JSContext* ctx, const T& inContainer, F&& accessorFunc, JS::MutableHandleValue wrappedValue)
 	{
-		JS::RootedObject jsArray(cx, JS::NewArrayObject(cx, inContainer.size()));
+		JS::RootedObject jsArray(ctx, JS::NewArrayObject(ctx, inContainer.size()));
 		JsException::ExpectTrue(jsArray);
 
-		JS::RootedValue jsValue(cx);
+		JS::RootedValue jsValue(ctx);
 		const auto size = sizeu(inContainer);
 
 		for (const auto i : indices(size))
 		{
-			ToValue(cx, accessorFunc(inContainer, i), &jsValue);
-			if (!JS_SetElement(cx, jsArray, i, jsValue))
+			ToValue(ctx, accessorFunc(inContainer, i), &jsValue);
+			if (!JS_SetElement(ctx, jsArray, i, jsValue))
 			{
 				throw JsException();
 			}
@@ -115,17 +115,17 @@ namespace mozjs::convert::to_js
 	}
 
 	template <typename T>
-	void ToArrayValue(JSContext* cx, const T& inContainer, JS::MutableHandleValue wrappedValue)
+	void ToArrayValue(JSContext* ctx, const T& inContainer, JS::MutableHandleValue wrappedValue)
 	{
-		JS::RootedObject jsArray(cx, JS::NewArrayObject(cx, inContainer.size()));
+		JS::RootedObject jsArray(ctx, JS::NewArrayObject(ctx, inContainer.size()));
 		JsException::ExpectTrue(jsArray);
 
-		JS::RootedValue jsValue(cx);
+		JS::RootedValue jsValue(ctx);
 		for (const auto& [i, elem]: std::views::enumerate(inContainer))
 		{
-			ToValue(cx, elem, &jsValue);
+			ToValue(ctx, elem, &jsValue);
 
-			if (!JS_SetElement(cx, jsArray, static_cast<uint32_t>(i), jsValue))
+			if (!JS_SetElement(ctx, jsArray, static_cast<uint32_t>(i), jsValue))
 			{
 				throw JsException();
 			}

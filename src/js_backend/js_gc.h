@@ -13,7 +13,7 @@ namespace mozjs
 	public:
 		/// @throw QwrException
 		[[nodiscard]] static uint32_t GetMaxHeap();
-		[[nodiscard]] static uint64_t GetTotalHeapUsageForGlobal(JSContext* cx, JS::HandleObject jsGlobal);
+		[[nodiscard]] static uint64_t GetTotalHeapUsageForGlobal(JSContext* ctx, JS::HandleObject jsGlobal);
 
 		bool MaybeGc();
 		// @brief Force gc trigger (e.g. on panel unload)
@@ -55,7 +55,7 @@ namespace mozjs
 		void PrepareRealmsForGc(GcLevel gcLevel);
 		void NotifyRealmsOnGcEnd();
 
-		JSContext* pJsCtx_{};
+		JSContext* m_ctx{};
 
 		bool isManuallyTriggered_{};
 		bool isHighFrequency_{};

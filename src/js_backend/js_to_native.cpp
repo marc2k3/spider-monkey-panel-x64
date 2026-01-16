@@ -12,11 +12,11 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		int32_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		int32_t ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
 			int32_t val{};
 
-			if (JS::ToInt32(cx, jsValue, &val))
+			if (JS::ToInt32(ctx, jsValue, &val))
 			{
 				return val;
 			}
@@ -25,11 +25,11 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		uint8_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		uint8_t ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
 			uint8_t val{};
 
-			if (JS::ToUint8(cx, jsValue, &val))
+			if (JS::ToUint8(ctx, jsValue, &val))
 			{
 				return val;
 			}
@@ -38,11 +38,11 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		uint32_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		uint32_t ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
 			uint32_t val{};
 
-			if (JS::ToUint32(cx, jsValue, &val))
+			if (JS::ToUint32(ctx, jsValue, &val))
 			{
 				return val;
 			}
@@ -51,11 +51,11 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		uint64_t ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		uint64_t ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
 			uint64_t val{};
 
-			if (JS::ToUint64(cx, jsValue, &val))
+			if (JS::ToUint64(ctx, jsValue, &val))
 			{
 				return val;
 			}
@@ -64,11 +64,11 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		float ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		float ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
 			double val{};
 
-			if (JS::ToNumber(cx, jsValue, &val))
+			if (JS::ToNumber(ctx, jsValue, &val))
 			{
 				return static_cast<float>(val);
 			}
@@ -77,11 +77,11 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		double ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		double ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
 			double val{};
 
-			if (JS::ToNumber(cx, jsValue, &val))
+			if (JS::ToNumber(ctx, jsValue, &val))
 			{
 				return val;
 			}
@@ -90,24 +90,24 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		std::string ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		std::string ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
-			JS::RootedString jsString(cx, JS::ToString(cx, jsValue));
-			return ToValue<std::string>(cx, jsString);
+			JS::RootedString jsString(ctx, JS::ToString(ctx, jsValue));
+			return ToValue<std::string>(ctx, jsString);
 		}
 
 		template <>
-		std::wstring ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		std::wstring ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
-			JS::RootedString jsString(cx, JS::ToString(cx, jsValue));
-			return ToValue<std::wstring>(cx, jsString);
+			JS::RootedString jsString(ctx, JS::ToString(ctx, jsValue));
+			return ToValue<std::wstring>(ctx, jsString);
 		}
 
 		template <>
-		pfc::string8 ToSimpleValue(JSContext* cx, const JS::HandleValue& jsValue)
+		pfc::string8 ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
 		{
-			JS::RootedString jsString(cx, JS::ToString(cx, jsValue));
-			return ToValue<pfc::string8>(cx, jsString);
+			JS::RootedString jsString(ctx, JS::ToString(ctx, jsValue));
+			return ToValue<pfc::string8>(ctx, jsString);
 		}
 
 		template <>
@@ -118,18 +118,18 @@ namespace mozjs::convert::to_native
 	}
 
 	template <>
-	std::string ToValue(JSContext* cx, const JS::HandleString& jsString)
+	std::string ToValue(JSContext* ctx, const JS::HandleString& jsString)
 	{
-		return smp::ToU8(ToValue<std::wstring>(cx, jsString));
+		return smp::ToU8(ToValue<std::wstring>(ctx, jsString));
 	}
 
 	template <>
-	std::wstring ToValue(JSContext* cx, const JS::HandleString& jsString)
+	std::wstring ToValue(JSContext* ctx, const JS::HandleString& jsString)
 	{
 		std::wstring wStr(JS_GetStringLength(jsString), '\0');
 		mozilla::Range<char16_t> wCharStr(reinterpret_cast<char16_t*>(wStr.data()), wStr.size());
 
-		if (JS_CopyStringChars(cx, wCharStr, jsString))
+		if (JS_CopyStringChars(ctx, wCharStr, jsString))
 		{
 			return wStr;
 		}
@@ -138,9 +138,9 @@ namespace mozjs::convert::to_native
 	}
 
 	template <>
-	pfc::string8 ToValue(JSContext* cx, const JS::HandleString& jsString)
+	pfc::string8 ToValue(JSContext* ctx, const JS::HandleString& jsString)
 	{
-		const auto str = ToValue<std::string>(cx, jsString);
+		const auto str = ToValue<std::string>(ctx, jsString);
 		return str.c_str();
 	}
 }
