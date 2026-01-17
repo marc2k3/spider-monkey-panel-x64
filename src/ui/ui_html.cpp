@@ -2,132 +2,110 @@
 #include "ui_html.h"
 
 #include <com_utils/dispatch_ptr.h>
-#include <js_backend/com_convert.h>
 #include <js_backend/js_to_native.h>
 #include <utils/hook_handler.h>
 
 using namespace mozjs;
 
-CDialogHtml::CDialogHtml(JSContext* cx, const std::wstring& htmlCodeOrPath, JS::HandleValue options) : pJsCtx_(cx), htmlCodeOrPath_(htmlCodeOrPath)
-{
-	ParseOptions(options);
-}
+CDialogHtml::CDialogHtml(JSContext* ctx, const Options& options, const std::wstring& code_or_path, wil::com_ptr<HostExternal> host_external)
+	: m_ctx(ctx)
+	, m_options(options)
+	, m_code_or_path(code_or_path)
+	, m_host_external(std::move(host_external)) {}
 
 LRESULT CDialogHtml::OnInitDialog(HWND, LPARAM)
 {
+	SetIcon(ui_control::get()->get_main_icon());
+	SetOptions();
+
 	auto autoExit = wil::scope_exit([&]
 		{
 			EndDialog(-1);
 		});
 
-	SetOptions();
-
-	HWND hIE = static_cast<HWND>(GetDlgItem(IDC_IE));
+	auto hIE = GetDlgItem(IDC_IE).m_hWnd;
 
 	try
 	{
 		CAxWindow wndIE = hIE;
-
-		IObjectWithSitePtr pOWS = nullptr;
-		HRESULT hr = wndIE.QueryHost(IID_IObjectWithSite, reinterpret_cast<void**>(&pOWS));
-		smp::CheckHR(hr, "QueryHost");
-
-		hr = pOWS->SetSite(static_cast<IServiceProvider*>(this));
-		smp::CheckHR(hr, "SetSite");
-
-		IWebBrowserPtr pBrowser;
-		hr = wndIE.QueryControl(&pBrowser);
-		smp::CheckHR(hr, "QueryControl");
-
-		_variant_t v;
-		hr = pBrowser->Navigate(_bstr_t(L"about:blank"), &v, &v, &v, &v); ///< Document object is only available after Navigate
-		smp::CheckHR(hr, "Navigate");
-
+		IObjectWithSitePtr pOWS;
 		IDispatchPtr pDocDispatch;
-		hr = pBrowser->get_Document(&pDocDispatch);
-		smp::CheckHR(hr, "get_Document");
+		IWebBrowserPtr pBrowser;
+		IHTMLDocument2Ptr pDocument;
+		_variant_t v;
 
-		IHTMLDocument2Ptr pDocument = pDocDispatch;
+		THROW_IF_FAILED(wndIE.QueryHost(IID_IObjectWithSite, reinterpret_cast<void**>(&pOWS)));
+		THROW_IF_FAILED(pOWS->SetSite(static_cast<IServiceProvider*>(this)));
+		THROW_IF_FAILED(wndIE.QueryControl(&pBrowser));
+		THROW_IF_FAILED(pBrowser->Navigate(_bstr_t(L"about:blank"), &v, &v, &v, &v));
+		THROW_IF_FAILED(pBrowser->get_Document(&pDocDispatch));
 
+		pDocument = pDocDispatch;
+
+		// Request default handler from MSHTML client site
+		IOleObjectPtr pOleObject(pDocument);
+		IOleClientSitePtr pClientSite;
+		THROW_IF_FAILED(pOleObject->GetClientSite(&pClientSite));
+
+		m_host_ui_handler = pClientSite;
+
+		// Set the new custom IDocHostUIHandler
+		ICustomDocPtr pCustomDoc(pDocument);
+		THROW_IF_FAILED(pCustomDoc->SetUIHandler(this));
+
+		m_active_object = pBrowser;
+
+		if (m_code_or_path.starts_with(L"file://"))
 		{
-			// Request default handler from MSHTML client site
-			IOleObjectPtr pOleObject(pDocument);
-			IOleClientSitePtr pClientSite;
-			hr = pOleObject->GetClientSite(&pClientSite);
-			smp::CheckHR(hr, "GetClientSite");
-
-			pDefaultUiHandler_ = pClientSite;
-
-			// Set the new custom IDocHostUIHandler
-			ICustomDocPtr pCustomDoc(pDocument);
-			hr = pCustomDoc->SetUIHandler(this);
-			smp::CheckHR(hr, "SetUIHandler");
-		}
-
-		{
-			pOleInPlaceHandler_ = pBrowser;
-		}
-
-		if (static_cast<std::wstring_view>(htmlCodeOrPath_).starts_with(L"file://"))
-		{
-			hr = pBrowser->Navigate(_bstr_t(htmlCodeOrPath_.c_str()), &v, &v, &v, &v);
-			smp::CheckHR(hr, "Navigate");
+			auto path = _bstr_t(m_code_or_path.c_str());
+			THROW_IF_FAILED(pBrowser->Navigate(path, &v, &v, &v, &v));
 		}
 		else
 		{
-			hr = pDocument->put_designMode(_bstr_t(L"on"));
-			smp::CheckHR(hr, "put_designMode");
-
 			SAFEARRAY* pSaStrings = SafeArrayCreateVector(VT_VARIANT, 0, 1);
+			VARIANT* pSaVar{};
 
 			auto autoPsa = wil::scope_exit([pSaStrings]
 				{
 					SafeArrayDestroy(pSaStrings);
 				});
 
-			VARIANT* pSaVar = nullptr;
-			hr = SafeArrayAccessData(pSaStrings, reinterpret_cast<void**>(&pSaVar));
-			smp::CheckHR(hr, "SafeArrayAccessData");
+			THROW_IF_FAILED(pDocument->put_designMode(_bstr_t(L"on")));
+			THROW_IF_FAILED(SafeArrayAccessData(pSaStrings, reinterpret_cast<void**>(&pSaVar)));
 
-			_bstr_t bstr(htmlCodeOrPath_.c_str());
+			auto code = _bstr_t(m_code_or_path.c_str());
 			pSaVar->vt = VT_BSTR;
-			pSaVar->bstrVal = bstr.Detach();
-			hr = SafeArrayUnaccessData(pSaStrings);
-			smp::CheckHR(hr, "SafeArrayUnaccessData");
+			pSaVar->bstrVal = code.Detach();
 
-			hr = pDocument->write(pSaStrings);
-			smp::CheckHR(hr, "write");
-
-			hr = pDocument->put_designMode(_bstr_t(L"off"));
-			smp::CheckHR(hr, "put_designMode");
-
-			hr = pDocument->close();
-			smp::CheckHR(hr, "close");
+			THROW_IF_FAILED(SafeArrayUnaccessData(pSaStrings));
+			THROW_IF_FAILED(pDocument->write(pSaStrings));
+			THROW_IF_FAILED(pDocument->put_designMode(_bstr_t(L"off")));
+			THROW_IF_FAILED(pDocument->close());
 		}
 
 		wndIE.SetFocus();
 	}
 	catch (...)
 	{
-		mozjs::ExceptionToJsError(pJsCtx_);
+		mozjs::ExceptionToJsError(m_ctx);
 		return -1;
 	}
 
-	hookId_ = QwrHookHandler::GetInstance().RegisterHook([hIE, pThis = this](int code, WPARAM wParam, LPARAM lParam)
+	m_hook_id = QwrHookHandler::GetInstance().RegisterHook([hIE, this](int code, WPARAM wParam, LPARAM lParam)
 		{
-			GetMsgProc(code, wParam, lParam, hIE, pThis);
+			GetMsgProc(code, wParam, lParam, hIE, this);
 		});
 
 	autoExit.release();
-	return FALSE; // don't set focus to default control
+	return FALSE;
 }
 
 LRESULT CDialogHtml::OnDestroyDialog()
 {
-	if (hookId_)
+	if (m_hook_id)
 	{
-		QwrHookHandler::GetInstance().UnregisterHook(hookId_);
-		hookId_ = 0;
+		QwrHookHandler::GetInstance().UnregisterHook(m_hook_id);
+		m_hook_id = 0;
 	}
 
 	return 0;
@@ -151,14 +129,15 @@ void CDialogHtml::OnSize(UINT nType, CSize size)
 
 void CDialogHtml::OnClose()
 {
-	isClosing_ = true;
+	m_closing = true;
 	OnCloseCmd(0, IDCANCEL, nullptr);
 }
 
 void CDialogHtml::OnCloseCmd(WORD, WORD wID, HWND)
 {
-	if (!isClosing_)
-	{ // e.g. pressed RETURN
+	if (!m_closing)
+	{ 
+		// e.g. pressed RETURN
 		return;
 	}
 
@@ -177,7 +156,7 @@ void CDialogHtml::OnBeforeNavigate2(IDispatch*, VARIANT* URL, VARIANT*, VARIANT*
 	try
 	{
 		_bstr_t url_b(*URL);
-		for (const auto& urlPrefix : std::initializer_list<std::wstring>{ L"http://", L"https://" })
+		for (const auto& urlPrefix : std::to_array<std::wstring>({ L"http://", L"https://" }))
 		{
 			if (url_b.length() > urlPrefix.length() && !wmemcmp(url_b.GetBSTR(), urlPrefix.c_str(), urlPrefix.length()))
 			{
@@ -189,29 +168,21 @@ void CDialogHtml::OnBeforeNavigate2(IDispatch*, VARIANT* URL, VARIANT*, VARIANT*
 			}
 		}
 	}
-	catch (const _com_error&)
-	{
-	}
+	catch (const _com_error&) {}
 }
 
 void CDialogHtml::OnTitleChange(BSTR title)
 {
-	try
-	{
-		SetWindowText(static_cast<wchar_t*>(static_cast<_bstr_t>(title)));
-	}
-	catch (const _com_error&)
-	{
-	}
+	SetWindowTextW(title);
 }
 
-void __stdcall CDialogHtml::OnWindowClosing(VARIANT_BOOL, VARIANT_BOOL* Cancel)
+void CDialogHtml::OnWindowClosing(VARIANT_BOOL, VARIANT_BOOL* Cancel)
 {
 	EndDialog(IDOK);
+
 	if (Cancel)
 	{
 		*Cancel = VARIANT_TRUE;
-		return;
 	}
 }
 
@@ -221,6 +192,7 @@ STDMETHODIMP CDialogHtml::moveTo(LONG x, LONG y)
 	{
 		MoveWindow(x, y, (rect.right - rect.left), (rect.bottom - rect.top));
 	}
+
 	return S_OK;
 }
 
@@ -230,6 +202,7 @@ STDMETHODIMP CDialogHtml::moveBy(LONG x, LONG y)
 	{
 		MoveWindow(rect.left + x, rect.top + y, (rect.right - rect.left), (rect.bottom - rect.top));
 	}
+
 	return S_OK;
 }
 
@@ -241,6 +214,7 @@ STDMETHODIMP CDialogHtml::resizeTo(LONG x, LONG y)
 		const LONG clientH = y - ((windowRect.bottom - windowRect.top) - clientRect.bottom);
 		ResizeClient(clientW, clientH);
 	}
+
 	return S_OK;
 }
 
@@ -259,114 +233,114 @@ STDMETHODIMP CDialogHtml::resizeBy(LONG x, LONG y)
 STDMETHODIMP CDialogHtml::ShowContextMenu(DWORD dwID, POINT* ppt, IUnknown* pcmdtReserved, IDispatch* pdispReserved)
 {
 	if (dwID == CONTEXT_MENU_TEXTSELECT || dwID == CONTEXT_MENU_CONTROL)
-	{ // always show context menu for text editors
+	{
+		// always show context menu for text editors
 		return S_FALSE;
 	}
 
-	if (!pDefaultUiHandler_ || !isContextMenuEnabled_)
+	if (m_host_ui_handler && m_options.isContextMenuEnabled)
 	{
-		return S_OK;
+		return m_host_ui_handler->ShowContextMenu(dwID, ppt, pcmdtReserved, pdispReserved);
 	}
 
-	return pDefaultUiHandler_->ShowContextMenu(dwID, ppt, pcmdtReserved, pdispReserved);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::GetHostInfo(DOCHOSTUIINFO* pInfo)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		RETURN_IF_FAILED(m_host_ui_handler->GetHostInfo(pInfo));
+
+		if (pInfo)
+		{
+			if (!m_options.isFormSelectionEnabled)
+			{
+				pInfo->dwFlags |= DOCHOSTUIFLAG_DIALOG;
+			}
+			if (!m_options.isScrollEnabled)
+			{
+				pInfo->dwFlags |= DOCHOSTUIFLAG_SCROLL_NO;
+			}
+		}
 	}
 
-	HRESULT hr = pDefaultUiHandler_->GetHostInfo(pInfo);
-	if (SUCCEEDED(hr) && pInfo)
-	{
-		if (!isFormSelectionEnabled_)
-		{
-			pInfo->dwFlags |= DOCHOSTUIFLAG_DIALOG;
-		}
-		if (!isScrollEnabled_)
-		{
-			pInfo->dwFlags |= DOCHOSTUIFLAG_SCROLL_NO;
-		}
-	}
-
-	return hr;
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::ShowUI(DWORD dwID, IOleInPlaceActiveObject* pActiveObject, IOleCommandTarget* pCommandTarget, IOleInPlaceFrame* pFrame, IOleInPlaceUIWindow* pDoc)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->ShowUI(dwID, pActiveObject, pCommandTarget, pFrame, pDoc);
 	}
 
-	return pDefaultUiHandler_->ShowUI(dwID, pActiveObject, pCommandTarget, pFrame, pDoc);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::HideUI()
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->HideUI();
 	}
 
-	return pDefaultUiHandler_->HideUI();
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::UpdateUI()
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->UpdateUI();
 	}
 
-	return pDefaultUiHandler_->UpdateUI();
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::EnableModeless(BOOL fEnable)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->EnableModeless(fEnable);
 	}
 
-	return pDefaultUiHandler_->EnableModeless(fEnable);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::OnDocWindowActivate(BOOL fActivate)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->OnDocWindowActivate(fActivate);
 	}
 
-	return pDefaultUiHandler_->OnDocWindowActivate(fActivate);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::OnFrameWindowActivate(BOOL fActivate)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->OnFrameWindowActivate(fActivate);
 	}
 
-	return pDefaultUiHandler_->OnFrameWindowActivate(fActivate);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::ResizeBorder(LPCRECT prcBorder, IOleInPlaceUIWindow* pUIWindow, BOOL fRameWindow)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->ResizeBorder(prcBorder, pUIWindow, fRameWindow);
 	}
 
-	return pDefaultUiHandler_->ResizeBorder(prcBorder, pUIWindow, fRameWindow);
+	return S_OK;
 }
 
-STDMETHODIMP CDialogHtml::TranslateAccelerator(LPMSG lpMsg, const GUID* pguidCmdGroup, DWORD nCmdID)
+STDMETHODIMP CDialogHtml::TranslateAcceleratorW(LPMSG lpMsg, const GUID* pguidCmdGroup, DWORD nCmdID)
 {
-	if (!pDefaultUiHandler_)
+	if (!m_host_ui_handler)
 	{
 		return S_OK;
 	}
@@ -396,13 +370,14 @@ STDMETHODIMP CDialogHtml::TranslateAccelerator(LPMSG lpMsg, const GUID* pguidCmd
 
 	if (isSupportedHotKey(lpMsg->message, static_cast<int>(lpMsg->wParam)))
 	{
-		return pDefaultUiHandler_->TranslateAccelerator(lpMsg, pguidCmdGroup, nCmdID);
+		return m_host_ui_handler->TranslateAccelerator(lpMsg, pguidCmdGroup, nCmdID);
 	}
 	else
 	{
 		if (WM_KEYDOWN == lpMsg->message && VK_ESCAPE == lpMsg->wParam)
-		{ // Restore default dialog behaviour
-			isClosing_ = true;
+		{
+			// Restore default dialog behaviour
+			m_closing = true;
 		}
 		return S_FALSE;
 	}
@@ -410,59 +385,61 @@ STDMETHODIMP CDialogHtml::TranslateAccelerator(LPMSG lpMsg, const GUID* pguidCmd
 
 STDMETHODIMP CDialogHtml::GetOptionKeyPath(LPOLESTR* pchKey, DWORD dw)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->GetOptionKeyPath(pchKey, dw);
 	}
 
-	return pDefaultUiHandler_->GetOptionKeyPath(pchKey, dw);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::GetDropTarget(IDropTarget* pDropTarget, IDropTarget** ppDropTarget)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->GetDropTarget(pDropTarget, ppDropTarget);
 	}
 
-	return pDefaultUiHandler_->GetDropTarget(pDropTarget, ppDropTarget);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::GetExternal(IDispatch** ppDispatch)
 {
-	if (!pDefaultUiHandler_)
+	RETURN_HR_IF_NULL(E_POINTER, ppDispatch);
+
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		if (m_host_external)
+		{
+			m_host_external->AddRef();
+			*ppDispatch = m_host_external.get();
+			return S_OK;
+		}
+
+		return m_host_ui_handler->GetExternal(ppDispatch);
 	}
 
-	if (ppDispatch && pExternal_)
-	{
-		pExternal_->AddRef();
-		*ppDispatch = pExternal_.get();
-		return S_OK;
-	}
-
-	return pDefaultUiHandler_->GetExternal(ppDispatch);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::TranslateUrl(DWORD dwTranslate, LPWSTR pchURLIn, LPWSTR* ppchURLOut)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->TranslateUrl(dwTranslate, pchURLIn, ppchURLOut);
 	}
 
-	return pDefaultUiHandler_->TranslateUrl(dwTranslate, pchURLIn, ppchURLOut);
+	return S_OK;
 }
 
 STDMETHODIMP CDialogHtml::FilterDataObject(IDataObject* pDO, IDataObject** ppDORet)
 {
-	if (!pDefaultUiHandler_)
+	if (m_host_ui_handler)
 	{
-		return S_OK;
+		return m_host_ui_handler->FilterDataObject(pDO, ppDORet);
 	}
 
-	return pDefaultUiHandler_->FilterDataObject(pDO, ppDORet);
+	return S_OK;
 }
 
 ULONG STDMETHODCALLTYPE CDialogHtml::AddRef()
@@ -475,86 +452,37 @@ ULONG STDMETHODCALLTYPE CDialogHtml::Release()
 	return 0;
 }
 
-void CDialogHtml::ParseOptions(JS::HandleValue options)
-{
-	if (options.isNullOrUndefined())
-	{
-		return;
-	}
-
-	if (!options.isObject())
-	{
-		throw QwrException("options argument is not an object");
-	}
-
-	JS::RootedObject jsObject(pJsCtx_, &options.toObject());
-
-	width_ = GetOptionalProperty<uint32_t>(pJsCtx_, jsObject, "width");
-	height_ = GetOptionalProperty<uint32_t>(pJsCtx_, jsObject, "height");
-	x_ = GetOptionalProperty<int32_t>(pJsCtx_, jsObject, "x");
-	y_ = GetOptionalProperty<int32_t>(pJsCtx_, jsObject, "y");
-	isCentered_ = GetOptionalProperty<bool>(pJsCtx_, jsObject, "center").value_or(true);
-	isContextMenuEnabled_ = GetOptionalProperty<bool>(pJsCtx_, jsObject, "context_menu").value_or(false);
-	isFormSelectionEnabled_ = GetOptionalProperty<bool>(pJsCtx_, jsObject, "selection").value_or(false);
-	isResizable_ = GetOptionalProperty<bool>(pJsCtx_, jsObject, "resizable").value_or(false);
-	isScrollEnabled_ = GetOptionalProperty<bool>(pJsCtx_, jsObject, "scroll").value_or(false);
-
-	bool hasProperty;
-	if (!JS_HasProperty(pJsCtx_, jsObject, "data", &hasProperty))
-	{
-		throw JsException();
-	}
-
-	if (hasProperty)
-	{
-		JS::RootedValue jsValue(pJsCtx_);
-		if (!JS_GetProperty(pJsCtx_, jsObject, "data", &jsValue))
-		{
-			throw JsException();
-		}
-
-		_variant_t data;
-		convert::JsToVariant(pJsCtx_, jsValue, *data.GetAddress());
-		pExternal_ = new ComObject<HostExternal>(data);
-	}
-}
-
 void CDialogHtml::SetOptions()
 {
-	if (!isResizable_)
+	if (!m_options.isResizable)
 	{
-		ModifyStyle(WS_THICKFRAME, WS_BORDER, SWP_FRAMECHANGED); ///< ignore return value, since we don't really care
+		ModifyStyle(WS_THICKFRAME, WS_BORDER, SWP_FRAMECHANGED);
 	}
 
-	if (width_ || height_)
+	resizeTo(m_options.width, m_options.height);
+
+	if (m_options.isCentered)
 	{
-		resizeTo(width_.value_or(250), height_.value_or(100)); ///< ignore return value
+		CenterWindow();
 	}
 
-	// Center only after we know the size
-	if (isCentered_)
+	if (m_options.x > 0 || m_options.y > 0)
 	{
-		(void)CenterWindow();
+		moveTo(m_options.x, m_options.y);
 	}
-
-	if (x_ || y_)
-	{
-		moveTo(x_.value_or(0), y_.value_or(0)); ///< ignore return value
-	}
-
-	SetIcon(ui_control::get()->get_main_icon());
 }
 
 void CDialogHtml::GetMsgProc(int, WPARAM, LPARAM lParam, HWND hParent, CDialogHtml* pParent)
 {
 	if (auto pMsg = reinterpret_cast<LPMSG>(lParam); pMsg->message >= WM_KEYFIRST && pMsg->message <= WM_KEYLAST)
-	{ // Only react to keypress events
+	{
+		// Only react to keypress events
 		for (HWND tmpHwnd = pMsg->hwnd; tmpHwnd && (::GetWindowLong(tmpHwnd, GWL_STYLE) & WS_CHILD); tmpHwnd = ::GetParent(tmpHwnd))
 		{
 			if (tmpHwnd == hParent)
 			{
 				CDialogHtml* pThis = pParent;
-				if (pThis && pThis->pOleInPlaceHandler_ && S_OK == pThis->pOleInPlaceHandler_->TranslateAccelerator(pMsg))
+				if (pThis && pThis->m_active_object && S_OK == pThis->m_active_object->TranslateAccelerator(pMsg))
 				{
 					pMsg->message = WM_NULL;
 				}

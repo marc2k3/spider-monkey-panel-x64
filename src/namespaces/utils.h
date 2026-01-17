@@ -1,4 +1,5 @@
 #pragma once
+#include <ui/ui_html.h>
 
 namespace mozjs
 {
@@ -56,8 +57,8 @@ namespace mozjs
 		std::wstring ReadTextFile(const std::wstring& filePath, uint32_t codepage = CP_UTF8);
 		std::wstring ReadTextFileWithOpt(size_t optArgCount, const std::wstring& filePath, uint32_t codepage);
 		void SetClipboardText(const std::string& text);
-		JS::Value ShowHtmlDialog(uint32_t hWnd, const std::wstring& htmlCode, JS::HandleValue options = JS::UndefinedHandleValue);
-		JS::Value ShowHtmlDialogWithOpt(size_t optArgCount, uint32_t hWnd, const std::wstring& htmlCode, JS::HandleValue options);
+		void ShowHtmlDialog(uint32_t hWnd, const std::wstring& code_or_path, JS::HandleValue options = JS::UndefinedHandleValue);
+		void ShowHtmlDialogWithOpt(size_t optArgCount, uint32_t hWnd, const std::wstring& code_or_path, JS::HandleValue options);
 		JS::Value SplitFilePath(const std::wstring& path);
 		bool WriteINI(const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& val);
 		bool WriteTextFile(const std::wstring& filename, const std::string& content, bool write_bom = true);
@@ -68,6 +69,8 @@ namespace mozjs
 
 	private:
 		Utils(JSContext* ctx);
+
+		CDialogHtml::Options ParseHTMLOptions(JS::HandleValue options, wil::com_ptr<CDialogHtml::HostExternal>& host_external);
 
 	private:
 		JSContext* m_ctx{};

@@ -12,8 +12,8 @@
 #include <config/package_utils.h>
 #include <interfaces/fb_metadb_handle.h>
 #include <interfaces/gdi_bitmap.h>
+#include <js_backend/com_convert.h>
 #include <js_backend/js_art_helpers.h>
-#include <ui/ui_html.h>
 #include <ui/ui_input_box.h>
 #include <utils/colour_helpers.h>
 #include <utils/edit_text.h>
@@ -120,6 +120,45 @@ namespace mozjs
 	const JSPropertySpec* Utils::JsProperties = jsProperties.data();
 
 	Utils::Utils(JSContext* ctx) : m_ctx(ctx) {}
+
+	CDialogHtml::Options Utils::ParseHTMLOptions(JS::HandleValue options, wil::com_ptr<CDialogHtml::HostExternal>& host_external)
+	{
+		if (options.isNullOrUndefined())
+		{
+			return {};
+		}
+
+		QwrException::ExpectTrue(options.isObject(), "options argument is not an object");
+
+		JS::RootedObject jsObject(m_ctx, &options.toObject());
+		bool hasData{};
+
+		if (JS_HasProperty(m_ctx, jsObject, "data", &hasData) && hasData)
+		{
+			JS::RootedValue jsValue(m_ctx);
+
+			if (JS_GetProperty(m_ctx, jsObject, "data", &jsValue))
+			{
+				_variant_t data;
+				convert::JsToVariant(m_ctx, jsValue, *data.GetAddress());
+				host_external = new ComObject<CDialogHtml::HostExternal>(data);
+			}
+		}
+
+		auto html_options = CDialogHtml::Options{
+			.width = GetOptionalProperty<uint32_t>(m_ctx, jsObject, "width").value_or(250u),
+			.height = GetOptionalProperty<uint32_t>(m_ctx, jsObject, "height").value_or(100u),
+			.x = GetOptionalProperty<int32_t>(m_ctx, jsObject, "x").value_or(0),
+			.y = GetOptionalProperty<int32_t>(m_ctx, jsObject, "y").value_or(0),
+			.isCentered = GetOptionalProperty<bool>(m_ctx, jsObject, "center").value_or(true),
+			.isContextMenuEnabled = GetOptionalProperty<bool>(m_ctx, jsObject, "context_menu").value_or(false),
+			.isFormSelectionEnabled = GetOptionalProperty<bool>(m_ctx, jsObject, "selection").value_or(false),
+			.isResizable = GetOptionalProperty<bool>(m_ctx, jsObject, "resizable").value_or(false),
+			.isScrollEnabled = GetOptionalProperty<bool>(m_ctx, jsObject, "scroll").value_or(false)
+		};
+
+		return html_options;
+	}
 
 	std::unique_ptr<Utils> Utils::CreateNative(JSContext* ctx)
 	{
@@ -668,7 +707,7 @@ namespace mozjs
 		uSetClipboardString(text.c_str());
 	}
 
-	JS::Value Utils::ShowHtmlDialog(uint32_t, const std::wstring& htmlCode, JS::HandleValue options)
+	void Utils::ShowHtmlDialog(uint32_t, const std::wstring& code_or_path, JS::HandleValue options)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
@@ -676,9 +715,12 @@ namespace mozjs
 		if (modal_dialog_scope::can_create())
 		{
 			modal_dialog_scope scope(wnd);
+			wil::com_ptr<CDialogHtml::HostExternal> host_external;
 
-			CDialogHtml dlg(m_ctx, htmlCode, options);
+			auto html_options = ParseHTMLOptions(options, host_external);
+			auto dlg = CDialogHtml(m_ctx, html_options, code_or_path, std::move(host_external));
 			auto iRet = dlg.DoModal(wnd);
+
 			if (-1 == iRet || IDABORT == iRet)
 			{
 				if (JS_IsExceptionPending(m_ctx))
@@ -691,19 +733,18 @@ namespace mozjs
 				}
 			}
 		}
-
-		// TODO: placeholder for modeless
-		return JS::UndefinedValue();
 	}
 
-	JS::Value Utils::ShowHtmlDialogWithOpt(size_t optArgCount, uint32_t hWnd, const std::wstring& htmlCode, JS::HandleValue options)
+	void Utils::ShowHtmlDialogWithOpt(size_t optArgCount, uint32_t hWnd, const std::wstring& code_or_path, JS::HandleValue options)
 	{
 		switch (optArgCount)
 		{
 		case 0:
-			return ShowHtmlDialog(hWnd, htmlCode, options);
+			ShowHtmlDialog(hWnd, code_or_path, options);
+			break;
 		case 1:
-			return ShowHtmlDialog(hWnd, htmlCode);
+			ShowHtmlDialog(hWnd, code_or_path);
+			break;
 		default:
 			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
