@@ -179,6 +179,38 @@ namespace
 
 namespace mozjs
 {
+	std::string ComErrorToText(const _com_error& e)
+	{
+		auto text = fmt::format("COM error:\n  hresult: {}", format_hresult(e.Error()).get_ptr());
+
+		if (e.ErrorMessage())
+		{
+			text += fmt::format("\n  message: {}", pfc::utf8FromWide(e.ErrorMessage()).get_ptr());
+		}
+
+		if (e.Source().length())
+		{
+			text += fmt::format("\n  source: {}", pfc::utf8FromWide(e.Source().GetBSTR()).get_ptr());
+		}
+
+		if (e.Description().length())
+		{
+			text += fmt::format("\n  description: {}", pfc::utf8FromWide(e.Description().GetBSTR()).get_ptr());
+		}
+
+		return text;
+	}
+
+	std::string WilExceptionToText(const wil::ResultException& e)
+	{
+		std::array<wchar_t, 2048uz> msg{};
+
+		if SUCCEEDED(wil::GetFailureLogString(msg.data(), msg.size(), e.GetFailureInfo()))
+			return pfc::utf8FromWide(msg.data()).get_ptr();
+
+		return format_hresult(e.GetErrorCode()).get_ptr();
+	}
+
 	std::string ExceptionToText(JSContext* ctx)
 	{
 		try
@@ -189,6 +221,11 @@ namespace mozjs
 		{
 			return JsErrorToText(ctx);
 		}
+		catch (const wil::ResultException& e)
+		{
+			JS_ClearPendingException(ctx);
+			return WilExceptionToText(e);
+		}
 		catch (const QwrException& e)
 		{
 			JS_ClearPendingException(ctx);
@@ -197,22 +234,7 @@ namespace mozjs
 		catch (const _com_error& e)
 		{
 			JS_ClearPendingException(ctx);
-
-			const auto errorMsg8 = smp::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
-			const auto errorSource8 = smp::ToU8(std::wstring_view{ e.Source().length() ? static_cast<const wchar_t*>(e.Source()) : L"<none>" });
-			const auto errorDesc8 = smp::ToU8(std::wstring_view{ e.Description().length() ? static_cast<const wchar_t*>(e.Description()) : L"<none>" });
-
-			return fmt::format(
-				"COM error:\n"
-				"  hresult: {:#x}\n"
-				"  message: {}\n"
-				"  description: {}\n"
-				"  source: {}",
-				static_cast<uint32_t>(e.Error()),
-				errorMsg8,
-				errorDesc8,
-				errorSource8
-			);
+			return ComErrorToText(e);
 		}
 		catch (const std::bad_alloc& e)
 		{
@@ -317,6 +339,13 @@ namespace mozjs
 		catch (const JsException&)
 		{
 		}
+		catch (const wil::ResultException& e)
+		{
+			JS_ClearPendingException(ctx);
+
+			const auto text = WilExceptionToText(e);
+			JS_ReportErrorUTF8(ctx, text.c_str());
+		}
 		catch (const QwrException& e)
 		{
 			JS_ClearPendingException(ctx);
@@ -325,25 +354,8 @@ namespace mozjs
 		catch (const _com_error& e)
 		{
 			JS_ClearPendingException(ctx);
-
-			const auto errorMsg8 = smp::ToU8(std::wstring_view{ e.ErrorMessage() ? e.ErrorMessage() : L"<none>" });
-			const auto errorSource8 = smp::ToU8(std::wstring_view{ e.Source().length() ? e.Source().GetBSTR() : L"<none>"});
-			const auto errorDesc8 = smp::ToU8(std::wstring_view{ e.Description().length() ? e.Description().GetBSTR() : L"<none>"});
-
-			JS_ReportErrorUTF8(
-				ctx,
-				fmt::format(
-					"COM error:\n"
-					"  hresult: {:#x}\n"
-					"  message: {}\n"
-					"  description: {}\n"
-					"  source: {}",
-					static_cast<uint32_t>(e.Error()),
-					errorMsg8,
-					errorDesc8,
-					errorSource8
-				).c_str()
-			);
+			const auto text = ComErrorToText(e);
+			JS_ReportErrorUTF8(ctx, text.c_str());
 		}
 		catch (const std::bad_alloc&)
 		{
@@ -361,30 +373,20 @@ namespace mozjs
 				JS_ReportErrorUTF8(ctx, "%s", text.c_str());
 			});
 
-		if (!JS_IsExceptionPending(ctx))
+		if (JS_IsExceptionPending(ctx))
 		{
-			return;
-		}
+			// Get exception object before printing and clearing exception.
+			JS::RootedValue excn(ctx);
+			JS_GetPendingException(ctx, &excn);
 
-		// Get exception object before printing and clearing exception.
-		JS::RootedValue excn(ctx);
-		JS_GetPendingException(ctx, &excn);
-
-		if (excn.isString())
-		{
-			if (PrependTextToJsStringException(ctx, excn, text))
+			if (excn.isString() && PrependTextToJsStringException(ctx, excn, text))
 			{
 				autoJsReport.release();
 			}
-			return;
-		}
-		else if (excn.isObject())
-		{
-			if (PrependTextToJsObjectException(ctx, excn, text))
+			else if (excn.isObject() && PrependTextToJsObjectException(ctx, excn, text))
 			{
 				autoJsReport.release();
 			}
-			return;
 		}
 	}
 
@@ -394,18 +396,11 @@ namespace mozjs
 		{
 			throw;
 		}
-		catch (const JsException&)
-		{
-		}
-		catch (const QwrException&)
-		{
-		}
-		catch (const _com_error&)
-		{
-		}
-		catch (const std::bad_alloc&)
-		{
-		}
+		catch (const JsException&) {}
+		catch (const wil::ResultException&) {}
+		catch (const QwrException&) {}
+		catch (const _com_error&) {}
+		catch (const std::bad_alloc&) {}
 		// SM is not designed to handle uncaught exceptions, so we are risking here,
 		// hoping that this exception will reach fb2k handler.
 
