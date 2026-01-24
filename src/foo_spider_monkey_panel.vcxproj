@@ -1,0 +1,428 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{43DF6037-DBE4-4468-9A50-4311495F3C86}</ProjectGuid>
+    <RootNamespace>foo_spider_monkey_panel</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(IncludePath);..\foobar2000-sdk;..\foobar2000-sdk\foobar2000;..\scintilla\lexilla\include;..\scintilla\scintilla\include;..\mozjs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <AdditionalOptions>/Zm200 /Zc:char8_t- /utf-8 /Zc:preprocessor %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <DisableSpecificWarnings>5105;26812;33005</DisableSpecificWarnings>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>GdiPlus.lib;shlwapi.lib;WinMM.lib;Imm32.lib;uxtheme.lib;Windowscodecs.lib;CRYPT32.lib;Ws2_32.lib;iphlpapi.lib;secur32.lib;../foobar2000-sdk/foobar2000/shared/shared-$(Platform).lib;../mozjs/lib/mozjs-102.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <StringPooling>true</StringPooling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <Link>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+    <Midl>
+      <TypeLibraryName>$(ProjectDir)resources\$(ProjectName).tlb</TypeLibraryName>
+      <OutputDirectory>$(ProjectDir)com_utils</OutputDirectory>
+    </Midl>
+    <PostBuildEvent>
+      <Command>set component_path=$(SolutionDir)..\component\
+set mozjs_dir=$(SolutionDir)..\mozjs\bin\
+copy /Y "$(TargetPath)" "%component_path%"
+copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%"
+copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="2K3\AlbumArtStatic.cpp" />
+    <ClCompile Include="2K3\API.cpp" />
+    <ClCompile Include="2K3\Attach.cpp" />
+    <ClCompile Include="2K3\ContextMenuCommand.cpp" />
+    <ClCompile Include="2K3\DownloadFileAsync.cpp" />
+    <ClCompile Include="2K3\FileHelper.cpp" />
+    <ClCompile Include="2K3\HTTPRequestAsync.cpp" />
+    <ClCompile Include="2K3\MainMenuCommand.cpp" />
+    <ClCompile Include="2K3\PlaylistLock.cpp" />
+    <ClCompile Include="2K3\ProcessLocationsNotify.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogEditor.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogGoto.cpp" />
+    <ClCompile Include="2K3\Scintilla\DialogStyle.cpp" />
+    <ClCompile Include="2K3\Scintilla\Scintilla.cpp" />
+    <ClCompile Include="2K3\Scintilla\ScintillaConfig.cpp" />
+    <ClCompile Include="2K3\StackBlur.cpp" />
+    <ClCompile Include="2K3\TagWriter.cpp" />
+    <ClCompile Include="2K3\TextFile.cpp" />
+    <ClCompile Include="callbacks\ConfigObjectNotify.cpp" />
+    <ClCompile Include="callbacks\ConsoleNotify.cpp" />
+    <ClCompile Include="callbacks\DSPConfigCallback.cpp" />
+    <ClCompile Include="callbacks\LibraryCallback.cpp" />
+    <ClCompile Include="callbacks\MetadbIOCallback.cpp" />
+    <ClCompile Include="callbacks\OutputConfigChangeCallback.cpp" />
+    <ClCompile Include="callbacks\PlaybackQueueCallback.cpp" />
+    <ClCompile Include="callbacks\PlaybackStatisticsCollector.cpp" />
+    <ClCompile Include="callbacks\PlayCallbackStatic.cpp" />
+    <ClCompile Include="callbacks\PlaylistCallbackStatic.cpp" />
+    <ClCompile Include="callbacks\ReplaygainCoreSettingsNotify.cpp" />
+    <ClCompile Include="callbacks\UISelectionCallback.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="com_utils\com_destruction_handler.cpp" />
+    <ClCompile Include="com_utils\drag_image.cpp" />
+    <ClCompile Include="com_utils\drag_utils.cpp" />
+    <ClCompile Include="com_utils\drop_source_impl.cpp" />
+    <ClCompile Include="com_utils\drop_target_impl.cpp" />
+    <ClCompile Include="com_utils\file_drop_target.cpp" />
+    <ClCompile Include="com_utils\track_drop_target.cpp" />
+    <ClCompile Include="config\advanced_config.cpp" />
+    <ClCompile Include="config\delayed_package_utils.cpp" />
+    <ClCompile Include="config\package_utils.cpp" />
+    <ClCompile Include="config\panel_config.cpp" />
+    <ClCompile Include="config\parsed_panel_config.cpp" />
+    <ClCompile Include="events\event.cpp" />
+    <ClCompile Include="events\event_dispatcher.cpp" />
+    <ClCompile Include="events\event_drag.cpp" />
+    <ClCompile Include="events\event_mouse.cpp" />
+    <ClCompile Include="events\event_notify_others.cpp" />
+    <ClCompile Include="events\task_controller.cpp" />
+    <ClCompile Include="InitQuit.cpp" />
+    <ClCompile Include="interfaces\active_x_object.cpp" />
+    <ClCompile Include="interfaces\active_x_object_iterator.cpp" />
+    <ClCompile Include="interfaces\context_menu_manager.cpp" />
+    <ClCompile Include="interfaces\drop_source_action.cpp" />
+    <ClCompile Include="interfaces\enumerator.cpp" />
+    <ClCompile Include="interfaces\fb_audio_chunk.cpp" />
+    <ClCompile Include="interfaces\fb_file_info.cpp" />
+    <ClCompile Include="interfaces\fb_metadb_handle.cpp" />
+    <ClCompile Include="interfaces\fb_metadb_handle_list.cpp" />
+    <ClCompile Include="interfaces\fb_metadb_handle_list_iterator.cpp" />
+    <ClCompile Include="interfaces\fb_playback_queue_item.cpp" />
+    <ClCompile Include="interfaces\fb_playlist_recycler.cpp" />
+    <ClCompile Include="interfaces\fb_profiler.cpp" />
+    <ClCompile Include="interfaces\fb_title_format.cpp" />
+    <ClCompile Include="interfaces\fb_tooltip.cpp" />
+    <ClCompile Include="interfaces\fb_ui_selection_holder.cpp" />
+    <ClCompile Include="interfaces\gdi_bitmap.cpp" />
+    <ClCompile Include="interfaces\gdi_font.cpp" />
+    <ClCompile Include="interfaces\gdi_graphics.cpp" />
+    <ClCompile Include="interfaces\gdi_raw_bitmap.cpp" />
+    <ClCompile Include="interfaces\main_menu_manager.cpp" />
+    <ClCompile Include="interfaces\measure_string_info.cpp" />
+    <ClCompile Include="interfaces\menu_object.cpp" />
+    <ClCompile Include="interfaces\theme_manager.cpp" />
+    <ClCompile Include="js_backend\cached_utf8_paths_hack.cpp" />
+    <ClCompile Include="js_backend\com_convert.cpp" />
+    <ClCompile Include="js_backend\global_heap_manager.cpp" />
+    <ClCompile Include="js_backend\global_object.cpp" />
+    <ClCompile Include="js_backend\heartbeat_window.cpp" />
+    <ClCompile Include="js_backend\js_art_helpers.cpp" />
+    <ClCompile Include="js_backend\js_container.cpp" />
+    <ClCompile Include="js_backend\js_engine.cpp" />
+    <ClCompile Include="js_backend\js_error_helper.cpp" />
+    <ClCompile Include="js_backend\js_error_scope.cpp" />
+    <ClCompile Include="js_backend\js_gc.cpp" />
+    <ClCompile Include="js_backend\js_image_helpers.cpp" />
+    <ClCompile Include="js_backend\js_monitor.cpp" />
+    <ClCompile Include="js_backend\js_object_helper.cpp" />
+    <ClCompile Include="js_backend\js_realm_inner.cpp" />
+    <ClCompile Include="js_backend\js_script_cache.cpp" />
+    <ClCompile Include="js_backend\js_to_native.cpp" />
+    <ClCompile Include="js_backend\native_to_js.cpp" />
+    <ClCompile Include="namespaces\console.cpp" />
+    <ClCompile Include="namespaces\fb.cpp" />
+    <ClCompile Include="namespaces\gdi.cpp" />
+    <ClCompile Include="namespaces\plman.cpp" />
+    <ClCompile Include="namespaces\utils.cpp" />
+    <ClCompile Include="namespaces\window.cpp" />
+    <ClCompile Include="panel\edit_script.cpp" />
+    <ClCompile Include="panel\js_panel_window.cpp" />
+    <ClCompile Include="panel\js_panel_window_cui.cpp" />
+    <ClCompile Include="panel\js_panel_window_dui.cpp" />
+    <ClCompile Include="panel\modal_blocking_scope.cpp" />
+    <ClCompile Include="Paths.cpp" />
+    <ClCompile Include="PCH.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="timeout\timeout.cpp" />
+    <ClCompile Include="timeout\timeout_executor.cpp" />
+    <ClCompile Include="timeout\timeout_manager.cpp" />
+    <ClCompile Include="timeout\timer_manager_native.cpp" />
+    <ClCompile Include="timeout\timer_native.cpp" />
+    <ClCompile Include="ui\ui_conf\ui_conf.cpp" />
+    <ClCompile Include="ui\ui_conf\ui_conf_tab_package.cpp" />
+    <ClCompile Include="ui\ui_conf\ui_conf_tab_script_source.cpp" />
+    <ClCompile Include="ui\ui_edit_in_progress.cpp" />
+    <ClCompile Include="ui\ui_html.cpp">
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</MultiProcessorCompilation>
+    </ClCompile>
+    <ClCompile Include="ui\ui_input_box.cpp" />
+    <ClCompile Include="ui\ui_package_manager.cpp" />
+    <ClCompile Include="ui\ui_properties.cpp" />
+    <ClCompile Include="ui\ui_slow_script.cpp" />
+    <ClCompile Include="utils\edit_text.cpp" />
+    <ClCompile Include="utils\error_popup.cpp" />
+    <ClCompile Include="utils\error_helpers.cpp" />
+    <ClCompile Include="utils\guid_helpers.cpp" />
+    <ClCompile Include="utils\hook_handler.cpp" />
+    <ClCompile Include="utils\image_helpers.cpp" />
+    <ClCompile Include="utils\mainmenu.cpp" />
+    <ClCompile Include="utils\mainmenu_dynamic.cpp" />
+    <ClCompile Include="utils\menu_helpers.cpp" />
+    <ClCompile Include="utils\thread_pool.cpp" />
+    <ClCompile Include="utils\unicode.cpp" />
+    <ClCompile Include="utils\winapi_error_helpers.cpp" />
+    <ClCompile Include="utils\zip_utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="2K3\AlbumArtStatic.hpp" />
+    <ClInclude Include="2K3\API.hpp" />
+    <ClInclude Include="2K3\Attach.hpp" />
+    <ClInclude Include="2K3\ContextMenuCommand.hpp" />
+    <ClInclude Include="2K3\CustomSort.hpp" />
+    <ClInclude Include="2K3\DirectoryIterator.hpp" />
+    <ClInclude Include="2K3\DownloadFileAsync.hpp" />
+    <ClInclude Include="2K3\EstimateLineWrap.hpp" />
+    <ClInclude Include="2K3\FileDialog.hpp" />
+    <ClInclude Include="2K3\FileHelper.hpp" />
+    <ClInclude Include="2K3\FileInfoFilter.hpp" />
+    <ClInclude Include="2K3\FontHelper.hpp" />
+    <ClInclude Include="2K3\GetAlbumArtAsync.hpp" />
+    <ClInclude Include="2K3\Helpers.hpp" />
+    <ClInclude Include="2K3\HTTPRequestAsync.hpp" />
+    <ClInclude Include="2K3\KMeans.hpp" />
+    <ClInclude Include="2K3\LoadImageAsync.hpp" />
+    <ClInclude Include="2K3\MainMenuCommand.hpp" />
+    <ClInclude Include="2K3\PlaylistLock.hpp" />
+    <ClInclude Include="2K3\ProcessLocationsNotify.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogEditor.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogGoto.hpp" />
+    <ClInclude Include="2K3\Scintilla\DialogStyle.hpp" />
+    <ClInclude Include="2K3\Scintilla\KeyHook.hpp" />
+    <ClInclude Include="2K3\Scintilla\Scintilla.hpp" />
+    <ClInclude Include="2K3\Scintilla\ScintillaConfig.hpp" />
+    <ClInclude Include="2K3\Scintilla\ScintillaImpl.hpp" />
+    <ClInclude Include="2K3\StackBlur.hpp" />
+    <ClInclude Include="2K3\String.hpp" />
+    <ClInclude Include="2K3\TagWriter.hpp" />
+    <ClInclude Include="2K3\TextFile.hpp" />
+    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="com_utils\com_destruction_handler.h" />
+    <ClInclude Include="com_utils\com_tools.h" />
+    <ClInclude Include="com_utils\dispatch_ptr.h" />
+    <ClInclude Include="com_utils\drag_image.h" />
+    <ClInclude Include="com_utils\drag_utils.h" />
+    <ClInclude Include="com_utils\drop_source_impl.h" />
+    <ClInclude Include="com_utils\drop_target_impl.h" />
+    <ClInclude Include="com_utils\file_drop_target.h" />
+    <ClInclude Include="com_utils\track_drop_target.h" />
+    <ClInclude Include="config\advanced_config.h" />
+    <ClInclude Include="config\delayed_package_utils.h" />
+    <ClInclude Include="config\package_utils.h" />
+    <ClInclude Include="config\panel_config.h" />
+    <ClInclude Include="config\parsed_panel_config.h" />
+    <ClInclude Include="events\event.h" />
+    <ClInclude Include="events\event_dispatcher.h" />
+    <ClInclude Include="events\event_drag.h" />
+    <ClInclude Include="events\event_ids.h" />
+    <ClInclude Include="events\event_js_callback.h" />
+    <ClInclude Include="events\event_mouse.h" />
+    <ClInclude Include="events\event_notify_others.h" />
+    <ClInclude Include="events\task_controller.h" />
+    <ClInclude Include="GUIDS.hpp" />
+    <ClInclude Include="interfaces\active_x_object.h" />
+    <ClInclude Include="interfaces\active_x_object_iterator.h" />
+    <ClInclude Include="interfaces\context_menu_manager.h" />
+    <ClInclude Include="interfaces\drop_source_action.h" />
+    <ClInclude Include="interfaces\enumerator.h" />
+    <ClInclude Include="interfaces\fb_audio_chunk.h" />
+    <ClInclude Include="interfaces\fb_file_info.h" />
+    <ClInclude Include="interfaces\fb_metadb_handle.h" />
+    <ClInclude Include="interfaces\fb_metadb_handle_list.h" />
+    <ClInclude Include="interfaces\fb_metadb_handle_list_iterator.h" />
+    <ClInclude Include="interfaces\fb_playback_queue_item.h" />
+    <ClInclude Include="interfaces\fb_playlist_recycler.h" />
+    <ClInclude Include="interfaces\fb_profiler.h" />
+    <ClInclude Include="interfaces\fb_title_format.h" />
+    <ClInclude Include="interfaces\fb_tooltip.h" />
+    <ClInclude Include="interfaces\fb_ui_selection_holder.h" />
+    <ClInclude Include="interfaces\gdi_bitmap.h" />
+    <ClInclude Include="interfaces\gdi_font.h" />
+    <ClInclude Include="interfaces\gdi_graphics.h" />
+    <ClInclude Include="interfaces\gdi_raw_bitmap.h" />
+    <ClInclude Include="interfaces\main_menu_manager.h" />
+    <ClInclude Include="interfaces\measure_string_info.h" />
+    <ClInclude Include="interfaces\menu_object.h" />
+    <ClInclude Include="interfaces\theme_manager.h" />
+    <ClInclude Include="js_backend\cached_utf8_paths_hack.h" />
+    <ClInclude Include="js_backend\com_convert.h" />
+    <ClInclude Include="js_backend\global_heap_manager.h" />
+    <ClInclude Include="js_backend\global_object.h" />
+    <ClInclude Include="js_backend\heartbeat_window.h" />
+    <ClInclude Include="js_backend\js_art_helpers.h" />
+    <ClInclude Include="js_backend\js_async_task.h" />
+    <ClInclude Include="js_backend\js_container.h" />
+    <ClInclude Include="js_backend\js_engine.h" />
+    <ClInclude Include="js_backend\js_error_helper.h" />
+    <ClInclude Include="js_backend\js_error_scope.h" />
+    <ClInclude Include="js_backend\js_gc.h" />
+    <ClInclude Include="js_backend\js_heap_helper.h" />
+    <ClInclude Include="js_backend\js_image_helpers.h" />
+    <ClInclude Include="js_backend\js_monitor.h" />
+    <ClInclude Include="js_backend\js_object_helper.h" />
+    <ClInclude Include="js_backend\js_property_helper.h" />
+    <ClInclude Include="js_backend\js_prototype_helpers.h" />
+    <ClInclude Include="js_backend\js_realm_inner.h" />
+    <ClInclude Include="js_backend\js_script_cache.h" />
+    <ClInclude Include="js_backend\js_to_native.h" />
+    <ClInclude Include="js_backend\js_to_native_invoker.h" />
+    <ClInclude Include="js_backend\native_to_js.h" />
+    <ClInclude Include="js_backend\native_to_js_invoker.h" />
+    <ClInclude Include="js_backend\object_base.h" />
+    <ClInclude Include="js_backend\prototype_ids.h" />
+    <ClInclude Include="MozJS.hpp" />
+    <ClInclude Include="namespaces\console.h" />
+    <ClInclude Include="namespaces\fb.h" />
+    <ClInclude Include="namespaces\gdi.h" />
+    <ClInclude Include="namespaces\plman.h" />
+    <ClInclude Include="namespaces\utils.h" />
+    <ClInclude Include="namespaces\window.h" />
+    <ClInclude Include="panel\drag_action_params.h" />
+    <ClInclude Include="panel\edit_script.h" />
+    <ClInclude Include="panel\js_panel_window.h" />
+    <ClInclude Include="panel\modal_blocking_scope.h" />
+    <ClInclude Include="panel\user_message.h" />
+    <ClInclude Include="Paths.hpp" />
+    <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="resources\resource.h" />
+    <ClInclude Include="timeout\timeout.h" />
+    <ClInclude Include="timeout\timeout_executor.h" />
+    <ClInclude Include="timeout\timeout_manager.h" />
+    <ClInclude Include="timeout\timer_interface_fwd.h" />
+    <ClInclude Include="timeout\timer_manager_native.h" />
+    <ClInclude Include="timeout\timer_native.h" />
+    <ClInclude Include="ui\ui_conf\ui_conf.h" />
+    <ClInclude Include="ui\ui_conf\ui_conf_tab_package.h" />
+    <ClInclude Include="ui\ui_conf\ui_conf_tab_script_source.h" />
+    <ClInclude Include="ui\ui_edit_in_progress.h" />
+    <ClInclude Include="ui\ui_html.h" />
+    <ClInclude Include="ui\ui_input_box.h" />
+    <ClInclude Include="ui\ui_package_manager.h" />
+    <ClInclude Include="ui\ui_properties.h" />
+    <ClInclude Include="ui\ui_slow_script.h" />
+    <ClInclude Include="utils\colour_helpers.h" />
+    <ClInclude Include="utils\edit_text.h" />
+    <ClInclude Include="utils\error_popup.h" />
+    <ClInclude Include="utils\error_helpers.h" />
+    <ClInclude Include="utils\guid_helpers.h" />
+    <ClInclude Include="utils\hook_handler.h" />
+    <ClInclude Include="utils\image_helpers.h" />
+    <ClInclude Include="utils\js_exception.h" />
+    <ClInclude Include="utils\mainmenu_dynamic.h" />
+    <ClInclude Include="utils\menu_helpers.h" />
+    <ClInclude Include="utils\qwr_exception.h" />
+    <ClInclude Include="utils\thread_pool.h" />
+    <ClInclude Include="utils\type_traits.h" />
+    <ClInclude Include="utils\ui_ddx.h" />
+    <ClInclude Include="utils\unicode.h" />
+    <ClInclude Include="utils\winapi_error_helpers.h" />
+    <ClInclude Include="utils\zip_utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\foobar2000-sdk\columns_ui-sdk\columns_ui-sdk.vcxproj">
+      <Project>{93ec0ede-01cd-4fb0-b8e8-4f2a027e026e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\foobar2000-sdk\foobar2000\foobar2000_component_client\foobar2000_component_client.vcxproj">
+      <Project>{71ad2674-065b-48f5-b8b0-e1f9d3892081}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\foobar2000-sdk\foobar2000\helpers\foobar2000_sdk_helpers.vcxproj">
+      <Project>{ee47764e-a202-4f85-a767-abdab4aff35f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\foobar2000-sdk\foobar2000\SDK\foobar2000_SDK.vcxproj">
+      <Project>{e8091321-d79d-4575-86ef-064ea1a4a20d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\foobar2000-sdk\libPPUI\libPPUI.vcxproj">
+      <Project>{7729eb82-4069-4414-964b-ad399091a03f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\foobar2000-sdk\pfc\pfc.vcxproj">
+      <Project>{ebfffb4e-261d-44d3-b89c-957b31a0bf9c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\scintilla\lexilla\src\Lexilla.vcxproj">
+      <Project>{e541c9be-13bc-4ce6-a0a4-31145f51a2c1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\scintilla\scintilla\win32\Scintilla.vcxproj">
+      <Project>{19cca8b8-46b9-4609-b7ce-198da19f07bd}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="resources\cfgBright.cfg" />
+    <None Include="resources\cfgDarkGray.cfg" />
+    <None Include="resources\cfgDefault.cfg" />
+    <None Include="resources\cfgRubyBlue.cfg" />
+    <None Include="resources\default_script.js" />
+    <None Include="resources\recovery_package_json.json" />
+    <None Include="resources\recovery_package_script.js" />
+    <None Include="resources\scintilla_component.api" />
+    <None Include="resources\scintilla_js.api" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="com_utils\com_interface.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resources\foo_spider_monkey_panel.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

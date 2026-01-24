@@ -1,0 +1,71 @@
+#pragma once
+#include "com_tools.h"
+#include "drop_target_impl.h"
+
+class FileDropTarget : public IDropTargetImpl
+{
+public:
+	FileDropTarget(HWND hDropWnd, HWND hNotifyWnd);
+
+	static bool IsFile(IDataObject* pDataObj);
+	static uint32_t GetOnDropMsg();
+
+	template <typename T>
+	static LRESULT ProcessMessage(HWND, WPARAM, LPARAM lParam, T processor)
+	{
+		auto pDataObj = reinterpret_cast<IDataObject*>(lParam);
+		const auto autoDrop = wil::scope_exit([pDataObj]
+			{
+				pDataObj->Release();
+			});
+
+		FORMATETC fmte = { CF_HDROP, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+		STGMEDIUM stgm;
+
+		if (FAILED(pDataObj->GetData(&fmte, &stgm)))
+		{
+			return 0;
+		}
+
+		const auto autoStgm = wil::scope_exit([&stgm]
+			{
+				ReleaseStgMedium(&stgm);
+			});
+
+		const auto hDrop = reinterpret_cast<HDROP>(stgm.hGlobal);
+		const auto fileCount = DragQueryFileW(hDrop, 0xFFFFFFFF, nullptr, 0);
+
+		if (fileCount == 0u)
+		{
+			return 0;
+		}
+
+		for (const auto i : indices(static_cast<int>(fileCount)))
+		{
+			const auto pathLength = DragQueryFileW(hDrop, i, nullptr, 0);
+			std::wstring path;
+			path.resize(pathLength + 1);
+
+			DragQueryFileW(hDrop, i, path.data(), lengthu(path));
+			path.resize(path.size() - 1);
+
+			processor(path);
+		}
+
+		return 0;
+	}
+
+private:
+	// IDropTargetImpl
+	DWORD OnDragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
+	DWORD OnDragOver(DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
+	DWORD OnDrop(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect) override;
+	void OnDragLeave() override {};
+
+	[[nodiscard]] DWORD GetEffect() const;
+
+private:
+	HWND hDropWnd_ = nullptr;
+	HWND hNotifyWnd_ = nullptr;
+	bool isFile_ = false;
+};

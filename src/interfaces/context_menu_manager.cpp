@@ -1,0 +1,97 @@
+#include "PCH.hpp"
+#include "context_menu_manager.h"
+#include "fb_metadb_handle_list.h"
+#include "menu_object.h"
+
+namespace
+{
+	using namespace mozjs;
+
+	DEFINE_JS_CLASS_OPS(JsContextMenuManager::FinalizeJsObject)
+
+	DEFINE_JS_CLASS_NO_PROPERTIES("ContextMenuManager")
+
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(BuildMenu, JsContextMenuManager::BuildMenu, JsContextMenuManager::BuildMenuWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ExecuteByID, JsContextMenuManager::ExecuteByID)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(InitContext, JsContextMenuManager::InitContext)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(InitContextPlaylist, JsContextMenuManager::InitContextPlaylist)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(InitNowPlaying, JsContextMenuManager::InitNowPlaying)
+
+	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
+		{
+			JS_FN("BuildMenu", BuildMenu, 2, kDefaultPropsFlags),
+			JS_FN("ExecuteByID", ExecuteByID, 1, kDefaultPropsFlags),
+			JS_FN("InitContext", InitContext, 1, kDefaultPropsFlags),
+			JS_FN("InitContextPlaylist", InitContextPlaylist, 0, kDefaultPropsFlags),
+			JS_FN("InitNowPlaying", InitNowPlaying, 0, kDefaultPropsFlags),
+			JS_FS_END,
+		});
+}
+
+namespace mozjs
+{
+	const JSClass JsContextMenuManager::JsClass = jsClass;
+	const JSFunctionSpec* JsContextMenuManager::JsFunctions = jsFunctions.data();
+	const JSPropertySpec* JsContextMenuManager::JsProperties = jsProperties.data();
+	const JsPrototypeId JsContextMenuManager::PrototypeId = JsPrototypeId::ContextMenuManager;
+
+	JsContextMenuManager::JsContextMenuManager(JSContext* cx) : pJsCtx_(cx) {}
+
+	std::unique_ptr<JsContextMenuManager> JsContextMenuManager::CreateNative(JSContext* cx)
+	{
+		return std::unique_ptr<JsContextMenuManager>(new JsContextMenuManager(cx));
+	}
+
+	uint32_t JsContextMenuManager::GetInternalSize()
+	{
+		return 0;
+	}
+
+	void JsContextMenuManager::BuildMenu(JsMenuObject* menuObject, int32_t base_id, int32_t max_id)
+	{
+		QwrException::ExpectTrue(contextMenu_.is_valid(), "Context menu is not initialized");
+		QwrException::ExpectTrue(menuObject, "menuObject argument is null");
+
+		contextMenu_->win32_build_menu(menuObject->HMenu(), contextMenu_->get_root(), base_id, max_id);
+	}
+
+	void JsContextMenuManager::BuildMenuWithOpt(size_t optArgCount, JsMenuObject* menuObject, int32_t base_id, int32_t max_id)
+	{
+		switch (optArgCount)
+		{
+		case 0:
+			return BuildMenu(menuObject, base_id, max_id);
+		case 1:
+			return BuildMenu(menuObject, base_id);
+		default:
+			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		}
+	}
+
+	bool JsContextMenuManager::ExecuteByID(uint32_t id)
+	{
+		QwrException::ExpectTrue(contextMenu_.is_valid(), "Context menu is not initialized");
+
+		return contextMenu_->execute_by_id(id);
+	}
+
+	void JsContextMenuManager::InitContext(JsFbMetadbHandleList* handles)
+	{
+		QwrException::ExpectTrue(handles, "handles argument is null");
+
+		contextmenu_manager::g_create(contextMenu_);
+		contextMenu_->init_context(handles->GetHandleList(), contextmenu_manager::flag_show_shortcuts);
+	}
+
+	void JsContextMenuManager::InitContextPlaylist()
+	{
+		contextmenu_manager::g_create(contextMenu_);
+		contextMenu_->init_context_playlist(contextmenu_manager::flag_show_shortcuts);
+	}
+
+	void JsContextMenuManager::InitNowPlaying()
+	{
+		contextmenu_manager::g_create(contextMenu_);
+		contextMenu_->init_context_now_playing(contextmenu_manager::flag_show_shortcuts);
+	}
+}

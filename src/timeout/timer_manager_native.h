@@ -1,0 +1,27 @@
+#pragma once
+#include "timer_native.h"
+
+namespace smp
+{
+	class TimerManager_Native
+	{
+	public:
+		[[nodiscard]] static TimerManager_Native& Get();
+
+		void Finalize();
+
+		[[nodiscard]] static const TimeDuration& GetAllowedEarlyFiringTime();
+		[[nodiscard]] std::unique_ptr<Timer_Native> CreateTimer(std::shared_ptr<PanelTarget> pTarget);
+
+	public:
+		[[nodiscard]] HANDLE CreateNativeTimer(std::shared_ptr<Timer_Native> pTimer);
+		void DestroyNativeTimer(HANDLE hTimer, bool waitForDestruction);
+		void PostTimerEvent(std::shared_ptr<Timer_Native> pTimer);
+
+	private:
+		TimerManager_Native();
+
+	private:
+		HANDLE hTimerQueue_;
+	};
+}
