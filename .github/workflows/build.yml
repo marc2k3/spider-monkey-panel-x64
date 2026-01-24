@@ -1,0 +1,43 @@
+name: build
+on: push
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: true
+
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v2
+      
+    - name: Cache dependencies
+      uses: actions/cache@v5
+      with:
+        path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
+        key: 4f326c4072038c8624c36a8ba5ed23f616adda53
+
+    - name: Set up vcpkg
+      working-directory: C:\vcpkg
+      run: |
+        git pull && bootstrap-vcpkg && vcpkg integrate install
+        vcpkg install cpr fmt miniz nlohmann-json wil wtl --triplet x64-windows-static
+
+    - name: Build
+      run: msbuild workspace\foo_spider_monkey_panel.slnx /p:PlatformToolset=v143
+      
+    - name: Upload pdb
+      uses: actions/upload-artifact@v6
+      with:
+        name: debug_symbols
+        path: component/foo_spider_monkey_panel.pdb
+
+    - name: Delete pdb
+      run: del component/foo_spider_monkey_panel.pdb
+
+    - name: Upload component folder
+      uses: actions/upload-artifact@v6
+      with:
+        name: foo_spider_monkey_panel-${{ github.ref_name }}
+        path: component
