@@ -1,0 +1,5 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+component/** linguist-detectable=false
+foobar2000-sdk/** linguist-detectable=false
