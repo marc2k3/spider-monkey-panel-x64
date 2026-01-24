@@ -1,0 +1,29 @@
+`Visual Studio 2026` is required to build. As a bare minumum you must have:
+
+- Desktop development with C++ workload
+- `v145` toolset
+- `ATL` for the `v145` toolset
+- Windows 11 SDK
+
+First, you'll need to perform a recursive clone of the repository. From a `PowerShell` prompt:
+```
+git clone --recurse https://github.com/marc2k3/spider-monkey-panel-x64
+```
+
+3rd party dependencies are installed via [vcpkg](https://github.com/microsoft/vcpkg). If you don't already haave it installed:
+```
+git clone https://github.com/microsoft/vcpkg
+cd vcpkg
+./bootstrap-vcpkg
+./vcpkg integrate install
+```
+
+Run this command to install the required packages:
+```
+./vcpkg install cpr fmt miniz nlohmann-json wil wtl --triplet x64-windows-static
+```
+
+Now browse inside the `foo_spider_monkey_panel` folder and open `workspace/foo_spider_monkey_panel.slnx` in
+`Visual Studio 2026` and it should build.
+
+When building succeeds, check the `component` folder as the compiled `dll` is copied there.
