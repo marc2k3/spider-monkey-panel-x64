@@ -49,7 +49,7 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>GdiPlus.lib;shlwapi.lib;WinMM.lib;Imm32.lib;uxtheme.lib;Windowscodecs.lib;CRYPT32.lib;Ws2_32.lib;iphlpapi.lib;secur32.lib;../foobar2000-sdk/foobar2000/shared/shared-$(Platform).lib;../mozjs/lib/mozjs-102.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>GdiPlus.lib;shlwapi.lib;WinMM.lib;Imm32.lib;uxtheme.lib;Windowscodecs.lib;CRYPT32.lib;Ws2_32.lib;iphlpapi.lib;secur32.lib;../foobar2000-sdk/foobar2000/shared/shared-$(Platform).lib;../mozjs/mozjs-102.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <ResourceCompile>
@@ -78,7 +78,7 @@
     </Midl>
     <PostBuildEvent>
       <Command>set component_path=$(SolutionDir)..\component\
-set mozjs_dir=$(SolutionDir)..\mozjs\bin\
+set mozjs_dir=$(SolutionDir)..\mozjs\
 copy /Y "$(TargetPath)" "%component_path%"
 copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%"
 copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
