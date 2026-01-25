@@ -493,7 +493,7 @@ function _thumbs() {
 		this.image = 0;
 		this.files = _getFiles(this.folder, this.exts, this.properties.sort.value == 1);
 		if (this.properties.source.value == 1 && this.files.length > 1) {
-			this.default_file = this.folder + utils.ReadINI(this.ini_file, 'Defaults', _fbSanitise(this.artist));
+			this.default_file = this.folder + utils.ReadINI(this.ini_file, 'Defaults', utils.ReplaceIllegalChars(this.artist));
 			const tmp = _.indexOf(this.files, this.default_file);
 			if (tmp > -1) {
 				this.files.splice(tmp, 1);
@@ -511,7 +511,7 @@ function _thumbs() {
 	}
 
 	this.set_default = (t) => {
-		utils.WriteINI(this.ini_file, 'Defaults', _fbSanitise(this.artist), t);
+		utils.WriteINI(this.ini_file, 'Defaults', utils.ReplaceIllegalChars(this.artist), t);
 		this.update();
 	}
 
@@ -536,7 +536,7 @@ function _thumbs() {
 			return;
 		}
 
-		var filename_base = _artistFolder(artist) + _fbSanitise(artist) + '_';
+		var filename_base = _artistFolder(artist) + utils.ReplaceIllegalChars(artist) + '_';
 
 		_(_getElementsByTagName(response_text, 'li'))
 			.filter({ className : 'image-list-item-wrapper' })
@@ -571,8 +571,8 @@ function _thumbs() {
 		}
 	}
 
-	_createFolder(folders.data);
-	_createFolder(folders.artists);
+	utils.CreateFolder(folders.data);
+	utils.CreateFolder(folders.artists);
 	this.mx = 0;
 	this.my = 0;
 	this.files = [];

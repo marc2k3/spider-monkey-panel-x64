@@ -53,7 +53,7 @@ function _lastfm() {
 		utils.WriteINI(this.ini_file, 'Last.fm', k, v);
 	}
 
-	_createFolder(folders.data);
+	utils.CreateFolder(folders.data);
 	this.ini_file = folders.data + 'lastfm.ini';
 	this.username = this.read_ini('username');
 	this.api_key = this.read_ini('api_key');

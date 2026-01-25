@@ -39,7 +39,7 @@ function _text(mode, x, y, w, h) {
 				}
 				this.artist = temp_artist;
 				this.album = temp_album;
-				this.filename = _artistFolder(this.artist) + 'allmusic.' + _fbSanitise(this.album) + '.txt';
+				this.filename = _artistFolder(this.artist) + 'allmusic.' + utils.ReplaceIllegalChars(this.album) + '.txt';
 				this.content = '';
 				this.allmusic_url = false;
 				if (_isFile(this.filename)) {
@@ -406,8 +406,8 @@ function _text(mode, x, y, w, h) {
 			this.search_base = 'https://www.allmusic.com/search/albums/';
 			this.history = {};
 
-			_createFolder(folders.data);
-			_createFolder(folders.artists);
+			utils.CreateFolder(folders.data);
+			utils.CreateFolder(folders.artists);
 			break;
 		case 'lastfm_bio':
 			this.get = function () {
@@ -435,8 +435,8 @@ function _text(mode, x, y, w, h) {
 			this.langs = ['en', 'de', 'es', 'fr', 'it', 'ja', 'pl', 'pt', 'ru', 'sv', 'tr', 'zh'];
 			this.properties.lang = new _p('2K3.TEXT.BIO.LANG', 0);
 
-			_createFolder(folders.data);
-			_createFolder(folders.artists);
+			utils.CreateFolder(folders.data);
+			utils.CreateFolder(folders.artists);
 			break;
 		case 'text_reader':
 			this.properties.filename_tf = new _p('2K3.TEXT.FILENAME.TF', '$directory_path(%path%)');

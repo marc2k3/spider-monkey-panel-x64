@@ -761,7 +761,7 @@ function _list(mode, x, y, w, h) {
 				}
 			}
 
-			_createFolder(folders.data);
+			utils.CreateFolder(folders.data);
 			this.deleted_items = [];
 			this.filename = folders.data + 'autoplaylists.json';
 			this.update();
@@ -815,9 +815,9 @@ function _list(mode, x, y, w, h) {
 				}
 			}
 
-			_createFolder(folders.data);
-			_createFolder(folders.artists);
-			_createFolder(folders.lastfm);
+			utils.CreateFolder(folders.data);
+			utils.CreateFolder(folders.artists);
+			utils.CreateFolder(folders.lastfm);
 
 			this.methods = [{
 					method : 'user.getTopArtists',
@@ -924,8 +924,8 @@ function _list(mode, x, y, w, h) {
 				mode : new _p('2K3.LIST.MUSICBRAINZ.MODE', 0) // 0 releases 1 links
 			};
 
-			_createFolder(folders.data);
-			_createFolder(folders.artists);
+			utils.CreateFolder(folders.data);
+			utils.CreateFolder(folders.artists);
 			break;
 		case 'properties':
 			this.add_meta = (f) => {

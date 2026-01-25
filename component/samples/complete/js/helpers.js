@@ -16,15 +16,9 @@ function on_script_unload() {
 }
 
 function _artistFolder(artist) {
-	const a = _fbSanitise(artist);
-	let folder = folders.artists + a;
-	if (_isFolder(folder)) {
-		return fso.GetFolder(folder) + '\\';
-	} else {
-		folder = folders.artists + _.truncate(a, { length : 64 });
-		_createFolder(folder);
-		return fso.GetFolder(folder) + '\\';
-	}
+	var folder = folders.artists + utils.ReplaceIllegalChars(artist, true);
+	utils.CreateFolder(folder);
+	return folder + '\\';
 }
 
 function _blendColours(c1, c2, f) {
@@ -137,21 +131,6 @@ function _chrToImg(chr, colour, font) {
 	return temp_bmp;
 }
 
-function _createFolder(folder) {
-	if (!_isFolder(folder)) {
-		fso.CreateFolder(folder);
-	}
-}
-
-function _deleteFile(file) {
-	if (_isFile(file)) {
-		try {
-			fso.DeleteFile(file);
-		} catch (e) {
-		}
-	}
-}
-
 function _drawImage(gr, img, src_x, src_y, src_w, src_h, aspect, border, alpha) {
 	if (!img) {
 		return [];
@@ -224,12 +203,8 @@ function _fbEscape(value) {
 	return value.replace(/'/g, "''").replace(/[\(\)\[\],$]/g, "'$&'");
 }
 
-function _fbSanitise(value) {
-	return value.replace(/[\/\\|:]/g, '-').replace(/\*/g, 'x').replace(/"/g, "''").replace(/[<>]/g, '_').replace(/\?/g, '').replace(/(?! )\s/g, '');
-}
-
 function _fileExpired(file, period) {
-	return _.now() - _lastModified(file) > period;
+	return _ts() - utils.GetLastModified(file) > period;
 }
 
 function _firstElement(obj, tag_name) {
@@ -264,11 +239,12 @@ function _getExt(path) {
 function _getFiles(folder, exts, newest_first) {
 	let files = [];
 	if (_isFolder(folder)) {
-		let e = new Enumerator(fso.GetFolder(folder).Files);
-		for (; !e.atEnd(); e.moveNext()) {
-			const path = e.item().Path;
-			files.push(path);
-		}
+		if (folder.endsWith('\\'))
+			folder += "*.*";
+		else
+			folder += "\\*.*";
+
+		files = utils.Glob(folder);
 	}
 	if (exts) {
 		files = _.filter(files, function (item) {
@@ -278,7 +254,7 @@ function _getFiles(folder, exts, newest_first) {
 	}
 	if (newest_first) {
 		return _.orderBy(files, (item) => {
-			return _lastModified(item);
+			return utils.GetLastModified(item);
 		}, 'desc');
 	} else {
 		files.srt();
@@ -341,10 +317,6 @@ function _jsonParse(value) {
 
 function _jsonParseFile(file) {
 	return _jsonParse(_open(file));
-}
-
-function _lastModified(file) {
-	return Date.parse(fso.GetFile(file).DateLastModified);
 }
 
 function _lineWrap(value, font, width) {
@@ -562,7 +534,6 @@ function _tt(value) {
 let doc = new ActiveXObject('htmlfile');
 let app = new ActiveXObject('Shell.Application');
 let WshShell = new ActiveXObject('WScript.Shell');
-let fso = new ActiveXObject('Scripting.FileSystemObject');
 
 const DT_LEFT = 0x00000000;
 const DT_CENTER = 0x00000001;
