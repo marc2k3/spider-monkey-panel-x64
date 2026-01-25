@@ -29,6 +29,9 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CheckComponent, Utils::CheckComponent, Utils::CheckComponentWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CheckFont, Utils::CheckFont);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ColourPicker, Utils::ColourPicker);
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFile, Utils::CopyFile, Utils::CopyFileWithOpt, 1);
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFolder, Utils::CopyFolder, Utils::CopyFolderWithOpt, 2);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(CreateFolder, Utils::CreateFolder);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(DetectCharset, Utils::DetectCharset);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(DownloadFileAsync, Utils::DownloadFileAsync);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(EditTextFile, Utils::EditTextFile);
@@ -42,6 +45,7 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtV2, Utils::GetAlbumArtV2, Utils::GetAlbumArtV2WithOpt, 2);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetClipboardText, Utils::GetClipboardText);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFileSize, Utils::GetFileSize);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetLastModified, Utils::GetLastModified);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetPackageInfo, Utils::GetPackageInfo);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetPackagePath, Utils::GetPackagePath);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetSysColour, Utils::GetSysColour);
@@ -56,6 +60,9 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE(PathWildcardMatch, Utils::PathWildcardMatch);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadINI, Utils::ReadINI, Utils::ReadINIWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadTextFile, Utils::ReadTextFile, Utils::ReadTextFileWithOpt, 1);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(RemovePath, Utils::RemovePath);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(RenamePath, Utils::RenamePath);
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReplaceIllegalChars, Utils::ReplaceIllegalChars, Utils::ReplaceIllegalCharsWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(SetClipboardText, Utils::SetClipboardText);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ShowHtmlDialog, Utils::ShowHtmlDialog, Utils::ShowHtmlDialogWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(SplitFilePath, Utils::SplitFilePath);
@@ -67,6 +74,9 @@ namespace
 			JS_FN("CheckComponent", CheckComponent, 1, kDefaultPropsFlags),
 			JS_FN("CheckFont", CheckFont, 1, kDefaultPropsFlags),
 			JS_FN("ColourPicker", ColourPicker, 2, kDefaultPropsFlags),
+			JS_FN("CopyFile", CopyFile, 3, kDefaultPropsFlags),
+			JS_FN("CopyFolder", CopyFolder, 4, kDefaultPropsFlags),
+			JS_FN("CreateFolder", CreateFolder, 1, kDefaultPropsFlags),
 			JS_FN("DetectCharset", DetectCharset, 1, kDefaultPropsFlags),
 			JS_FN("DownloadFileAsync", DownloadFileAsync, 2, kDefaultPropsFlags),
 			JS_FN("EditTextFile", ::EditTextFile, 2, kDefaultPropsFlags),
@@ -80,6 +90,7 @@ namespace
 			JS_FN("GetAlbumArtV2", GetAlbumArtV2, 1, kDefaultPropsFlags),
 			JS_FN("GetClipboardText", GetClipboardText, 0, kDefaultPropsFlags),
 			JS_FN("GetFileSize", GetFileSize, 1, kDefaultPropsFlags),
+			JS_FN("GetLastModified", GetLastModified, 1, kDefaultPropsFlags),
 			JS_FN("GetPackageInfo", GetPackageInfo, 1, kDefaultPropsFlags),
 			JS_FN("GetPackagePath", GetPackagePath, 1, kDefaultPropsFlags),
 			JS_FN("GetSysColour", GetSysColour, 1, kDefaultPropsFlags),
@@ -94,6 +105,9 @@ namespace
 			JS_FN("PathWildcardMatch", PathWildcardMatch, 2, kDefaultPropsFlags),
 			JS_FN("ReadINI", ReadINI, 3, kDefaultPropsFlags),
 			JS_FN("ReadTextFile", ReadTextFile, 1, kDefaultPropsFlags),
+			JS_FN("RemovePath", RemovePath, 1, kDefaultPropsFlags),
+			JS_FN("RenamePath", RenamePath, 2, kDefaultPropsFlags),
+			JS_FN("ReplaceIllegalChars", ReplaceIllegalChars, 1, kDefaultPropsFlags),
 			JS_FN("SetClipboardText", SetClipboardText, 1, kDefaultPropsFlags),
 			JS_FN("ShowHtmlDialog", ShowHtmlDialog, 3, kDefaultPropsFlags),
 			JS_FN("SplitFilePath", SplitFilePath, 1, kDefaultPropsFlags),
@@ -198,12 +212,9 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return CheckComponent(name, is_dll);
-		case 1:
-			return CheckComponent(name);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return CheckComponent(name, is_dll);
+		case 1: return CheckComponent(name);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -221,6 +232,42 @@ namespace mozjs
 		auto colour = smp::ArgbToColorref(default_colour);
 		uChooseColor(&colour, wnd, colours.data());
 		return smp::ColorrefToArgb(colour);
+	}
+
+	bool Utils::CopyFile(const std::wstring& from, const std::wstring& to, bool overwrite) const
+	{
+		return FileHelper(from).copy_file(to, overwrite);
+	}
+
+	bool Utils::CopyFileWithOpt(size_t optArgCount, const std::wstring& from, const std::wstring& to, bool overwrite) const
+	{
+		switch (optArgCount)
+		{
+		case 0: return CopyFile(from, to, overwrite);
+		case 1: return CopyFile(from, to);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		}
+	}
+
+	bool Utils::CopyFolder(const std::wstring& from, const std::wstring& to, bool overwrite, bool recur) const
+	{
+		return FileHelper(from).copy_folder(to, overwrite, recur);
+	}
+
+	bool Utils::CopyFolderWithOpt(size_t optArgCount, const std::wstring& from, const std::wstring& to, bool overwrite, bool recur) const
+	{
+		switch (optArgCount)
+		{
+		case 0: return CopyFolder(from, to, overwrite, recur);
+		case 1: return CopyFolder(from, to, overwrite);
+		case 2: return CopyFolder(from, to);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		}
+	}
+
+	bool Utils::CreateFolder(const std::wstring& path) const
+	{
+		return FileHelper(path).create_folder();
 	}
 
 	uint32_t Utils::DetectCharset(const std::wstring& path) const
@@ -319,18 +366,12 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return GetAlbumArtAsync(hWnd, handle, art_id, need_stub, only_embed, no_load);
-		case 1:
-			return GetAlbumArtAsync(hWnd, handle, art_id, need_stub, only_embed);
-		case 2:
-			return GetAlbumArtAsync(hWnd, handle, art_id, need_stub);
-		case 3:
-			return GetAlbumArtAsync(hWnd, handle, art_id);
-		case 4:
-			return GetAlbumArtAsync(hWnd, handle);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return GetAlbumArtAsync(hWnd, handle, art_id, need_stub, only_embed, no_load);
+		case 1: return GetAlbumArtAsync(hWnd, handle, art_id, need_stub, only_embed);
+		case 2: return GetAlbumArtAsync(hWnd, handle, art_id, need_stub);
+		case 3: return GetAlbumArtAsync(hWnd, handle, art_id);
+		case 4: return GetAlbumArtAsync(hWnd, handle);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -348,18 +389,12 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return GetAlbumArtAsyncV2(hWnd, handle, art_id, need_stub, only_embed, no_load);
-		case 1:
-			return GetAlbumArtAsyncV2(hWnd, handle, art_id, need_stub, only_embed);
-		case 2:
-			return GetAlbumArtAsyncV2(hWnd, handle, art_id, need_stub);
-		case 3:
-			return GetAlbumArtAsyncV2(hWnd, handle, art_id);
-		case 4:
-			return GetAlbumArtAsyncV2(hWnd, handle);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return GetAlbumArtAsyncV2(hWnd, handle, art_id, need_stub, only_embed, no_load);
+		case 1: return GetAlbumArtAsyncV2(hWnd, handle, art_id, need_stub, only_embed);
+		case 2: return GetAlbumArtAsyncV2(hWnd, handle, art_id, need_stub);
+		case 3: return GetAlbumArtAsyncV2(hWnd, handle, art_id);
+		case 4: return GetAlbumArtAsyncV2(hWnd, handle);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -379,12 +414,9 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return GetAlbumArtEmbedded(rawpath, art_id);
-		case 1:
-			return GetAlbumArtEmbedded(rawpath);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return GetAlbumArtEmbedded(rawpath, art_id);
+		case 1: return GetAlbumArtEmbedded(rawpath);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -406,14 +438,10 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return GetAlbumArtV2(handle, art_id, need_stub);
-		case 1:
-			return GetAlbumArtV2(handle, art_id);
-		case 2:
-			return GetAlbumArtV2(handle);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return GetAlbumArtV2(handle, art_id, need_stub);
+		case 1: return GetAlbumArtV2(handle, art_id);
+		case 2: return GetAlbumArtV2(handle);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -427,6 +455,11 @@ namespace mozjs
 	uint64_t Utils::GetFileSize(const std::wstring& path) const
 	{
 		return FileHelper(path).file_size();
+	}
+
+	uint64_t Utils::GetLastModified(const std::wstring& path) const
+	{
+		return FileHelper(path).last_modified();
 	}
 
 	JSObject* Utils::GetPackageInfo(const std::string& packageId) const
@@ -508,14 +541,10 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return Glob(pattern, exc_mask, inc_mask);
-		case 1:
-			return Glob(pattern, exc_mask);
-		case 2:
-			return Glob(pattern);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return Glob(pattern, exc_mask, inc_mask);
+		case 1: return Glob(pattern, exc_mask);
+		case 2: return Glob(pattern);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -538,14 +567,10 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return HTTPRequestAsync(type, url, user_agent_or_headers, body);
-		case 1:
-			return HTTPRequestAsync(type, url, user_agent_or_headers);
-		case 2:
-			return HTTPRequestAsync(type, url);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return HTTPRequestAsync(type, url, user_agent_or_headers, body);
+		case 1: return HTTPRequestAsync(type, url, user_agent_or_headers);
+		case 2: return HTTPRequestAsync(type, url);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -579,14 +604,10 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return InputBox(hWnd, prompt, caption, def, error_on_cancel);
-		case 1:
-			return InputBox(hWnd, prompt, caption, def);
-		case 2:
-			return InputBox(hWnd, prompt, caption);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return InputBox(hWnd, prompt, caption, def, error_on_cancel);
+		case 1: return InputBox(hWnd, prompt, caption, def);
+		case 2: return InputBox(hWnd, prompt, caption);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -673,12 +694,9 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return ReadINI(filename, section, key, defaultval);
-		case 1:
-			return ReadINI(filename, section, key);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return ReadINI(filename, section, key, defaultval);
+		case 1: return ReadINI(filename, section, key);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -693,12 +711,48 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return ReadTextFile(filePath, codepage);
-		case 1:
-			return ReadTextFile(filePath);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return ReadTextFile(filePath, codepage);
+		case 1: return ReadTextFile(filePath);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		}
+	}
+
+	int32_t Utils::RemovePath(const std::wstring& path) const
+	{
+		return FileHelper(path).remove_all();
+	}
+
+	bool Utils::RenamePath(const std::wstring& from, const std::wstring& to) const
+	{
+		return FileHelper::rename(from, to);
+	}
+
+	std::string Utils::ReplaceIllegalChars(const std::string& str, bool strip_trailing_periods)
+	{
+		std::string ret = pfc::io::path::replaceIllegalNameChars(str.c_str(), false, pfc::io::path::charReplaceModern).get_ptr();
+		size_t len = ret.length();
+
+		if (strip_trailing_periods && ret.ends_with('.'))
+		{
+			for (const char c : ret | std::views::reverse)
+			{
+				if (c != '.')
+					break;
+
+				len--;
+			}
+		}
+
+		return ret.substr(0uz, len);
+	}
+
+	std::string Utils::ReplaceIllegalCharsWithOpt(size_t optArgCount, const std::string& str, bool strip_trailing_periods)
+	{
+		switch (optArgCount)
+		{
+		case 0: return ReplaceIllegalChars(str, strip_trailing_periods);
+		case 1: return ReplaceIllegalChars(str);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -739,14 +793,9 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			ShowHtmlDialog(hWnd, code_or_path, options);
-			break;
-		case 1:
-			ShowHtmlDialog(hWnd, code_or_path);
-			break;
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: ShowHtmlDialog(hWnd, code_or_path, options); break;
+		case 1: ShowHtmlDialog(hWnd, code_or_path); break;
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
@@ -786,12 +835,9 @@ namespace mozjs
 	{
 		switch (optArgCount)
 		{
-		case 0:
-			return WriteTextFile(filename, content, write_bom);
-		case 1:
-			return WriteTextFile(filename, content);
-		default:
-			throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
+		case 0: return WriteTextFile(filename, content, write_bom);
+		case 1: return WriteTextFile(filename, content);
+		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 

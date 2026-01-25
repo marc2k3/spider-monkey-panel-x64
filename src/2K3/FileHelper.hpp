@@ -17,8 +17,8 @@ public:
 	bool exists() noexcept;
 	bool is_file() noexcept;
 	bool is_folder() noexcept;
-	bool remove() noexcept;
 	bool write(const void* data, size_t size) noexcept;
+	int32_t remove_all() noexcept;
 	std::unique_ptr<Gdiplus::Bitmap> load_image() noexcept;
 	uint64_t file_size() noexcept;
 	uint64_t last_modified() noexcept;

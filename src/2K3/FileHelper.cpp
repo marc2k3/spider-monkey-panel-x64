@@ -109,12 +109,6 @@ bool FileHelper::is_folder() noexcept
 	return fs::is_directory(m_path, ec);
 }
 
-bool FileHelper::remove() noexcept
-{
-	std::error_code ec;
-	return fs::remove(m_path, ec);
-}
-
 bool FileHelper::write(const void* data, size_t size) noexcept
 {
 	auto f = std::ofstream(m_path, std::ios::binary);
@@ -123,6 +117,12 @@ bool FileHelper::write(const void* data, size_t size) noexcept
 		return false;
 
 	return f.write((char*)data, size).good();
+}
+
+int32_t FileHelper::remove_all() noexcept
+{
+	std::error_code ec;
+	return to_int(fs::remove_all(m_path, ec));
 }
 
 std::unique_ptr<Gdiplus::Bitmap> FileHelper::load_image() noexcept

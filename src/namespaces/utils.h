@@ -18,6 +18,11 @@ namespace mozjs
 		bool CheckComponentWithOpt(size_t optArgCount, const std::string& name, bool is_dll) const;
 		bool CheckFont(const std::wstring& name) const;
 		uint32_t ColourPicker(uint32_t hWnd, uint32_t default_colour);
+		bool CopyFile(const std::wstring& from, const std::wstring& to, bool overwrite = true) const;
+		bool CopyFileWithOpt(size_t optArgCount, const std::wstring& from, const std::wstring& to, bool overwrite) const;
+		bool CopyFolder(const std::wstring& from, const std::wstring& to, bool overwrite = true, bool recur = true) const;
+		bool CopyFolderWithOpt(size_t optArgCount, const std::wstring& from, const std::wstring& to, bool overwrite, bool recur) const;
+		bool CreateFolder(const std::wstring& path) const;
 		uint32_t DetectCharset(const std::wstring& path) const;
 		void DownloadFileAsync(const std::string& url, const std::wstring& path);
 		void EditTextFile(const std::wstring& path);
@@ -36,6 +41,7 @@ namespace mozjs
 		JSObject* GetAlbumArtV2WithOpt(size_t optArgCount, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub);
 		std::string GetClipboardText() const;
 		uint64_t GetFileSize(const std::wstring& path) const;
+		uint64_t GetLastModified(const std::wstring& path) const;
 		JSObject* GetPackageInfo(const std::string& packageId) const;
 		// TODO: remove in the next version (not necessarily v2)
 		std::string GetPackagePath(const std::string& packageId) const;
@@ -56,6 +62,10 @@ namespace mozjs
 		std::wstring ReadINIWithOpt(size_t optArgCount, const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval);
 		std::wstring ReadTextFile(const std::wstring& filePath, uint32_t codepage = CP_UTF8);
 		std::wstring ReadTextFileWithOpt(size_t optArgCount, const std::wstring& filePath, uint32_t codepage);
+		int32_t RemovePath(const std::wstring& path) const;
+		bool RenamePath(const std::wstring& from, const std::wstring& to) const;
+		std::string ReplaceIllegalChars(const std::string& str, bool strip_trailing_periods = false);
+		std::string ReplaceIllegalCharsWithOpt(size_t optArgCount, const std::string& str, bool strip_trailing_periods );
 		void SetClipboardText(const std::string& text);
 		void ShowHtmlDialog(uint32_t hWnd, const std::wstring& code_or_path, JS::HandleValue options = JS::UndefinedHandleValue);
 		void ShowHtmlDialogWithOpt(size_t optArgCount, uint32_t hWnd, const std::wstring& code_or_path, JS::HandleValue options);
