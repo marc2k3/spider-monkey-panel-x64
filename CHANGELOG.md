@@ -1,5 +1,17 @@
 For new methods/callbacks, see the [API](./docs/api.md) page.
 
+## 1.7.26.1.25
+- Add the following new methods:
+```
+utils.CopyFile
+utils.CopyFolder
+utils.CreateFolder
+utils.GetLastModified
+utils.RemovePath
+utils.RenamePath
+utils.ReplaceIllegalChars
+```
+
 ## 1.7.26.1.20
 - Add `on_console_refresh` callback.
 - Add `console.GetLines` and `console.ClearBacklog` methods.
