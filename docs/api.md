@@ -113,6 +113,37 @@ Returns the index or `-1` on failure. Only strings returned by `plman.GetGUID` w
 
 Returns a `string` which is a unique persistent property of the playlist.
 
+## `utils.CopyFile(from, to[, overwrite])`
+|Arguments|||
+|---|---|---|
+|from|`string`|
+|to|`string`|
+|overwrite|`boolean`|Default `true`.|
+
+Returns a `boolean` value.
+
+## `utils.CopyFolder(from, to[, overwrite, recur])`
+|Arguments|||
+|---|---|---|
+|from|`string`|
+|to|`string`|
+|overwrite|`boolean`|Default `true`.|
+|recur|`boolean`|Default `true`. If `false`, only files at the root of the folder are copied.|
+
+Returns a `boolean` value.
+
+## `utils.CreateFolder(path)`
+|Arguments|||
+|---|---|---|
+|path|`string`|
+
+Returns a `boolean` value.
+
+It will be `true` on success or if folder already exists. Returns
+`false` if the operation fails.
+
+Parent folders are created if they don't exist.
+
 ## `utils.DownloadFileAsync(url, path)`
 |Arguments|||
 |---|---|---|
@@ -128,6 +159,47 @@ See also: [on_download_file_done](#on_download_file_donepath-success-error_text)
 
 ## `utils.GetClipboardText()`
 Returns a `string`. It will be empty if the clipboard contents are not text.
+
+## `utils.GetLastModified(path)`
+|Arguments|||
+|---|---|---|
+|path|`string`|
+
+The return value is seconds since 00:00:00 Thursday, 1 January 1970 UTC.
+
+## `utils.RemovePath(path)`
+|Arguments|||
+|---|---|---|
+|path|`string`|Can be a file or folder. If it's a folder, all contents will be removed as well.|
+
+Returns a `number` to indicate how many files/folders were removed. May be `0` if the `path`
+did not exist or `-1` if some other internal error occurred.
+
+## `utils.RenamePath(from, to)`
+|Arguments|||
+|---|---|---|
+|from|`string`|Can be a file or folder.|
+|to|`string`|
+
+Returns a `boolean` value.
+
+## `utils.ReplaceIllegalChars(str[, strip_trailing_periods])`
+|Arguments|||
+|---|---|---|
+|str|`string`|
+|strip_trailing_periods|`boolean`|Default `false`. Set to `true` if `str` is a folder name.|
+
+Returns a `string`.
+
+An example:
+```js
+var chars = '"\\\/*|:<>?';
+console.log(utils.ReplaceIllegalChars(chars));
+```
+
+```
+''⧵⁄∗∣∶˂˃？
+```
 
 ## `utils.SetClipboardText(text)`
 |Arguments|||
