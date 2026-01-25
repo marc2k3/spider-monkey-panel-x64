@@ -191,6 +191,8 @@ Returns a `boolean` value.
 
 Returns a `string`.
 
+Uses the same modern unicode replacements as the `foobar2000` converter/file operations.
+
 An example:
 ```js
 var chars = '"\\\/*|:<>?';
