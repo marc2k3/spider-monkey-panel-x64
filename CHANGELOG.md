@@ -11,6 +11,7 @@ utils.RemovePath
 utils.RenamePath
 utils.ReplaceIllegalChars
 ```
+- Transparency is no longer optional in `Columns UI`. It's automatically enabled for toolbars and unavailable everywhere else.
 
 ## 1.7.26.1.20
 - Add `on_console_refresh` callback.
