@@ -1,5 +1,9 @@
 For new methods/callbacks, see the [API](./docs/api.md) page.
 
+## 1.7.26.1.26
+- Fix regression in yesterday's release which broke caching in samples that fetch online info.
+- Fix missing auto-complete entries for recently added `utils` methods.
+
 ## 1.7.26.1.25
 - Add the following new methods:
 ```
