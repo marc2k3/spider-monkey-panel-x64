@@ -571,7 +571,6 @@ function _thumbs() {
 		}
 	}
 
-	utils.CreateFolder(folders.data);
 	utils.CreateFolder(folders.artists);
 	this.mx = 0;
 	this.my = 0;

@@ -815,7 +815,6 @@ function _list(mode, x, y, w, h) {
 				}
 			}
 
-			utils.CreateFolder(folders.data);
 			utils.CreateFolder(folders.artists);
 			utils.CreateFolder(folders.lastfm);
 
@@ -924,7 +923,6 @@ function _list(mode, x, y, w, h) {
 				mode : new _p('2K3.LIST.MUSICBRAINZ.MODE', 0) // 0 releases 1 links
 			};
 
-			utils.CreateFolder(folders.data);
 			utils.CreateFolder(folders.artists);
 			break;
 		case 'properties':

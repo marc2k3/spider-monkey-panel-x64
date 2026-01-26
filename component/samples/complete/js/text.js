@@ -406,7 +406,6 @@ function _text(mode, x, y, w, h) {
 			this.search_base = 'https://www.allmusic.com/search/albums/';
 			this.history = {};
 
-			utils.CreateFolder(folders.data);
 			utils.CreateFolder(folders.artists);
 			break;
 		case 'lastfm_bio':
@@ -435,7 +434,6 @@ function _text(mode, x, y, w, h) {
 			this.langs = ['en', 'de', 'es', 'fr', 'it', 'ja', 'pl', 'pt', 'ru', 'sv', 'tr', 'zh'];
 			this.properties.lang = new _p('2K3.TEXT.BIO.LANG', 0);
 
-			utils.CreateFolder(folders.data);
 			utils.CreateFolder(folders.artists);
 			break;
 		case 'text_reader':
