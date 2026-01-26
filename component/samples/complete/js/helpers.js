@@ -567,8 +567,7 @@ const TPM_BOTTOMALIGN = 0x0020;
 
 const DLGC_WANTALLKEYS = 0x0004;
 
-const ONE_DAY = 86400000;
-const ONE_WEEK = 604800000;
+const ONE_DAY = 86400;
 
 const DEFAULT_ARTIST = '$meta(artist,0)';
 const N = window.ScriptInfo.Name + ':';
