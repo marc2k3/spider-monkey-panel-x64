@@ -58,6 +58,7 @@ namespace mozjs
 		bool IsFile(const std::wstring& path) const;
 		bool IsKeyPressed(uint32_t vkey) const;
 		std::wstring MapString(const std::wstring& str, uint32_t lcid, uint32_t flags);
+		uint32_t Now();
 		bool PathWildcardMatch(const std::wstring& pattern, const std::wstring& str);
 		std::wstring ReadINI(const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval = L"");
 		std::wstring ReadINIWithOpt(size_t optArgCount, const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval);

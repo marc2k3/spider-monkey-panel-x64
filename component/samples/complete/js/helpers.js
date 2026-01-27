@@ -187,24 +187,9 @@ function _explorer(file) {
 		WshShell.Run('explorer /select,' + _q(file));
 	}
 }
-function _fbDate(t) {
-	const offset = new Date().getTimezoneOffset() * 60;
-	if (typeof t == 'number') {
-		t -= offset;
-		const tmp = new Date(t * 1000).toISOString(); // ES5 only
-		return tmp.substring(0, 10) + ' ' + tmp.substring(11, 19);
-	} else {
-		const tmp = new Date(t.substring(0, 10) + "T" + t.substring(11, 19) + "Z");
-		return (Date.parse(tmp) / 1000) + offset;
-	}
-}
-
-function _fbEscape(value) {
-	return value.replace(/'/g, "''").replace(/[\(\)\[\],$]/g, "'$&'");
-}
 
 function _fileExpired(file, period) {
-	return _ts() - utils.GetLastModified(file) > period;
+	return utils.Now() - utils.GetLastModified(file) > period;
 }
 
 function _firstElement(obj, tag_name) {
@@ -518,10 +503,6 @@ function _textWidth(value, font) {
 function _toRGB(a) {
 	const b = a - 0xFF000000;
 	return [b >> 16, b >> 8 & 0xFF, b & 0xFF];
-}
-
-function _ts() {
-	return Math.floor(_.now() / 1000);
 }
 
 function _tt(value) {

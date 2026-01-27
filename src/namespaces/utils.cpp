@@ -58,6 +58,7 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE(IsFile, Utils::IsFile);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(IsKeyPressed, Utils::IsKeyPressed);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(MapString, Utils::MapString);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(Now, Utils::Now);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(PathWildcardMatch, Utils::PathWildcardMatch);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadINI, Utils::ReadINI, Utils::ReadINIWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadTextFile, Utils::ReadTextFile, Utils::ReadTextFileWithOpt, 1);
@@ -104,6 +105,7 @@ namespace
 			JS_FN("IsFile", IsFile, 1, kDefaultPropsFlags),
 			JS_FN("IsKeyPressed", IsKeyPressed, 1, kDefaultPropsFlags),
 			JS_FN("MapString", MapString, 3, kDefaultPropsFlags),
+			JS_FN("Now", Now, 0, kDefaultPropsFlags),
 			JS_FN("PathWildcardMatch", PathWildcardMatch, 2, kDefaultPropsFlags),
 			JS_FN("ReadINI", ReadINI, 3, kDefaultPropsFlags),
 			JS_FN("ReadTextFile", ReadTextFile, 1, kDefaultPropsFlags),
@@ -670,6 +672,11 @@ namespace mozjs
 
 		dst.resize(lengthu(dst));
 		return dst;
+	}
+
+	uint32_t Utils::Now()
+	{
+		return to_uint(pfc::fileTimeWtoU(pfc::fileTimeNow()));
 	}
 
 	bool Utils::PathWildcardMatch(const std::wstring& pattern, const std::wstring& str)
