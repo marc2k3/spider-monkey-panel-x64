@@ -29,6 +29,7 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CheckComponent, Utils::CheckComponent, Utils::CheckComponentWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CheckFont, Utils::CheckFont);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(ColourPicker, Utils::ColourPicker);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ConvertToAscii, Utils::ConvertToAscii);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFile, Utils::CopyFile, Utils::CopyFileWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFolder, Utils::CopyFolder, Utils::CopyFolderWithOpt, 2);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(CreateFolder, Utils::CreateFolder);
@@ -74,6 +75,7 @@ namespace
 			JS_FN("CheckComponent", CheckComponent, 1, kDefaultPropsFlags),
 			JS_FN("CheckFont", CheckFont, 1, kDefaultPropsFlags),
 			JS_FN("ColourPicker", ColourPicker, 2, kDefaultPropsFlags),
+			JS_FN("ConvertToAscii", ConvertToAscii, 1, kDefaultPropsFlags),
 			JS_FN("CopyFile", CopyFile, 3, kDefaultPropsFlags),
 			JS_FN("CopyFolder", CopyFolder, 4, kDefaultPropsFlags),
 			JS_FN("CreateFolder", CreateFolder, 1, kDefaultPropsFlags),
@@ -232,6 +234,11 @@ namespace mozjs
 		auto colour = smp::ArgbToColorref(default_colour);
 		uChooseColor(&colour, wnd, colours.data());
 		return smp::ColorrefToArgb(colour);
+	}
+
+	std::string Utils::ConvertToAscii(const std::string& str)
+	{
+		return pfc::stringcvt::string_ascii_from_utf8(str.c_str(), str.length()).get_ptr();
 	}
 
 	bool Utils::CopyFile(const std::wstring& from, const std::wstring& to, bool overwrite) const
@@ -729,7 +736,7 @@ namespace mozjs
 
 	std::string Utils::ReplaceIllegalChars(const std::string& str, bool strip_trailing_periods)
 	{
-		std::string ret = pfc::io::path::replaceIllegalNameChars(str.c_str(), false, pfc::io::path::charReplaceModern).get_ptr();
+		const std::string ret = pfc::io::path::replaceIllegalNameChars(str.c_str(), false, pfc::io::path::charReplaceModern).get_ptr();
 		size_t len = ret.length();
 
 		if (strip_trailing_periods && ret.ends_with('.'))

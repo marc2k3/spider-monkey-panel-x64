@@ -155,6 +155,7 @@ utils.Version
 utils.CheckComponent(name[, is_dll])
 utils.CheckFont(name)
 utils.ColourPicker(window_id, default_colour)
+utils.ConvertToAscii(str)
 utils.CopyFile(from, to[, overwrite])
 utils.CopyFolder(from, to[, overwrite, recur])
 utils.CreateFolder(path)

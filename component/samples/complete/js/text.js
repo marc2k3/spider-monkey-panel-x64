@@ -392,8 +392,8 @@ function _text(mode, x, y, w, h) {
 				return this.tidy(artist) == this.tidy(this.artist) && this.tidy(album) == this.tidy(this.album);
 			}
 
-			this.tidy = (value) => {
-				return fb.TitleFormat('$replace($lower($ascii(' + _fbEscape(value) + ')), & ,, and ,)').EvalWithMetadb(panel.metadb);
+			this.tidy = (str) => {
+				return utils.ConvertToAscii(str).toLowerCase().replace(/ and /g, '').replace(/ & /g, '');
 			}
 
 			this.headers = JSON.stringify({

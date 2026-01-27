@@ -18,6 +18,7 @@ namespace mozjs
 		bool CheckComponentWithOpt(size_t optArgCount, const std::string& name, bool is_dll) const;
 		bool CheckFont(const std::wstring& name) const;
 		uint32_t ColourPicker(uint32_t hWnd, uint32_t default_colour);
+		std::string ConvertToAscii(const std::string& str);
 		bool CopyFile(const std::wstring& from, const std::wstring& to, bool overwrite = true) const;
 		bool CopyFileWithOpt(size_t optArgCount, const std::wstring& from, const std::wstring& to, bool overwrite) const;
 		bool CopyFolder(const std::wstring& from, const std::wstring& to, bool overwrite = true, bool recur = true) const;
