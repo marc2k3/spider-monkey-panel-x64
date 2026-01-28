@@ -74,26 +74,15 @@ namespace mozjs
 
 	JSObject* JsFbMetadbHandle::GetFileInfo(bool want_full_info)
 	{
-		metadb_info_container::ptr info;
+		metadb_info_container::ptr info = m_handle->get_info_ref();
 
-		if (want_full_info && fb2k::api::is_2_26 && !filesystem::g_is_remote_or_unrecognized(m_handle->get_path()))
+		if (info->isInfoPartial() && want_full_info)
 		{
 			try
 			{
 				info = m_handle->get_full_info_ref(fb2k::noAbort);
 			}
 			catch (...) {}
-		}
-
-		if (info.is_empty())
-		{
-			info = m_handle->query_v2_().info;
-		}
-
-		// last resort, don't want to return null
-		if (info.is_empty())
-		{
-			info = m_handle->get_info_ref();
 		}
 
 		return JsFbFileInfo::CreateJs(m_ctx, info);
