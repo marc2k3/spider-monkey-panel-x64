@@ -86,16 +86,16 @@ namespace mozjs
 
 	public:
 		bool get_AlwaysOnTop();
-		std::string get_ComponentPath();
+		std::wstring get_ComponentPath();
 		bool get_CursorFollowPlayback();
 		int32_t get_CustomVolume();
-		std::string get_FoobarPath();
+		std::wstring get_FoobarPath();
 		bool get_IsPaused();
 		bool get_IsPlaying();
 		bool get_PlaybackFollowCursor();
 		double get_PlaybackLength();
 		double get_PlaybackTime();
-		std::string get_ProfilePath();
+		std::wstring get_ProfilePath();
 		uint32_t get_ReplaygainMode();
 		bool get_StopAfterCurrent();
 		std::string get_Version();

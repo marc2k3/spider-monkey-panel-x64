@@ -879,9 +879,10 @@ namespace
 			return config_object::g_get_data_bool_simple(standard_config_objects::bool_ui_always_on_top, false);
 		}
 
-		std::string Fb::get_ComponentPath()
+		std::wstring Fb::get_ComponentPath()
 		{
-			return (path::Component() / "").u8string();
+			static const auto component_path = path::Component().native() + std::filesystem::path::preferred_separator;
+			return component_path;
 		}
 
 		bool Fb::get_CursorFollowPlayback()
@@ -899,9 +900,10 @@ namespace
 			return -1;
 		}
 
-		std::string Fb::get_FoobarPath()
+		std::wstring Fb::get_FoobarPath()
 		{
-			return (path::Foobar2000() / "").u8string();
+			static const auto fb2k_path = path::Foobar2000().native() + std::filesystem::path::preferred_separator;
+			return fb2k_path;
 		}
 
 		bool Fb::get_IsPaused()
@@ -929,9 +931,10 @@ namespace
 			return fb2k::api::pc->playback_get_position();
 		}
 
-		std::string Fb::get_ProfilePath()
+		std::wstring Fb::get_ProfilePath()
 		{
-			return (path::Profile() / "").u8string();
+			static const auto profile_path = path::Profile().native() + std::filesystem::path::preferred_separator;
+			return profile_path;
 		}
 
 		uint32_t Fb::get_ReplaygainMode()
