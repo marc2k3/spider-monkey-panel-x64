@@ -21,7 +21,7 @@ namespace mozjs
 
 	public:
 		JSObject* GetContent(uint32_t index);
-		pfc::string8 GetName(uint32_t index);
+		std::wstring GetName(uint32_t index);
 		void Purge(JS::HandleValue affectedItems);
 		void Restore(uint32_t index);
 

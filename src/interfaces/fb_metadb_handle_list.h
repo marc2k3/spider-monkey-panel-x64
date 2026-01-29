@@ -45,7 +45,7 @@ namespace mozjs
 		// TODO v2: rename to ToArray()
 		JS::Value Convert();
 		int32_t Find(JsFbMetadbHandle* handle);
-		JS::Value GetLibraryRelativePaths();
+		JSObject* GetLibraryRelativePaths();
 		void Insert(uint32_t index, JsFbMetadbHandle* handle);
 		void InsertRange(uint32_t index, JsFbMetadbHandleList* handles);
 		void MakeDifference(JsFbMetadbHandleList* handles);

@@ -22,10 +22,10 @@ namespace mozjs
 		static JSObject* Constructor(JSContext* cx, const std::string& expr);
 
 	public:
-		pfc::string8 Eval(bool force = false);
-		pfc::string8 EvalWithOpt(size_t optArgCount, bool force);
-		pfc::string8 EvalWithMetadb(JsFbMetadbHandle* handle, bool want_full_info = false);
-		pfc::string8 EvalWithMetadbWithOpt(size_t optArgCount, JsFbMetadbHandle* handle, bool want_full_info);
+		std::wstring Eval(bool force = false);
+		std::wstring EvalWithOpt(size_t optArgCount, bool force);
+		std::wstring EvalWithMetadb(JsFbMetadbHandle* handle, bool want_full_info = false);
+		std::wstring EvalWithMetadbWithOpt(size_t optArgCount, JsFbMetadbHandle* handle, bool want_full_info);
 		JS::Value EvalWithMetadbs(JsFbMetadbHandleList* handles);
 
 	private:

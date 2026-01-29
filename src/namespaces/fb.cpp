@@ -511,13 +511,13 @@ namespace
 			return JsFbMetadbHandleList::CreateJs(m_ctx, items);
 		}
 
-		pfc::string8 Fb::GetLibraryRelativePath(JsFbMetadbHandle* handle)
+		std::wstring Fb::GetLibraryRelativePath(JsFbMetadbHandle* handle)
 		{
 			QwrException::ExpectTrue(handle, "handle argument is null");
 
-			pfc::string8 temp;
-			library_manager::get()->get_relative_path(handle->GetHandle(), temp);
-			return temp;
+			pfc::string8 path;
+			library_manager::get()->get_relative_path(handle->GetHandle(), path);
+			return smp::ToWide(path);
 		}
 
 		JSObject* Fb::GetNowPlaying()

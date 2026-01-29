@@ -41,7 +41,7 @@ namespace mozjs
 		JSObject* GetFocusItem(bool force = true);
 		JSObject* GetFocusItemWithOpt(size_t optArgCount, bool force);
 		JSObject* GetLibraryItems();
-		pfc::string8 GetLibraryRelativePath(JsFbMetadbHandle* handle);
+		std::wstring GetLibraryRelativePath(JsFbMetadbHandle* handle);
 		JSObject* GetNowPlaying();
 		std::string GetOutputDevices();
 		JSObject* GetQueryItems(JsFbMetadbHandleList* handles, const std::string& query);

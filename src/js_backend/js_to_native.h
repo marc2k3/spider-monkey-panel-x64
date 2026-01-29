@@ -5,7 +5,7 @@ namespace mozjs::convert::to_native
 	namespace internal
 	{
 		template <class T>
-		inline constexpr bool IsJsSimpleConvertableImplV = std::disjunction_v<std::is_fundamental<T>, std::is_same<std::string, T>, std::is_same<std::wstring, T>, std::is_same<pfc::string8, T>>;
+		inline constexpr bool IsJsSimpleConvertableImplV = std::disjunction_v<std::is_fundamental<T>, std::is_same<std::string, T>, std::is_same<std::wstring, T>>;
 
 		template <class T>
 		inline constexpr bool IsJsSimpleConvertableV = IsJsSimpleConvertableImplV<std::remove_cv_t<T>>;
@@ -52,9 +52,6 @@ namespace mozjs::convert::to_native
 
 		template <>
 		std::wstring ToSimpleValue<std::wstring>(JSContext* ctx, const JS::HandleValue& jsValue);
-
-		template <>
-		pfc::string8 ToSimpleValue<pfc::string8>(JSContext* ctx, const JS::HandleValue& jsValue);
 
 		template <>
 		std::nullptr_t ToSimpleValue<std::nullptr_t>(JSContext* ctx, const JS::HandleValue& jsValue);
@@ -148,9 +145,6 @@ namespace mozjs::convert::to_native
 
 	template <>
 	std::wstring ToValue(JSContext* ctx, const JS::HandleString& jsString);
-
-	template <>
-	pfc::string8 ToValue(JSContext* ctx, const JS::HandleString& jsString);
 
 	template <typename T, typename F>
 	void ProcessArray(JSContext* ctx, JS::HandleValue jsValue, F&& workerFunc)

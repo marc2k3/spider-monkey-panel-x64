@@ -104,13 +104,6 @@ namespace mozjs::convert::to_native
 		}
 
 		template <>
-		pfc::string8 ToSimpleValue(JSContext* ctx, const JS::HandleValue& jsValue)
-		{
-			JS::RootedString jsString(ctx, JS::ToString(ctx, jsValue));
-			return ToValue<pfc::string8>(ctx, jsString);
-		}
-
-		template <>
 		std::nullptr_t ToSimpleValue(JSContext*, const JS::HandleValue&)
 		{
 			return nullptr;
@@ -135,12 +128,5 @@ namespace mozjs::convert::to_native
 		}
 
 		throw JsException();
-	}
-
-	template <>
-	pfc::string8 ToValue(JSContext* ctx, const JS::HandleString& jsString)
-	{
-		const auto str = ToValue<std::string>(ctx, jsString);
-		return str.c_str();
 	}
 }

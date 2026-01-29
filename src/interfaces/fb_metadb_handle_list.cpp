@@ -316,20 +316,31 @@ namespace mozjs
 		return static_cast<int32_t>(metadbHandleList_.find_item(fbHandle));
 	}
 
-	JS::Value JsFbMetadbHandleList::GetLibraryRelativePaths()
+	JSObject* JsFbMetadbHandleList::GetLibraryRelativePaths()
 	{
 		const auto count = metadbHandleList_.get_count();
 		auto api = library_manager::get();
-		auto values = pfc_array<pfc::string8>(count);
 
-		for (auto&& [handle, value] : std::views::zip(metadbHandleList_, values))
-		{
-			api->get_relative_path(handle, value);
-		}
+		JS::RootedObject jsArray(pJsCtx_, JS::NewArrayObject(pJsCtx_, count));
+		JsException::ExpectTrue(jsArray);
 
 		JS::RootedValue jsValue(pJsCtx_);
-		convert::to_js::ToArrayValue(pJsCtx_, values, &jsValue);
-		return jsValue;
+		uint32_t i{};
+
+		for (auto&& handle : metadbHandleList_)
+		{
+			pfc::string8 tmp;
+			api->get_relative_path(handle, tmp);
+
+			convert::to_js::ToValue(pJsCtx_, smp::ToWide(tmp), &jsValue);
+
+			if (!JS_SetElement(pJsCtx_, jsArray, i++, jsValue))
+			{
+				throw JsException();
+			}
+		}
+
+		return jsArray;
 	}
 
 	void JsFbMetadbHandleList::Insert(uint32_t index, JsFbMetadbHandle* handle)

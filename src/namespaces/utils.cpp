@@ -352,12 +352,12 @@ namespace mozjs
 
 	std::string Utils::FormatDuration(double p) const
 	{
-		return std::string(pfc::format_time_ex(p, 0));
+		return pfc::format_time_ex(p, 0).get_ptr();
 	}
 
 	std::string Utils::FormatFileSize(uint64_t p) const
 	{
-		return std::string(pfc::format_file_size_short(p));
+		return pfc::format_file_size_short(p).get_ptr();
 	}
 
 	void Utils::GetAlbumArtAsync(uint32_t, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool)
@@ -458,7 +458,7 @@ namespace mozjs
 	{
 		pfc::string8 text;
 		uGetClipboardString(text);
-		return std::string(text);
+		return text.get_ptr();
 	}
 
 	uint64_t Utils::GetFileSize(const std::wstring& path) const

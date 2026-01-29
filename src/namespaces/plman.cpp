@@ -424,13 +424,13 @@ namespace mozjs
 		return JsFbMetadbHandleList::CreateJs(m_ctx, items);
 	}
 
-	pfc::string8 Plman::GetPlaylistLockName(uint32_t playlistIndex)
+	std::wstring Plman::GetPlaylistLockName(uint32_t playlistIndex)
 	{
 		QwrException::ExpectTrue(playlistIndex < fb2k::api::pm->get_playlist_count(), "Index is out of bounds");
 
 		pfc::string8 lockName;
 		if (fb2k::api::pm->playlist_lock_query_name(playlistIndex, lockName))
-			return lockName;
+			return smp::ToWide(lockName);
 
 		return {};
 	}
@@ -456,11 +456,11 @@ namespace mozjs
 		return jsValue;
 	}
 
-	pfc::string8 Plman::GetPlaylistName(uint32_t playlistIndex)
+	std::wstring Plman::GetPlaylistName(uint32_t playlistIndex)
 	{
 		pfc::string8 name;
 		fb2k::api::pm->playlist_get_name(playlistIndex, name);
-		return name;
+		return smp::ToWide(name);
 	}
 
 	JSObject* Plman::GetPlaylistSelectedItems(uint32_t playlistIndex)

@@ -27,7 +27,7 @@ namespace
 			}
 
 			const auto& cachedPaths = hack::GetAllCachedUtf8Paths();
-			auto pfcStackStr = convert::to_native::ToValue<pfc::string>(ctx, stackStr);
+			pfc::string8 pfcStackStr = convert::to_native::ToValue<std::string>(ctx, stackStr).c_str();
 
 			for (const auto& [id, path] : cachedPaths)
 			{

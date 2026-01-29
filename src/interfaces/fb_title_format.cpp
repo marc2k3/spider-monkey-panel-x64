@@ -59,30 +59,14 @@ namespace mozjs
 		return JsFbTitleFormat::CreateJs(cx, expr);
 	}
 
-	pfc::string8 JsFbTitleFormat::Eval(bool force)
+	std::wstring JsFbTitleFormat::Eval(bool)
 	{
 		pfc::string8 text;
-
-		if (fb2k::api::pc->playback_format_title(nullptr, text, m_obj, nullptr, playback_control::display_level_all))
-		{
-			return text;
-		}
-		else if (force)
-		{
-			metadb_handle_ptr handle;
-
-			if (!metadb::g_get_random_handle(handle))
-			{
-				metadb::get()->handle_create(handle, make_playable_location("file://C:\\________.ogg", 0));
-			}
-
-			handle->format_title(nullptr, text, m_obj, nullptr);
-		}
-
-		return text;
+		fb2k::api::pc->playback_format_title(nullptr, text, m_obj, nullptr, playback_control::display_level_all);
+		return smp::ToWide(text);
 	}
 
-	pfc::string8 JsFbTitleFormat::EvalWithOpt(size_t optArgCount, bool force)
+	std::wstring JsFbTitleFormat::EvalWithOpt(size_t optArgCount, bool force)
 	{
 		switch (optArgCount)
 		{
@@ -95,7 +79,7 @@ namespace mozjs
 		}
 	}
 
-	pfc::string8 JsFbTitleFormat::EvalWithMetadb(JsFbMetadbHandle* handle , bool want_full_info)
+	std::wstring JsFbTitleFormat::EvalWithMetadb(JsFbMetadbHandle* handle , bool want_full_info)
 	{
 		QwrException::ExpectTrue(handle, "handle argument is null");
 
@@ -121,10 +105,10 @@ namespace mozjs
 			nativeHandle->format_title(nullptr, text, m_obj, nullptr);
 		}
 
-		return text;
+		return smp::ToWide(text);
 	}
 
-	pfc::string8 JsFbTitleFormat::EvalWithMetadbWithOpt(size_t optArgCount, JsFbMetadbHandle* handle, bool want_full_info)
+	std::wstring JsFbTitleFormat::EvalWithMetadbWithOpt(size_t optArgCount, JsFbMetadbHandle* handle, bool want_full_info)
 	{
 		switch (optArgCount)
 		{
@@ -141,14 +125,17 @@ namespace mozjs
 	{
 		QwrException::ExpectTrue(handles, "handles argument is null");
 
+		auto api = metadb_v2::get();
 		const auto& native = handles->GetHandleList();
 		const auto count = native.get_count();
-		auto values = pfc_array<pfc::string8>(count);
-		auto api = metadb_v2::get();
+		WStrings values;
+		values.resize(count);
 
 		api->queryMultiParallel_(native, [&](size_t index, const metadb_v2::rec_t& rec)
 			{
-				api->formatTitle_v2(native[index], rec, nullptr, values[index], m_obj, nullptr);
+				pfc::string8 value;
+				api->formatTitle_v2(native[index], rec, nullptr, value, m_obj, nullptr);
+				values[index] = smp::ToWide(value);
 			});
 
 		JS::RootedValue jsValue(m_ctx);

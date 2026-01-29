@@ -49,9 +49,6 @@ namespace mozjs::convert::to_js
 	void ToValue(JSContext* ctx, const float& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>
-	void ToValue(JSContext* ctx, const pfc::string8& inValue, JS::MutableHandleValue wrappedValue);
-
-	template <>
 	void ToValue(JSContext* ctx, const std::string& inValue, JS::MutableHandleValue wrappedValue);
 
 	template <>

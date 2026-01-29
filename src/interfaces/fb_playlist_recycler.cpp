@@ -62,14 +62,14 @@ namespace mozjs
 		return JsFbMetadbHandleList::CreateJs(pJsCtx_, handles);
 	}
 
-	pfc::string8 JsFbPlaylistRecycler::GetName(uint32_t index)
+	std::wstring JsFbPlaylistRecycler::GetName(uint32_t index)
 	{
 		const auto count = fb2k::api::pm->recycler_get_count();
 		QwrException::ExpectTrue(index < count, "Index is out of bounds");
 
 		pfc::string8 name;
 		fb2k::api::pm->recycler_get_name(index, name);
-		return name;
+		return smp::ToWide(name);
 	}
 
 	void JsFbPlaylistRecycler::Purge(JS::HandleValue affectedItems)

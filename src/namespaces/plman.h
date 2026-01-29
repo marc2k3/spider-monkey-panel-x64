@@ -44,9 +44,9 @@ namespace mozjs
 		JSObject* GetPlayingItemLocation();
 		int32_t GetPlaylistFocusItemIndex(uint32_t playlistIndex);
 		JSObject* GetPlaylistItems(uint32_t playlistIndex);
-		pfc::string8 GetPlaylistLockName(uint32_t playlistIndex);
+		std::wstring GetPlaylistLockName(uint32_t playlistIndex);
 		JS::Value GetPlaylistLockedActions(uint32_t playlistIndex);
-		pfc::string8 GetPlaylistName(uint32_t playlistIndex);
+		std::wstring GetPlaylistName(uint32_t playlistIndex);
 		JSObject* GetPlaylistSelectedItems(uint32_t playlistIndex);
 		void InsertPlaylistItems(uint32_t playlistIndex, uint32_t base, JsFbMetadbHandleList* handles, bool select = false);
 		void InsertPlaylistItemsWithOpt(size_t optArgCount, uint32_t playlistIndex, uint32_t base, JsFbMetadbHandleList* handles, bool select);
