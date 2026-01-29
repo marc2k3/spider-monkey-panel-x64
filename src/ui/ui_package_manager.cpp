@@ -200,8 +200,9 @@ void CDialogPackageManager::OnExportPackage(UINT /*uNotifyCode*/, int /*nID*/, C
 
 			try
 			{
+				const auto folder = PackageUtils::GetPath(*currentPackageData.parsedSettings);
 				auto zp = smp::ZipPacker(wpath);
-				zp.AddFolder(PackageUtils::GetPath(*currentPackageData.parsedSettings));
+				zp.AddFolder(folder);
 				zp.Finish();
 			}
 			catch (const fs::filesystem_error& e)
