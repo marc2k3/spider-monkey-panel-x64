@@ -494,12 +494,12 @@ namespace mozjs
 		return jsObject;
 	}
 
-	std::string Utils::GetPackagePath(const std::string& packageId) const
+	std::wstring Utils::GetPackagePath(const std::string& packageId) const
 	{
 		const auto packagePathOpt = PackageUtils::Find(packageId);
 		QwrException::ExpectTrue(packagePathOpt.has_value(), "Unknown package: {}", packageId);
 
-		return packagePathOpt->u8string();
+		return packagePathOpt->native();
 	}
 
 	uint32_t Utils::GetSysColour(uint32_t index) const

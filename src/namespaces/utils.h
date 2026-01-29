@@ -45,7 +45,7 @@ namespace mozjs
 		uint64_t GetLastModified(const std::wstring& path) const;
 		JSObject* GetPackageInfo(const std::string& packageId) const;
 		// TODO: remove in the next version (not necessarily v2)
-		std::string GetPackagePath(const std::string& packageId) const;
+		std::wstring GetPackagePath(const std::string& packageId) const;
 		uint32_t GetSysColour(uint32_t index) const;
 		uint32_t GetSystemMetrics(uint32_t index) const;
 		JS::Value Glob(const std::wstring& pattern, uint32_t exc_mask = FILE_ATTRIBUTE_DIRECTORY, uint32_t inc_mask = 0xFFFFFFFF);
