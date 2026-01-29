@@ -97,9 +97,7 @@ have not been made.
 
 ## 1.6.2.25.12.15
 - Fix crashing when using certain library iteration methods in WINE.
-- Last 32bit release. It remains available to download but is unsupported.
-
-https://github.com/marc2k3/spider-monkey-panel-x86/releases
+- Last 32bit release. It remains [available to download](https://github.com/marc2k3/fb2k-graveyard) but is unsupported.
 
 ## 1.6.2.25.11.15
 - Tooltips are now dark mode aware.
