@@ -4,7 +4,7 @@ namespace Component
 {
 	static constexpr std::string_view name = "Spider Monkey Panel";
 	static constexpr std::string_view underscore_name = "foo_spider_monkey_panel";
-	static constexpr std::string_view version = "1.7.26.1.26";
+	static constexpr std::string_view version = "1.7.26.1.30";
 
 	static const std::string name_with_version = fmt::format("{} v{}", name, version);
 	static const std::string user_agent = fmt::format("{}/{}", name, version);
