@@ -63,6 +63,7 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE(PathWildcardMatch, Utils::PathWildcardMatch);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadINI, Utils::ReadINI, Utils::ReadINIWithOpt, 1);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadTextFile, Utils::ReadTextFile, Utils::ReadTextFileWithOpt, 1);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ReadUTF8, Utils::ReadUTF8);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(RemovePath, Utils::RemovePath);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(RenamePath, Utils::RenamePath);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReplaceIllegalChars, Utils::ReplaceIllegalChars, Utils::ReplaceIllegalCharsWithOpt, 1);
@@ -111,6 +112,7 @@ namespace
 			JS_FN("PathWildcardMatch", PathWildcardMatch, 2, kDefaultPropsFlags),
 			JS_FN("ReadINI", ReadINI, 3, kDefaultPropsFlags),
 			JS_FN("ReadTextFile", ReadTextFile, 1, kDefaultPropsFlags),
+			JS_FN("ReadUTF8", ReadUTF8, 1, kDefaultPropsFlags),
 			JS_FN("RemovePath", RemovePath, 1, kDefaultPropsFlags),
 			JS_FN("RenamePath", RenamePath, 2, kDefaultPropsFlags),
 			JS_FN("ReplaceIllegalChars", ReplaceIllegalChars, 1, kDefaultPropsFlags),
@@ -740,6 +742,11 @@ namespace mozjs
 		case 1: return ReadTextFile(filePath);
 		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
+	}
+
+	std::string Utils::ReadUTF8(const std::wstring& path)
+	{
+		return TextFile(path).read();
 	}
 
 	int32_t Utils::RemovePath(const std::wstring& path) const
