@@ -113,6 +113,13 @@ Returns the index or `-1` on failure. Only strings returned by `plman.GetGUID` w
 
 Returns a `string` which is a unique persistent property of the playlist.
 
+## `utils.ConvertToAscii(str)`
+|Arguments|||
+|---|---|---|
+|str|`string`|
+
+Returns a `string`.
+
 ## `utils.CopyFile(from, to[, overwrite])`
 |Arguments|||
 |---|---|---|
@@ -166,6 +173,28 @@ Returns a `string`. It will be empty if the clipboard contents are not text.
 |path|`string`|
 
 The return value is seconds since 00:00:00 Thursday, 1 January 1970 UTC.
+
+## `utils.ListFonts()`
+Returns an array of strings.
+
+## `utils.Now()`
+Returns a Unix timestamp.
+
+This is just shorthand instead of writing
+
+```js
+var now = Math.round(new Date().getTime() / 1000);
+```
+
+## `utils.ReadUTF8(path)`
+|Arguments|||
+|---|---|---|
+|path|`string`|
+
+Returns a `string`. Will be empty if `path` doesn't exist or there
+was an error opening it.
+
+For UTF8 files with or without BOM. If you're unsure about the file encoding, continue to use `utils.ReadTextFile`.
 
 ## `utils.RemovePath(path)`
 |Arguments|||
