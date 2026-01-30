@@ -301,7 +301,7 @@ function _jsonParse(value) {
 }
 
 function _jsonParseFile(file) {
-	return _jsonParse(_open(file));
+	return _jsonParse(utils.ReadUTF8(file));
 }
 
 function _lineWrap(value, font, width) {
@@ -360,14 +360,6 @@ function _main_menu_helper(name, base_id, main_menu) {
 	this.mm.Init(name);
 	this.mm.BuildMenu(this.popup, base_id, -1);
 	this.popup.AppendTo(main_menu, MF_STRING, name);
-}
-
-function _open(file) {
-	if (_isFile(file)) {
-		return utils.ReadTextFile(file);
-	} else {
-		return '';
-	}
 }
 
 function _p(a, b) {

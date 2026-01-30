@@ -43,7 +43,7 @@ function _text(mode, x, y, w, h) {
 				this.content = '';
 				this.allmusic_url = false;
 				if (_isFile(this.filename)) {
-					this.content = _.trim(_open(this.filename));
+					this.content = utils.ReadUTF8(this.filename).trim();
 					// content is static so only check for updates if no review found previously
 					if (!this.content.length && _fileExpired(this.filename, ONE_DAY)) {
 						this.get();
@@ -71,15 +71,19 @@ function _text(mode, x, y, w, h) {
 				break;
 			case 'text_reader':
 				const temp_filename = panel.tf(this.properties.filename_tf.value);
-				if (this.filename == temp_filename) {
+				if (this.filename == temp_filename)
 					return;
-				}
+
 				this.filename = temp_filename;
-				if (_isFolder(this.filename)) { // if folder, use first txt/log file
-					this.content = _open(_.first(_getFiles(this.filename, this.exts)));
+
+				// if folder, use first txt/log file
+				if (_isFolder(this.filename)) {
+					const first_file = _.first(_getFiles(this.filename, this.exts));
+					this.content = utils.ReadUTF8(first_file);
 				} else {
-					this.content = _open(this.filename);
+					this.content = utils.ReadUTF8(this.filename);
 				}
+
 				this.content = this.content.replace(/\t/g, '    ');
 				break;
 			}
