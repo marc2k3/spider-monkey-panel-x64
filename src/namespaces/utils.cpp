@@ -57,6 +57,7 @@ namespace
 	MJS_DEFINE_JS_FN_FROM_NATIVE(IsDirectory, Utils::IsDirectory);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(IsFile, Utils::IsFile);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(IsKeyPressed, Utils::IsKeyPressed);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ListFonts, Utils::ListFonts);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(MapString, Utils::MapString);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(Now, Utils::Now);
 	MJS_DEFINE_JS_FN_FROM_NATIVE(PathWildcardMatch, Utils::PathWildcardMatch);
@@ -104,6 +105,7 @@ namespace
 			JS_FN("IsDirectory", IsDirectory, 1, kDefaultPropsFlags),
 			JS_FN("IsFile", IsFile, 1, kDefaultPropsFlags),
 			JS_FN("IsKeyPressed", IsKeyPressed, 1, kDefaultPropsFlags),
+			JS_FN("ListFonts", ListFonts, 0, kDefaultPropsFlags),
 			JS_FN("MapString", MapString, 3, kDefaultPropsFlags),
 			JS_FN("Now", Now, 0, kDefaultPropsFlags),
 			JS_FN("PathWildcardMatch", PathWildcardMatch, 2, kDefaultPropsFlags),
@@ -633,6 +635,15 @@ namespace mozjs
 	bool Utils::IsKeyPressed(uint32_t vkey) const
 	{
 		return ::IsKeyPressed(vkey);
+	}
+
+	JS::Value Utils::ListFonts()
+	{
+		const auto fonts = FontHelper::get().get_names();
+
+		JS::RootedValue jsValue(m_ctx);
+		convert::to_js::ToArrayValue(m_ctx, fonts, &jsValue);
+		return jsValue;
 	}
 
 	std::wstring Utils::MapString(const std::wstring& str, uint32_t lcid, uint32_t flags)

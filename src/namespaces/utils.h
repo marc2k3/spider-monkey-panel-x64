@@ -57,6 +57,7 @@ namespace mozjs
 		bool IsDirectory(const std::wstring& path) const;
 		bool IsFile(const std::wstring& path) const;
 		bool IsKeyPressed(uint32_t vkey) const;
+		JS::Value ListFonts();
 		std::wstring MapString(const std::wstring& str, uint32_t lcid, uint32_t flags);
 		uint32_t Now();
 		bool PathWildcardMatch(const std::wstring& pattern, const std::wstring& str);

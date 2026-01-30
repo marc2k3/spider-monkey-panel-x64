@@ -4,7 +4,6 @@ class FontHelper
 {
 public:
 	using Name = std::array<wchar_t, LF_FACESIZE>;
-	using Names = std::vector<Name>;
 
 	FontHelper()
 	{
@@ -20,7 +19,7 @@ public:
 			{
 				Name name{};
 				family.GetFamilyName(name.data());
-				m_names.emplace_back(name);
+				m_names.emplace_back(name.data());
 			}
 		}
 	}
@@ -31,14 +30,14 @@ public:
 		return instance;
 	}
 
-	Names get_names()
+	WStrings get_names()
 	{
 		return m_names;
 	}
 
 	bool check_name(const std::wstring& name_to_check)
 	{
-		const auto it = std::ranges::find_if(m_names, [name_to_check](const Name& name)
+		const auto it = std::ranges::find_if(m_names, [name_to_check](auto&& name)
 			{
 				return _wcsicmp(name.data(), name_to_check.data()) == 0;
 			});
@@ -71,5 +70,5 @@ public:
 	}
 
 private:
-	Names m_names;
+	WStrings m_names;
 };
