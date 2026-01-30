@@ -61,10 +61,10 @@ namespace mozjs
 		std::wstring MapString(const std::wstring& str, uint32_t lcid, uint32_t flags);
 		uint32_t Now();
 		bool PathWildcardMatch(const std::wstring& pattern, const std::wstring& str);
-		std::wstring ReadINI(const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval = L"");
-		std::wstring ReadINIWithOpt(size_t optArgCount, const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval);
-		std::wstring ReadTextFile(const std::wstring& filePath, uint32_t codepage = CP_UTF8);
-		std::wstring ReadTextFileWithOpt(size_t optArgCount, const std::wstring& filePath, uint32_t codepage);
+		std::wstring ReadINI(const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval = L"");
+		std::wstring ReadINIWithOpt(size_t optArgCount, const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval);
+		std::wstring ReadTextFile(const std::wstring& path, uint32_t codepage = CP_UTF8);
+		std::wstring ReadTextFileWithOpt(size_t optArgCount, const std::wstring& path, uint32_t codepage);
 		std::string ReadUTF8(const std::wstring& path);
 		int32_t RemovePath(const std::wstring& path) const;
 		bool RenamePath(const std::wstring& from, const std::wstring& to) const;
@@ -74,9 +74,9 @@ namespace mozjs
 		void ShowHtmlDialog(uint32_t hWnd, const std::wstring& code_or_path, JS::HandleValue options = JS::UndefinedHandleValue);
 		void ShowHtmlDialogWithOpt(size_t optArgCount, uint32_t hWnd, const std::wstring& code_or_path, JS::HandleValue options);
 		JS::Value SplitFilePath(const std::wstring& path);
-		bool WriteINI(const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& val);
-		bool WriteTextFile(const std::wstring& filename, const std::string& content, bool write_bom = true);
-		bool WriteTextFileWithOpt(size_t optArgCount, const std::wstring& filename, const std::string& content, bool write_bom);
+		bool WriteINI(const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& val);
+		bool WriteTextFile(const std::wstring& path, const std::string& content, bool write_bom = true);
+		bool WriteTextFileWithOpt(size_t optArgCount, const std::wstring& path, const std::string& content, bool write_bom);
 
 	public:
 		std::string get_Version() const;

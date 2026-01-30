@@ -697,49 +697,36 @@ namespace mozjs
 		return PathMatchSpecW(str.c_str(), pattern.c_str());
 	}
 
-	std::wstring Utils::ReadINI(const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval)
+	std::wstring Utils::ReadINI(const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval)
 	{
-		// WinAPI is weird: 0 - error (with LastError), > 0 - characters required
-		std::wstring dst(MAX_PATH, '\0');
-		int iRet = GetPrivateProfileStringW(section.c_str(), key.c_str(), defaultval.c_str(), dst.data(), lengthu(dst), filename.c_str());
-		// TODO v2: Uncomment error checking
-		// smp::CheckWinApi((iRet || (NO_ERROR == GetLastError())), "GetPrivateProfileString(nullptr)");
-
-		if (!iRet && (NO_ERROR != GetLastError()))
-		{
-			dst = defaultval;
-		}
-		else
-		{
-			dst.resize(wcslen(dst.c_str()));
-		}
-
-		return dst;
+		std::array<wchar_t, MAX_PATH> buffer{};
+		GetPrivateProfileStringW(section.data(), key.data(), defaultval.data(), buffer.data(), MAX_PATH, path.data());
+		return buffer.data();
 	}
 
-	std::wstring Utils::ReadINIWithOpt(size_t optArgCount, const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval)
+	std::wstring Utils::ReadINIWithOpt(size_t optArgCount, const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval)
 	{
 		switch (optArgCount)
 		{
-		case 0: return ReadINI(filename, section, key, defaultval);
-		case 1: return ReadINI(filename, section, key);
+		case 0: return ReadINI(path, section, key, defaultval);
+		case 1: return ReadINI(path, section, key);
 		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
 
-	std::wstring Utils::ReadTextFile(const std::wstring& filePath, uint32_t codepage)
+	std::wstring Utils::ReadTextFile(const std::wstring& path, uint32_t codepage)
 	{
 		std::wstring content;
-		TextFile(filePath).read_wide(codepage, content);
+		TextFile(path).read_wide(codepage, content);
 		return content;
 	}
 
-	std::wstring Utils::ReadTextFileWithOpt(size_t optArgCount, const std::wstring& filePath, uint32_t codepage)
+	std::wstring Utils::ReadTextFileWithOpt(size_t optArgCount, const std::wstring& path, uint32_t codepage)
 	{
 		switch (optArgCount)
 		{
-		case 0: return ReadTextFile(filePath, codepage);
-		case 1: return ReadTextFile(filePath);
+		case 0: return ReadTextFile(path, codepage);
+		case 1: return ReadTextFile(path);
 		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
@@ -853,22 +840,22 @@ namespace mozjs
 		return jsValue;
 	}
 
-	bool Utils::WriteINI(const std::wstring& filename, const std::wstring& section, const std::wstring& key, const std::wstring& val)
+	bool Utils::WriteINI(const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& val)
 	{
-		return WritePrivateProfileStringW(section.c_str(), key.c_str(), val.c_str(), filename.c_str());
+		return WritePrivateProfileStringW(section.c_str(), key.c_str(), val.c_str(), path.c_str());
 	}
 
-	bool Utils::WriteTextFile(const std::wstring& filename, const std::string& content, bool write_bom)
+	bool Utils::WriteTextFile(const std::wstring& path, const std::string& content, bool write_bom)
 	{
-		return TextFile(filename).write(content, write_bom);
+		return TextFile(path).write(content, write_bom);
 	}
 
-	bool Utils::WriteTextFileWithOpt(size_t optArgCount, const std::wstring& filename, const std::string& content, bool write_bom)
+	bool Utils::WriteTextFileWithOpt(size_t optArgCount, const std::wstring& path, const std::string& content, bool write_bom)
 	{
 		switch (optArgCount)
 		{
-		case 0: return WriteTextFile(filename, content, write_bom);
-		case 1: return WriteTextFile(filename, content);
+		case 0: return WriteTextFile(path, content, write_bom);
+		case 1: return WriteTextFile(path, content);
 		default: throw QwrException("Internal error: invalid number of optional arguments specified: {}", optArgCount);
 		}
 	}
