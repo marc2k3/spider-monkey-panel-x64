@@ -1,5 +1,8 @@
 name: build
-on: push
+on:
+  push:
+    branches: main
+    paths-ignore: '**/*.md'
 jobs:
   build:
     runs-on: windows-2022
@@ -16,7 +19,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
-        key: 66009b2d73ffbd8782231cf4fed3e594b2312855
+        key: 6d7bf7ef2193e2d1c5798a5ff8811d533104c861
 
     - name: Set up vcpkg
       working-directory: C:\vcpkg
