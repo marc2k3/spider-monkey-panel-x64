@@ -3,9 +3,9 @@
 
 #include <utils/colour_helpers.h>
 
-namespace smp
+namespace
 {
-	class js_panel_window_dui : public js_panel_window, public ui_element_instance, public CWindowImpl<js_panel_window_dui>
+	class js_panel_window_dui : public smp::js_panel_window, public ui_element_instance, public CWindowImpl<js_panel_window_dui>
 	{
 #pragma region js_panel_window
 	protected:
@@ -20,7 +20,7 @@ namespace smp
 			};
 
 			const auto guid = *guids[type];
-			const auto colour = uiCallback_->query_std_color(guid);
+			const auto colour = m_callback->query_std_color(guid);
 			return smp::ColorrefToArgb(colour);
 		}
 
@@ -38,20 +38,20 @@ namespace smp
 
 			LOGFONT lf{};
 			const auto guid = *guids[type];
-			CFontHandle(uiCallback_->query_font_ex(guid)).GetLogFont(&lf);
+			CFontHandle(m_callback->query_font_ex(guid)).GetLogFont(&lf);
 			return lf;
 		}
 
 		void NotifySizeLimitChanged() final
 		{
-			uiCallback_->on_min_max_info_change();
+			m_callback->on_min_max_info_change();
 		}
 #pragma endregion
 
 	public:
 		DECLARE_WND_CLASS_EX(L"smp_x64_class_dui", CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS, -1);
 
-		js_panel_window_dui(ui_element_config::ptr cfg, ui_element_instance_callback::ptr callback) : js_panel_window(PanelType::DUI), uiCallback_(callback)
+		js_panel_window_dui(ui_element_config::ptr cfg, ui_element_instance_callback::ptr callback) : js_panel_window(PanelType::DUI), m_callback(callback)
 		{
 			set_configuration(cfg);
 		}
@@ -91,7 +91,7 @@ namespace smp
 			case WM_RBUTTONDOWN:
 			case WM_RBUTTONDBLCLK:
 			case WM_CONTEXTMENU:
-				if (uiCallback_->is_edit_mode_enabled())
+				if (m_callback->is_edit_mode_enabled())
 				{
 					return FALSE;
 				}
@@ -138,10 +138,8 @@ namespace smp
 		}
 
 	private:
-		ui_element_instance_callback::ptr uiCallback_;
+		ui_element_instance_callback::ptr m_callback;
 	};
 
-	class impl : public ui_element_impl<js_panel_window_dui> {};
-
-	FB2K_SERVICE_FACTORY(impl);
+	FB2K_SERVICE_FACTORY(ui_element_impl<js_panel_window_dui>);
 }
