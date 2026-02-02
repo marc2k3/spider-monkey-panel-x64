@@ -3,9 +3,9 @@
 
 #include <utils/colour_helpers.h>
 
-namespace smp
+namespace
 {
-	class js_panel_window_cui : public js_panel_window, public uie::container_uie_window_v3
+	class js_panel_window_cui : public smp::js_panel_window, public uie::container_uie_window_v3
 	{
 #pragma region js_panel_window
 	protected:
@@ -95,5 +95,5 @@ namespace smp
 		}
 	};
 
-	uie::window_factory<smp::js_panel_window_cui> g_js_panel_window_cui;
+	static const auto g_window_cui = uie::window_factory<js_panel_window_cui>();
 }
