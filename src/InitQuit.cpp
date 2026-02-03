@@ -8,6 +8,7 @@
 #include <Scintilla.h>
 
 wil::com_ptr<ITypeLib> typelib_smp;
+wil::com_ptr<IWICImagingFactory> imaging_factory_smp;
 
 namespace
 {
@@ -27,6 +28,8 @@ namespace
 				const auto ins = core_api::get_my_instance();
 				Scintilla_RegisterClasses(ins);
 
+				imaging_factory_smp = wil::CoCreateInstance<IWICImagingFactory>(CLSID_WICImagingFactory);
+
 				fb2k::api::before_ui_init(); // must be before PlaylistLock
 				PlaylistLock::before_ui_init();
 
@@ -45,6 +48,7 @@ namespace
 		QwrThreadPool::GetInstance().Finalize();
 		Scintilla_ReleaseResources();
 		fb2k::api::reset();
+		imaging_factory_smp.reset();
 		typelib_smp.reset();
 		wtl_module.Term();
 	}

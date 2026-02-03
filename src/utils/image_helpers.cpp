@@ -1,20 +1,20 @@
 #include "PCH.hpp"
 #include "image_helpers.h"
 
+extern wil::com_ptr<IWICImagingFactory> imaging_factory_smp;
+
 namespace smp
 {
 	std::unique_ptr<Gdiplus::Bitmap> LoadWithWIC(IStream* stream)
 	{
-		auto factory = wil::CoCreateInstance<IWICImagingFactory>(CLSID_WICImagingFactory);
-
-		if (!factory)
+		if (!imaging_factory_smp)
 			return nullptr;
 
 		wil::com_ptr<IWICBitmapDecoder> decoder;
 		wil::com_ptr<IWICBitmapFrameDecode> frame;
 		wil::com_ptr<IWICBitmapSource> source;
 
-		if FAILED(factory->CreateDecoderFromStream(stream, nullptr, WICDecodeMetadataCacheOnDemand, &decoder))
+		if FAILED(imaging_factory_smp->CreateDecoderFromStream(stream, nullptr, WICDecodeMetadataCacheOnDemand, &decoder))
 			return nullptr;
 
 		if FAILED(decoder->GetFrame(0, &frame))
