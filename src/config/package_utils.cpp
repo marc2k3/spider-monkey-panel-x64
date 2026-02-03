@@ -1,8 +1,7 @@
 #include "PCH.hpp"
 #include "package_utils.h"
 
-#include <2K3/DirectoryIterator.hpp>
-#include <2K3/TextFile.hpp>
+#include <Helpers/DirectoryIterator.hpp>
 #include <utils/guid_helpers.h>
 
 namespace fs = std::filesystem;

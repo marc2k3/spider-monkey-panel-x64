@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "AlbumArtStatic.hpp"
-#include "FileHelper.hpp"
 
 #include <utils/image_helpers.h>
 

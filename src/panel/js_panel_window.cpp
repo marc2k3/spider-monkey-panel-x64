@@ -3,7 +3,7 @@
 #include "edit_script.h"
 #include "modal_blocking_scope.h"
 
-#include <2K3/FontHelper.hpp>
+#include <Helpers/FontHelper.hpp>
 #include <com_utils/track_drop_target.h>
 #include <com_utils/com_destruction_handler.h>
 #include <config/delayed_package_utils.h>

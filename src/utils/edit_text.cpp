@@ -1,9 +1,7 @@
 #include "PCH.hpp"
 #include "edit_text.h"
 
-#include <2K3/Scintilla/DialogEditor.hpp>
-#include <2K3/FileHelper.hpp>
-#include <2K3/TextFile.hpp>
+#include <Helpers/Scintilla/DialogEditor.hpp>
 #include <panel/modal_blocking_scope.h>
 #include <panel/user_message.h>
 #include <ui/ui_edit_in_progress.h>

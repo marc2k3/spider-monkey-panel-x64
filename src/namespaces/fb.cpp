@@ -1,9 +1,9 @@
 #include "PCH.hpp"
 #include "fb.h"
 
-#include <2K3/AlbumArtStatic.hpp>
-#include <2K3/ContextMenuCommand.hpp>
-#include <2K3/MainMenuCommand.hpp>
+#include <FB2K/AlbumArtStatic.hpp>
+#include <FB2K/ContextMenuCommand.hpp>
+#include <FB2K/MainMenuCommand.hpp>
 #include <com_utils/drop_source_impl.h>
 #include <events/event_dispatcher.h>
 #include <events/event_js_callback.h>

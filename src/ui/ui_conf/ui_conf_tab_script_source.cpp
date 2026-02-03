@@ -2,7 +2,6 @@
 #include "ui_conf_tab_script_source.h"
 #include "../ui_package_manager.h"
 
-#include <2K3/FileDialog.hpp>
 #include <panel/edit_script.h>
 
 namespace

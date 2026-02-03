@@ -2,8 +2,6 @@
 #include "delayed_package_utils.h"
 #include "package_utils.h"
 
-#include <2K3/TextFile.hpp>
-
 namespace fs = std::filesystem;
 
 namespace

@@ -1,9 +1,9 @@
 #include "PCH.hpp"
 #include "plman.h"
 
-#include <2K3/CustomSort.hpp>
-#include <2K3/PlaylistLock.hpp>
-#include <2K3/ProcessLocationsNotify.hpp>
+#include <FB2K/PlaylistLock.hpp>
+#include <FB2K/ProcessLocationsNotify.hpp>
+#include <Helpers/CustomSort.hpp>
 #include <interfaces/fb_metadb_handle.h>
 #include <interfaces/fb_metadb_handle_list.h>
 #include <interfaces/fb_playback_queue_item.h>

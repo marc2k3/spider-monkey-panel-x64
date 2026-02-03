@@ -111,9 +111,13 @@ using JSON = nlohmann::json;
 #include <utils/qwr_exception.h>
 #include <utils/error_helpers.h>
 
-#include <2K3/API.hpp>
-#include <2K3/Helpers.hpp>
-#include <2K3/String.hpp>
+#include <FB2K/API.hpp>
+#include <Helpers/Helpers.hpp>
+#include <Helpers/String.hpp>
+
+#include <Helpers/FileDialog.hpp>
+#include <Helpers/FileHelper.hpp>
+#include <Helpers/TextFile.hpp>
 
 #include "Component.hpp"
 #include "GUIDS.hpp"

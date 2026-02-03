@@ -1,6 +1,6 @@
 #pragma once
-#include "AlbumArtStatic.hpp"
 
+#include <FB2K/AlbumArtStatic.hpp>
 #include <events/event_dispatcher.h>
 #include <events/event_js_callback.h>
 

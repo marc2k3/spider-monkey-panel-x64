@@ -1,14 +1,12 @@
 #include "PCH.hpp"
 #include "utils.h"
 
-#include <2K3/AlbumArtStatic.hpp>
-#include <2K3/CustomSort.hpp>
-#include <2K3/DownloadFileAsync.hpp>
-#include <2K3/FileHelper.hpp>
-#include <2K3/FontHelper.hpp>
-#include <2K3/GetAlbumArtAsync.hpp>
-#include <2K3/HTTPRequestAsync.hpp>
-#include <2K3/TextFile.hpp>
+#include <FB2K/AlbumArtStatic.hpp>
+#include <Helpers/CustomSort.hpp>
+#include <Helpers/DownloadFileAsync.hpp>
+#include <Helpers/FontHelper.hpp>
+#include <Helpers/GetAlbumArtAsync.hpp>
+#include <Helpers/HTTPRequestAsync.hpp>
 #include <config/package_utils.h>
 #include <interfaces/fb_metadb_handle.h>
 #include <interfaces/gdi_bitmap.h>

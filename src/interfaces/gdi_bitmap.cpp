@@ -2,8 +2,8 @@
 #include "gdi_bitmap.h"
 #include "gdi_raw_bitmap.h"
 
-#include <2K3/KMeans.hpp>
-#include <2K3/StackBlur.hpp>
+#include <Helpers/KMeans.hpp>
+#include <Helpers/StackBlur.hpp>
 #include <utils/image_helpers.h>
 
 namespace

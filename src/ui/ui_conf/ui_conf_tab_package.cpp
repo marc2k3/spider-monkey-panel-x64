@@ -2,9 +2,7 @@
 #include "ui_conf_tab_package.h"
 #include "../ui_input_box.h"
 
-#include <2K3/DirectoryIterator.hpp>
-#include <2K3/FileDialog.hpp>
-#include <2K3/TextFile.hpp>
+#include <Helpers/DirectoryIterator.hpp>
 #include <config/package_utils.h>
 #include <utils/edit_text.h>
 

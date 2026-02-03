@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "DialogStyle.hpp"
-#include "../FileDialog.hpp"
 
 CDialogStyle::CDialogStyle(CScintilla* parent) : m_parent(parent), m_list(this) {}
 

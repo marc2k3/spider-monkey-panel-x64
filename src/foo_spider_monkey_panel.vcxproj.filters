@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="2K3">
-      <UniqueIdentifier>{fbefef93-448c-410e-90b5-34841f47befd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="2K3\Scintilla">
-      <UniqueIdentifier>{b2137be5-4621-42de-95c3-179b04fc340e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="callbacks">
-      <UniqueIdentifier>{ccac01d2-1ea0-428a-b07b-df99942ee016}</UniqueIdentifier>
-    </Filter>
     <Filter Include="com_utils">
       <UniqueIdentifier>{b23d43d7-b904-4566-bbbe-2d2b677efb7d}</UniqueIdentifier>
     </Filter>
@@ -46,101 +37,20 @@
     <Filter Include="utils">
       <UniqueIdentifier>{047b1a54-ba81-4cee-910d-751ebb3953fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FB2K">
+      <UniqueIdentifier>{f0c4b951-f3df-4999-9345-06cdb777b87a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FB2K\Callbacks">
+      <UniqueIdentifier>{b36d1c28-d6c7-4d34-ab1f-eee3bccd68e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{34635d9a-f913-4843-bf73-18abf0c99179}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers\Scintilla">
+      <UniqueIdentifier>{39924bb2-426d-436d-8849-e783d5546157}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="2K3\AlbumArtStatic.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\API.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\Attach.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\ContextMenuCommand.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\DownloadFileAsync.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\FileHelper.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\HTTPRequestAsync.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\MainMenuCommand.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\PlaylistLock.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\ProcessLocationsNotify.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\StackBlur.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\TagWriter.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\TextFile.cpp">
-      <Filter>2K3</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\Scintilla\DialogEditor.cpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\Scintilla\DialogFindReplace.cpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\Scintilla\DialogGoto.cpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\Scintilla\DialogStyle.cpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\Scintilla\Scintilla.cpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="2K3\Scintilla\ScintillaConfig.cpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\ConfigObjectNotify.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\ConsoleNotify.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\DSPConfigCallback.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\LibraryCallback.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\MetadbIOCallback.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\OutputConfigChangeCallback.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\PlaybackQueueCallback.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\PlaybackStatisticsCollector.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\PlayCallbackStatic.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\PlaylistCallbackStatic.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\ReplaygainCoreSettingsNotify.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
-    <ClCompile Include="callbacks\UISelectionCallback.cpp">
-      <Filter>callbacks</Filter>
-    </ClCompile>
     <ClCompile Include="com_utils\com_destruction_handler.cpp">
       <Filter>com_utils</Filter>
     </ClCompile>
@@ -439,104 +349,101 @@
     <ClCompile Include="InitQuit.cpp" />
     <ClCompile Include="Paths.cpp" />
     <ClCompile Include="PCH.cpp" />
+    <ClCompile Include="FB2K\Callbacks\ConfigObjectNotify.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\ConsoleNotify.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\DSPConfigCallback.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\LibraryCallback.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\MetadbIOCallback.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\OutputConfigChangeCallback.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\PlaybackQueueCallback.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\PlaybackStatisticsCollector.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\PlayCallbackStatic.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\PlaylistCallbackStatic.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\ReplaygainCoreSettingsNotify.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Callbacks\UISelectionCallback.cpp">
+      <Filter>FB2K\Callbacks</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\AlbumArtStatic.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\API.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\Attach.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\ContextMenuCommand.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\MainMenuCommand.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\PlaylistLock.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\ProcessLocationsNotify.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="FB2K\TagWriter.cpp">
+      <Filter>FB2K</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\DownloadFileAsync.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\FileHelper.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\HTTPRequestAsync.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\StackBlur.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\TextFile.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\Scintilla\DialogEditor.cpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\Scintilla\DialogFindReplace.cpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\Scintilla\DialogGoto.cpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\Scintilla\DialogStyle.cpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\Scintilla\Scintilla.cpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers\Scintilla\ScintillaConfig.cpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="2K3\AlbumArtStatic.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\API.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Attach.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\ContextMenuCommand.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\CustomSort.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\DirectoryIterator.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\DownloadFileAsync.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\EstimateLineWrap.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\FileDialog.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\FileHelper.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\FileInfoFilter.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\FontHelper.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\GetAlbumArtAsync.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Helpers.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\HTTPRequestAsync.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\KMeans.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\LoadImageAsync.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\MainMenuCommand.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\PlaylistLock.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\ProcessLocationsNotify.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\StackBlur.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\String.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\TagWriter.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\TextFile.hpp">
-      <Filter>2K3</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\DialogEditor.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\DialogFindReplace.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\DialogGoto.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\DialogStyle.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\KeyHook.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\Scintilla.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\ScintillaConfig.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="2K3\Scintilla\ScintillaImpl.hpp">
-      <Filter>2K3\Scintilla</Filter>
-    </ClInclude>
     <ClInclude Include="com_utils\com_destruction_handler.h">
       <Filter>com_utils</Filter>
     </ClInclude>
@@ -890,6 +797,102 @@
     <ClInclude Include="MozJS.hpp" />
     <ClInclude Include="Paths.hpp" />
     <ClInclude Include="PCH.hpp" />
+    <ClInclude Include="FB2K\AlbumArtStatic.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\API.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\Attach.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\ContextMenuCommand.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\FileInfoFilter.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\MainMenuCommand.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\PlaylistLock.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\ProcessLocationsNotify.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="FB2K\TagWriter.hpp">
+      <Filter>FB2K</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\CustomSort.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\DirectoryIterator.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\DownloadFileAsync.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\EstimateLineWrap.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\FileDialog.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\FileHelper.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\FontHelper.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\GetAlbumArtAsync.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Helpers.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\HTTPRequestAsync.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\KMeans.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\LoadImageAsync.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\StackBlur.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\String.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\TextFile.hpp">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\DialogEditor.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\DialogFindReplace.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\DialogGoto.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\DialogStyle.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\KeyHook.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\Scintilla.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\ScintillaConfig.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Scintilla\ScintillaImpl.hpp">
+      <Filter>Helpers\Scintilla</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

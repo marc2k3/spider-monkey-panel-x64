@@ -2,7 +2,6 @@
 #include "ui_package_manager.h"
 #include "ui_input_box.h"
 
-#include <2K3/FileDialog.hpp>
 #include <config/package_utils.h>
 #include <utils/zip_utils.h>
 

@@ -4,8 +4,6 @@
 #include "DialogFindReplace.hpp"
 #include "DialogGoto.hpp"
 #include "DialogStyle.hpp"
-#include "../FileDialog.hpp"
-#include "../TextFile.hpp"
 
 #include <ILexer.h>
 #include <Lexilla.h>

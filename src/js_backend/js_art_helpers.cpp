@@ -3,7 +3,7 @@
 
 #include "js_async_task.h"
 
-#include <2K3/AlbumArtStatic.hpp>
+#include <FB2K/AlbumArtStatic.hpp>
 #include <events/event_dispatcher.h>
 #include <interfaces/gdi_bitmap.h>
 #include <utils/thread_pool.h>

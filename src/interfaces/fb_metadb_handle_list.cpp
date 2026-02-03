@@ -4,9 +4,9 @@
 #include "fb_metadb_handle_list_iterator.h"
 #include "fb_title_format.h"
 
-#include <2K3/Attach.hpp>
-#include <2K3/CustomSort.hpp>
-#include <2K3/TagWriter.hpp>
+#include <FB2K/Attach.hpp>
+#include <FB2K/TagWriter.hpp>
+#include <Helpers/CustomSort.hpp>
 
 namespace
 {

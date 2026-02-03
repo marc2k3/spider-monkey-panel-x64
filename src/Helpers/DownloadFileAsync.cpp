@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "DownloadFileAsync.hpp"
-#include "FileHelper.hpp"
 
 #include <events/event_dispatcher.h>
 #include <events/event_js_callback.h>

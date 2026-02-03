@@ -5,7 +5,7 @@
 #include "gdi_raw_bitmap.h"
 #include "measure_string_info.h"
 
-#include <2K3/EstimateLineWrap.hpp>
+#include <Helpers/EstimateLineWrap.hpp>
 #include <utils/colour_helpers.h>
 
 namespace

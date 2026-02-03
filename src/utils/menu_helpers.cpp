@@ -2,7 +2,7 @@
 #include "menu_helpers.h"
 #include "guid_helpers.h"
 
-#include <2K3/MainMenuCommand.hpp>
+#include <FB2K/MainMenuCommand.hpp>
 
 namespace
 {
