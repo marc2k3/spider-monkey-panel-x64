@@ -142,9 +142,8 @@ namespace mozjs
 		QwrException::ExpectTrue(other, "Invalid argument type");
 
 		auto pGdi = other->GdiBitmap();
-
 		std::unique_ptr<Gdiplus::Bitmap> img(pGdi->Clone(0, 0, pGdi->GetWidth(), pGdi->GetHeight(), PixelFormat32bppPARGB));
-		smp::CheckGdiPlusObject(img, pGdi);
+		smp::CheckGdiPlusObject(img);
 
 		return JsGdiBitmap::CreateJs(ctx, std::move(img));
 	}
@@ -210,8 +209,7 @@ namespace mozjs
 	JSObject* JsGdiBitmap::Clone(float x, float y, float w, float h)
 	{
 		std::unique_ptr<Gdiplus::Bitmap> img(m_bitmap->Clone(x, y, w, h, PixelFormat32bppPARGB));
-		smp::CheckGdiPlusObject(img, m_bitmap.get());
-
+		smp::CheckGdiPlusObject(img);
 		return JsGdiBitmap::CreateJs(m_ctx, std::move(img));
 	}
 
