@@ -9,8 +9,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-      with:
-        submodules: true
 
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
@@ -42,5 +40,5 @@ jobs:
     - name: Upload component folder
       uses: actions/upload-artifact@v6
       with:
-        name: foo_spider_monkey_panel-${{ github.ref_name }}
+        name: foo_spider_monkey_panel-${{ case(github.ref_name == 'main', github.sha, github.ref_name) }}
         path: component
