@@ -20,6 +20,11 @@
 #include "GUIDS.hpp"
 #include "Paths.hpp"
 
+namespace smp
+{
+	class js_panel_window;
+}
+
 #include "MozJS.hpp"
 
 #include <events/event_dispatcher.h>

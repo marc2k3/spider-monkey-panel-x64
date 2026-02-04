@@ -5,7 +5,6 @@
 
 namespace smp
 {
-	class js_panel_window;
 	class Event_Mouse;
 	class Event_Drag;
 

@@ -4,7 +4,6 @@
 namespace smp
 {
 	class TaskController;
-	class js_panel_window;
 
 	class Task
 	{

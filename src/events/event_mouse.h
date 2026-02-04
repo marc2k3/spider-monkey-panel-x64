@@ -3,8 +3,6 @@
 
 namespace smp
 {
-	class js_panel_window;
-
 	class Event_Mouse : public Event_JsExecutor
 	{
 	public:

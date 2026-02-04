@@ -3,11 +3,6 @@
 #include <panel/user_message.h>
 #include <utils/ui_ddx.h>
 
-namespace smp
-{
-	class js_panel_window;
-}
-
 class ITab
 {
 public:

@@ -7,11 +7,6 @@
 
 struct DragActionParams;
 
-namespace smp
-{
-	class js_panel_window;
-}
-
 namespace mozjs
 {
 	class JsAsyncTask;
