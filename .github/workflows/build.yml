@@ -2,15 +2,15 @@ name: build
 on:
   push:
     branches: main
-    paths-ignore: '**/*.md'
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.js'
 jobs:
   build:
     runs-on: windows-2022
 
     steps:
     - uses: actions/checkout@v6
-      with:
-        submodules: true
 
     - name: Set up MSBuild
       uses: microsoft/setup-msbuild@v2
@@ -19,7 +19,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
-        key: 6d7bf7ef2193e2d1c5798a5ff8811d533104c861
+        key: aa2d37682e3318d93aef87efa7b0e88e81cd3d59
 
     - name: Set up vcpkg
       working-directory: C:\vcpkg
@@ -42,5 +42,5 @@ jobs:
     - name: Upload component folder
       uses: actions/upload-artifact@v6
       with:
-        name: foo_spider_monkey_panel-${{ github.ref_name }}
+        name: foo_spider_monkey_panel-${{ case(github.ref_name == 'main', github.sha, github.ref_name) }}
         path: component
