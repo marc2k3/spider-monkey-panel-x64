@@ -1,8 +1,5 @@
 #pragma once
-
 #include <FB2K/AlbumArtStatic.hpp>
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
 
 class GetAlbumArtAsync : public fb2k::threadEntry
 {

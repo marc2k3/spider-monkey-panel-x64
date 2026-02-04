@@ -2,7 +2,6 @@
 
 #include <FB2K/PlaylistLock.hpp>
 #include <config/delayed_package_utils.h>
-#include <events/event_dispatcher.h>
 #include <utils/thread_pool.h>
 
 #include <Scintilla.h>

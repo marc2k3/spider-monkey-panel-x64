@@ -1,8 +1,5 @@
 #pragma once
 
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
-
 class LoadImageAsync : public fb2k::threadEntry
 {
 public:

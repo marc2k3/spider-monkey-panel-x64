@@ -1,8 +1,5 @@
 #include "PCH.hpp"
 
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
-
 namespace smp
 {
 	class ConsoleNotify : public initquit, public fb2k::console_notify

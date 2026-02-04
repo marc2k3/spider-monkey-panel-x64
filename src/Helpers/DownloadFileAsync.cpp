@@ -1,9 +1,6 @@
 #include "PCH.hpp"
 #include "DownloadFileAsync.hpp"
 
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
-
 DownloadFileAsync::DownloadFileAsync(HWND wnd, std::string_view url, std::wstring_view path)
 	: m_wnd(wnd)
 	, m_url(url)

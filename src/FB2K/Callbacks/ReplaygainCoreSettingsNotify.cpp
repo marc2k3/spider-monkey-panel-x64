@@ -1,8 +1,5 @@
 #include "PCH.hpp"
 
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
-
 namespace smp
 {
 	class ReplaygainCoreSettingsNotify : public initquit, public replaygain_core_settings_notify

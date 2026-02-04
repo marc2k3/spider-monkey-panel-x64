@@ -893,6 +893,7 @@
     <ClInclude Include="Helpers\Scintilla\ScintillaImpl.hpp">
       <Filter>Helpers\Scintilla</Filter>
     </ClInclude>
+    <ClInclude Include="SpiderMonkey.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

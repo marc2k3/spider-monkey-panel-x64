@@ -345,6 +345,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="Paths.hpp" />
     <ClInclude Include="PCH.hpp" />
     <ClInclude Include="resources\resource.h" />
+    <ClInclude Include="SpiderMonkey.hpp" />
     <ClInclude Include="timeout\timeout.h" />
     <ClInclude Include="timeout\timeout_executor.h" />
     <ClInclude Include="timeout\timeout_manager.h" />

@@ -1,9 +1,6 @@
 #include "PCH.hpp"
 #include "mainmenu_dynamic.h"
 
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
-
 namespace
 {
 	class MainMenuNodeCommand_PanelCommand : public mainmenu_node_command

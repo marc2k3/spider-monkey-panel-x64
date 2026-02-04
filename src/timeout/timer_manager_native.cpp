@@ -1,9 +1,6 @@
 #include "PCH.hpp"
 #include "timer_manager_native.h"
 
-#include <events/event_dispatcher.h>
-#include <panel/js_panel_window.h>
-
 namespace smp
 {
 	TimerManager_Native::TimerManager_Native() : hTimerQueue_(CreateTimerQueue()) {}

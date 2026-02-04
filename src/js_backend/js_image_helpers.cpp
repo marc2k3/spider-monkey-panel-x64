@@ -3,7 +3,6 @@
 
 #include "js_async_task.h"
 
-#include <events/event_dispatcher.h>
 #include <interfaces/gdi_bitmap.h>
 #include <utils/thread_pool.h>
 

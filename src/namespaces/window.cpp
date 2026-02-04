@@ -1,7 +1,6 @@
 #include "PCH.hpp"
 #include "window.h"
 
-#include <events/event_dispatcher.h>
 #include <events/event_notify_others.h>
 #include <interfaces/gdi_font.h>
 #include <interfaces/menu_object.h>

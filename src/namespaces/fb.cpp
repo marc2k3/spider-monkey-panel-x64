@@ -5,8 +5,6 @@
 #include <FB2K/ContextMenuCommand.hpp>
 #include <FB2K/MainMenuCommand.hpp>
 #include <com_utils/drop_source_impl.h>
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
 #include <interfaces/context_menu_manager.h>
 #include <interfaces/fb_audio_chunk.h>
 #include <interfaces/fb_metadb_handle.h>

@@ -1,9 +1,6 @@
 #include "PCH.hpp"
 #include "HTTPRequestAsync.hpp"
 
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
-
 HTTPRequestAsync::HTTPRequestAsync(Type type, HWND wnd, uint32_t task_id, std::string_view url, std::string_view user_agent_or_headers, std::string_view body)
 	: m_type(type)
 	, m_wnd(wnd)
