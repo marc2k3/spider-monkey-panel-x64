@@ -98,7 +98,7 @@ namespace
 			JS_FN("CreateProfiler", CreateProfiler, 0, kDefaultPropsFlags),
 			JS_FN("DoDragDrop", DoDragDrop, 3, kDefaultPropsFlags),
 			JS_FN("Exit", Exit, 0, kDefaultPropsFlags),
-			JS_FN("GetAudioChunk", GetAudioChunk, 2, kDefaultPropsFlags),
+			JS_FN("GetAudioChunk", GetAudioChunk, 1, kDefaultPropsFlags),
 			JS_FN("GetClipboardContents", GetClipboardContents, 0, kDefaultPropsFlags),
 			JS_FN("GetDSPPresets", GetDSPPresets, 0, kDefaultPropsFlags),
 			JS_FN("GetFocusItem", GetFocusItem, 0, kDefaultPropsFlags),

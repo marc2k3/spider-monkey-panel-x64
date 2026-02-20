@@ -16,7 +16,7 @@ namespace
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{
 			JS_FN("Compare", Compare, 1, kDefaultPropsFlags),
-			JS_FN("GetFileInfo", GetFileInfo, 1, kDefaultPropsFlags),
+			JS_FN("GetFileInfo", GetFileInfo, 0, kDefaultPropsFlags),
 			JS_FS_END,
 		});
 

@@ -24,52 +24,52 @@ namespace
 
 	DEFINE_JS_CLASS("Utils")
 
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CheckComponent, Utils::CheckComponent, Utils::CheckComponentWithOpt, 1);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(CheckFont, Utils::CheckFont);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(ColourPicker, Utils::ColourPicker);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(ConvertToAscii, Utils::ConvertToAscii);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFile, Utils::CopyFile, Utils::CopyFileWithOpt, 1);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFolder, Utils::CopyFolder, Utils::CopyFolderWithOpt, 2);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(CreateFolder, Utils::CreateFolder);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(DetectCharset, Utils::DetectCharset);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(DownloadFileAsync, Utils::DownloadFileAsync);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(EditTextFile, Utils::EditTextFile);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(FileExists, Utils::FileExists);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(FileTest, Utils::FileTest);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(FormatDuration, Utils::FormatDuration);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(FormatFileSize, Utils::FormatFileSize);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtAsync, Utils::GetAlbumArtAsync, Utils::GetAlbumArtAsyncWithOpt, 4);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtAsyncV2, Utils::GetAlbumArtAsyncV2, Utils::GetAlbumArtAsyncV2WithOpt, 4);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtEmbedded, Utils::GetAlbumArtEmbedded, Utils::GetAlbumArtEmbeddedWithOpt, 1);
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CheckComponent, Utils::CheckComponent, Utils::CheckComponentWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(CheckFont, Utils::CheckFont)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ColourPicker, Utils::ColourPicker)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ConvertToAscii, Utils::ConvertToAscii)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFile, Utils::CopyFile, Utils::CopyFileWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(CopyFolder, Utils::CopyFolder, Utils::CopyFolderWithOpt, 2)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(CreateFolder, Utils::CreateFolder)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(DetectCharset, Utils::DetectCharset)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(DownloadFileAsync, Utils::DownloadFileAsync)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(EditTextFile, Utils::EditTextFile)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(FileExists, Utils::FileExists)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(FileTest, Utils::FileTest)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(FormatDuration, Utils::FormatDuration)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(FormatFileSize, Utils::FormatFileSize)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtAsync, Utils::GetAlbumArtAsync, Utils::GetAlbumArtAsyncWithOpt, 4)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtAsyncV2, Utils::GetAlbumArtAsyncV2, Utils::GetAlbumArtAsyncV2WithOpt, 4)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtEmbedded, Utils::GetAlbumArtEmbedded, Utils::GetAlbumArtEmbeddedWithOpt, 1)
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(GetAlbumArtV2, Utils::GetAlbumArtV2, Utils::GetAlbumArtV2WithOpt, 2);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(GetClipboardText, Utils::GetClipboardText);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFileSize, Utils::GetFileSize);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(GetLastModified, Utils::GetLastModified);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(GetPackageInfo, Utils::GetPackageInfo);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(GetPackagePath, Utils::GetPackagePath);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(GetSysColour, Utils::GetSysColour);
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetClipboardText, Utils::GetClipboardText)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetFileSize, Utils::GetFileSize)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetLastModified, Utils::GetLastModified)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetPackageInfo, Utils::GetPackageInfo)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetPackagePath, Utils::GetPackagePath)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(GetSysColour, Utils::GetSysColour)
 	MJS_DEFINE_JS_FN_FROM_NATIVE(GetSystemMetrics, Utils::GetSystemMetrics);
 	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(Glob, Utils::Glob, Utils::GlobWithOpt, 2);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(HTTPRequestAsync, Utils::HTTPRequestAsync, Utils::HTTPRequestAsyncWithOpt, 2);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(InputBox, Utils::InputBox, Utils::InputBoxWithOpt, 2);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(IsDirectory, Utils::IsDirectory);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(IsFile, Utils::IsFile);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(IsKeyPressed, Utils::IsKeyPressed);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(ListFonts, Utils::ListFonts);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(MapString, Utils::MapString);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(Now, Utils::Now);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(PathWildcardMatch, Utils::PathWildcardMatch);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadINI, Utils::ReadINI, Utils::ReadINIWithOpt, 1);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadTextFile, Utils::ReadTextFile, Utils::ReadTextFileWithOpt, 1);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(ReadUTF8, Utils::ReadUTF8);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(RemovePath, Utils::RemovePath);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(RenamePath, Utils::RenamePath);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReplaceIllegalChars, Utils::ReplaceIllegalChars, Utils::ReplaceIllegalCharsWithOpt, 1);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(SetClipboardText, Utils::SetClipboardText);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ShowHtmlDialog, Utils::ShowHtmlDialog, Utils::ShowHtmlDialogWithOpt, 1);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(SplitFilePath, Utils::SplitFilePath);
-	MJS_DEFINE_JS_FN_FROM_NATIVE(WriteINI, Utils::WriteINI);
-	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(WriteTextFile, Utils::WriteTextFile, Utils::WriteTextFileWithOpt, 1);
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(HTTPRequestAsync, Utils::HTTPRequestAsync, Utils::HTTPRequestAsyncWithOpt, 2)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(InputBox, Utils::InputBox, Utils::InputBoxWithOpt, 2)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(IsDirectory, Utils::IsDirectory)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(IsFile, Utils::IsFile)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(IsKeyPressed, Utils::IsKeyPressed)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ListFonts, Utils::ListFonts)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(MapString, Utils::MapString)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(Now, Utils::Now)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(PathWildcardMatch, Utils::PathWildcardMatch)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadINI, Utils::ReadINI, Utils::ReadINIWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReadTextFile, Utils::ReadTextFile, Utils::ReadTextFileWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(ReadUTF8, Utils::ReadUTF8)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(RemovePath, Utils::RemovePath)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(RenamePath, Utils::RenamePath)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ReplaceIllegalChars, Utils::ReplaceIllegalChars, Utils::ReplaceIllegalCharsWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(SetClipboardText, Utils::SetClipboardText)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(ShowHtmlDialog, Utils::ShowHtmlDialog, Utils::ShowHtmlDialogWithOpt, 1)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(SplitFilePath, Utils::SplitFilePath)
+	MJS_DEFINE_JS_FN_FROM_NATIVE(WriteINI, Utils::WriteINI)
+	MJS_DEFINE_JS_FN_FROM_NATIVE_WITH_OPT(WriteTextFile, Utils::WriteTextFile, Utils::WriteTextFileWithOpt, 1)
 
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{
@@ -77,8 +77,8 @@ namespace
 			JS_FN("CheckFont", CheckFont, 1, kDefaultPropsFlags),
 			JS_FN("ColourPicker", ColourPicker, 2, kDefaultPropsFlags),
 			JS_FN("ConvertToAscii", ConvertToAscii, 1, kDefaultPropsFlags),
-			JS_FN("CopyFile", CopyFile, 3, kDefaultPropsFlags),
-			JS_FN("CopyFolder", CopyFolder, 4, kDefaultPropsFlags),
+			JS_FN("CopyFile", CopyFile, 2, kDefaultPropsFlags),
+			JS_FN("CopyFolder", CopyFolder, 2, kDefaultPropsFlags),
 			JS_FN("CreateFolder", CreateFolder, 1, kDefaultPropsFlags),
 			JS_FN("DetectCharset", DetectCharset, 1, kDefaultPropsFlags),
 			JS_FN("DownloadFileAsync", DownloadFileAsync, 2, kDefaultPropsFlags),
@@ -99,7 +99,7 @@ namespace
 			JS_FN("GetSysColour", GetSysColour, 1, kDefaultPropsFlags),
 			JS_FN("GetSystemMetrics", GetSystemMetrics, 1, kDefaultPropsFlags),
 			JS_FN("Glob", Glob, 1, kDefaultPropsFlags),
-			JS_FN("HTTPRequestAsync", HTTPRequestAsync, 4, kDefaultPropsFlags),
+			JS_FN("HTTPRequestAsync", HTTPRequestAsync, 2, kDefaultPropsFlags),
 			JS_FN("InputBox", InputBox, 3, kDefaultPropsFlags),
 			JS_FN("IsDirectory", IsDirectory, 1, kDefaultPropsFlags),
 			JS_FN("IsFile", IsFile, 1, kDefaultPropsFlags),

@@ -18,7 +18,7 @@ namespace
 	constexpr auto jsFunctions = std::to_array<JSFunctionSpec>(
 		{
 			JS_FN("Eval", Eval, 0, kDefaultPropsFlags),
-			JS_FN("EvalWithMetadb", EvalWithMetadb, 2, kDefaultPropsFlags),
+			JS_FN("EvalWithMetadb", EvalWithMetadb, 1, kDefaultPropsFlags),
 			JS_FN("EvalWithMetadbs", EvalWithMetadbs, 1, kDefaultPropsFlags),
 			JS_FS_END,
 		});
