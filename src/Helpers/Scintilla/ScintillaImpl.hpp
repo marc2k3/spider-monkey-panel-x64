@@ -201,6 +201,7 @@ public:
 	bool GetCaretLineVisible() { return Call(Message::GetCaretLineVisible); }
 	bool GetCaretLineVisibleAlways() { return Call(Message::GetCaretLineVisibleAlways); }
 	bool GetCommandEvents() { return Call(Message::GetCommandEvents); }
+	bool GetDragDropEnabled() { return Call(Message::GetDragDropEnabled); }
 	bool GetElementAllowsTranslucent(Element element) { return Call(Message::GetElementAllowsTranslucent, static_cast<uintptr_t>(element)); }
 	bool GetElementIsSet(Element element) { return Call(Message::GetElementIsSet, static_cast<uintptr_t>(element)); }
 	bool GetEndAtLastLine() { return Call(Message::GetEndAtLastLine); }
@@ -618,6 +619,7 @@ public:
 	void SetCursor(CursorShape cursorType) { Call(Message::SetCursor, static_cast<uintptr_t>(cursorType)); }
 	void SetDefaultFoldDisplayText(const char* text) { CallString(Message::SetDefaultFoldDisplayText, 0, text); }
 	void SetDocPointer(void* doc) { CallPointer(Message::SetDocPointer, 0, doc); }
+	void SetDragDropEnabled(bool dragDropEnabled) { Call(Message::SetDragDropEnabled, dragDropEnabled); }
 	void SetEOLMode(EndOfLine eolMode) { Call(Message::SetEOLMode, static_cast<uintptr_t>(eolMode)); }
 	void SetEdgeColour(Colour edgeColour) { Call(Message::SetEdgeColour, edgeColour); }
 	void SetEdgeColumn(Position column) { Call(Message::SetEdgeColumn, column); }
