@@ -3,3 +3,4 @@
 
 component/** linguist-detectable=false
 foobar2000-sdk/** linguist-detectable=false
+mozjs/** linguist-detectable=false
