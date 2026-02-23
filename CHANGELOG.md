@@ -1,5 +1,8 @@
 For new methods/callbacks, see the [API](./docs/api.md) page.
 
+## 1.7.26.2.23
+- Minor bug fixes.
+
 ## 1.7.26.1.30
 - Add the following new methods:
 ```
