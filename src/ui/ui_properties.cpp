@@ -153,7 +153,7 @@ void CDialogProperties::OnExportBnClicked(uint32_t, int32_t, CWindow)
 			TextFile(wpath).write(properties.ToJson());
 		};
 
-	FileDialog::save(m_hWnd, "Import from", "Property files|*.json|All files|*.*", "json", path_func);
+	FileDialog::save(m_hWnd, "Save as", "Property files|*.json|All files|*.*", "json", path_func);
 }
 
 void CDialogProperties::UpdateUiFromData()
