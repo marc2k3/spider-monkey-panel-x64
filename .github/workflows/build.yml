@@ -19,7 +19,7 @@ jobs:
       uses: actions/cache@v5
       with:
         path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
-        key: aa2d37682e3318d93aef87efa7b0e88e81cd3d59
+        key: 05442024c3fda64320bd25d2251cc9807b84fb6f
 
     - name: Set up vcpkg
       working-directory: C:\vcpkg
