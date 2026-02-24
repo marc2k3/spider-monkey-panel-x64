@@ -63,7 +63,7 @@ namespace mozjs
 		bool PathWildcardMatch(const std::wstring& pattern, const std::wstring& str);
 		std::wstring ReadINI(const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval = L"");
 		std::wstring ReadINIWithOpt(size_t optArgCount, const std::wstring& path, const std::wstring& section, const std::wstring& key, const std::wstring& defaultval);
-		std::wstring ReadTextFile(const std::wstring& path, uint32_t codepage = CP_UTF8);
+		std::wstring ReadTextFile(const std::wstring& path, uint32_t codepage = CP_ACP);
 		std::wstring ReadTextFileWithOpt(size_t optArgCount, const std::wstring& path, uint32_t codepage);
 		std::string ReadUTF8(const std::wstring& path);
 		int32_t RemovePath(const std::wstring& path) const;
