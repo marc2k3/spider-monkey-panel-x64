@@ -27,5 +27,5 @@ namespace smp
 
 #include "MozJS.hpp"
 
-#include <events/event_dispatcher.h>
-#include <events/event_js_callback.h>
+#include <JsBackend/Events/event_dispatcher.h>
+#include <JsBackend/Events/event_js_callback.h>

@@ -1,7 +1,7 @@
 #pragma once
 #include "ui_conf.h"
 
-#include <com_utils/file_drop_target.h>
+#include <ComUtils/file_drop_target.h>
 
 class CDialogConf;
 

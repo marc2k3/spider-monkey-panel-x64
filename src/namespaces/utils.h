@@ -1,5 +1,5 @@
 #pragma once
-#include <ui/ui_html.h>
+#include <UI/ui_html.h>
 
 namespace mozjs
 {

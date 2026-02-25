@@ -2,7 +2,7 @@
 #include "event_dispatcher.h"
 #include "task_controller.h"
 
-#include <panel/user_message.h>
+#include <Panel/user_message.h>
 
 namespace smp
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include <panel/drag_action_params.h>
+#include <Panel/drag_action_params.h>
 
 namespace mozjs
 {

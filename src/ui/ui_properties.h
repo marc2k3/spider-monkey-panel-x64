@@ -1,7 +1,7 @@
 #pragma once
 #include <config/panel_config.h>
 #include <PropertyList/PropertyList.h>
-#include <panel/js_panel_window.h>
+#include <Panel/js_panel_window.h>
 
 class CDialogProperties : public CDialogImpl<CDialogProperties>
 {

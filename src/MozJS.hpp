@@ -21,11 +21,11 @@ __pragma(warning(disable : 4100 4244 4251))
 #include <js/Wrapper.h>
 __pragma(warning(pop))
 
-#include <js_backend/global_object.h>
+#include <JsBackend/global_object.h>
 
-#include <js_backend/js_container.h>
-#include <js_backend/js_engine.h>
-#include <js_backend/js_to_native_invoker.h>
+#include <JsBackend/js_container.h>
+#include <JsBackend/js_engine.h>
+#include <JsBackend/js_to_native_invoker.h>
 
-#include <js_backend/js_heap_helper.h>
-#include <js_backend/js_property_helper.h>
+#include <JsBackend/js_heap_helper.h>
+#include <JsBackend/js_property_helper.h>

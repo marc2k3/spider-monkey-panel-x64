@@ -1,7 +1,7 @@
 #pragma once
 #include "event_mouse.h"
 
-#include <panel/drag_action_params.h>
+#include <Panel/drag_action_params.h>
 
 namespace smp
 {

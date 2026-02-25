@@ -1,12 +1,12 @@
 #include "PCH.hpp"
 #include "window.h"
 
-#include <events/event_notify_others.h>
+#include <JsBackend/Events/event_notify_others.h>
 #include <interfaces/gdi_font.h>
 #include <interfaces/menu_object.h>
 #include <interfaces/theme_manager.h>
-#include <js_backend/js_async_task.h>
-#include <timeout/timeout_manager.h>
+#include <JsBackend/js_async_task.h>
+#include <JsBackend/Timeout/timeout_manager.h>
 
 namespace
 {

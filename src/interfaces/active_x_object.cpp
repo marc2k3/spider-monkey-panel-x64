@@ -2,9 +2,9 @@
 #include "active_x_object.h"
 #include "active_x_object_iterator.h"
 
-#include <com_utils/com_interface_h.h>
-#include <com_utils/com_tools.h>
-#include <js_backend/com_convert.h>
+#include <ComUtils/com_interface_h.h>
+#include <ComUtils/com_tools.h>
+#include <JsBackend/com_convert.h>
 
 namespace
 {

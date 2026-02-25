@@ -4,7 +4,7 @@
 #include <FB2K/AlbumArtStatic.hpp>
 #include <FB2K/ContextMenuCommand.hpp>
 #include <FB2K/MainMenuCommand.hpp>
-#include <com_utils/drop_source_impl.h>
+#include <ComUtils/drop_source_impl.h>
 #include <interfaces/context_menu_manager.h>
 #include <interfaces/fb_audio_chunk.h>
 #include <interfaces/fb_metadb_handle.h>
@@ -14,8 +14,8 @@
 #include <interfaces/fb_ui_selection_holder.h>
 #include <interfaces/gdi_bitmap.h>
 #include <interfaces/main_menu_manager.h>
-#include <panel/modal_blocking_scope.h>
-#include <panel/user_message.h>
+#include <Panel/modal_blocking_scope.h>
+#include <Panel/user_message.h>
 #include <utils/mainmenu_dynamic.h>
 #include <utils/menu_helpers.h>
 

@@ -1,10 +1,10 @@
 #include "PCH.hpp"
 #include "edit_text.h"
 
-#include <Helpers/Scintilla/DialogEditor.hpp>
-#include <panel/modal_blocking_scope.h>
-#include <panel/user_message.h>
-#include <ui/ui_edit_in_progress.h>
+#include <Panel/modal_blocking_scope.h>
+#include <Panel/user_message.h>
+#include <UI/Scintilla/DialogEditor.hpp>
+#include <UI/ui_edit_in_progress.h>
 
 namespace
 {

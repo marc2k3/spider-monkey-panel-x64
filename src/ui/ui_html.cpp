@@ -1,8 +1,8 @@
 #include "PCH.hpp"
 #include "ui_html.h"
 
-#include <com_utils/dispatch_ptr.h>
-#include <js_backend/js_to_native.h>
+#include <ComUtils/dispatch_ptr.h>
+#include <JsBackend/js_to_native.h>
 #include <utils/hook_handler.h>
 
 using namespace mozjs;

@@ -1,41 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="com_utils">
+    <Filter Include="ComUtils">
       <UniqueIdentifier>{b23d43d7-b904-4566-bbbe-2d2b677efb7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="config">
-      <UniqueIdentifier>{3a9d2773-53cc-42cc-8c4d-b8e23af110e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="events">
-      <UniqueIdentifier>{909a5207-b341-4a10-847c-d77a4165b51a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="interfaces">
-      <UniqueIdentifier>{c4000729-60ea-4d25-9bb1-b9b5de5c612e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="js_backend">
-      <UniqueIdentifier>{82fda107-c970-4ad4-9ad2-b6aae7fddd6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="namespaces">
-      <UniqueIdentifier>{a7239c8c-3acf-4e4f-9e79-c72ed2555921}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="panel">
-      <UniqueIdentifier>{2f9c6262-875a-41df-aa19-160e57b518a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="resources">
-      <UniqueIdentifier>{c5622339-902d-4569-9e43-3a9dab7b21a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="timeout">
-      <UniqueIdentifier>{19b3e8c9-9302-44fe-8178-88312a4df487}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui">
-      <UniqueIdentifier>{6cdd963f-4f38-4310-b440-f96d5e5d2df5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ui\ui_conf">
-      <UniqueIdentifier>{e5a5165b-0c8d-4a75-a97d-936d99361cbf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="utils">
-      <UniqueIdentifier>{047b1a54-ba81-4cee-910d-751ebb3953fe}</UniqueIdentifier>
     </Filter>
     <Filter Include="FB2K">
       <UniqueIdentifier>{f0c4b951-f3df-4999-9345-06cdb777b87a}</UniqueIdentifier>
@@ -46,304 +13,250 @@
     <Filter Include="Helpers">
       <UniqueIdentifier>{34635d9a-f913-4843-bf73-18abf0c99179}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helpers\Scintilla">
-      <UniqueIdentifier>{39924bb2-426d-436d-8849-e783d5546157}</UniqueIdentifier>
+    <Filter Include="Config">
+      <UniqueIdentifier>{3a9d2773-53cc-42cc-8c4d-b8e23af110e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{047b1a54-ba81-4cee-910d-751ebb3953fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{6cdd963f-4f38-4310-b440-f96d5e5d2df5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\ui_conf">
+      <UniqueIdentifier>{e5a5165b-0c8d-4a75-a97d-936d99361cbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{c5622339-902d-4569-9e43-3a9dab7b21a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Panel">
+      <UniqueIdentifier>{2f9c6262-875a-41df-aa19-160e57b518a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Namespaces">
+      <UniqueIdentifier>{a7239c8c-3acf-4e4f-9e79-c72ed2555921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Scintilla">
+      <UniqueIdentifier>{bc742091-e6a1-4ede-94c8-3e145a2570fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{c4000729-60ea-4d25-9bb1-b9b5de5c612e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JsBackend">
+      <UniqueIdentifier>{82fda107-c970-4ad4-9ad2-b6aae7fddd6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JsBackend\Events">
+      <UniqueIdentifier>{fb70982b-0fa8-4075-9da3-e795912facf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JsBackend\Timeout">
+      <UniqueIdentifier>{0a2bcfc9-9fa4-49e7-9b70-64dc463f0aae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="com_utils\com_destruction_handler.cpp">
-      <Filter>com_utils</Filter>
+    <ClCompile Include="ComUtils\com_destruction_handler.cpp">
+      <Filter>ComUtils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\drag_image.cpp">
-      <Filter>com_utils</Filter>
+    <ClCompile Include="ComUtils\drag_image.cpp">
+      <Filter>ComUtils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\drag_utils.cpp">
-      <Filter>com_utils</Filter>
+    <ClCompile Include="ComUtils\drag_utils.cpp">
+      <Filter>ComUtils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\drop_source_impl.cpp">
-      <Filter>com_utils</Filter>
+    <ClCompile Include="ComUtils\drop_source_impl.cpp">
+      <Filter>ComUtils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\drop_target_impl.cpp">
-      <Filter>com_utils</Filter>
+    <ClCompile Include="ComUtils\drop_target_impl.cpp">
+      <Filter>ComUtils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\file_drop_target.cpp">
-      <Filter>com_utils</Filter>
+    <ClCompile Include="ComUtils\file_drop_target.cpp">
+      <Filter>ComUtils</Filter>
     </ClCompile>
-    <ClCompile Include="com_utils\track_drop_target.cpp">
-      <Filter>com_utils</Filter>
+    <ClCompile Include="ComUtils\track_drop_target.cpp">
+      <Filter>ComUtils</Filter>
     </ClCompile>
     <ClCompile Include="config\advanced_config.cpp">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="config\delayed_package_utils.cpp">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="config\package_utils.cpp">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="config\panel_config.cpp">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClCompile>
     <ClCompile Include="config\parsed_panel_config.cpp">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClCompile>
-    <ClCompile Include="events\event.cpp">
-      <Filter>events</Filter>
+    <ClCompile Include="Interfaces\active_x_object.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="events\event_dispatcher.cpp">
-      <Filter>events</Filter>
+    <ClCompile Include="Interfaces\active_x_object_iterator.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="events\event_drag.cpp">
-      <Filter>events</Filter>
+    <ClCompile Include="Interfaces\context_menu_manager.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="events\event_mouse.cpp">
-      <Filter>events</Filter>
+    <ClCompile Include="Interfaces\drop_source_action.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="events\event_notify_others.cpp">
-      <Filter>events</Filter>
+    <ClCompile Include="Interfaces\enumerator.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="events\task_controller.cpp">
-      <Filter>events</Filter>
+    <ClCompile Include="Interfaces\fb_audio_chunk.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\active_x_object.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_file_info.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\active_x_object_iterator.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_metadb_handle.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\context_menu_manager.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_metadb_handle_list.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\drop_source_action.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_metadb_handle_list_iterator.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\enumerator.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_playback_queue_item.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_audio_chunk.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_playlist_recycler.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_file_info.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_profiler.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_metadb_handle.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_title_format.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_metadb_handle_list.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_tooltip.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_metadb_handle_list_iterator.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\fb_ui_selection_holder.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_playback_queue_item.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\gdi_bitmap.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_playlist_recycler.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\gdi_font.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_profiler.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\gdi_graphics.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_title_format.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\gdi_raw_bitmap.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_tooltip.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\main_menu_manager.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\fb_ui_selection_holder.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\measure_string_info.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\gdi_bitmap.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\menu_object.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\gdi_font.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Interfaces\theme_manager.cpp">
+      <Filter>Interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\gdi_graphics.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Namespaces\console.cpp">
+      <Filter>Namespaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\gdi_raw_bitmap.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Namespaces\fb.cpp">
+      <Filter>Namespaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\main_menu_manager.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Namespaces\gdi.cpp">
+      <Filter>Namespaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\measure_string_info.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Namespaces\plman.cpp">
+      <Filter>Namespaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\menu_object.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Namespaces\utils.cpp">
+      <Filter>Namespaces</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\theme_manager.cpp">
-      <Filter>interfaces</Filter>
+    <ClCompile Include="Namespaces\window.cpp">
+      <Filter>Namespaces</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\cached_utf8_paths_hack.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Panel\edit_script.cpp">
+      <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\com_convert.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Panel\js_panel_window.cpp">
+      <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\global_heap_manager.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Panel\js_panel_window_cui.cpp">
+      <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\global_object.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Panel\js_panel_window_dui.cpp">
+      <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\heartbeat_window.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Panel\modal_blocking_scope.cpp">
+      <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_art_helpers.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_edit_in_progress.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_container.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_html.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_engine.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_input_box.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_error_helper.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_package_manager.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_error_scope.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_properties.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_gc.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_slow_script.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_image_helpers.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_conf\ui_conf.cpp">
+      <Filter>UI\ui_conf</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_monitor.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_conf\ui_conf_tab_package.cpp">
+      <Filter>UI\ui_conf</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_object_helper.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="UI\ui_conf\ui_conf_tab_script_source.cpp">
+      <Filter>UI\ui_conf</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_realm_inner.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Utils\edit_text.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_script_cache.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Utils\error_popup.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\js_to_native.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Utils\error_helpers.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="js_backend\native_to_js.cpp">
-      <Filter>js_backend</Filter>
+    <ClCompile Include="Utils\guid_helpers.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="namespaces\console.cpp">
-      <Filter>namespaces</Filter>
+    <ClCompile Include="Utils\hook_handler.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="namespaces\fb.cpp">
-      <Filter>namespaces</Filter>
+    <ClCompile Include="Utils\image_helpers.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="namespaces\gdi.cpp">
-      <Filter>namespaces</Filter>
+    <ClCompile Include="Utils\mainmenu.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="namespaces\plman.cpp">
-      <Filter>namespaces</Filter>
+    <ClCompile Include="Utils\mainmenu_dynamic.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="namespaces\utils.cpp">
-      <Filter>namespaces</Filter>
+    <ClCompile Include="Utils\menu_helpers.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="namespaces\window.cpp">
-      <Filter>namespaces</Filter>
+    <ClCompile Include="Utils\thread_pool.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="panel\edit_script.cpp">
-      <Filter>panel</Filter>
+    <ClCompile Include="Utils\unicode.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="panel\js_panel_window.cpp">
-      <Filter>panel</Filter>
+    <ClCompile Include="Utils\winapi_error_helpers.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="panel\js_panel_window_cui.cpp">
-      <Filter>panel</Filter>
-    </ClCompile>
-    <ClCompile Include="panel\js_panel_window_dui.cpp">
-      <Filter>panel</Filter>
-    </ClCompile>
-    <ClCompile Include="panel\modal_blocking_scope.cpp">
-      <Filter>panel</Filter>
-    </ClCompile>
-    <ClCompile Include="timeout\timeout.cpp">
-      <Filter>timeout</Filter>
-    </ClCompile>
-    <ClCompile Include="timeout\timeout_executor.cpp">
-      <Filter>timeout</Filter>
-    </ClCompile>
-    <ClCompile Include="timeout\timeout_manager.cpp">
-      <Filter>timeout</Filter>
-    </ClCompile>
-    <ClCompile Include="timeout\timer_manager_native.cpp">
-      <Filter>timeout</Filter>
-    </ClCompile>
-    <ClCompile Include="timeout\timer_native.cpp">
-      <Filter>timeout</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_edit_in_progress.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_html.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_input_box.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_package_manager.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_properties.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_slow_script.cpp">
-      <Filter>ui</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_conf\ui_conf.cpp">
-      <Filter>ui\ui_conf</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_conf\ui_conf_tab_package.cpp">
-      <Filter>ui\ui_conf</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\ui_conf\ui_conf_tab_script_source.cpp">
-      <Filter>ui\ui_conf</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\edit_text.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\error_popup.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\error_helpers.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\guid_helpers.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\hook_handler.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\image_helpers.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\mainmenu.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\mainmenu_dynamic.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\menu_helpers.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\thread_pool.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\unicode.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\winapi_error_helpers.cpp">
-      <Filter>utils</Filter>
-    </ClCompile>
-    <ClCompile Include="utils\zip_utils.cpp">
-      <Filter>utils</Filter>
+    <ClCompile Include="Utils\zip_utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="InitQuit.cpp" />
@@ -424,373 +337,340 @@
     <ClCompile Include="Helpers\TextFile.cpp">
       <Filter>Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers\Scintilla\DialogEditor.cpp">
-      <Filter>Helpers\Scintilla</Filter>
+    <ClCompile Include="UI\Scintilla\DialogEditor.cpp">
+      <Filter>UI\Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers\Scintilla\DialogFindReplace.cpp">
-      <Filter>Helpers\Scintilla</Filter>
+    <ClCompile Include="UI\Scintilla\DialogFindReplace.cpp">
+      <Filter>UI\Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers\Scintilla\DialogGoto.cpp">
-      <Filter>Helpers\Scintilla</Filter>
+    <ClCompile Include="UI\Scintilla\DialogGoto.cpp">
+      <Filter>UI\Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers\Scintilla\DialogStyle.cpp">
-      <Filter>Helpers\Scintilla</Filter>
+    <ClCompile Include="UI\Scintilla\DialogStyle.cpp">
+      <Filter>UI\Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers\Scintilla\Scintilla.cpp">
-      <Filter>Helpers\Scintilla</Filter>
+    <ClCompile Include="UI\Scintilla\Scintilla.cpp">
+      <Filter>UI\Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers\Scintilla\ScintillaConfig.cpp">
-      <Filter>Helpers\Scintilla</Filter>
+    <ClCompile Include="UI\Scintilla\ScintillaConfig.cpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\cached_utf8_paths_hack.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\com_convert.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\global_heap_manager.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\global_object.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\heartbeat_window.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_art_helpers.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_container.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_engine.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_error_helper.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_error_scope.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_gc.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_image_helpers.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_monitor.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_object_helper.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_realm_inner.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_script_cache.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\js_to_native.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\native_to_js.cpp">
+      <Filter>JsBackend</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Events\event.cpp">
+      <Filter>JsBackend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Events\event_dispatcher.cpp">
+      <Filter>JsBackend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Events\event_drag.cpp">
+      <Filter>JsBackend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Events\event_mouse.cpp">
+      <Filter>JsBackend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Events\event_notify_others.cpp">
+      <Filter>JsBackend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Events\task_controller.cpp">
+      <Filter>JsBackend\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Timeout\timeout.cpp">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Timeout\timeout_executor.cpp">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Timeout\timeout_manager.cpp">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Timeout\timer_manager_native.cpp">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClCompile>
+    <ClCompile Include="JsBackend\Timeout\timer_native.cpp">
+      <Filter>JsBackend\Timeout</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="com_utils\com_destruction_handler.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\com_destruction_handler.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\com_tools.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\com_tools.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\dispatch_ptr.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\dispatch_ptr.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\drag_image.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\drag_image.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\drag_utils.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\drag_utils.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\drop_source_impl.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\drop_source_impl.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\drop_target_impl.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\drop_target_impl.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\file_drop_target.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\file_drop_target.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
-    <ClInclude Include="com_utils\track_drop_target.h">
-      <Filter>com_utils</Filter>
+    <ClInclude Include="ComUtils\track_drop_target.h">
+      <Filter>ComUtils</Filter>
     </ClInclude>
     <ClInclude Include="config\advanced_config.h">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="config\delayed_package_utils.h">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="config\package_utils.h">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="config\panel_config.h">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClInclude>
     <ClInclude Include="config\parsed_panel_config.h">
-      <Filter>config</Filter>
+      <Filter>Config</Filter>
     </ClInclude>
-    <ClInclude Include="events\event.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\active_x_object.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_dispatcher.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\active_x_object_iterator.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_drag.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\context_menu_manager.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_ids.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\drop_source_action.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_js_callback.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\enumerator.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_mouse.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\fb_audio_chunk.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="events\event_notify_others.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\fb_file_info.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="events\task_controller.h">
-      <Filter>events</Filter>
+    <ClInclude Include="Interfaces\fb_metadb_handle.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\active_x_object.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_metadb_handle_list.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\active_x_object_iterator.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_metadb_handle_list_iterator.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\context_menu_manager.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_playback_queue_item.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\drop_source_action.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_playlist_recycler.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\enumerator.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_profiler.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_audio_chunk.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_title_format.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_file_info.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_tooltip.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_metadb_handle.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\fb_ui_selection_holder.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_metadb_handle_list.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\gdi_bitmap.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_metadb_handle_list_iterator.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\gdi_font.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_playback_queue_item.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\gdi_graphics.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_playlist_recycler.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\gdi_raw_bitmap.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_profiler.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\main_menu_manager.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_title_format.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\measure_string_info.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_tooltip.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\menu_object.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\fb_ui_selection_holder.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Interfaces\theme_manager.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\gdi_bitmap.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Namespaces\console.h">
+      <Filter>Namespaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\gdi_font.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Namespaces\fb.h">
+      <Filter>Namespaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\gdi_graphics.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Namespaces\gdi.h">
+      <Filter>Namespaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\gdi_raw_bitmap.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Namespaces\plman.h">
+      <Filter>Namespaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\main_menu_manager.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Namespaces\utils.h">
+      <Filter>Namespaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\measure_string_info.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Namespaces\window.h">
+      <Filter>Namespaces</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\menu_object.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Panel\drag_action_params.h">
+      <Filter>Panel</Filter>
     </ClInclude>
-    <ClInclude Include="interfaces\theme_manager.h">
-      <Filter>interfaces</Filter>
+    <ClInclude Include="Panel\edit_script.h">
+      <Filter>Panel</Filter>
     </ClInclude>
-    <ClInclude Include="js_backend\cached_utf8_paths_hack.h">
-      <Filter>js_backend</Filter>
+    <ClInclude Include="Panel\js_panel_window.h">
+      <Filter>Panel</Filter>
     </ClInclude>
-    <ClInclude Include="js_backend\com_convert.h">
-      <Filter>js_backend</Filter>
+    <ClInclude Include="Panel\modal_blocking_scope.h">
+      <Filter>Panel</Filter>
     </ClInclude>
-    <ClInclude Include="js_backend\global_heap_manager.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\global_object.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\heartbeat_window.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_art_helpers.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_async_task.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_container.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_engine.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_error_helper.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_error_scope.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_gc.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_heap_helper.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_image_helpers.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_monitor.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_object_helper.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_property_helper.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_prototype_helpers.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_realm_inner.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_script_cache.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_to_native.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\js_to_native_invoker.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\native_to_js.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\native_to_js_invoker.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\object_base.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="js_backend\prototype_ids.h">
-      <Filter>js_backend</Filter>
-    </ClInclude>
-    <ClInclude Include="namespaces\console.h">
-      <Filter>namespaces</Filter>
-    </ClInclude>
-    <ClInclude Include="namespaces\fb.h">
-      <Filter>namespaces</Filter>
-    </ClInclude>
-    <ClInclude Include="namespaces\gdi.h">
-      <Filter>namespaces</Filter>
-    </ClInclude>
-    <ClInclude Include="namespaces\plman.h">
-      <Filter>namespaces</Filter>
-    </ClInclude>
-    <ClInclude Include="namespaces\utils.h">
-      <Filter>namespaces</Filter>
-    </ClInclude>
-    <ClInclude Include="namespaces\window.h">
-      <Filter>namespaces</Filter>
-    </ClInclude>
-    <ClInclude Include="panel\drag_action_params.h">
-      <Filter>panel</Filter>
-    </ClInclude>
-    <ClInclude Include="panel\edit_script.h">
-      <Filter>panel</Filter>
-    </ClInclude>
-    <ClInclude Include="panel\js_panel_window.h">
-      <Filter>panel</Filter>
-    </ClInclude>
-    <ClInclude Include="panel\modal_blocking_scope.h">
-      <Filter>panel</Filter>
-    </ClInclude>
-    <ClInclude Include="panel\user_message.h">
-      <Filter>panel</Filter>
+    <ClInclude Include="Panel\user_message.h">
+      <Filter>Panel</Filter>
     </ClInclude>
     <ClInclude Include="resources\resource.h">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </ClInclude>
-    <ClInclude Include="timeout\timeout.h">
-      <Filter>timeout</Filter>
+    <ClInclude Include="UI\ui_edit_in_progress.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="timeout\timeout_executor.h">
-      <Filter>timeout</Filter>
+    <ClInclude Include="UI\ui_html.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="timeout\timeout_manager.h">
-      <Filter>timeout</Filter>
+    <ClInclude Include="UI\ui_input_box.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="timeout\timer_interface_fwd.h">
-      <Filter>timeout</Filter>
+    <ClInclude Include="UI\ui_package_manager.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="timeout\timer_manager_native.h">
-      <Filter>timeout</Filter>
+    <ClInclude Include="UI\ui_properties.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="timeout\timer_native.h">
-      <Filter>timeout</Filter>
+    <ClInclude Include="UI\ui_slow_script.h">
+      <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_edit_in_progress.h">
-      <Filter>ui</Filter>
+    <ClInclude Include="UI\ui_conf\ui_conf.h">
+      <Filter>UI\ui_conf</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_html.h">
-      <Filter>ui</Filter>
+    <ClInclude Include="UI\ui_conf\ui_conf_tab_package.h">
+      <Filter>UI\ui_conf</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_input_box.h">
-      <Filter>ui</Filter>
+    <ClInclude Include="UI\ui_conf\ui_conf_tab_script_source.h">
+      <Filter>UI\ui_conf</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_package_manager.h">
-      <Filter>ui</Filter>
+    <ClInclude Include="Utils\colour_helpers.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_properties.h">
-      <Filter>ui</Filter>
+    <ClInclude Include="Utils\edit_text.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_slow_script.h">
-      <Filter>ui</Filter>
+    <ClInclude Include="Utils\error_popup.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_conf\ui_conf.h">
-      <Filter>ui\ui_conf</Filter>
+    <ClInclude Include="Utils\error_helpers.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_conf\ui_conf_tab_package.h">
-      <Filter>ui\ui_conf</Filter>
+    <ClInclude Include="Utils\guid_helpers.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_conf\ui_conf_tab_script_source.h">
-      <Filter>ui\ui_conf</Filter>
+    <ClInclude Include="Utils\hook_handler.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\colour_helpers.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\image_helpers.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\edit_text.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\js_exception.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\error_popup.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\mainmenu_dynamic.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\error_helpers.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\menu_helpers.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\guid_helpers.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\qwr_exception.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\hook_handler.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\thread_pool.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\image_helpers.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\type_traits.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\js_exception.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\ui_ddx.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\mainmenu_dynamic.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\unicode.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\menu_helpers.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\winapi_error_helpers.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="utils\qwr_exception.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\thread_pool.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\type_traits.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\ui_ddx.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\unicode.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\winapi_error_helpers.h">
-      <Filter>utils</Filter>
-    </ClInclude>
-    <ClInclude Include="utils\zip_utils.h">
-      <Filter>utils</Filter>
+    <ClInclude Include="Utils\zip_utils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Component.hpp" />
     <ClInclude Include="GUIDS.hpp" />
@@ -869,70 +749,190 @@
     <ClInclude Include="Helpers\TextFile.hpp">
       <Filter>Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\DialogEditor.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\DialogFindReplace.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\DialogGoto.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\DialogStyle.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\KeyHook.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\Scintilla.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\ScintillaConfig.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers\Scintilla\ScintillaImpl.hpp">
-      <Filter>Helpers\Scintilla</Filter>
-    </ClInclude>
     <ClInclude Include="SpiderMonkey.hpp" />
+    <ClInclude Include="UI\Scintilla\DialogEditor.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Scintilla\DialogFindReplace.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Scintilla\DialogGoto.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Scintilla\DialogStyle.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Scintilla\KeyHook.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Scintilla\Scintilla.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Scintilla\ScintillaConfig.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Scintilla\ScintillaImpl.hpp">
+      <Filter>UI\Scintilla</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\cached_utf8_paths_hack.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\com_convert.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\global_heap_manager.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\global_object.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\heartbeat_window.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_art_helpers.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_async_task.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_container.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_engine.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_error_helper.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_error_scope.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_gc.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_heap_helper.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_image_helpers.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_monitor.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_object_helper.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_property_helper.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_prototype_helpers.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_realm_inner.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_script_cache.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_to_native.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\js_to_native_invoker.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\native_to_js.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\native_to_js_invoker.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\object_base.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\prototype_ids.h">
+      <Filter>JsBackend</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\event.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\event_dispatcher.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\event_drag.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\event_ids.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\event_js_callback.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\event_mouse.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\event_notify_others.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Events\task_controller.h">
+      <Filter>JsBackend\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Timeout\timeout.h">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Timeout\timeout_executor.h">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Timeout\timeout_manager.h">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Timeout\timer_interface_fwd.h">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Timeout\timer_manager_native.h">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClInclude>
+    <ClInclude Include="JsBackend\Timeout\timer_native.h">
+      <Filter>JsBackend\Timeout</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="resources\cfgBright.cfg">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\cfgDarkGray.cfg">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\cfgDefault.cfg">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\cfgRubyBlue.cfg">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\default_script.js">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\recovery_package_json.json">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\recovery_package_script.js">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\scintilla_component.api">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
     <None Include="resources\scintilla_js.api">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Midl Include="com_utils\com_interface.idl">
-      <Filter>com_utils</Filter>
+    <Midl Include="ComUtils\com_interface.idl">
+      <Filter>ComUtils</Filter>
     </Midl>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resources\foo_spider_monkey_panel.rc">
-      <Filter>resources</Filter>
+      <Filter>Resources</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

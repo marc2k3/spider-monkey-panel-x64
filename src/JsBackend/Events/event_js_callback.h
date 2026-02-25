@@ -1,7 +1,7 @@
 #pragma once
 #include "event.h"
 
-#include <panel/js_panel_window.h>
+#include <Panel/js_panel_window.h>
 
 namespace smp::impl
 {

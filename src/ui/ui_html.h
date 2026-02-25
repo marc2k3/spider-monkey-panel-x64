@@ -1,5 +1,5 @@
 #pragma once
-#include <com_utils/com_tools.h>
+#include <ComUtils/com_tools.h>
 
 class CDialogHtml
 	: public CAxDialogImpl<CDialogHtml>

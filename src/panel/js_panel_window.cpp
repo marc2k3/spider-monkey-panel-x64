@@ -4,14 +4,14 @@
 #include "modal_blocking_scope.h"
 
 #include <Helpers/FontHelper.hpp>
-#include <com_utils/track_drop_target.h>
-#include <com_utils/com_destruction_handler.h>
+#include <ComUtils/track_drop_target.h>
+#include <ComUtils/com_destruction_handler.h>
 #include <config/delayed_package_utils.h>
 #include <config/package_utils.h>
-#include <events/event_drag.h>
-#include <events/event_mouse.h>
-#include <timeout/timeout_manager.h>
-#include <ui/ui_properties.h>
+#include <JsBackend/Events/event_drag.h>
+#include <JsBackend/Events/event_mouse.h>
+#include <JsBackend/Timeout/timeout_manager.h>
+#include <UI/ui_properties.h>
 #include <utils/image_helpers.h>
 #include <utils/mainmenu_dynamic.h>
 

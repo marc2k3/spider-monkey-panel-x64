@@ -2,7 +2,7 @@
 #include "ui_conf_tab_script_source.h"
 #include "../ui_package_manager.h"
 
-#include <panel/edit_script.h>
+#include <Panel/edit_script.h>
 
 namespace
 {

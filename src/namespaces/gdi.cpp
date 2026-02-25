@@ -4,7 +4,7 @@
 #include <Helpers/LoadImageAsync.hpp>
 #include <interfaces/gdi_bitmap.h>
 #include <interfaces/gdi_font.h>
-#include <js_backend/js_image_helpers.h>
+#include <JsBackend/js_image_helpers.h>
 
 namespace
 {

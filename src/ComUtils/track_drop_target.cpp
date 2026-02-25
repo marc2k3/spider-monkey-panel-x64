@@ -3,9 +3,9 @@
 #include "drag_utils.h"
 
 #include <FB2K/ProcessLocationsNotify.hpp>
-#include <events/event_drag.h>
+#include <JsBackend/Events/event_drag.h>
 #include <interfaces/drop_source_action.h>
-#include <panel/js_panel_window.h>
+#include <Panel/js_panel_window.h>
 
 namespace
 {

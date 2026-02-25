@@ -1,8 +1,8 @@
 #include "PCH.hpp"
 #include "ui_properties.h"
 
-#include <Helpers/Scintilla/DialogEditor.hpp>
-#include <panel/js_panel_window.h>
+#include <Panel/js_panel_window.h>
+#include <UI/Scintilla/DialogEditor.hpp>
 
 namespace
 {

@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "heartbeat_window.h"
 
-#include <panel/user_message.h>
+#include <Panel/user_message.h>
 
 namespace smp
 {

@@ -10,9 +10,9 @@
 #include <config/package_utils.h>
 #include <interfaces/fb_metadb_handle.h>
 #include <interfaces/gdi_bitmap.h>
-#include <js_backend/com_convert.h>
-#include <js_backend/js_art_helpers.h>
-#include <ui/ui_input_box.h>
+#include <JsBackend/com_convert.h>
+#include <JsBackend/js_art_helpers.h>
+#include <UI/ui_input_box.h>
 #include <utils/colour_helpers.h>
 #include <utils/edit_text.h>
 

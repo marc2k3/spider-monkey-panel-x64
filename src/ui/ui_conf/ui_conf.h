@@ -1,6 +1,6 @@
 #pragma once
 #include <config/parsed_panel_config.h>
-#include <panel/user_message.h>
+#include <Panel/user_message.h>
 #include <utils/ui_ddx.h>
 
 class ITab

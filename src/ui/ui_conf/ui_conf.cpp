@@ -5,7 +5,7 @@
 #include "ui_conf_tab_script_source.h"
 
 #include <config/package_utils.h>
-#include <panel/js_panel_window.h>
+#include <Panel/js_panel_window.h>
 #include <utils/guid_helpers.h>
 
 namespace

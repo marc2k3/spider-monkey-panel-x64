@@ -4,9 +4,9 @@
 #include "js_monitor.h"
 
 #include <config/advanced_config.h>
-#include <panel/js_panel_window.h>
-#include <panel/modal_blocking_scope.h>
-#include <ui/ui_slow_script.h>
+#include <Panel/js_panel_window.h>
+#include <Panel/modal_blocking_scope.h>
+#include <UI/ui_slow_script.h>
 
 namespace
 {

@@ -1,8 +1,8 @@
 #include "PCH.hpp"
 #include "active_x_object_iterator.h"
 
-#include <com_utils/dispatch_ptr.h>
-#include <js_backend/com_convert.h>
+#include <ComUtils/dispatch_ptr.h>
+#include <JsBackend/com_convert.h>
 
 namespace
 {

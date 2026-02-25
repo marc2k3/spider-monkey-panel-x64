@@ -3,9 +3,9 @@
 #include "user_message.h"
 
 #include <config/parsed_panel_config.h>
-#include <events/event.h>
+#include <JsBackend/Events/event.h>
 #include <interfaces/fb_tooltip.h>
-#include <ui/ui_conf/ui_conf.h>
+#include <UI/ui_conf/ui_conf.h>
 
 class IDropTargetImpl;
 

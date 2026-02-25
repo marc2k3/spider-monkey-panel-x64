@@ -1,8 +1,8 @@
 #include "PCH.hpp"
 #include "event_drag.h"
 
-#include <com_utils/com_destruction_handler.h>
-#include <panel/js_panel_window.h>
+#include <ComUtils/com_destruction_handler.h>
+#include <Panel/js_panel_window.h>
 
 namespace smp
 {

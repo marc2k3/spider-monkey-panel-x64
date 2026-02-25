@@ -2,11 +2,11 @@
 #include "com_convert.h"
 #include "js_to_native.h"
 
-#include <com_utils/com_interface_h.h>
-#include <com_utils/com_tools.h>
-#include <com_utils/dispatch_ptr.h>
+#include <ComUtils/com_interface_h.h>
+#include <ComUtils/com_tools.h>
+#include <ComUtils/dispatch_ptr.h>
 #include <interfaces/active_x_object.h>
-#include <panel/user_message.h>
+#include <Panel/user_message.h>
 
 using namespace smp;
 

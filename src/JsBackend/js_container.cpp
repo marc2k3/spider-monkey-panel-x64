@@ -2,7 +2,7 @@
 #include "js_container.h"
 #include "js_async_task.h"
 
-#include <panel/js_panel_window.h>
+#include <Panel/js_panel_window.h>
 
 using namespace smp;
 

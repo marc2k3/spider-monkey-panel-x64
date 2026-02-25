@@ -2,8 +2,8 @@
 #include "com_tools.h"
 #include "drop_target_impl.h"
 
-#include <events/event.h>
-#include <panel/drag_action_params.h>
+#include <JsBackend/Events/event.h>
+#include <Panel/drag_action_params.h>
 
 class TrackDropTarget : public IDropTargetImpl
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "event_ids.h"
 
-#include <timeout/timer_interface_fwd.h>
+#include <JsBackend/Timeout/timer_interface_fwd.h>
 
 namespace smp
 {
