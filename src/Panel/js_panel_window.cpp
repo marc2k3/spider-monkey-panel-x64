@@ -11,7 +11,7 @@
 #include <JsBackend/Events/event_drag.h>
 #include <JsBackend/Events/event_mouse.h>
 #include <JsBackend/Timeout/timeout_manager.h>
-#include <UI/ui_properties.h>
+#include <UI/DialogProperties.hpp>
 #include <utils/image_helpers.h>
 #include <utils/mainmenu_dynamic.h>
 
@@ -1038,7 +1038,7 @@ namespace smp
 		{
 			modal::ModalBlockingScope scope(parent, true);
 
-			auto dlg = CDialogProperties(*this);
+			auto dlg = CDialogProperties(this);
 			dlg.DoModal(parent);
 		}
 	}

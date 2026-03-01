@@ -204,9 +204,6 @@
     <ClCompile Include="UI\ui_package_manager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
-    <ClCompile Include="UI\ui_properties.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
     <ClCompile Include="UI\ui_slow_script.cpp">
       <Filter>UI</Filter>
     </ClCompile>
@@ -442,6 +439,12 @@
     <ClCompile Include="JsBackend\Timeout\timer_native.cpp">
       <Filter>JsBackend\Timeout</Filter>
     </ClCompile>
+    <ClCompile Include="UI\DialogProperties.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\PropertyList.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ComUtils\com_destruction_handler.h">
@@ -604,9 +607,6 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\ui_package_manager.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\ui_properties.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI\ui_slow_script.h">
@@ -893,6 +893,12 @@
     </ClInclude>
     <ClInclude Include="JsBackend\Timeout\timer_native.h">
       <Filter>JsBackend\Timeout</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DialogProperties.hpp">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PropertyList.hpp">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

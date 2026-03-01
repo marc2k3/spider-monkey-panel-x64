@@ -15,4 +15,6 @@ namespace Component
 		const auto msg = fmt::format(fmt::runtime(format), std::forward<Args>(args)...);
 		FB2K_console_formatter() << name_with_version.data() << ": " << msg.c_str();
 	}
+
+	extern cfgDialogPosition dialog_position;
 }

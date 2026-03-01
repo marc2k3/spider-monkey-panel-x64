@@ -89,6 +89,8 @@ using JSON = nlohmann::json;
 #include <helpers/file_list_helper.h>
 #include <helpers/WindowPositionUtils.h>
 #include <libPPUI/CDialogResizeHelper.h>
+#include <libPPUI/CListControlComplete.h>
+#include <libPPUI/CListControl-Cells.h>
 #include <libPPUI/CListControlOwnerData.h>
 #include <libPPUI/gdiplus_helpers.h>
 #include <libPPUI/pp-COM-macros.h>

@@ -17,8 +17,6 @@ namespace
 	static const CRect resize_min_max(620, 400, 0, 0);
 }
 
-cfgDialogPosition dialog_position(smp::guid::dialog_position);
-
 CDialogEditor::CDialogEditor(std::wstring title, std::string& text, SaveCallback callback)
 	: m_title(title)
 	, m_text(text)
@@ -31,7 +29,7 @@ BOOL CDialogEditor::OnInitDialog(CWindow, LPARAM)
 	InitScintilla();
 
 	m_hooks.AddDialogWithControls(m_hWnd);
-	dialog_position.apply_to_window(m_hWnd);
+	Component::dialog_position.apply_to_window(m_hWnd);
 	return TRUE;
 }
 
@@ -69,7 +67,7 @@ void CDialogEditor::InitTitle()
 
 void CDialogEditor::OnApplyOrOK(uint32_t, int32_t nID, CWindow)
 {
-	dialog_position.read_from_window(m_hWnd);
+	Component::dialog_position.read_from_window(m_hWnd);
 
 	m_text = m_scintilla.GetCode();
 	m_callback();

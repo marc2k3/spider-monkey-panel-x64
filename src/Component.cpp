@@ -34,4 +34,6 @@ namespace Component
 
 	DECLARE_COMPONENT_VERSION(name.data(), version.data(), about_text());
 	VALIDATE_COMPONENT_FILENAME("foo_spider_monkey_panel.dll");
+
+	cfgDialogPosition dialog_position(smp::guid::dialog_position);
 }

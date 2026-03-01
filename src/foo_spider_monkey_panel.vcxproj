@@ -186,6 +186,8 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="panel\js_panel_window_cui.cpp" />
     <ClCompile Include="panel\js_panel_window_dui.cpp" />
     <ClCompile Include="panel\modal_blocking_scope.cpp" />
+    <ClCompile Include="UI\DialogProperties.cpp" />
+    <ClCompile Include="UI\PropertyList.cpp" />
     <ClCompile Include="UI\Scintilla\DialogEditor.cpp" />
     <ClCompile Include="UI\Scintilla\DialogFindReplace.cpp" />
     <ClCompile Include="UI\Scintilla\DialogGoto.cpp" />
@@ -201,7 +203,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     </ClCompile>
     <ClCompile Include="UI\ui_input_box.cpp" />
     <ClCompile Include="UI\ui_package_manager.cpp" />
-    <ClCompile Include="UI\ui_properties.cpp" />
     <ClCompile Include="UI\ui_slow_script.cpp" />
     <ClCompile Include="Utils\edit_text.cpp" />
     <ClCompile Include="Utils\error_popup.cpp" />
@@ -338,6 +339,8 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="panel\modal_blocking_scope.h" />
     <ClInclude Include="panel\user_message.h" />
     <ClInclude Include="resources\resource.h" />
+    <ClInclude Include="UI\DialogProperties.hpp" />
+    <ClInclude Include="UI\PropertyList.hpp" />
     <ClInclude Include="UI\Scintilla\DialogEditor.hpp" />
     <ClInclude Include="UI\Scintilla\DialogFindReplace.hpp" />
     <ClInclude Include="UI\Scintilla\DialogGoto.hpp" />
@@ -353,7 +356,6 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="UI\ui_html.h" />
     <ClInclude Include="UI\ui_input_box.h" />
     <ClInclude Include="UI\ui_package_manager.h" />
-    <ClInclude Include="UI\ui_properties.h" />
     <ClInclude Include="UI\ui_slow_script.h" />
     <ClInclude Include="Utils\colour_helpers.h" />
     <ClInclude Include="Utils\edit_text.h" />

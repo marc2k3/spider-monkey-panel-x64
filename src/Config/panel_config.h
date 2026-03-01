@@ -6,7 +6,7 @@ namespace config
 
 	struct PanelProperties
 	{
-		using PropertyMap = std::unordered_map<std::wstring, std::shared_ptr<SerializedJsValue>>;
+		using PropertyMap = std::map<std::wstring, std::shared_ptr<SerializedJsValue>, CmpW>;
 		PropertyMap values;
 
 		/// @throw QwrException
