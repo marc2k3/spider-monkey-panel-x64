@@ -42,5 +42,5 @@ jobs:
     - name: Upload component folder
       uses: actions/upload-artifact@v7
       with:
-        name: foo_spider_monkey_panel-${{ case(github.ref_name == 'main', github.sha, github.ref_name) }}
+        name: foo_spider_monkey_panel-${{ github.sha }}
         path: component
