@@ -11,6 +11,7 @@ wil::com_ptr<IWICImagingFactory> imaging_factory_smp;
 
 namespace
 {
+	CAppModule wtl_module;
 	GdiplusScope scope;
 
 	class InitStageCallback : public init_stage_callback
@@ -31,6 +32,8 @@ namespace
 				fb2k::api::before_ui_init(); // must be before PlaylistLock
 				PlaylistLock::before_ui_init();
 
+				std::ignore = wtl_module.Init(nullptr, ins);
+
 				const auto path = wil::GetModuleFileNameW(ins);
 				std::ignore = LoadTypeLibEx(path.get(), REGKIND_NONE, &typelib_smp);
 			}
@@ -46,6 +49,7 @@ namespace
 		fb2k::api::reset();
 		imaging_factory_smp.reset();
 		typelib_smp.reset();
+		wtl_module.Term();
 	}
 
 	FB2K_SERVICE_FACTORY(InitStageCallback);
