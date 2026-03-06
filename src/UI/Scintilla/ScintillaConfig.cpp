@@ -37,7 +37,7 @@ ScintillaConfig::Data ScintillaConfig::cfg_string_to_data(std::string_view str)
 
 ScintillaConfig::Data ScintillaConfig::get_default_data()
 {
-	if (ui_config_manager::g_is_dark_mode())
+	if (fb2k::api::ui->is_dark_mode())
 		return preset_to_data(IDR_CFG_DARK_GRAY);
 
 	return preset_to_data(IDR_CFG_DEFAULT);

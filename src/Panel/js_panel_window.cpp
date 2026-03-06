@@ -23,7 +23,7 @@ namespace smp
 
 	void js_panel_window::ui_colors_changed()
 	{
-		isDark_ = ui_config_manager::g_is_dark_mode();
+		isDark_ = fb2k::api::ui->is_dark_mode();
 
 		if (m_native_tooltip)
 		{
@@ -1359,8 +1359,10 @@ namespace smp
 
 	void js_panel_window::OnCreate(HWND hWnd)
 	{
+		fb2k::api::init();
+
 		wnd_ = hWnd;
-		isDark_ = ui_config_manager::g_is_dark_mode();
+		isDark_ = fb2k::api::ui->is_dark_mode();
 		supportsTransparency_ = pfc::getWindowClassName(GetParent(wnd_)) == "ReBarWindow32";
 
 		pTarget_ = std::make_shared<PanelTarget>(*this);

@@ -40,6 +40,11 @@ namespace
 		}
 	};
 
+	void on_init() noexcept
+	{
+		fb2k::api::init();
+	}
+
 	void on_quit() noexcept
 	{
 		mozjs::JsEngine::GetInstance().PrepareForExit();
@@ -52,6 +57,6 @@ namespace
 		wtl_module.Term();
 	}
 
-	FB2K_SERVICE_FACTORY(InitStageCallback);
-	FB2K_RUN_ON_QUIT(on_quit);
+	FB2K_SERVICE_FACTORY(InitStageCallback)
+	FB2K_RUN_ON_INIT_QUIT(on_init, on_quit)
 }

@@ -444,7 +444,7 @@ void CScintilla::Import()
 void CScintilla::Init(ScintillaConfig::Mode mode, std::string_view code)
 {
 	m_mode = mode;
-	m_is_dark = ui_config_manager::g_is_dark_mode();
+	m_is_dark = fb2k::api::ui->is_dark_mode();
 
 	SetFnPtr();
 	SetBackSpaceUnIndents(true);
@@ -966,6 +966,6 @@ void CScintilla::TrackWidth()
 
 void CScintilla::ui_colors_changed()
 {
-	m_is_dark = ui_config_manager::g_is_dark_mode();
+	m_is_dark = fb2k::api::ui->is_dark_mode();
 	SetStyles();
 }
