@@ -17,7 +17,7 @@
 #include <namespaces/plman.h>
 #include <namespaces/utils.h>
 #include <namespaces/window.h>
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace fs = std::filesystem;
 using namespace mozjs;

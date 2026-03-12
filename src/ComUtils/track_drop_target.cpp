@@ -5,7 +5,7 @@
 #include <FB2K/ProcessLocationsNotify.hpp>
 #include <JsBackend/Events/event_drag.h>
 #include <interfaces/drop_source_action.h>
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace
 {
@@ -48,7 +48,7 @@ namespace
 	}
 }
 
-TrackDropTarget::TrackDropTarget(smp::js_panel_window& panel) : IDropTargetImpl(panel.GetHWND()), pPanel_(&panel) {}
+TrackDropTarget::TrackDropTarget(smp::PanelBase& panel) : IDropTargetImpl(panel.GetHWND()), pPanel_(&panel) {}
 
 DWORD TrackDropTarget::OnDragEnter(IDataObject* pDataObj, DWORD grfKeyState, POINTL pt, DWORD dwEffect)
 {

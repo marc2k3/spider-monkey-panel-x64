@@ -2,7 +2,7 @@
 #include "event_drag.h"
 
 #include <ComUtils/com_destruction_handler.h>
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace smp
 {

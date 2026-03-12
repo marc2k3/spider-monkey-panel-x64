@@ -182,9 +182,9 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClCompile Include="Namespaces\utils.cpp" />
     <ClCompile Include="Namespaces\window.cpp" />
     <ClCompile Include="panel\edit_script.cpp" />
-    <ClCompile Include="panel\js_panel_window.cpp" />
-    <ClCompile Include="panel\js_panel_window_cui.cpp" />
-    <ClCompile Include="panel\js_panel_window_dui.cpp" />
+    <ClCompile Include="panel\PanelBase.cpp" />
+    <ClCompile Include="panel\PanelCUI.cpp" />
+    <ClCompile Include="panel\PanelDUI.cpp" />
     <ClCompile Include="panel\modal_blocking_scope.cpp" />
     <ClCompile Include="UI\DialogProperties.cpp" />
     <ClCompile Include="UI\PropertyList.cpp" />
@@ -335,7 +335,7 @@ copy /Y "%mozjs_dir%mozjs-102.dll" "%component_path%"</Command>
     <ClInclude Include="Namespaces\window.h" />
     <ClInclude Include="panel\drag_action_params.h" />
     <ClInclude Include="panel\edit_script.h" />
-    <ClInclude Include="panel\js_panel_window.h" />
+    <ClInclude Include="panel\PanelBase.h" />
     <ClInclude Include="panel\modal_blocking_scope.h" />
     <ClInclude Include="panel\user_message.h" />
     <ClInclude Include="resources\resource.h" />

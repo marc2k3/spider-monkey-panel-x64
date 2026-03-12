@@ -1,13 +1,13 @@
 #include "PCH.hpp"
-#include "js_panel_window.h"
+#include "PanelBase.h"
 
 #include <utils/colour_helpers.h>
 
 namespace
 {
-	class js_panel_window_cui : public smp::js_panel_window, public uie::container_uie_window_v3
+	class PanelCUI : public smp::PanelBase, public uie::container_uie_window_v3
 	{
-#pragma region js_panel_window
+#pragma region PanelBase
 	protected:
 		DWORD GetColour(uint32_t type) final
 		{
@@ -31,7 +31,7 @@ namespace
 #pragma endregion
 
 	public:
-		js_panel_window_cui() : js_panel_window(PanelType::CUI) {}
+		PanelCUI() : PanelBase(PanelType::CUI) {}
 
 		LRESULT on_message(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) final
 		{
@@ -95,5 +95,5 @@ namespace
 		}
 	};
 
-	static const auto g_window_cui = uie::window_factory<js_panel_window_cui>();
+	static const auto g_window_cui = uie::window_factory<PanelCUI>();
 }

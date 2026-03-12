@@ -17,7 +17,7 @@ namespace mozjs
 		friend class JsEngine;
 
 	public:
-		JsContainer(smp::js_panel_window& parent_window);
+		JsContainer(smp::PanelBase& parent_window);
 		JsContainer(const JsContainer&) = delete;
 		~JsContainer();
 
@@ -44,7 +44,7 @@ namespace mozjs
 		static void RunJobs();
 
 	public:
-		smp::js_panel_window& GetParentPanel() const;
+		smp::PanelBase& GetParentPanel() const;
 
 	public:
 		template <typename ReturnType = std::nullptr_t, typename... ArgTypes>
@@ -84,7 +84,7 @@ namespace mozjs
 
 	private:
 		JSContext* m_ctx{};
-		smp::js_panel_window* m_parent_window{};
+		smp::PanelBase* m_parent_window{};
 
 		JS::PersistentRootedObject m_global;
 		JS::PersistentRootedObject m_graphics;

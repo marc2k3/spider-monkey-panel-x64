@@ -17,7 +17,7 @@ namespace
 	static const CRect resize_min_max(620, 400, 0, 0);
 }
 
-CDialogProperties::CDialogProperties(smp::js_panel_window* parent)
+CDialogProperties::CDialogProperties(smp::PanelBase* parent)
 	: m_parent(parent)
 	, m_resizer(resize_data, resize_min_max) {}
 

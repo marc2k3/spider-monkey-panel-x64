@@ -5,7 +5,7 @@
 
 #include <ComUtils/com_destruction_handler.h>
 #include <config/advanced_config.h>
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 #include <Panel/modal_blocking_scope.h>
 #include <Panel/user_message.h>
 #include <JsBackend/Timeout/timer_manager_native.h>

@@ -20,15 +20,15 @@ namespace smp
 	class PanelTarget final
 	{
 	public:
-		PanelTarget(js_panel_window& panel);
+		PanelTarget(PanelBase& panel);
 
 		[[nodiscard]] HWND GetHwnd();
 
-		[[nodiscard]] js_panel_window* GetPanel();
+		[[nodiscard]] PanelBase* GetPanel();
 		void UnlinkPanel();
 
 	private:
-		js_panel_window* pPanel_ = nullptr;
+		PanelBase* pPanel_ = nullptr;
 		HWND hWnd_ = nullptr;
 	};
 

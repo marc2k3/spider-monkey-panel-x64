@@ -1,12 +1,12 @@
 #pragma once
 #include "PropertyList.hpp"
 
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 class CDialogProperties : public CDialogImpl<CDialogProperties>
 {
 public:
-	CDialogProperties(smp::js_panel_window* parent);
+	CDialogProperties(smp::PanelBase* parent);
 
 	BEGIN_MSG_MAP_EX(CDialogProperties)
 		CHAIN_MSG_MAP_MEMBER(m_resizer)
@@ -33,7 +33,7 @@ private:
 
 	CButton m_btn_clear, m_btn_export;
 	CDialogResizeHelper m_resizer;
-	smp::js_panel_window* m_parent;
+	smp::PanelBase* m_parent;
 	PropertyList m_list;
 	fb2k::CCoreDarkModeHooks m_hooks;
 };

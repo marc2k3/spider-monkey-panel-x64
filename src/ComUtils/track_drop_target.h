@@ -8,7 +8,7 @@
 class TrackDropTarget : public IDropTargetImpl
 {
 public:
-	TrackDropTarget(smp::js_panel_window& panel);
+	TrackDropTarget(smp::PanelBase& panel);
 	~TrackDropTarget() override = default;
 
 	// IDropTargetImpl
@@ -24,7 +24,7 @@ private:
 	PutDragEvent(smp::EventId eventId, DWORD grfKeyState, POINTL pt, DWORD allowedEffects);
 
 private:
-	smp::js_panel_window* pPanel_{};
+	smp::PanelBase* pPanel_{};
 	wil::com_ptr<IDataObject> pDataObject_;
 	DWORD fb2kAllowedEffect_ = DROPEFFECT_NONE;
 };

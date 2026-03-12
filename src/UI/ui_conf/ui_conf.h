@@ -64,7 +64,7 @@ public:
 		CHAIN_MSG_MAP(CDialogResize<CDialogConf>)
 	END_MSG_MAP()
 
-	CDialogConf(smp::js_panel_window* pParent, CDialogConf::Tab tabId = CDialogConf::Tab::def);
+	CDialogConf(smp::PanelBase* pParent, CDialogConf::Tab tabId = CDialogConf::Tab::def);
 
 	bool IsCleanSlate() const;
 
@@ -109,7 +109,7 @@ private:
 	fb2k::CCoreDarkModeHooks m_hooks;
 	bool suppressDdxFromUi_ = true;
 
-	smp::js_panel_window* pParent_ = nullptr;
+	smp::PanelBase* pParent_ = nullptr;
 	config::ParsedPanelSettings oldSettings_;
 	config::ParsedPanelSettings localSettings_;
 

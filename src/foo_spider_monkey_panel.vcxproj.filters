@@ -180,13 +180,13 @@
     <ClCompile Include="Panel\edit_script.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="Panel\js_panel_window.cpp">
+    <ClCompile Include="panel\PanelBase.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="Panel\js_panel_window_cui.cpp">
+    <ClCompile Include="panel\PanelCUI.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
-    <ClCompile Include="Panel\js_panel_window_dui.cpp">
+    <ClCompile Include="panel\PanelDUI.cpp">
       <Filter>Panel</Filter>
     </ClCompile>
     <ClCompile Include="Panel\modal_blocking_scope.cpp">
@@ -585,7 +585,7 @@
     <ClInclude Include="Panel\edit_script.h">
       <Filter>Panel</Filter>
     </ClInclude>
-    <ClInclude Include="Panel\js_panel_window.h">
+    <ClInclude Include="panel\PanelBase.h">
       <Filter>Panel</Filter>
     </ClInclude>
     <ClInclude Include="Panel\modal_blocking_scope.h">

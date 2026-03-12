@@ -4,7 +4,7 @@
 #include "timeout_manager.h"
 #include "timer_manager_native.h"
 
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace smp
 {

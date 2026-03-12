@@ -2,13 +2,13 @@
 #include "js_container.h"
 #include "js_async_task.h"
 
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 using namespace smp;
 
 namespace mozjs
 {
-	JsContainer::JsContainer(js_panel_window& parent_window)
+	JsContainer::JsContainer(PanelBase& parent_window)
 	{
 		m_parent_window = &parent_window;
 
@@ -218,7 +218,7 @@ namespace mozjs
 		JsEngine::GetInstance().MaybeRunJobs();
 	}
 
-	smp::js_panel_window& JsContainer::GetParentPanel() const
+	smp::PanelBase& JsContainer::GetParentPanel() const
 	{
 		return *m_parent_window;
 	}

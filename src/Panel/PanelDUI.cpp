@@ -1,13 +1,13 @@
 #include "PCH.hpp"
-#include "js_panel_window.h"
+#include "PanelBase.h"
 
 #include <utils/colour_helpers.h>
 
 namespace
 {
-	class js_panel_window_dui : public smp::js_panel_window, public ui_element_instance, public CWindowImpl<js_panel_window_dui>
+	class PanelDUI : public smp::PanelBase, public ui_element_instance, public CWindowImpl<PanelDUI>
 	{
-#pragma region js_panel_window
+#pragma region PanelBase
 	protected:
 		DWORD GetColour(uint32_t type) final
 		{
@@ -51,7 +51,7 @@ namespace
 	public:
 		DECLARE_WND_CLASS_EX(L"smp_x64_class_dui", CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS, -1);
 
-		js_panel_window_dui(ui_element_config::ptr cfg, ui_element_instance_callback::ptr callback) : js_panel_window(PanelType::DUI), m_callback(callback)
+		PanelDUI(ui_element_config::ptr cfg, ui_element_instance_callback::ptr callback) : PanelBase(PanelType::DUI), m_callback(callback)
 		{
 			set_configuration(cfg);
 		}
@@ -141,5 +141,5 @@ namespace
 		ui_element_instance_callback::ptr m_callback;
 	};
 
-	FB2K_SERVICE_FACTORY(ui_element_impl<js_panel_window_dui>);
+	FB2K_SERVICE_FACTORY(ui_element_impl<PanelDUI>);
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace mozjs
 {
@@ -10,7 +10,7 @@ namespace mozjs
 
 		DEFINE_JS_NAMESPACE_VARS
 
-		static std::unique_ptr<Window> CreateNative(JSContext* ctx, smp::js_panel_window& parentPanel);
+		static std::unique_ptr<Window> CreateNative(JSContext* ctx, smp::PanelBase& parentPanel);
 		uint32_t GetInternalSize();
 
 	public:
@@ -87,7 +87,7 @@ namespace mozjs
 		void put_MinWidth(int32_t width);
 
 	private:
-		Window(JSContext* ctx, smp::js_panel_window& parent);
+		Window(JSContext* ctx, smp::PanelBase& parent);
 
 		struct DefineScriptOptions
 		{
@@ -104,7 +104,7 @@ namespace mozjs
 
 	private:
 		JSContext* m_ctx{};
-		smp::js_panel_window& m_parent;
+		smp::PanelBase& m_parent;
 		bool m_isFinalized{}, m_isScriptDefined{};
 		JS::PersistentRootedObject m_tooltip;
 	};

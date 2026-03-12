@@ -250,13 +250,13 @@ namespace mozjs
 	const JSFunctionSpec* Window::JsFunctions = jsFunctions.data();
 	const JSPropertySpec* Window::JsProperties = jsProperties.data();
 
-	Window::Window(JSContext* ctx, js_panel_window& parent)
+	Window::Window(JSContext* ctx, PanelBase& parent)
 		: m_ctx(ctx)
 		, m_parent(parent) {}
 
 	Window::~Window() {}
 
-	std::unique_ptr<Window> Window::CreateNative(JSContext* ctx, js_panel_window& parentPanel)
+	std::unique_ptr<Window> Window::CreateNative(JSContext* ctx, PanelBase& parentPanel)
 	{
 		return std::unique_ptr<Window>(new Window(ctx, parentPanel));
 	}
@@ -450,7 +450,7 @@ namespace mozjs
 			return 0;
 		}
 
-		QwrException::ExpectTrue(m_parent.GetPanelType() == js_panel_window::PanelType::CUI, "Can be called only in CUI");
+		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelBase::PanelType::CUI, "Can be called only in CUI");
 		QwrException::ExpectTrue(type <= cui::colours::colour_active_item_frame, "Invalid colour type specified");
 
 		return m_parent.GetColour(type);
@@ -463,7 +463,7 @@ namespace mozjs
 			return 0;
 		}
 
-		QwrException::ExpectTrue(m_parent.GetPanelType() == js_panel_window::PanelType::DUI, "Can be called only in DUI");
+		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelBase::PanelType::DUI, "Can be called only in DUI");
 		QwrException::ExpectTrue(type < 4u, "Invalid colour type specified");
 
 		return m_parent.GetColour(type);
@@ -476,7 +476,7 @@ namespace mozjs
 			return nullptr;
 		}
 
-		QwrException::ExpectTrue(m_parent.GetPanelType() == js_panel_window::PanelType::CUI, "Can be called only in CUI");
+		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelBase::PanelType::CUI, "Can be called only in CUI");
 		QwrException::ExpectTrue(type <= cui::fonts::font_type_labels, "Invalid font type specified");
 
 		auto lf = m_parent.GetFont(type);
@@ -490,7 +490,7 @@ namespace mozjs
 			return nullptr;
 		}
 
-		QwrException::ExpectTrue(m_parent.GetPanelType() == js_panel_window::PanelType::DUI, "Can be called only in DUI");
+		QwrException::ExpectTrue(m_parent.GetPanelType() == PanelBase::PanelType::DUI, "Can be called only in DUI");
 		QwrException::ExpectTrue(type < 6u, "Invalid font type specified");
 
 		auto lf = m_parent.GetFont(type);

@@ -3,7 +3,7 @@
 #include "timeout_executor.h"
 
 #include <JsBackend/js_async_task.h>
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace smp
 {

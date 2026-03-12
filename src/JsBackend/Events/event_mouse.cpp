@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "event_mouse.h"
 
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace smp
 {

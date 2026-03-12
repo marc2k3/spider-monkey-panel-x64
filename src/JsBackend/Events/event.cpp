@@ -1,18 +1,18 @@
 #include "PCH.hpp"
 #include "event.h"
 
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 
 namespace smp
 {
-	PanelTarget::PanelTarget(js_panel_window& panel) : pPanel_(&panel), hWnd_(panel.GetHWND()) {}
+	PanelTarget::PanelTarget(PanelBase& panel) : pPanel_(&panel), hWnd_(panel.GetHWND()) {}
 
 	HWND PanelTarget::GetHwnd()
 	{
 		return hWnd_;
 	}
 
-	js_panel_window* PanelTarget::GetPanel()
+	PanelBase* PanelTarget::GetPanel()
 	{
 		return pPanel_;
 	}

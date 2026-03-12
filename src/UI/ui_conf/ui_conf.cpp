@@ -5,7 +5,7 @@
 #include "ui_conf_tab_script_source.h"
 
 #include <config/package_utils.h>
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 #include <utils/guid_helpers.h>
 
 namespace
@@ -18,7 +18,7 @@ namespace
 	WINDOWPLACEMENT g_WindowPlacement{};
 }
 
-CDialogConf::CDialogConf(smp::js_panel_window* pParent, Tab tabId)
+CDialogConf::CDialogConf(smp::PanelBase* pParent, Tab tabId)
 	: pParent_(pParent)
 	, isCleanSlate_(::IsCleanSlate(pParent->GetSettings()))
 	, panelNameDdx_(smp::CreateUiDdx<smp::UiDdx_TextEdit>(localSettings_.panelId, IDC_EDIT_PANEL_NAME))

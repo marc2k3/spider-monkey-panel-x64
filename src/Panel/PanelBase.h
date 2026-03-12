@@ -13,7 +13,7 @@ namespace smp
 {
 	class TimeoutManager;
 
-	class js_panel_window : public ui_config_callback_impl
+	class PanelBase : public ui_config_callback_impl
 	{
 	public:
 		enum class PanelType
@@ -22,8 +22,8 @@ namespace smp
 			DUI = 1
 		};
 
-		js_panel_window(PanelType instanceType);
-		virtual ~js_panel_window();
+		PanelBase(PanelType instanceType);
+		virtual ~PanelBase();
 
 		// ui_config_callback_impl
 		void ui_colors_changed() override;

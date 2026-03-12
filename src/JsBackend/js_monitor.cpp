@@ -4,7 +4,7 @@
 #include "js_monitor.h"
 
 #include <config/advanced_config.h>
-#include <Panel/js_panel_window.h>
+#include <Panel/PanelBase.h>
 #include <Panel/modal_blocking_scope.h>
 #include <UI/ui_slow_script.h>
 
