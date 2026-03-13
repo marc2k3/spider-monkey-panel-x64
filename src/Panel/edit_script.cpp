@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "edit_script.h"
 
-#include <utils/edit_text.h>
+#include <Utils/edit_text.h>
 
 namespace fs = std::filesystem;
 

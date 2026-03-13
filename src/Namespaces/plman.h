@@ -4,7 +4,6 @@ namespace mozjs
 {
 	class JsFbMetadbHandle;
 	class JsFbMetadbHandleList;
-	class JsFbPlayingItemLocation;
 	class JsFbPlaylistRecycler;
 
 	class Plman : public JsObjectBase<Plman>

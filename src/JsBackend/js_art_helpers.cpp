@@ -4,8 +4,8 @@
 #include "js_async_task.h"
 
 #include <FB2K/AlbumArtStatic.hpp>
-#include <interfaces/gdi_bitmap.h>
-#include <utils/thread_pool.h>
+#include <Interfaces/gdi_bitmap.h>
+#include <Utils/thread_pool.h>
 
 using namespace smp;
 

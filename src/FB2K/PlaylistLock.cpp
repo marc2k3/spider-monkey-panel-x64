@@ -1,6 +1,5 @@
 #include "PCH.hpp"
 #include "PlaylistLock.hpp"
-#include <utils/guid_helpers.h>
 
 PlaylistLock::PlaylistLock(uint32_t mask) : m_mask(mask) {}
 

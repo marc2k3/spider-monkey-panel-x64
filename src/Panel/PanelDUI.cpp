@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "PanelBase.h"
 
-#include <utils/colour_helpers.h>
+#include <Utils/colour_helpers.h>
 
 namespace
 {

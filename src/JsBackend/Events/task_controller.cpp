@@ -1,8 +1,6 @@
 #include "PCH.hpp"
 #include "task_controller.h"
 
-#include <Panel/user_message.h>
-
 namespace smp
 {
 	std::atomic<uint64_t> Task::g_currentTaskNumber = 0;

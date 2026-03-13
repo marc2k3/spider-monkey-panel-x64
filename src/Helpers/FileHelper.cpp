@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "FileHelper.hpp"
 
-#include <utils/image_helpers.h>
+#include <Utils/image_helpers.h>
 
 namespace fs = std::filesystem;
 

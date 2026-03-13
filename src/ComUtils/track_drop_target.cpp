@@ -4,7 +4,7 @@
 
 #include <FB2K/ProcessLocationsNotify.hpp>
 #include <JsBackend/Events/event_drag.h>
-#include <interfaces/drop_source_action.h>
+#include <Interfaces/drop_source_action.h>
 #include <Panel/PanelBase.h>
 
 namespace

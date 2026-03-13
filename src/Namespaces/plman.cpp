@@ -4,10 +4,9 @@
 #include <FB2K/PlaylistLock.hpp>
 #include <FB2K/ProcessLocationsNotify.hpp>
 #include <Helpers/CustomSort.hpp>
-#include <interfaces/fb_metadb_handle.h>
-#include <interfaces/fb_metadb_handle_list.h>
-#include <interfaces/fb_playback_queue_item.h>
-#include <interfaces/fb_playlist_recycler.h>
+#include <Interfaces/fb_metadb_handle.h>
+#include <Interfaces/fb_metadb_handle_list.h>
+#include <Interfaces/fb_playlist_recycler.h>
 
 namespace
 {

@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "ContextMenuCommand.hpp"
 
-#include <utils/menu_helpers.h>
+#include <Utils/menu_helpers.h>
 
 ContextMenuCommand::ContextMenuCommand(std::string_view command, uint32_t flags) : m_command(command)
 {

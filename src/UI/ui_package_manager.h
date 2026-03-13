@@ -1,9 +1,9 @@
 #pragma once
 #include <ComUtils/file_drop_target.h>
-#include <config/delayed_package_utils.h>
-#include <config/panel_config.h>
-#include <config/parsed_panel_config.h>
-#include <utils/ui_ddx.h>
+#include <Config/delayed_package_utils.h>
+#include <Config/panel_config.h>
+#include <Config/parsed_panel_config.h>
+#include <Utils/ui_ddx.h>
 
 class CDialogPackageManager : public CDialogImpl<CDialogPackageManager>
 {

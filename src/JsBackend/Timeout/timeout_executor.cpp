@@ -4,8 +4,6 @@
 #include "timeout_manager.h"
 #include "timer_manager_native.h"
 
-#include <Panel/PanelBase.h>
-
 namespace smp
 {
 	TimeoutExecutor::TimeoutExecutor(TimeoutManager& pParent, std::shared_ptr<PanelTarget> pTarget) : pParent_(pParent), pTarget_(pTarget) {}

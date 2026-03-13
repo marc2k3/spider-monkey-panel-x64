@@ -5,19 +5,19 @@
 #include <FB2K/ContextMenuCommand.hpp>
 #include <FB2K/MainMenuCommand.hpp>
 #include <ComUtils/drop_source_impl.h>
-#include <interfaces/context_menu_manager.h>
-#include <interfaces/fb_audio_chunk.h>
-#include <interfaces/fb_metadb_handle.h>
-#include <interfaces/fb_metadb_handle_list.h>
-#include <interfaces/fb_profiler.h>
-#include <interfaces/fb_title_format.h>
-#include <interfaces/fb_ui_selection_holder.h>
-#include <interfaces/gdi_bitmap.h>
-#include <interfaces/main_menu_manager.h>
+#include <Interfaces/context_menu_manager.h>
+#include <Interfaces/fb_audio_chunk.h>
+#include <Interfaces/fb_metadb_handle.h>
+#include <Interfaces/fb_metadb_handle_list.h>
+#include <Interfaces/fb_profiler.h>
+#include <Interfaces/fb_title_format.h>
+#include <Interfaces/fb_ui_selection_holder.h>
+#include <Interfaces/gdi_bitmap.h>
+#include <Interfaces/main_menu_manager.h>
 #include <Panel/modal_blocking_scope.h>
 #include <Panel/user_message.h>
-#include <utils/mainmenu_dynamic.h>
-#include <utils/menu_helpers.h>
+#include <Utils/mainmenu_dynamic.h>
+#include <Utils/menu_helpers.h>
 
 namespace
 {

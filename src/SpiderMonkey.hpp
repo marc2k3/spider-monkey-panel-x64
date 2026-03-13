@@ -1,14 +1,14 @@
 #pragma once
 #include "MozJS.hpp"
 
-#include <resources/resource.h>
-#include <utils/error_popup.h>
-#include <utils/unicode.h>
-#include <utils/js_exception.h>
-#include <utils/type_traits.h>
-#include <utils/winapi_error_helpers.h>
-#include <utils/qwr_exception.h>
-#include <utils/error_helpers.h>
+#include <Resources/resource.h>
+#include <Utils/error_popup.h>
+#include <Utils/unicode.h>
+#include <Utils/js_exception.h>
+#include <Utils/type_traits.h>
+#include <Utils/winapi_error_helpers.h>
+#include <Utils/qwr_exception.h>
+#include <Utils/error_helpers.h>
 
 #include <FB2K/API.hpp>
 #include <Helpers/Helpers.hpp>

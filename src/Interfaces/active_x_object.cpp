@@ -1,9 +1,6 @@
 #include "PCH.hpp"
 #include "active_x_object.h"
 #include "active_x_object_iterator.h"
-
-#include <ComUtils/com_interface_h.h>
-#include <ComUtils/com_tools.h>
 #include <JsBackend/com_convert.h>
 
 namespace

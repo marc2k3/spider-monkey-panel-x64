@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "MainMenuCommand.hpp"
 
-#include <utils/menu_helpers.h>
+#include <Utils/menu_helpers.h>
 
 MainMenuCommand::MainMenuCommand(std::string_view command) : m_command(command) {}
 

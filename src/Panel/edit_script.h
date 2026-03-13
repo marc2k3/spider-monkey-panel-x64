@@ -1,5 +1,5 @@
 #pragma once
-#include <config/parsed_panel_config.h>
+#include <Config/parsed_panel_config.h>
 
 namespace smp
 {

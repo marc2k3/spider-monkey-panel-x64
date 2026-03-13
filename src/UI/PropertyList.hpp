@@ -1,4 +1,5 @@
 #pragma once
+#include <Config/panel_config.h>
 
 class PropertyList : public CListControlComplete
 {

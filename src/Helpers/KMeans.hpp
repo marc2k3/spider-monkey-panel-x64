@@ -1,5 +1,5 @@
 #pragma once
-#include <utils/colour_helpers.h>
+#include <Utils/colour_helpers.h>
 
 static constexpr size_t kNumColourComponents = 3uz;
 static constexpr size_t kMaxIterations = 12uz;

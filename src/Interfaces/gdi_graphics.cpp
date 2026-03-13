@@ -6,7 +6,7 @@
 #include "measure_string_info.h"
 
 #include <Helpers/EstimateLineWrap.hpp>
-#include <utils/colour_helpers.h>
+#include <Utils/colour_helpers.h>
 
 namespace
 {

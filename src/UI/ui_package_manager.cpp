@@ -2,8 +2,8 @@
 #include "ui_package_manager.h"
 #include "ui_input_box.h"
 
-#include <config/package_utils.h>
-#include <utils/zip_utils.h>
+#include <Config/package_utils.h>
+#include <Utils/zip_utils.h>
 
 namespace fs = std::filesystem;
 

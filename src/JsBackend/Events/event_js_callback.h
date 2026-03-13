@@ -1,8 +1,6 @@
 #pragma once
 #include "event.h"
 
-#include <Panel/PanelBase.h>
-
 namespace smp::impl
 {
 	template <typename T>

@@ -4,9 +4,9 @@
 #include "ui_conf_tab_package.h"
 #include "ui_conf_tab_script_source.h"
 
-#include <config/package_utils.h>
+#include <Config/package_utils.h>
 #include <Panel/PanelBase.h>
-#include <utils/guid_helpers.h>
+#include <Utils/guid_helpers.h>
 
 namespace
 {

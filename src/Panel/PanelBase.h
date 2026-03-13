@@ -2,9 +2,9 @@
 #include "drag_action_params.h"
 #include "user_message.h"
 
-#include <config/parsed_panel_config.h>
+#include <Config/parsed_panel_config.h>
 #include <JsBackend/Events/event.h>
-#include <interfaces/fb_tooltip.h>
+#include <Interfaces/fb_tooltip.h>
 #include <UI/Config/ui_conf.h>
 
 class IDropTargetImpl;

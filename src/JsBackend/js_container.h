@@ -1,6 +1,6 @@
 #pragma once
-#include <interfaces/drop_source_action.h>
-#include <interfaces/gdi_graphics.h>
+#include <Interfaces/drop_source_action.h>
+#include <Interfaces/gdi_graphics.h>
 
 #include "js_realm_inner.h"
 #include "native_to_js_invoker.h"

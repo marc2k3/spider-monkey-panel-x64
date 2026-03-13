@@ -3,8 +3,8 @@
 #include "../ui_input_box.h"
 
 #include <Helpers/DirectoryIterator.hpp>
-#include <config/package_utils.h>
-#include <utils/edit_text.h>
+#include <Config/package_utils.h>
+#include <Utils/edit_text.h>
 
 namespace fs = std::filesystem;
 

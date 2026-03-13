@@ -2,19 +2,18 @@
 #include "utils.h"
 
 #include <FB2K/AlbumArtStatic.hpp>
-#include <Helpers/CustomSort.hpp>
 #include <Helpers/DownloadFileAsync.hpp>
 #include <Helpers/FontHelper.hpp>
 #include <Helpers/GetAlbumArtAsync.hpp>
 #include <Helpers/HTTPRequestAsync.hpp>
-#include <config/package_utils.h>
-#include <interfaces/fb_metadb_handle.h>
-#include <interfaces/gdi_bitmap.h>
+#include <Config/package_utils.h>
+#include <Interfaces/fb_metadb_handle.h>
+#include <Interfaces/gdi_bitmap.h>
 #include <JsBackend/com_convert.h>
 #include <JsBackend/js_art_helpers.h>
 #include <UI/ui_input_box.h>
-#include <utils/colour_helpers.h>
-#include <utils/edit_text.h>
+#include <Utils/colour_helpers.h>
+#include <Utils/edit_text.h>
 
 namespace
 {

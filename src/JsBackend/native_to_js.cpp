@@ -1,10 +1,10 @@
 #include "PCH.hpp"
 #include "native_to_js.h"
 
-#include <interfaces/fb_metadb_handle.h>
-#include <interfaces/fb_metadb_handle_list.h>
-#include <interfaces/fb_playback_queue_item.h>
-#include <interfaces/gdi_bitmap.h>
+#include <Interfaces/fb_metadb_handle.h>
+#include <Interfaces/fb_metadb_handle_list.h>
+#include <Interfaces/fb_playback_queue_item.h>
+#include <Interfaces/gdi_bitmap.h>
 
 namespace mozjs::convert::to_js
 {

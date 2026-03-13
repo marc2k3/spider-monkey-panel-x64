@@ -1,8 +1,6 @@
 #include "PCH.hpp"
 #include "event_mouse.h"
 
-#include <Panel/PanelBase.h>
-
 namespace smp
 {
 	Event_Mouse::Event_Mouse(EventId id, int32_t x, int32_t y, uint32_t mask, uint32_t modifiers)

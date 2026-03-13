@@ -2,7 +2,7 @@
 #include "package_utils.h"
 
 #include <Helpers/DirectoryIterator.hpp>
-#include <utils/guid_helpers.h>
+#include <Utils/guid_helpers.h>
 
 namespace fs = std::filesystem;
 

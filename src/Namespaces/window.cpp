@@ -2,9 +2,9 @@
 #include "window.h"
 
 #include <JsBackend/Events/event_notify_others.h>
-#include <interfaces/gdi_font.h>
-#include <interfaces/menu_object.h>
-#include <interfaces/theme_manager.h>
+#include <Interfaces/gdi_font.h>
+#include <Interfaces/menu_object.h>
+#include <Interfaces/theme_manager.h>
 #include <JsBackend/js_async_task.h>
 #include <JsBackend/Timeout/timeout_manager.h>
 

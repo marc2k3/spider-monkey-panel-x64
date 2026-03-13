@@ -4,7 +4,6 @@
 
 #include <Helpers/KMeans.hpp>
 #include <Helpers/StackBlur.hpp>
-#include <utils/image_helpers.h>
 
 namespace
 {

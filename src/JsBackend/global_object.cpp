@@ -3,20 +3,20 @@
 
 #include "cached_utf8_paths_hack.h"
 
-#include <config/package_utils.h>
-#include <interfaces/active_x_object.h>
-#include <interfaces/enumerator.h>
-#include <interfaces/fb_metadb_handle_list.h>
-#include <interfaces/fb_profiler.h>
-#include <interfaces/fb_title_format.h>
-#include <interfaces/gdi_bitmap.h>
-#include <interfaces/gdi_font.h>
-#include <namespaces/console.h>
-#include <namespaces/fb.h>
-#include <namespaces/gdi.h>
-#include <namespaces/plman.h>
-#include <namespaces/utils.h>
-#include <namespaces/window.h>
+#include <Config/package_utils.h>
+#include <Interfaces/active_x_object.h>
+#include <Interfaces/enumerator.h>
+#include <Interfaces/fb_metadb_handle_list.h>
+#include <Interfaces/fb_profiler.h>
+#include <Interfaces/fb_title_format.h>
+#include <Interfaces/gdi_bitmap.h>
+#include <Interfaces/gdi_font.h>
+#include <Namespaces/console.h>
+#include <Namespaces/fb.h>
+#include <Namespaces/gdi.h>
+#include <Namespaces/plman.h>
+#include <Namespaces/utils.h>
+#include <Namespaces/window.h>
 #include <Panel/PanelBase.h>
 
 namespace fs = std::filesystem;

@@ -4,8 +4,7 @@
 
 #include <ComUtils/com_interface_h.h>
 #include <ComUtils/com_tools.h>
-#include <ComUtils/dispatch_ptr.h>
-#include <interfaces/active_x_object.h>
+#include <Interfaces/active_x_object.h>
 #include <Panel/user_message.h>
 
 using namespace smp;

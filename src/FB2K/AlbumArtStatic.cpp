@@ -1,8 +1,6 @@
 #include "PCH.hpp"
 #include "AlbumArtStatic.hpp"
 
-#include <utils/image_helpers.h>
-
 HRESULT AlbumArtStatic::to_istream(const album_art_data_ptr& data, wil::com_ptr<IStream>& stream) noexcept
 {
 	RETURN_HR_IF_EXPECTED(E_FAIL, data.is_empty());

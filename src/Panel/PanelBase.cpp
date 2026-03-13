@@ -6,14 +6,13 @@
 #include <Helpers/FontHelper.hpp>
 #include <ComUtils/track_drop_target.h>
 #include <ComUtils/com_destruction_handler.h>
-#include <config/delayed_package_utils.h>
-#include <config/package_utils.h>
+#include <Config/delayed_package_utils.h>
+#include <Config/package_utils.h>
 #include <JsBackend/Events/event_drag.h>
 #include <JsBackend/Events/event_mouse.h>
 #include <JsBackend/Timeout/timeout_manager.h>
 #include <UI/DialogProperties.hpp>
-#include <utils/image_helpers.h>
-#include <utils/mainmenu_dynamic.h>
+#include <Utils/mainmenu_dynamic.h>
 
 namespace smp
 {

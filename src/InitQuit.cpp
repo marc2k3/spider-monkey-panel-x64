@@ -1,8 +1,8 @@
 #include "PCH.hpp"
 
 #include <FB2K/PlaylistLock.hpp>
-#include <config/delayed_package_utils.h>
-#include <utils/thread_pool.h>
+#include <Config/delayed_package_utils.h>
+#include <Utils/thread_pool.h>
 
 #include <Scintilla.h>
 

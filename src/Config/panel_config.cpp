@@ -1,7 +1,7 @@
 #include "PCH.hpp"
 #include "panel_config.h"
 
-#include <utils/guid_helpers.h>
+#include <Utils/guid_helpers.h>
 
 namespace fs = std::filesystem;
 
