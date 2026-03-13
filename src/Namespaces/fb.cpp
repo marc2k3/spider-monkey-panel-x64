@@ -476,11 +476,16 @@ namespace
 			return j.dump(2);
 		}
 
-		JSObject* Fb::GetFocusItem(bool)
+		JSObject* Fb::GetFocusItem(bool force)
 		{
 			metadb_handle_ptr metadb;
 
-			if (fb2k::api::pm->activeplaylist_get_focus_item_handle(metadb))
+			if (!fb2k::api::pm->activeplaylist_get_focus_item_handle(metadb) && force)
+			{
+				fb2k::api::pm->activeplaylist_get_item_handle(metadb, 0uz);
+			}
+		
+			if (metadb.is_valid())
 			{
 				return JsFbMetadbHandle::CreateJs(m_ctx, metadb);
 			}
