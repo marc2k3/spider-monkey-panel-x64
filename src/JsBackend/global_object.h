@@ -92,6 +92,8 @@ namespace mozjs
 	{
 		JS::RootedObject jsGlobal(ctx, JS::CurrentGlobalOrNull(ctx));
 		const auto pNativeGlobal = JsGlobalObject::ExtractNative(ctx, jsGlobal);
-		return pNativeGlobal->GetPanelHwnd();
+		auto wnd = pNativeGlobal->GetPanelHwnd();
+		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
+		return wnd;
 	}
 }

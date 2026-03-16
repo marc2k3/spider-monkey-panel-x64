@@ -231,7 +231,6 @@ namespace
 			static constexpr uint32_t s_flags = playlist_incoming_item_filter_v2::op_flag_no_filter | playlist_incoming_item_filter_v2::op_flag_delay_ui;
 
 			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-			QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 
 			pfc::string_list_impl location_list;
 			convert::to_native::ProcessArray<std::string>(
@@ -327,7 +326,6 @@ namespace
 		uint32_t Fb::DoDragDrop(uint32_t, JsFbMetadbHandleList* handles, uint32_t okEffects, JS::HandleValue options)
 		{
 			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-			QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 			QwrException::ExpectTrue(handles, "handles argument is null");
 
 			const metadb_handle_list& handleList = handles->GetHandleList();
@@ -689,8 +687,6 @@ namespace
 		void Fb::RegisterMainMenuCommand(uint32_t id, const std::string& name, const std::string& description)
 		{
 			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-			QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
 			DynamicMainMenuManager::Get().RegisterCommand(wnd, id, name, description);
 		}
 
@@ -857,8 +853,6 @@ namespace
 		void Fb::UnregisterMainMenuCommand(uint32_t id)
 		{
 			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-			QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
 			DynamicMainMenuManager::Get().UnregisterCommand(wnd, id);
 		}
 

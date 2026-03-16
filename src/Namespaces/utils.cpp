@@ -231,9 +231,8 @@ namespace mozjs
 	uint32_t Utils::ColourPicker(uint32_t, uint32_t default_colour)
 	{
 		static std::array<COLORREF, 16> colours{};
-		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 
+		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		auto colour = smp::ArgbToColorref(default_colour);
 		uChooseColor(&colour, wnd, colours.data());
 		return smp::ColorrefToArgb(colour);
@@ -288,26 +287,18 @@ namespace mozjs
 	void Utils::DownloadFileAsync(const std::string& url, const std::wstring& path)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
 		auto task = fb2k::service_new<::DownloadFileAsync>(wnd, url, path);
 		fb2k::cpuThreadPool::get()->runSingle(task);
 	}
 
 	void Utils::EditTextFile(const std::wstring& path)
 	{
-		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
-		if (!modal_dialog_scope::can_create())
+		if (modal_dialog_scope::can_create())
 		{
-			return;
+			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
+			modal_dialog_scope scope(wnd);
+			smp::EditTextFile(wnd, path, false, false);
 		}
-
-		modal_dialog_scope scope(wnd);
-
-		// TODO: add options - editor_path, is_modal
-		smp::EditTextFile(wnd, path, false, false);
 	}
 
 	bool Utils::FileExists(const std::wstring& path) const
@@ -364,7 +355,6 @@ namespace mozjs
 	void Utils::GetAlbumArtAsync(uint32_t, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 		QwrException::ExpectTrue(handle, "handle argument is null");
 		QwrException::ExpectTrue(AlbumArtStatic::check_type_id(art_id), "Invalid art_id");
 
@@ -388,7 +378,6 @@ namespace mozjs
 	JSObject* Utils::GetAlbumArtAsyncV2(uint32_t /*window_id*/, JsFbMetadbHandle* handle, uint32_t art_id, bool need_stub, bool only_embed, bool)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 		QwrException::ExpectTrue(handle, "handle argument is null");
 		QwrException::ExpectTrue(AlbumArtStatic::check_type_id(art_id), "Invalid art_id");
 
@@ -563,7 +552,6 @@ namespace mozjs
 		static uint32_t task_id{};
 
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
 		QwrException::ExpectTrue(type <= 1, "Invalid type argument");
 
 		const auto type_enum = static_cast<HTTPRequestAsync::Type>(type);
@@ -586,11 +574,9 @@ namespace mozjs
 
 	std::string Utils::InputBox(uint32_t, const std::string& prompt, const std::string& caption, const std::string& def, bool error_on_cancel)
 	{
-		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
 		if (modal_dialog_scope::can_create())
 		{
+			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 			modal_dialog_scope scope(wnd);
 
 			CInputBox dlg(prompt.c_str(), caption.c_str(), def.c_str());
@@ -779,11 +765,9 @@ namespace mozjs
 
 	void Utils::ShowHtmlDialog(uint32_t, const std::wstring& code_or_path, JS::HandleValue options)
 	{
-		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
 		if (modal_dialog_scope::can_create())
 		{
+			const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 			modal_dialog_scope scope(wnd);
 			wil::com_ptr<CDialogHtml::HostExternal> host_external;
 

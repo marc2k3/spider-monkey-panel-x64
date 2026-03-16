@@ -86,11 +86,9 @@ namespace mozjs
 
 	uint32_t Gdi::LoadImageAsync(uint32_t /*window_id*/, const std::wstring& path)
 	{
-		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
 		static uint32_t s_task_id{};
 
+		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
 		auto task = fb2k::service_new<::LoadImageAsync>(wnd, path, ++s_task_id);
 		fb2k::cpuThreadPool::get()->runSingle(task);
 		return s_task_id;
@@ -99,8 +97,6 @@ namespace mozjs
 	JSObject* Gdi::LoadImageAsyncV2(uint32_t /*window_id*/, const std::wstring& path)
 	{
 		const auto wnd = GetPanelHwndForCurrentGlobal(m_ctx);
-		QwrException::ExpectTrue(wnd, "Method called before fb2k was initialized completely");
-
 		return mozjs::GetImagePromise(m_ctx, wnd, path);
 	}
 }
