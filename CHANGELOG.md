@@ -1,5 +1,10 @@
 For new methods/callbacks, see the [API](./docs/api.md) page.
 
+## 1.7.26.3.17
+- Restore previous behaviour of `fb.GetFocusItem`.
+- Fix stupid `CaTRoX` playlist bug which made it unusable for most people.
+- Update licenses.
+
 ## 1.7.26.3.5
 - Remove dead `Delete` button from `Properties` dialog. Full multi-select,
 keyboard and context menu support has been available since the `1.7.26.3.1`
